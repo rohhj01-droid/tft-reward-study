@@ -1,0 +1,8 @@
+# 경제 환경 + 다중 보상 학습 (hra/)
+torch>=2.0
+numpy>=1.24
+
+# LLM 라벨링 (labeling/)
+openai>=1.0
+
+# analysis/, fullgame/ 는 위 패키지 외에 TFT 시뮬레이터 저장소가 필요하다. README 참고.

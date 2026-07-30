@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.idea/
+.vscode/
+.DS_Store
+
+# 실행 산출물
+states.json
+labels.json
+*.log
+checkpoints/
