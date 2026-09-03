@@ -3,6 +3,8 @@
 
 같은 유닛을 2성(3장) / 3성(9장)까지 모으는 데 드는 골드를, 플레이어 레벨별로 잰다.
 구매 판단은 완벽하다고 가정하고(뜨면 무조건 산다) 상점 확률과 풀 고갈만 반영한다.
+매 라운드 무료로 뜨는 상점은 세지 않는다. 새로고침으로 본 상점만 계산하므로,
+실제 게임에서 체감하는 비용은 이보다 싸다.
 즉 "낮은 레벨에서 굴리는 것이 골드 효율상 유리한가"만 격리해서 보는 실험.
 
 시뮬레이터가 필요 없다. set4.py 상수만 쓴다.
@@ -18,7 +20,7 @@ from set4 import LEVEL_ODDS, POOL_SIZE, UNIQUE_PER_COST
 
 
 def draw_cost(level):
-    """상점 슬롯 하나의 코스트를 뽑는다."""
+    # LEVEL_ODDS는 누적 확률이다. 뒤에 붙은 10은 "그 위 코스트는 안 나온다"는 sentinel.
     r = random.random()
     odds = LEVEL_ODDS[level]
     for tier in range(5):
@@ -30,9 +32,11 @@ def draw_cost(level):
 def gold_to_collect(level, need, cost=1, trials=3000):
     """cost 코스트 유닛 1종을 need장 모으는 데 든 평균 골드."""
     target_pool = POOL_SIZE[cost - 1]
+    # 다른 플레이어가 풀을 안 건드린다고 본다. 실제 게임에서는 경쟁이 붙어 이 값보다 비싸다.
     other_pool = POOL_SIZE[cost - 1] * (UNIQUE_PER_COST[cost - 1] - 1)
     total = 0
     for _ in range(trials):
+        # gold 2000은 무한 루프 방지용. 여기 걸리는 시행이 생기면 평균이 실제보다 낮게 나온다.
         got, pool_left, others, gold = 0, target_pool, other_pool, 0
         while got < need and gold < 2000:
             gold += 2  # 새로고침 비용

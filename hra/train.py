@@ -1,11 +1,11 @@
 """
-다중 보상 학습기 학습 루프.
+board / econ 두 요인을 각각 Q 헤드로 학습하는 루프.
 
-실행:
-    python -m hra.train                 # 기본 가중치 board:econ = 1:0.3
+목적은 점수를 올리는 게 아니라 보상 가중치가 정책을 어디로 끌고 가는지 보는 것이다.
+econ 가중치를 0으로 두면 이자 신호가 통째로 사라진다. 그 차이를 재려고 만들었다.
+학습이 끝나면 레벨/골드 격자에서 어떤 행동을 고르는지 찍는다.
+
     python -m hra.train --board 1 --econ 0
-
-학습이 끝나면 레벨/골드 격자에 대해 어떤 행동을 고르는지 출력한다.
 """
 import argparse
 import collections
@@ -19,7 +19,7 @@ from hra.env import EconEnv, ACTIONS, HAND_POLICIES
 from hra.model import HRANet
 
 HEADS = ['board', 'econ']
-STATE_DIM = 6
+STATE_DIM = 6  # env.state()의 길이. env.py에서 상태를 늘리면 여기도 같이 고쳐야 한다.
 GAMMA = 0.97
 BATCH = 128
 LR = 5e-4
@@ -100,6 +100,8 @@ def train(weights, episodes=3000, seed=None, log_every=300, verbose=True):
             loss.backward()
             opt.step()
 
+        # 0.999^3000 이라 하한 0.05에는 거의 끝에서야 닿는다. sweep.py는 기본이
+        # 1200판이라 마지막까지 eps가 0.3 근처다. 두 스크립트 점수를 그대로 비교하면 안 된다.
         eps = max(0.05, eps * 0.999)
         if ep % 50 == 0:
             target.load_state_dict(net.state_dict())
@@ -113,7 +115,7 @@ def train(weights, episodes=3000, seed=None, log_every=300, verbose=True):
 
 
 def show_policy(net, weights):
-    """레벨 x 골드 격자에 대해 학습된 행동을 출력."""
+    # 이 격자는 시드마다 흔들린다. 최종 board_value는 비슷하게 나오는데 정책은 여러 개다.
     env = EconEnv()
     print('\n학습된 정책 (라운드 10 기준)')
     print(f"{'':8}" + ''.join(f'{"골드 " + str(g):>12}' for g in (20, 40, 60)))

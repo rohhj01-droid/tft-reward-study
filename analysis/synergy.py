@@ -28,9 +28,12 @@ def run(comp, n=N):
         done = False
         win = 0
         while not done:
-            action = 3 if env.level >= 6 else 0   # slow-roll: 레벨 6부터 공격적 리롤
+            # SAVE(0)만 골라도 패시브 경험치로 레벨은 알아서 오른다. 그래서 이 조건문은
+            # "6레벨에 머문다"가 아니라 "6레벨 될 때까지 모았다가 리롤"이 된다.
+            action = 3 if env.level >= 6 else 0
             _, reward, done = env.step(action)
             win = reward['win']
+        # 무승부는 패로 센다. env_battle이 A승일 때만 win 보상을 준다.
         wins += (win > 0)
         scores.append(env.board_value())
     return statistics.mean(scores), 100 * wins / n

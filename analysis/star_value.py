@@ -8,6 +8,8 @@
 (1)에서 미러 매치(2성 vs 2성)를 함께 재는 이유는, 하네스에 진영 유리가 없는지
 확인하기 위해서다. 50% 근처가 나와야 나머지 숫자를 믿을 수 있다.
 
+아이템은 전부 뺐다. 아이템까지 넣으면 별의 기여만 떼어낼 수가 없다.
+
 실행: python -m analysis.star_value
 """
 import statistics
@@ -15,6 +17,7 @@ import statistics
 from analysis.battle import win_rate
 from analysis.comps import COMPS, spec
 
+# 판수를 늘리면 노이즈가 줄지만 전투 시뮬이 느리다. 40판이면 표준오차 8%p 정도.
 N = 40
 
 

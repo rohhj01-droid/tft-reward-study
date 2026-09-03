@@ -1,10 +1,9 @@
 """
-게임 상태 -> LLM 매크로 행동 라벨.
+게임 상태 텍스트를 LLM에 넣어 매크로 행동 라벨을 받는다.
+분류기 학습용 정답을 손으로 붙이지 않으려고 만든 파이프라인의 앞단이다.
 
-상태 텍스트를 넣고 "최선의 매크로 행동 + 근거"를 JSON으로 받는다.
-OpenAI 호환 엔드포인트를 쓰므로 base_url 만 바꾸면 다른 제공자로도 돌아간다.
+OpenAI 호환 엔드포인트라 base_url 만 바꾸면 다른 제공자로도 돌아간다.
 
-실행:
     export UPSTAGE_API_KEY=...
     python -m labeling.label_states states.json --out labels.json
 
@@ -44,6 +43,7 @@ SYSTEM = """너는 전략적 자동전투(TFT Set 4) 최상위 코치다.
 
 
 def extract_json(text):
+    # JSON만 달라고 해도 앞뒤에 설명을 붙여 보낼 때가 있다. 바깥쪽 중괄호만 잘라 쓴다.
     start, end = text.find('{'), text.rfind('}')
     return json.loads(text[start:end + 1])
 
@@ -59,6 +59,8 @@ def label_one(client, state_text):
     except Exception:
         resp = client.chat.completions.create(**kwargs)  # json_object 미지원 폴백
     data = extract_json(resp.choices[0].message.content)
+    # 목록에 없는 행동 이름을 지어낼 때가 있다. 샘플을 버리는 대신 hold 로 접었는데,
+    # 그만큼 hold 비율이 실제보다 부풀어 있다. 분포를 볼 때 감안해야 한다.
     if data.get('primary_action') not in VALID_ACTIONS:
         data['primary_action'] = 'hold'
     return data

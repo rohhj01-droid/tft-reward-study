@@ -29,6 +29,8 @@ from analysis.comps import COMPS
 from fullgame.policy import attach
 
 N_PLAYERS = config.NUM_PLAYERS
+# analysis/comps.py 의 low_coherent. 1~3코 중심이라 슬로우롤로 별을 올릴 여지가 있는 쪽이다.
+# high 조합으로 바꾸면 리롤로는 별이 안 올라서 A/B 자체가 성립하지 않는다.
 COMP = [name for name, _ in COMPS['low_coherent']]
 
 
@@ -45,6 +47,7 @@ def quiet():
 
 
 def star_counts(player):
+    # board_stars.py 에 같은 함수가 있다. 옮겨 붙였다.
     counts = {1: 0, 2: 0, 3: 0}
     for row in player.board:
         for unit in row:
@@ -67,6 +70,7 @@ def run_game(treated):
             attach(info[agent_id]['player'], COMP)
 
     placement, final, rank = {}, {}, N_PLAYERS
+    # 종료 신호를 놓치면 루프가 안 끝난다. 상한에 걸린 판은 아래에서 등수를 메운다.
     guard = 0
     while obs and guard < 5000:
         guard += 1
@@ -88,6 +92,8 @@ def run_game(treated):
                 final[agent_id] = (getattr(player, 'level', 0),
                                    counts[1], counts[2], counts[3])
 
+    # 끝까지 살아남아 terminated 가 안 온 플레이어. 등수 합이 어긋나면
+    # zero-sum 가정이 깨져서 두 집단 평균 차이를 못 믿는다.
     for agent_id in ids:
         if agent_id not in placement:
             placement[agent_id] = rank

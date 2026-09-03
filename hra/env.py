@@ -1,17 +1,10 @@
 """
 TFT 경제 의사결정 환경.
 
-전투를 직접 돌리지 않고 보드 강도를 board_value로 근사한 단순화 환경이다.
-"제한된 골드를 레벨업과 리롤에 어떻게 배분할 것인가"만 떼어내서 학습시키는 것이 목적.
-
-    board_value = Σ (코스트 × 3^(별-1))   # 상위 (레벨) 개 유닛만 합산
-
-상점 확률, 유닛 풀, 레벨업 비용, 패시브 경험치는 시뮬레이터 값을 그대로 쓴다(set4.py).
-
-보상은 스칼라 하나가 아니라 요인별 dict로 돌려준다.
-    board : 이번 라운드의 board_value 증가분
-    econ  : 이번 라운드에 받은 이자
-학습기(hra/train.py)가 이 요인들을 각각 별도 헤드로 학습한다.
+전투를 안 돌린다. 보드 강도를 board_value = Σ(코스트 × 3^(별-1)) 로 근사하고,
+"제한된 골드를 레벨업과 리롤에 어떻게 나눠 쓸 것인가"만 떼어내 학습시킨다.
+상점 확률, 풀, 레벨 비용은 시뮬레이터 값 그대로다(set4.py).
+보상은 스칼라가 아니라 {board, econ} dict로 나간다. 학습기가 요인별 헤드로 나눠 받는다.
 """
 import random
 import sys
@@ -32,8 +25,8 @@ class EconEnv:
     상태: [gold, level, round, board_value, 2성 수, 3성 수] (모두 0~1 정규화)
     행동: SAVE / LEVEL / ROLL50 / ROLLHARD
 
-    ROLL50   - 이자가 깨지지 않는 선(골드 52 초과분)에서만 리롤
-    ROLLHARD - 골드 12까지 공격적으로 리롤
+    ROLL50은 이자를 안 깨는 선에서만 리롤한다는 뜻인데 완전히 지켜지지는 않는다.
+    새로고침 2골드 말고 유닛 값도 같이 나가서 한 번에 50 밑으로 떨어질 때가 있다.
     """
 
     def __init__(self, comp_costs=DEFAULT_COMP, n_rounds=24):
@@ -49,11 +42,8 @@ class EconEnv:
         self.pool = [POOL_SIZE[c - 1] for c in self.comp_costs]
         return self.state()
 
-    # --- 내부 계산 -------------------------------------------------------
-
     @staticmethod
     def _stars(copies):
-        """모은 매수 -> 별 등급. 3장이면 2성, 9장이면 3성."""
         if copies >= 9:
             return 3
         if copies >= 3:
@@ -61,7 +51,11 @@ class EconEnv:
         return 1 if copies >= 1 else 0
 
     def board_value(self):
-        """보유 유닛 중 가치 상위 (레벨)개만 보드에 올린다고 보고 합산."""
+        """보유 유닛 중 가치 상위 (레벨)개만 보드에 올린다고 보고 합산.
+
+        시너지도 유닛 수도 안 센다. 이 환경에서 최적인 정책이 실제 게임에서는
+        등수가 더 나빴던 원인이 여기다.
+        """
         values = sorted(
             (COST_STAR_VALUE[self.comp_costs[i] - 1][self._stars(self.copies[i]) - 1]
              for i in range(len(self.comp_costs)) if self.copies[i] > 0),
@@ -81,6 +75,8 @@ class EconEnv:
 
     def state(self):
         counts = self.star_counts()
+        # 나누는 값은 관측된 최댓값 근처로 잡은 것뿐이다. 클리핑을 안 하므로
+        # 골드가 60을 넘으면 1보다 큰 값이 그대로 망에 들어간다.
         return [self.gold / 60.0,
                 self.level / 9.0,
                 self.rnd / self.n_rounds,
@@ -89,7 +85,7 @@ class EconEnv:
                 counts[3] / 8.0]
 
     def _roll_once(self):
-        """상점 한 번 새로고침(2골드). 슬롯 5칸을 레벨 확률표대로 굴린다."""
+        """상점 한 번 새로고침. 슬롯 5칸을 레벨 확률표대로 굴린다."""
         self.gold -= 2
         odds = LEVEL_ODDS[self.level]
         for _ in range(5):
@@ -99,13 +95,14 @@ class EconEnv:
                 if r < odds[tier]:
                     cost = tier + 1
                     break
-            # 이 코스트에서 내 조합에 필요하고 아직 덜 모은 유닛
             candidates = [i for i in range(len(self.comp_costs))
                           if self.comp_costs[i] == cost and self.copies[i] < 9 and self.pool[i] > 0]
             if not candidates:
                 continue
             # 해당 코스트 전체 풀에서 내가 원하는 유닛이 뜰 확률
             denom = POOL_SIZE[cost - 1] * UNIQUE_PER_COST[cost - 1]
+            # 한 슬롯에는 유닛이 하나만 뜬다. 그래서 후보를 다 굴리지 않고 break로 끊는다.
+            # 골드가 모자라면 떴는데도 못 사고 슬롯을 버린다. 실제 게임과 같은 동작이다.
             for i in candidates:
                 if random.random() < self.pool[i] / denom:
                     if self.gold >= cost:
@@ -113,8 +110,6 @@ class EconEnv:
                         self.copies[i] += 1
                         self.pool[i] -= 1
                     break
-
-    # --- 한 라운드 -------------------------------------------------------
 
     def step(self, action_idx):
         before = self.board_value()
@@ -139,9 +134,12 @@ class EconEnv:
             self.exp -= LEVEL_XP[self.level]
             self.level += 1
 
+        # 라운드 기본 수입 5. 연승/연패 보너스는 안 넣었다.
         self.gold += 5 + self.interest()
         self.rnd += 1
 
+        # board 증가분은 3성이 뜨는 라운드에 한 번에 10 이상 뛴다.
+        # 스케일 조정 없이 그대로 넣으면 board 헤드의 Q가 발산한다.
         reward = {'board': self.board_value() - before, 'econ': self.interest()}
         done = self.rnd > self.n_rounds
         return self.state(), reward, done

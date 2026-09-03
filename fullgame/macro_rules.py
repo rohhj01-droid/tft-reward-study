@@ -19,17 +19,14 @@ ACTIONS = ('level', 'roll', 'save')
 
 
 def decide_conditional(f):
-    """
-    다요인 조건부 규칙. f 는 상태 dict.
-        health, gold, level, stage, win_streak, loss_streak, num_3star
-
-    반환: (행동, 발동한 조건 이름)
-    """
+    """다요인 조건부 규칙. f 는 health/gold/level/stage/win_streak/loss_streak/num_3star 를 담은 dict."""
     hp, gold, level, stage = f['health'], f['gold'], f['level'], f['stage']
     target = TARGET_LEVEL.get(stage, 8)
     # 골드 50 이상이면 이자가 최대라, 초과분은 써도 이자가 깎이지 않는다.
     surplus = gold >= 50
 
+    # 위에서 먼저 걸리는 조건이 이긴다. 순서를 바꾸면 다른 규칙이 된다.
+    # 두 번째 반환값은 로그용 이름일 뿐이고 정책 쪽에서는 버린다.
     if hp <= 35 or f.get('loss_streak', 0) >= 3:
         # 체력이 빠지는 중이면 경제보다 지금 보드를 세우는 것이 우선이다.
         return ('roll', '체력/연패 안정화') if gold >= 10 else ('save', '응급이나 골드 부족')
@@ -50,7 +47,12 @@ def decide_conditional(f):
 
 
 def decide_slowroll(f):
-    """풀게임 A/B에 넣은 단순 버전. (행동, 이유)"""
+    """
+    풀게임 A/B에 넣은 단순 버전.
+
+    conditional 의 여러 조건을 레벨 캡 하나로 줄였다. 대신 A/B 결과가 나와도
+    어느 조건이 등수를 움직였는지는 이 함수로 못 가른다.
+    """
     hp, gold, level = f['health'], f['gold'], f['level']
     if hp <= 25:
         return 'roll', '체력 응급'
@@ -62,11 +64,7 @@ def decide_slowroll(f):
 
 
 def to_action_token(decision, player, roll_floor=32):
-    """
-    규칙 결과를 시뮬레이터 액션 토큰으로 옮긴다.
-        "0" 패스 / "1" 경험치 구매 / "2" 상점 새로고침
-    골드가 부족하면 그냥 패스한다.
-    """
+    """규칙 결과를 시뮬레이터 액션 토큰으로 옮긴다. "0" 패스 / "1" 경험치 구매 / "2" 상점 새로고침."""
     if decision == 'level' and player.level < 9 and player.gold >= 8:
         return '1'
     if decision == 'roll' and player.gold >= roll_floor:

@@ -1,11 +1,10 @@
 """
-상태 -> 매크로 행동 분류기.
+수치 피처만으로 LLM이 고른 매크로 행동을 맞출 수 있는지 본다.
 
-sample_states.py 의 수치 피처와 label_states.py 의 LLM 라벨을 id로 붙여서 학습한다.
-검증 정확도만 보면 안 되고, 예측 분포를 함께 봐야 한다. 라벨이 한쪽으로 쏠려 있으면
-모델은 그 클래스만 찍고도 높은 정확도를 얻는다.
-
-실행: python -m labeling.train_classifier states.json labels.json
+sample_states.py 의 피처와 label_states.py 의 라벨을 id 로 붙여 작은 MLP 를 돌린다.
+검증 정확도 하나만 보면 속는다. 라벨이 쏠려 있으면 다수 클래스만 찍어도 정확도가 나온다.
+그래서 다수 클래스 기준선과 예측 분포를 같이 찍는다. 정확도가 기준선을 못 넘으면
+피처가 행동을 설명하지 못하는 것이다.
 """
 import argparse
 import json
@@ -27,6 +26,7 @@ def load(states_path, labels_path):
     with open(labels_path, encoding='utf-8') as f:
         labels = json.load(f)
 
+    # API 호출이 실패한 상태는 라벨이 없다. states 가 아니라 labels 를 기준으로 돈다.
     X, y = [], []
     for item in labels:
         feats = states.get(item['id'])
@@ -52,8 +52,10 @@ def main():
     majority = dist.most_common(1)[0]
     print(f'다수 클래스만 찍었을 때의 정확도: {100 * majority[1] / len(y):.0f}% ({majority[0]})')
 
+    # 샘플이 적으면 stage 처럼 값이 안 변하는 피처가 나온다. std 가 0이라 그냥 나누면 터진다.
     mean, std = X.mean(0), X.std(0) + 1e-6
     X = (X - mean) / std
+    # 시드를 안 박아서 실행마다 val 이 바뀐다. 수백 개 규모라 정확도가 눈에 띄게 흔들린다.
     idx = np.random.permutation(len(X))
     cut = int(len(X) * 0.8)
     train_idx, val_idx = idx[:cut], idx[cut:]
@@ -67,6 +69,7 @@ def main():
     opt = torch.optim.Adam(model.parameters(), lr=1e-2)
     loss_fn = nn.CrossEntropyLoss()
 
+    # 데이터가 수백 개라 미니배치를 쪼갤 이유가 없다. 통째로 넣고 full-batch 로 돌린다.
     for epoch in range(args.epochs):
         model.train()
         opt.zero_grad()

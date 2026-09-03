@@ -19,7 +19,7 @@ import Simulator.stats as stats
 from analysis.battle import win_rate
 from analysis.comps import COMPS, BENCHMARK, spec
 
-# stats 모듈에서 dict 형태로 존재하는 스탯만 대상으로 한다.
+# 값을 잠깐 바꿨다가 되돌리는 방식이라, 챔피언 이름을 키로 갖는 dict인 스탯만 쓸 수 있다.
 CANDIDATES = ['AD', 'AS', 'HEALTH', 'MANA', 'MR', 'ARMOR']
 
 
@@ -60,9 +60,11 @@ def main():
         try:
             nerfed = measure(comp_spec, args.n)
         finally:
-            table[args.unit] = original  # 반드시 되돌린다
+            table[args.unit] = original  # 전역 테이블이다. 안 되돌리면 너프가 다음 스탯 측정까지 남는다
 
         nlo, nhi = ci95(nerfed, args.n)
+        # 두 비율 검정 대신 구간 겹침으로 판정한다. 이쪽이 더 보수적이라 진짜 레버를
+        # 놓칠 수는 있는데, 출력만 보고 왜 그런 판정인지 알 수 있는 게 낫다고 봤다.
         overlap = not (nhi < lo or nlo > hi)
         verdict = '유의하지 않음(구간 겹침)' if overlap else '유의함'
         print(f'{stat_name:>8} x{args.mult}  {nerfed * 100:5.1f}%   '

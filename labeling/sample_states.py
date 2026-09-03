@@ -1,14 +1,13 @@
 """
-라벨링용 게임 상태 샘플링.
+라벨링에 넣을 게임 상태를 합성한다.
 
-게임 단계별 프로필(라운드/레벨/골드/체력/등장 코스트)에 맞춰 그럴듯한 보드를 합성하고,
-LLM에 넣을 텍스트와 분류기에 넣을 수치 피처를 함께 저장한다.
+실제 대국 로그를 모으는 대신 단계별 프로필로 그럴듯한 보드를 찍어낸다.
+상태 하나마다 LLM용 텍스트와 분류기용 수치 피처를 같이 남긴다.
 
-프로필을 한쪽으로 치우치게 잡으면 라벨도 한쪽으로 쏠린다. 라벨 분포를 볼 때는
-프로필 구성부터 확인해야 한다(labeling/README.md).
+여기서 PROFILES 가 곧 데이터 분포다. 라벨이 한쪽으로 쏠리면 모델이 아니라
+프로필 구성을 먼저 의심해야 한다(labeling/README.md).
 
-실행: python -m labeling.sample_states 300 --out states.json
-시뮬레이터 저장소가 필요하다.
+python -m labeling.sample_states 300 --out states.json 으로 돌린다. Simulator 저장소가 있어야 한다.
 """
 import argparse
 import json
@@ -72,6 +71,7 @@ def make_board(profile):
         name = random.choice(candidates)
         used.add(name)
         items = random.sample(ITEMS, 3) if (cost >= 3 and random.random() < 0.5) else []
+        # stars 는 반드시 키워드로 넘긴다. 두 번째 위치 인자는 team 이다 (analysis/battle.py 참고).
         units.append(champion(name, stars=star_for(cost, low_star_prob), itemlist=items))
     return units
 
@@ -90,6 +90,8 @@ def build_player(base_pool, profile, units):
     else:
         player.loss_streak = streak
 
+    # 한 칸씩 놓으면서 마스크를 매번 새로 뽑는다. 보드가 차면 유효 칸이 줄기 때문에
+    # 마스크를 한 번만 만들어 재사용하면 이미 찬 칸을 고른다.
     for unit in units:
         player.add_to_bench(unit)
         token = ActionToken(player)
@@ -135,7 +137,7 @@ def main():
     for i in range(args.n):
         try:
             profile = random.choice(PROFILES)
-            base_pool = pool()
+            base_pool = pool()  # 상태끼리 독립이어야 한다. 풀을 돌려쓰면 앞 샘플이 뒤에 남는다.
             player, rnd = build_player(base_pool, profile, make_board(profile))
             stage = int(str(rnd).split('-')[0])
             out.append({'id': i,

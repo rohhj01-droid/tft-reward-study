@@ -1,13 +1,13 @@
 """
 보상 가중치 스윕.
 
-가중치 조합마다 서로 다른 시드로 반복 학습해서, 성능 차이가 시드 노이즈인지
-가중치 때문인지 구분한다. 단일 실행 결과만 보면 순위가 실행마다 뒤집힌다.
+한 번 돌린 결과로 가중치 순위를 매기면 실행할 때마다 순위가 뒤집힌다. 그래서
+조합마다 시드를 바꿔 반복 학습하고, 평균과 편차를 같이 남긴다. 차이가 가중치
+때문인지 시드 노이즈인지는 편차를 봐야 판단이 된다.
 
-실행:
-    python -m hra.sweep                    # 4개 가중치 x 5시드
     python -m hra.sweep --seeds 3 --episodes 800
-결과는 results/weight_sweep.csv 로 저장.
+
+결과는 results/weight_sweep.csv.
 """
 import argparse
 import collections
@@ -20,6 +20,8 @@ import torch
 from hra.env import EconEnv, ACTIONS
 from hra.train import train
 
+# board는 1로 고정하고 econ만 흔든다. 행동 선택은 가중합의 argmax라 두 가중치를
+# 같은 배수로 키우면 정책이 그대로다. 두 축을 다 흔들면 중복 조합만 늘어난다.
 SWEEP = [
     {'board': 1.0, 'econ': 0.0},
     {'board': 1.0, 'econ': 0.3},
@@ -29,7 +31,6 @@ SWEEP = [
 
 
 def rollout_stats(net, weights, n=300):
-    """평균 board_value와 행동 분포를 함께 잰다."""
     env = EconEnv()
     scores = []
     actions = collections.Counter()
@@ -44,6 +45,7 @@ def rollout_stats(net, weights, n=300):
             state, _, done = env.step(action)
         scores.append(env.board_value())
     total = sum(actions.values())
+    # 리롤을 하느냐 마느냐만 보면 되니 두 리롤 행동은 합쳐서 센다.
     roll_pct = 100 * (actions['ROLL50'] + actions['ROLLHARD']) / total
     return float(np.mean(scores)), roll_pct
 
@@ -64,6 +66,7 @@ def main():
             scores.append(score)
             rolls.append(roll)
             print(f'  {label}  seed {seed}: board_value {score:.1f}, ROLL {roll:.0f}%', flush=True)
+        # 시드 몇 개짜리 표준편차다. 신뢰구간처럼 읽으면 안 된다.
         rows.append({
             'weights': label,
             'mean': round(float(np.mean(scores)), 2),

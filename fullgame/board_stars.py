@@ -4,6 +4,9 @@
 "레벨은 올리는데 유닛 성장이 안 된다"는 관찰을 수치로 확인하기 위한 스크립트.
 8명 전원 기본 봇으로 게임을 돌리고, 탈락 시점의 레벨과 별 등급 분포를 센다.
 
+탈락 시점 기준이라 일찍 죽은 플레이어가 평균 레벨을 끌어내린다.
+절대값보다 별 등급 비율을 봐야 한다.
+
 실행: python -m fullgame.board_stars 8
 """
 import contextlib
@@ -80,7 +83,7 @@ def main():
         print(f'  {g + 1}/{n_games}', flush=True)
 
     total = statistics.mean(ones) + statistics.mean(twos) + statistics.mean(threes)
-    total = total or 1
+    total = total or 1  # 보드가 전부 빈 판만 나오면 아래 비율 계산이 터진다
     print(f'\n기본 봇 최종 보드 ({len(levels)}명)')
     print(f'  평균 레벨 {statistics.mean(levels):.2f}')
     print(f'  1성 {statistics.mean(ones):.2f}  '

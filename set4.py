@@ -9,6 +9,7 @@ TFT Set 4 게임 상수.
 # 예) LEVEL_ODDS[6] = [0.25, 0.65, 0.95, 1, 10]
 #     -> 1코 25%, 2코 40%, 3코 30%, 4코 5%, 5코 0%
 # 마지막 원소의 10은 "그 위로는 안 나온다"는 의미의 sentinel(시뮬레이터 원본 표기 유지).
+# 인덱스를 레벨에 그대로 맞추려고 안 쓰는 행이 앞뒤로 들어 있다. 실제 레벨은 1~9다.
 LEVEL_ODDS = [
     [1,    10,    10,    10,   10],
     [1,    10,    10,    10,   10],
@@ -26,6 +27,8 @@ LEVEL_ODDS = [
 
 # COST_STAR_VALUE[코스트-1][별-1] = 해당 유닛의 보드 가치
 # 별이 하나 오를 때마다 대략 3배씩 증가한다.
+# 전투력이 아니라 대리 지표다. 시너지도 유닛 수도 안 센다.
+# 이걸 보상으로 쓴 정책이 실제 게임에서 등수가 더 나빴다. 숫자를 믿고 쓰지 마라.
 COST_STAR_VALUE = [
     [1, 3, 9],
     [2, 5, 17],
@@ -43,7 +46,6 @@ UNIQUE_PER_COST = [13, 13, 13, 11, 8]
 # 레벨 L -> L+1 에 필요한 경험치 (Simulator.player.level_costs)
 LEVEL_XP = {1: 2, 2: 2, 3: 6, 4: 10, 5: 20, 6: 36, 7: 56, 8: 80}
 
-# 라운드당 자동 지급 경험치
 PASSIVE_XP = 2
 
 # 최대 이자 (골드 50 이상에서 +5)
@@ -118,7 +120,8 @@ def synergy_score(names):
 
 
 def cost_of(name):
-    """유닛 이름 -> 코스트. 모르는 이름이면 None."""
+    # 모르는 이름이면 None이 그대로 나간다. 오타 난 유닛 이름이 여기서 안 걸리고
+    # 나중에 COST_STAR_VALUE 인덱싱에서 터진다.
     for i, group in enumerate([ONE_COST_UNITS, TWO_COST_UNITS, THREE_COST_UNITS,
                                FOUR_COST_UNITS, FIVE_COST_UNITS]):
         if name in group:

@@ -4,6 +4,9 @@
 코스트 구성이 서로 다른 조합을 골라, "어떤 코스트대의 조합이 주어진 골드로
 실제로 완성 가능한가"를 비교할 수 있게 했다.
 
+조합은 손으로 골랐다. 티어 리스트에서 가져온 게 아니라서 절대 승률은 의미가 없다.
+조합 사이의 상대 비교로만 읽는다.
+
 LLM으로 생성/검증한 조합 세트(designed_comps.json)는 라벨링 파이프라인 산출물이라
 저장소에 포함하지 않았다. analysis 스크립트는 --comps 로 그런 JSON을 받을 수도 있다.
 """
@@ -26,12 +29,13 @@ COMPS = {
              ('azir', 5), ('leesin', 5), ('kayn', 5), ('sett', 5)],
 }
 
-# 비교 기준이 되는 상대 보드. 6유닛 2성.
+# 모든 조합이 상대하는 고정 보드. 중반에 흔히 보이는 6유닛 2성 수준으로 잡았다.
+# 여기가 너무 세거나 약하면 조합 승률이 전부 0% / 100%로 몰려서 비교가 안 된다.
 BENCHMARK = [{'name': n, 'stars': 2, 'items': []}
              for n in ['yasuo', 'fiora', 'wukong', 'garen', 'jax', 'xinzhao']]
 
 
 def spec(comp, stars, size=None):
-    """(이름, 코스트) 리스트 -> 전투용 보드 스펙."""
+    # size로 앞에서부터 잘라 "적은 유닛 고성 vs 많은 유닛 저성"을 만든다.
     units = comp[:size] if size else comp
     return [{'name': n, 'stars': stars, 'items': []} for n, _ in units]

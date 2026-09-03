@@ -10,9 +10,10 @@
 때만 발동"하도록 만드는 것이다. 그러면 할 일이 없는 턴에는 매크로 판단까지 반드시
 도달한다.
 
-  1. 벤치가 꽉 참        -> 조합 외 유닛 판매
-  2. 상점에 조합/보유 유닛 -> 구매 (같은 유닛을 모아 별을 올리기 위함)
-  3. 매크로 판단          -> 레벨 / 리롤 / 패스
+  1. 보드에 빈 자리       -> 시뮬레이터 기본 배치
+  2. 벤치가 꽉 참         -> 조합 외 유닛 판매
+  3. 상점에 조합/보유 유닛 -> 구매 (같은 유닛을 모아 별을 올리기 위함)
+  4. 그 외                -> 매크로 판단 (레벨 / 리롤 / 패스)
 """
 from fullgame.macro_rules import decide_slowroll, to_action_token
 
@@ -42,12 +43,10 @@ def board_features(player, game_round):
 
 class RerollPolicy:
     """
-    시뮬레이터의 Default_Agent 인스턴스에 붙여 쓰는 정책.
+    시뮬레이터의 Default_Agent 인스턴스에 얹어 쓰는 정책.
 
-    agent      : 시뮬레이터 Default_Agent (max_unit_check 등 유틸을 빌려 쓴다)
-    comp       : 커밋할 조합의 챔피언 이름 리스트
-    decide     : 매크로 규칙 함수
-    roll_floor : 이 골드 위로만 리롤한다
+    agent 를 버리지 않고 들고 있는 건 max_unit_check 같은 배치 유틸을 빌려 쓰기 때문이다.
+    comp 는 커밋할 조합의 챔피언 이름 목록, roll_floor 는 리롤 골드 하한이다.
     """
 
     def __init__(self, agent, comp, decide=decide_slowroll, roll_floor=32):
@@ -55,6 +54,8 @@ class RerollPolicy:
         self.comp = set(comp)
         self.decide = decide
         self.roll_floor = roll_floor
+        # 매크로 판단까지 실제로 도달하는지 세는 카운터. 기본 봇에서 0이 나왔던 게
+        # 정책을 다시 쓴 이유라, 여기서는 계속 확인한다.
         self.calls = 0
         self.macro_calls = 0
 
@@ -75,6 +76,8 @@ class RerollPolicy:
         owned = {unit.name for row in player.board for unit in row if unit}
         owned |= {unit.name for unit in player.bench if unit}
         from Simulator.default_agent_stats import COST
+        # mask 의 47 오프셋은 시뮬레이터 액션 인코딩에 묶여 있다. 시뮬레이터가
+        # 바뀌면 다른 구간을 읽으면서도 조용히 돌아간다.
         for i, shop_unit in enumerate(shop):
             if not mask[47 + i][0] or shop_unit.endswith('_c'):
                 continue
@@ -95,6 +98,8 @@ def attach(player, comp, **kwargs):
     original = agent.policy
 
     def patched(p, shop, game_round, mask):
+        # 첫 두 라운드는 원래 봇에 맡긴다. 보드도 골드도 비어 있어서
+        # 레벨/리롤 판단이 나올 자리가 아니다.
         if game_round <= 2:
             return original(p, shop, game_round, mask)
         return policy(p, shop, game_round, mask)

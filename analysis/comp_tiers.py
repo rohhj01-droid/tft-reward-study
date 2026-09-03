@@ -42,6 +42,8 @@ def main():
         for b in names[i + 1:]:
             rate = win_rate(comps[a], comps[b], args.n)
             matrix[a][b] = round(rate, 3)
+            # win_rate가 매 판 좌우를 바꿔가며 붙이니 진영 유리는 이미 상쇄돼 있다.
+            # 반대 방향을 따로 한 번 더 돌릴 이유가 없어서 대칭으로 채운다.
             matrix[b][a] = round(1 - rate, 3)
             total[a] += rate
             total[b] += 1 - rate
@@ -49,6 +51,8 @@ def main():
             played[b] += 1
         print(f'  {a} 완료', flush=True)
 
+    # 조합 하나가 실제로 치르는 판은 N x (조합 수 - 1) 이다. 기본값 N=20이면
+    # 승률이 비슷한 두 조합의 순위는 다시 돌릴 때마다 뒤집힌다. 큰 차이만 읽어야 한다.
     print(f'\n조합 티어 (전체 평균 승률, 매치업당 N={args.n})')
     for name in sorted(names, key=lambda x: total[x] / max(played[x], 1), reverse=True):
         print(f'  {total[name] / max(played[name], 1) * 100:5.1f}%   {name}')

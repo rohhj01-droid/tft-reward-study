@@ -1,11 +1,10 @@
 """
-전투를 연결한 경제 환경.
+전투를 붙인 경제 환경.
 
-hra/env.py 는 board_value(대리 지표)만 본다. 이 파일은 에피소드 마지막에 실제 전투를
-한 번 돌려 승패를 보상 요인으로 추가한다. 요인이 board / econ / win 세 개가 된다.
-
-board_value 는 시너지와 유닛 수를 세지 않는다. 그래서 board_value 기준으로 최적인
-보드가 실제 전투에서는 지는 경우가 생긴다. 이 환경은 그 차이를 확인하기 위한 것이다.
+hra/env.py는 board_value라는 대리 지표만 본다. board_value는 시너지도 유닛 수도
+세지 않아서, 이 값 기준으로 최적인 보드가 실제 전투에서는 지는 일이 생긴다.
+그 간극을 눈으로 보려고 만든 환경이다. 에피소드 마지막에 전투를 한 번 돌려
+승패를 board / econ 옆에 win 요인으로 붙인다.
 
 시뮬레이터 저장소가 필요하다(README 참고).
 """
@@ -23,7 +22,9 @@ from hra.env import ACTIONS
 DEFAULT_COMP = COMPS['low_coherent']
 _NAMES = [n for n, _ in DEFAULT_COMP]
 
-# 난이도 사다리. 상대를 바꿔가며 어느 수준까지 이길 수 있는지 본다.
+# 난이도 사다리. 어느 수준의 상대까지 이기는지로 학습 상태를 본다.
+# hard는 유닛을 더 붙이는 대신 앞 유닛 하나를 3성으로 올렸다. 유닛 수에 지는지
+# 별 등급에 지는지 갈라 보려고 그렇게 나눴다.
 LADDER = {
     'easy':   [{'name': n, 'stars': 2, 'items': []} for n in _NAMES[:6]],
     'medium': [{'name': n, 'stars': 2, 'items': []} for n in _NAMES[:8]],
@@ -34,10 +35,7 @@ TIERS = list(LADDER)
 
 
 class BattleEconEnv:
-    """
-    comp     : [(챔피언 이름, 코스트), ...]
-    opponent : 고정 상대 보드 스펙. None이면 LADDER에서 매 판 무작위로 고른다.
-    """
+    """상대는 매 판 LADDER에서 무작위로 뽑는다. opponent를 주면 그 보드로 고정한다."""
 
     def __init__(self, comp=DEFAULT_COMP, opponent=None, n_rounds=24, fixed_tier=None):
         self.comp = list(comp)
@@ -54,6 +52,8 @@ class BattleEconEnv:
         self.tier = self.fixed_tier or random.choice(TIERS)
         return self.state()
 
+    # _stars / board_value / interest / state 는 hra/env.py와 같은 계산이다.
+    # 여기 comp는 코스트만이 아니라 이름까지 들고 있어야 해서 상속으로 묶지 않고 복사했다.
     @staticmethod
     def _stars(copies):
         return 3 if copies >= 9 else 2 if copies >= 3 else (1 if copies >= 1 else 0)
@@ -64,7 +64,8 @@ class BattleEconEnv:
         return sum(values[:self.level])
 
     def board_spec(self):
-        """전투에 넘길 보드. 가치 높은 순으로 레벨 수만큼 자른다."""
+        # 정렬 기준과 자르는 개수를 board_value()와 똑같이 맞춰야 한다. 어긋나면
+        # 보상이 재는 보드와 실제로 싸우는 보드가 달라진다.
         units = [(COST_STAR_VALUE[self.costs[i] - 1][self._stars(self.copies[i]) - 1],
                   self.names[i], self._stars(self.copies[i]))
                  for i in range(len(self.comp)) if self.copies[i] > 0]
@@ -134,6 +135,9 @@ class BattleEconEnv:
             spec = self.board_spec()
             if spec:
                 enemy = self.opponent if self.opponent is not None else LADDER[self.tier]
+                # battle()은 1=A승, 2=B승, 0=무승부다. 무승부는 패로 친다.
+                # analysis/battle.py의 win_rate와 달리 좌우를 바꾸지 않는다. 내 보드가
+                # 항상 A 자리라 진영 유리가 섞인다. 절대 승률 말고 티어 간 비교로 읽어야 한다.
                 win = 10 if battle(to_units(spec), to_units(enemy)) == 1 else 0
 
         return self.state(), {'board': self.board_value() - before,
