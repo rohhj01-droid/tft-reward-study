@@ -51,8 +51,11 @@ VALUES = [
      steps(('10.20', True), ('10.24', False)), '공식 10.24'),
     ('18', '케인 그림자 암살자 추가 피해 배수', lambda: get('ABILITY_EXTRA_DAMAGE', 'kayn', None),
      steps(('10.20', [0, 1.75, 1.75, 1.75]), ('10.21', [0, 1.5, 1.5, 1.5])), '위키 V10.21'),
+    # 위키 V10.22의 변경은 깨울 때 피해가 아니라 잠을 깨는 피해 기준이다(공식 데이터 BreakDamage, 10.20~10.24 대조).
+    ('20', '릴리아 잠을 깨는 피해 기준', lambda: get('ABILITY_STUN_STOP_DMG_THRESHOLD', 'lillia', None),
+     steps(('10.20', [0, 500, 750, 1000]), ('10.22', [0, 500, 500, 500])), '공식 데이터 BreakDamage'),
     ('20', '릴리아 깨울 때 피해', lambda: get('ABILITY_DMG', 'lillia', None),
-     steps(('10.20', [0, 500, 750, 1000]), ('10.22', [0, 500, 500, 500])), '위키 V10.22'),
+     steps(('10.20', [0, 500, 750, 5000])), '공식 데이터 Damage'),
     ('21', '룰루 띄우기', lambda: get('ABILITY_STUN_DURATION', 'lulu', None),
      steps(('10.20', [0, 1500, 1500, 1500]), ('10.24', [0, 1000, 1000, 1000])), '위키 V10.24'),
     ('6·22', '룰루 거대화 지속(-1은 전투 끝까지)', lambda: get('ABILITY_GROWTH_DURATION', 'lulu', -1),
