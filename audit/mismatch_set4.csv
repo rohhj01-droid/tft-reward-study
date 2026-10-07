@@ -1,0 +1,80 @@
+source,champ,patch,field,expected,sim,status,note
+riot,xinzhao,10.20,crescent guard attack damage,300/325/350,"{'ABILITY_ARMOR_MR_INCREASE': [0, 0, 0, 0], 'ABILITY_DAMAGE_MULTIPLIER': [0, 2.0, 2.5, 3.5], 'ABILITY_REQUIRES_TARGET': True, 'ABILITY_WHILE_DISARMED': False, 'MANALOCK': 1000}",KNOWN,10.23 리워크가 노트에 A ⇒ B로 안 적혔다. 10.22까지는 옛 스킬 200/250/350%이고 시뮬레이터가 맞다
+riot,xinzhao,10.21,crescent guard attack damage,300/325/350,"{'ABILITY_ARMOR_MR_INCREASE': [0, 0, 0, 0], 'ABILITY_DAMAGE_MULTIPLIER': [0, 2.0, 2.5, 3.5], 'ABILITY_REQUIRES_TARGET': True, 'ABILITY_WHILE_DISARMED': False, 'MANALOCK': 1000}",KNOWN,10.23 리워크가 노트에 A ⇒ B로 안 적혔다. 10.22까지는 옛 스킬 200/250/350%이고 시뮬레이터가 맞다
+riot,xinzhao,10.22,crescent guard attack damage,300/325/350,"{'ABILITY_ARMOR_MR_INCREASE': [0, 0, 0, 0], 'ABILITY_DAMAGE_MULTIPLIER': [0, 2.0, 2.5, 3.5], 'ABILITY_REQUIRES_TARGET': True, 'ABILITY_WHILE_DISARMED': False, 'MANALOCK': 1000}",KNOWN,10.23 리워크가 노트에 A ⇒ B로 안 적혔다. 10.22까지는 옛 스킬 200/250/350%이고 시뮬레이터가 맞다
+riot,warwick,10.24,fear duration,0.75/0.75/3,"{'ABILITY_AS_GAIN': [0, 1.35, 1.5, 5.0], 'ABILITY_AS_SECONDARY_GAIN': [0, 1.6, 1.75, 3.0], 'ABILITY_LENGTH': 3000, 'ABILITY_REQUIRES_TARGET': False, 'ABILITY_WHILE_DISARMED': True, 'ATTACK_WHILE_ABILITY_ACTIVE': True, 'LIFESTEAL': [0, 0.5, 0.5, 2.0], 'MANALOCK': 0, 'MOVEMENTDELAY': 350}",KNOWN,10.24 리워크로 공포가 없어졌고 시뮬레이터도 10.24에서 뺐다
+riot,fiora,10.22,mechanic,,,REVIEW,Fiora Chosen Bonus: Health ⇒ Max Mana Reduction
+riot,lissandra,10.22,mechanic,,,REVIEW,Lissandra 1000 Daggers Targeting: Attack Target ⇒ Highest Attack Damage
+riot,vi,10.22,mechanic,,,REVIEW,Vi Chosen Bonus: Health ⇒ Max Mana Reduction
+riot,sett,10.22,mechanic,,,REVIEW,Sett Chosen Bonus: Health ⇒ Spell Power
+riot,talon,10.23,mechanic,,,REVIEW,Talon Kill Reset Targeting: Highest Damage Dealt ⇒ Lowest Armor
+riot,lulu,10.24,mechanic,,,REVIEW,Lulu Wild Growth Duration: 6 seconds ⇒ rest of combat
+riot,jinx,10.24,mechanic,,,REVIEW,Jinx Chosen Bonus Stat: Spell Power ⇒ Mana
+riot,jinx,10.24,mechanic,,,REVIEW,Jinx Fishbones Stun: Jinx's primary target ⇒ All targets in the 1 hex explosion
+riot,lux,10.25,mechanic,,,REVIEW,Lux Chosen Stat: Mana ⇒ Spell Power
+wiki,evelynn,10.20,ability,1050/1500/2700,"{'ABILITY_DAMAGE_MULTIPLIER': [0, 3, 3, 3], 'ABILITY_DMG': [0, 350, 500, 900], 'ABILITY_REQUIRES_TARGET': True, 'ABILITY_TARGET_PROBABILITIES': [0, 0, 0.75, 0.9], 'ABILITY_WHILE_DISARMED': True, 'MANALOCK': 1000}",KNOWN,도구 한계. 처형 피해(기본 x3)가 기본 피해 변경을 안 따라간다. 시뮬레이터는 피해와 배율 3을 따로 들고 있고 맞다
+wiki,jax,10.20,startmana,110,50,KNOWN,위키 이력 오기. 공식 10.21 노트는 50/100 ⇒ 60/110
+wiki,jhin,10.20,mana,4,0,KNOWN,위키는 네 번째 발사를 마나 4로 적는다. 진은 마나를 안 쓴다
+wiki,jinx,10.20,mana,150,50,KNOWN,위키 이력 오기. 공식 10.24 노트는 0/50 ⇒ 70/120
+wiki,kennen,10.20,startmana,50,65,KNOWN,위키 2020-12 판은 65. 지금 위키 값은 나중 세트 값이 섞였다
+wiki,lillia,10.20,ability,500/750/5000,"{'ABILITY_DMG': [0, 500, 750, 1000], 'ABILITY_REQUIRES_TARGET': False, 'ABILITY_STUN_DURATION': [0, 3500, 3500, 8000], 'ABILITY_STUN_STOP_DMG_THRESHOLD': [0, 500, 750, 1000], 'ABILITY_TARGETS': [0, 2, 3, 10], 'ABILITY_WHILE_DISARMED': True, 'MANALOCK': 1000}",KNOWN,"위키 2020-12 판: 깨우는 기준 500/750/1000, 깨어날 때 피해 500. 10.22 변경은 깨어날 때 피해에 들어갔고 시뮬레이터가 맞다"
+wiki,sejuani,10.20,hp,1000,850,KNOWN,위키 2020-12 판은 850. 지금 위키 값은 나중 세트 값이 섞였다
+wiki,talon,10.20,ability,125/250/600,"{'ABILITY_DAMAGE_MULTIPLIER': [0, 2.0, 2.25, 3.0], 'ABILITY_DMG': [0, 125, 200, 600], 'ABILITY_IMMUNE_ON_LEAP': True, 'ABILITY_LENGTH': 500, 'ABILITY_MANA_ON_KILL': True, 'ABILITY_REQUIRES_TARGET': True, 'ABILITY_WHILE_DISARMED': False, 'ATTACK_WHILE_ABILITY_ACTIVE': False, 'MANALOCK': 2300}",KNOWN,위키 출시 설명 오기. 공식 10.24 노트는 125/200/600이고 시뮬레이터가 맞다
+wiki,evelynn,10.21,ability,1050/1500/2700,"{'ABILITY_DAMAGE_MULTIPLIER': [0, 3, 3, 3], 'ABILITY_DMG': [0, 350, 500, 900], 'ABILITY_REQUIRES_TARGET': True, 'ABILITY_TARGET_PROBABILITIES': [0, 0, 0.75, 0.9], 'ABILITY_WHILE_DISARMED': True, 'MANALOCK': 1000}",KNOWN,도구 한계. 처형 피해(기본 x3)가 기본 피해 변경을 안 따라간다. 시뮬레이터는 피해와 배율 3을 따로 들고 있고 맞다
+wiki,jhin,10.21,mana,4,0,KNOWN,위키는 네 번째 발사를 마나 4로 적는다. 진은 마나를 안 쓴다
+wiki,jinx,10.21,mana,150,50,KNOWN,위키 이력 오기. 공식 10.24 노트는 0/50 ⇒ 70/120
+wiki,kennen,10.21,startmana,50,65,KNOWN,위키 2020-12 판은 65. 지금 위키 값은 나중 세트 값이 섞였다
+wiki,lillia,10.21,ability,500/750/5000,"{'ABILITY_DMG': [0, 500, 750, 1000], 'ABILITY_REQUIRES_TARGET': False, 'ABILITY_STUN_DURATION': [0, 3000, 4000, 8000], 'ABILITY_STUN_STOP_DMG_THRESHOLD': [0, 500, 750, 1000], 'ABILITY_TARGETS': [0, 2, 3, 10], 'ABILITY_WHILE_DISARMED': True, 'MANALOCK': 1000}",KNOWN,"위키 2020-12 판: 깨우는 기준 500/750/1000, 깨어날 때 피해 500. 10.22 변경은 깨어날 때 피해에 들어갔고 시뮬레이터가 맞다"
+wiki,sejuani,10.21,hp,1000,850,KNOWN,위키 2020-12 판은 850. 지금 위키 값은 나중 세트 값이 섞였다
+wiki,talon,10.21,ability,125/250/600,"{'ABILITY_DAMAGE_MULTIPLIER': [0, 2.0, 2.25, 2.5], 'ABILITY_DMG': [0, 125, 200, 600], 'ABILITY_IMMUNE_ON_LEAP': True, 'ABILITY_LENGTH': 500, 'ABILITY_MANA_ON_KILL': True, 'ABILITY_REQUIRES_TARGET': True, 'ABILITY_WHILE_DISARMED': False, 'ATTACK_WHILE_ABILITY_ACTIVE': False, 'MANALOCK': 2300}",KNOWN,위키 출시 설명 오기. 공식 10.24 노트는 125/200/600이고 시뮬레이터가 맞다
+wiki,evelynn,10.22,ability,1050/1500/2700,"{'ABILITY_DAMAGE_MULTIPLIER': [0, 3, 3, 3], 'ABILITY_DMG': [0, 350, 500, 1400], 'ABILITY_REQUIRES_TARGET': True, 'ABILITY_TARGET_PROBABILITIES': [0, 0, 0.75, 0.9], 'ABILITY_WHILE_DISARMED': True, 'MANALOCK': 1000}",KNOWN,도구 한계. 처형 피해(기본 x3)가 기본 피해 변경을 안 따라간다. 시뮬레이터는 피해와 배율 3을 따로 들고 있고 맞다
+wiki,jhin,10.22,mana,4,0,KNOWN,위키는 네 번째 발사를 마나 4로 적는다. 진은 마나를 안 쓴다
+wiki,jinx,10.22,mana,150,50,KNOWN,위키 이력 오기. 공식 10.24 노트는 0/50 ⇒ 70/120
+wiki,kennen,10.22,startmana,50,65,KNOWN,위키 2020-12 판은 65. 지금 위키 값은 나중 세트 값이 섞였다
+wiki,lillia,10.22,ability,500/750/5000,"{'ABILITY_DMG': [0, 500, 500, 500], 'ABILITY_REQUIRES_TARGET': False, 'ABILITY_STUN_DURATION': [0, 3000, 4000, 8000], 'ABILITY_STUN_STOP_DMG_THRESHOLD': [0, 500, 750, 1000], 'ABILITY_TARGETS': [0, 2, 3, 10], 'ABILITY_WHILE_DISARMED': True, 'MANALOCK': 1000}",KNOWN,"위키 2020-12 판: 깨우는 기준 500/750/1000, 깨어날 때 피해 500. 10.22 변경은 깨어날 때 피해에 들어갔고 시뮬레이터가 맞다"
+wiki,sejuani,10.22,hp,1000,850,KNOWN,위키 2020-12 판은 850. 지금 위키 값은 나중 세트 값이 섞였다
+wiki,talon,10.22,ability,125/250/600,"{'ABILITY_DAMAGE_MULTIPLIER': [0, 2.0, 2.25, 2.5], 'ABILITY_DMG': [0, 125, 200, 600], 'ABILITY_IMMUNE_ON_LEAP': True, 'ABILITY_LENGTH': 500, 'ABILITY_MANA_ON_KILL': True, 'ABILITY_REQUIRES_TARGET': True, 'ABILITY_WHILE_DISARMED': False, 'ATTACK_WHILE_ABILITY_ACTIVE': False, 'MANALOCK': 2300}",KNOWN,위키 출시 설명 오기. 공식 10.24 노트는 125/200/600이고 시뮬레이터가 맞다
+wiki,evelynn,10.23,ability,1050/1500/2700,"{'ABILITY_DAMAGE_MULTIPLIER': [0, 3, 3, 3], 'ABILITY_DMG': [0, 350, 500, 1400], 'ABILITY_REQUIRES_TARGET': True, 'ABILITY_TARGET_PROBABILITIES': [0, 0, 0.75, 0.9], 'ABILITY_WHILE_DISARMED': True, 'MANALOCK': 1000}",KNOWN,도구 한계. 처형 피해(기본 x3)가 기본 피해 변경을 안 따라간다. 시뮬레이터는 피해와 배율 3을 따로 들고 있고 맞다
+wiki,jhin,10.23,mana,4,0,KNOWN,위키는 네 번째 발사를 마나 4로 적는다. 진은 마나를 안 쓴다
+wiki,jinx,10.23,mana,150,50,KNOWN,위키 이력 오기. 공식 10.24 노트는 0/50 ⇒ 70/120
+wiki,kennen,10.23,startmana,50,65,KNOWN,위키 2020-12 판은 65. 지금 위키 값은 나중 세트 값이 섞였다
+wiki,lillia,10.23,ability,500/750/5000,"{'ABILITY_DMG': [0, 500, 500, 500], 'ABILITY_REQUIRES_TARGET': False, 'ABILITY_STUN_DURATION': [0, 3000, 4000, 8000], 'ABILITY_STUN_STOP_DMG_THRESHOLD': [0, 500, 750, 1000], 'ABILITY_TARGETS': [0, 2, 3, 10], 'ABILITY_WHILE_DISARMED': True, 'MANALOCK': 1000}",KNOWN,"위키 2020-12 판: 깨우는 기준 500/750/1000, 깨어날 때 피해 500. 10.22 변경은 깨어날 때 피해에 들어갔고 시뮬레이터가 맞다"
+wiki,sejuani,10.23,hp,1000,850,KNOWN,위키 2020-12 판은 850. 지금 위키 값은 나중 세트 값이 섞였다
+wiki,talon,10.23,ability,125/250/600,"{'ABILITY_DAMAGE_MULTIPLIER': [0, 2.0, 2.0, 2.5], 'ABILITY_DMG': [0, 125, 200, 600], 'ABILITY_IMMUNE_ON_LEAP': True, 'ABILITY_LENGTH': 1300, 'ABILITY_MANA_ON_KILL': True, 'ABILITY_REQUIRES_TARGET': True, 'ABILITY_WHILE_DISARMED': False, 'ATTACK_WHILE_ABILITY_ACTIVE': False, 'MANALOCK': 2300}",KNOWN,위키 출시 설명 오기. 공식 10.24 노트는 125/200/600이고 시뮬레이터가 맞다
+wiki,ahri,V10.23,scalar/mechanic,,,REVIEW,"New Effect: Ability is now an actual channel that can be interrupted (i.e. stun, Guardian Angel) causing her to release her orb early and reducing the size of the impact area."
+wiki,akali,V10.22,scalar/mechanic,,,REVIEW,Mana lock after spell cast increased to 1.25 seconds from 1.
+wiki,aphelios,V10.21,scalar/mechanic,,,REVIEW,New Effect: Turrets now stop firing when he is disabled.
+wiki,aphelios,V10.23,scalar/mechanic,,,REVIEW,"Removed: Turret no longer grants mana and applies on-attack effects, but still triggers on-hit effects."
+wiki,cassiopeia,V10.24,scalar/mechanic,,,REVIEW,Damage amplification increased to 20% from 10%.
+wiki,diana,10.24,ability,200/300/450/650,"{'ABILITY_DMG': [0, 70, 80, 90, 100], 'ABILITY_REQUIRES_TARGET': True, 'ABILITY_TARGETS': [0, 4, 5, 6, 9], 'ABILITY_WHILE_DISARMED': True, 'ATTACK_WHILE_ABILITY_ACTIVE': True, 'MANALOCK': 1000, 'SHIELD_AMOUNT': [0, 200, 300, 400, 500], 'SHIELD_LENGTH': 4000}",KNOWN,위키 이력 오기(650을 600으로 적음). 공식 10.24 노트로 시뮬레이터가 맞다
+wiki,diana,V10.24,ability-chain,,,KNOWN,위 줄과 같은 위키 오기
+wiki,evelynn,10.24,ability,1050/1500/2700,"{'ABILITY_DAMAGE_MULTIPLIER': [0, 3, 3, 3], 'ABILITY_DMG': [0, 350, 500, 1400], 'ABILITY_REQUIRES_TARGET': True, 'ABILITY_TARGET_PROBABILITIES': [0, 0, 0.75, 0.9], 'ABILITY_WHILE_DISARMED': True, 'MANALOCK': 1000}",KNOWN,도구 한계. 처형 피해(기본 x3)가 기본 피해 변경을 안 따라간다. 시뮬레이터는 피해와 배율 3을 따로 들고 있고 맞다
+wiki,jarvaniv,V10.24,scalar/mechanic,,,REVIEW,Ability stun duration reduced to 1 second from 2.
+wiki,jhin,10.24,mana,4,0,KNOWN,위키는 네 번째 발사를 마나 4로 적는다. 진은 마나를 안 쓴다
+wiki,jinx,V10.24,scalar/mechanic,,,REVIEW,Ability stun duration increased to 1.5/2/2.5 seconds from 1.5 at all Star levels.
+wiki,jinx,V10.24,scalar/mechanic,,,REVIEW,New Effect: Now stuns all targets in a 1 hex radius instead of just the target.
+wiki,kayn,V10.21,scalar/mechanic,,,REVIEW,Shadow Assassin damage increase reduced to 50% from 75%.
+wiki,kennen,10.24,startmana,50,65,KNOWN,위키 2020-12 판은 65. 지금 위키 값은 나중 세트 값이 섞였다
+wiki,leesin,V10.23,scalar/mechanic,,,REVIEW,"New Effect: At 3 Stars, Lee Sin's knockout punch hits in an area around the primary target and knocks out any enemies directly hit regardless of their board position."
+wiki,lillia,10.24,ability,500/750/5000,"{'ABILITY_DMG': [0, 500, 500, 500], 'ABILITY_REQUIRES_TARGET': False, 'ABILITY_STUN_DURATION': [0, 3000, 4000, 8000], 'ABILITY_STUN_STOP_DMG_THRESHOLD': [0, 500, 750, 1000], 'ABILITY_TARGETS': [0, 2, 3, 10], 'ABILITY_WHILE_DISARMED': True, 'MANALOCK': 1000}",KNOWN,"위키 2020-12 판: 깨우는 기준 500/750/1000, 깨어날 때 피해 500. 10.22 변경은 깨어날 때 피해에 들어갔고 시뮬레이터가 맞다"
+wiki,lillia,V10.22,scalar/mechanic,,,REVIEW,Ability break sleep damage reduced to 500 at all Star-levels from 500/750/1000.
+wiki,lulu,V10.24,scalar/mechanic,,,REVIEW,Ability knock up duration reduced to 1 second from 1.5.
+wiki,lulu,V10.24,scalar/mechanic,,,REVIEW,New Effect: Allies are now giants until the end of combat instead of for 6 seconds.
+wiki,nidalee,V10.21,scalar/mechanic,,,REVIEW,Ability damage amplifier per hex increased to 20% from 10%.
+wiki,sejuani,10.24,hp,1000,850,KNOWN,위키 2020-12 판은 850. 지금 위키 값은 나중 세트 값이 섞였다
+wiki,shen,V10.20,scalar/mechanic,,,REVIEW,Ability shield and taunt duration increased to 4/4/8 seconds from 4 at all Star-levels.
+wiki,talon,10.24,ability,125/250/600,"{'ABILITY_DAMAGE_MULTIPLIER': [0, 2.0, 2.0, 2.5], 'ABILITY_DMG': [0, 85, 135, 400], 'ABILITY_LENGTH': 1300, 'ABILITY_REQUIRES_TARGET': True, 'ABILITY_WHILE_DISARMED': False, 'ATTACK_WHILE_ABILITY_ACTIVE': False, 'MANALOCK': 2300}",KNOWN,위키 출시 설명 오기. 공식 10.24 노트는 125/200/600이고 시뮬레이터가 맞다
+wiki,talon,V10.24,ability-chain,,,KNOWN,위 줄과 같은 위키 오기
+wiki,talon,V10.24,scalar/mechanic,,,REVIEW,Removed: No longer refunds mana on kill.
+wiki,talon,V10.24,scalar/mechanic,,,REVIEW,Removed: No longer invulnerable while leaping.
+wiki,veigar,V10.20,scalar/mechanic,,,REVIEW,Ability target changed to the lowest total-health from lower percent-health.
+wiki,vi,V10.22,scalar/mechanic,,,REVIEW,Ability armor shred duration increased to 8 seconds from 6.
+wiki,warwick,V10.24,scalar/mechanic,,,REVIEW,"New Effect: Gains 135/150/500% bonus attack speed, 50/50/200% lifesteal, and moves faster for the rest of combat. While in this state, if he scores a takedown he howls, granting himself and allies who share a trait with him 60/75/200% bonus attack speed for 3 seconds."
+wiki,xinzhao,V10.20,scalar/mechanic,,,REVIEW,"Ability now goes through basic attack system, meaning it heals from Bloodthirster not Hextech Gunblade, and counts as a single attack for Statikk Shiv and Guinsoo's Rageblade."
+wiki,xinzhao,V10.23,scalar/mechanic,,,REVIEW,"New Effect: Xin Zhao sweeps around him, dealing 300/325/350% AD physical damage to nearby enemies and gains 50/60/75 bonus armor and bonus magic resistance for the rest of combat."
+wiki,yone,10.24,ability,800/1300/9999,"{'ABILITY_ARMOR_MR_DECREASE': 0.4, 'ABILITY_DMG': [0, 600, 1200, 9999], 'ABILITY_MISSING_HEALTH_DAMAGE_PERCENTAGE': 1.0, 'ABILITY_RADIUS': 5, 'ABILITY_REQUIRES_TARGET': False, 'ABILITY_SECONDARY_DMG': [0, 200, 400, 1000], 'ABILITY_WHILE_DISARMED': True, 'MANALOCK': 1000, 'SECONDARY_MAXMANA': 20}",KNOWN,위키가 10.24 너프(600/1200/9999)를 빠뜨렸다. 공식 10.24 노트를 따른다
+wiki,yone,10.24,ability,250/400/1000,"{'ABILITY_ARMOR_MR_DECREASE': 0.4, 'ABILITY_DMG': [0, 600, 1200, 9999], 'ABILITY_MISSING_HEALTH_DAMAGE_PERCENTAGE': 1.0, 'ABILITY_RADIUS': 5, 'ABILITY_REQUIRES_TARGET': False, 'ABILITY_SECONDARY_DMG': [0, 200, 400, 1000], 'ABILITY_WHILE_DISARMED': True, 'MANALOCK': 1000, 'SECONDARY_MAXMANA': 20}",KNOWN,위키가 10.24 너프(200/400/1000)를 빠뜨렸다. 공식 10.24 노트를 따른다
+wiki,yone,V10.24,scalar/mechanic,,,REVIEW,Ability resistance reduction increased to 90% from 60%.
+wiki,yone,V10.24 - December 1st Hotfix,scalar/mechanic,,,REVIEW,Ability resistance reduction reduced to 60% from 90%.
+wiki,yone,V10.24,scalar/mechanic,,,REVIEW,New Effect: Is now untargetable while casting his ability.
+wiki,yone,V10.24,scalar/mechanic,,,REVIEW,Removed: Ability no longer knocks up targets.

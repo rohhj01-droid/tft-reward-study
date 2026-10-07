@@ -1,0 +1,2 @@
+trait,patch,field,expected,sim,status,source
+cultist,10.23,갈리오 공격력 1성(3 사교도),,85,AMBIGUOUS,"공식 10.21은 80, 10.24 핫픽스는 ""85/180/320 ⇒ 75/160/280""이라 10.23 값이 80인지 85인지 갈린다"
