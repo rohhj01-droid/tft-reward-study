@@ -30,7 +30,9 @@ def build_player(base_pool, index, units):
         p.add_to_bench(unit)
         token = ActionToken(p)
         _, bench_mask = token.create_move_and_sell_action_mask(p)
-        valid = [c for c in range(28) if bench_mask[0][c]]
+        # 마스크는 이미 유닛이 있는 칸도 허용한다. 그 칸으로 옮기면 두 유닛이 자리를 맞바꿔서
+        # 한 명이 벤치로 밀려난다(8명 보드에서 평균 1명). 그래서 빈칸만 고른다.
+        valid = [c for c in range(28) if bench_mask[0][c] and p.board[c // 4][c % 4] is None]
         if not valid:
             # 자리가 없으면 그 유닛은 벤치에 남는다. 보드가 조용히 작아지니 승률이 흔들리면 여기를 의심한다.
             continue
