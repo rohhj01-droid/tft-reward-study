@@ -46,6 +46,7 @@ fullgame/           완전한 게임에서의 검증
   policy.py           풀게임용 정책
   ab_test.py          같은 게임 안에서의 A/B
   board_stars.py      기본 봇 최종 보드 측정
+meta/               패치 10.24 메타 덱 (1·2티어, 분류 기준, 출처)
 labeling/           LLM 라벨링 파이프라인 (README 별도)
 results/            측정 기록
 ```

@@ -1,0 +1,32 @@
+# tftactics.gg 팀 조합 티어표, Patch 10.24 (10.24b 핫픽스 전)
+# 웨이백 보관본: https://web.archive.org/web/20201128065028/https://tftactics.gg/tierlist/team-comps
+# 2026-10-07에 보관본 페이지의 챔피언 링크와 아이템 그림 이름을 그대로 읽어 옮겼다.
+# 칸: 티어 | 조합 이름 | 운영 방식 | 지난 표 대비 변화(up = 티어 상승) | 유닛[그 유닛의 아이템]
+# 유닛 이름은 tftactics 표기다. 시뮬레이터 이름은 밑줄을 뺀 것이다(jarvan_iv -> jarvaniv).
+S | Chosen Dusks | Standard | up | vayne thresh aatrox[Gargoyle Stoneplate] cassiopeia jhin[Infinity Edge+Last Whisper] riven[Ionic Spark+Quicksilver+Sunfire Cape] lillia zilean
+S | Ninja Shades | Slow Roll | up | elise pyke zed[Guinsoo's Rageblade+Quicksilver+Rapid Firecannon] evelynn akali[Locket of the Iron Solari+Zeke's Herald+Zeke's Herald] kennen shen
+S | Chosen Cultists | Standard |  | elise twisted_fate pyke kalista evelynn[Guardian Angel+Hextech Gunblade+Ionic Spark] aatrox[Sunfire Cape] jhin[Infinity Edge+Last Whisper] zilean
+S | Chosen Divines | Standard |  | jax irelia lux morgana[Morellonomicon] shen warwick[Deathblade+Quicksilver+Runaan's Hurricane] lee_sin yone[Guardian Angel+Hand of Justice]
+S | Chosen Duelists | Slow Roll |  | fiora yasuo[Guardian Angel+Hand of Justice+Quicksilver] jax[Sunfire Cape] kalista[Guinsoo's Rageblade+Runaan's Hurricane] janna shen lee_sin yone
+S | Chosen Warlords | Standard |  | garen nidalee jarvan_iv pyke[Warlord's Banner] vi katarina[Guardian Angel+Hextech Gunblade+Quicksilver] xin_zhao[Bloodthirster+Titan's Resolve] azir
+S | Dusk Cultists | Standard |  | elise pyke kalista aatrox[Gargoyle Stoneplate] cassiopeia jhin[Infinity Edge+Last Whisper] riven[Ionic Spark+Quicksilver+Sunfire Cape] zilean
+A | Chosen Assassins | Slow Roll |  | janna pyke zed akali[Blue Buff+Infinity Edge+Rapid Firecannon] kennen[Guardian Angel+Ionic Spark+Morellonomicon] shen talon
+A | Chosen Brawlers | Standard |  | maokai tahm_kench sylas vi nunu ashe[Giant Slayer+Guinsoo's Rageblade+Quicksilver] warwick sett[Ionic Spark+Jeweled Gauntlet+Sunfire Cape]
+A | Chosen Elderwood | Standard |  | maokai lulu nunu lux ashe[Giant Slayer+Guinsoo's Rageblade+Quicksilver] warwick ezreal sett[Ionic Spark+Jeweled Gauntlet+Sunfire Cape]
+A | Chosen Hunters | Standard |  | aphelios irelia kindred[Blue Buff+Infinity Edge+Jeweled Gauntlet] yuumi ashe[Guardian Angel+Infinity Edge+Last Whisper] shen warwick yone
+A | Chosen Sharpshooters | Standard |  | nidalee vayne jarvan_iv teemo kennen jinx jhin[Guardian Angel+Infinity Edge+Last Whisper] riven[Ionic Spark+Quicksilver+Sunfire Cape] azir
+A | Dazzler Assassins | Slow Roll |  | diana[Hextech Gunblade+Quicksilver+Titan's Resolve] lissandra pyke akali[Blue Buff+Infinity Edge+Rapid Firecannon] lux morgana talon ezreal
+A | Enlightened Mages | Slow Roll |  | fiora nami[Luden's Echo+Luden's Echo+Quicksilver] annie[Gargoyle Stoneplate+Ionic Spark+Sunfire Cape] janna irelia morgana shen talon
+A | Vanguard Mystics | Standard |  | thresh yuumi aatrox ahri[Guardian Angel+Jeweled Gauntlet+Jeweled Gauntlet] cassiopeia sejuani[Gargoyle Stoneplate+Ionic Spark+Sunfire Cape] shen zilean
+B | Adept Mystics | Standard |  | janna irelia yuumi morgana[Blue Buff+Morellonomicon+Rabadon's Deathcap] shen ezreal yone[Blue Buff+Guardian Angel+Warmog's Armor] zilean
+B | Chosen Adepts | Standard |  | janna irelia kindred[Blue Buff+Infinity Edge+Jeweled Gauntlet] yuumi cassiopeia shen warwick[Gargoyle Stoneplate+Quicksilver+Sunfire Cape] yone
+B | Chosen Keepers | Standard |  | elise jarvan_iv thresh kennen[Gargoyle Stoneplate+Guardian Angel+Morellonomicon] cassiopeia riven[Ionic Spark+Quicksilver+Sunfire Cape] azir lillia
+B | Chosen Mages | Slow Roll |  | nami annie[Gargoyle Stoneplate+Ionic Spark+Sunfire Cape] janna lulu veigar[Blue Buff+Hextech Gunblade+Jeweled Gauntlet] yuumi ahri ezreal
+B | Cultist Shades | Slow Roll |  | zed[Bloodthirster+Guardian Angel+Rapid Firecannon] pyke kalista evelynn[Hextech Gunblade+Ionic Spark] aatrox[Gargoyle Stoneplate] jhin kayn zilean
+B | Divine Vanguards | Slow Roll |  | garen[Gargoyle Stoneplate+Ionic Spark+Sunfire Cape] wukong[Deathblade+Guinsoo's Rageblade+Rapid Firecannon] janna irelia lux aatrox sejuani shen
+B | Dusk Mages | Standard |  | hecarim lulu thresh veigar[Blue Buff+Hextech Gunblade+Jeweled Gauntlet] yuumi cassiopeia riven[Ionic Spark+Quicksilver+Sunfire Cape] lillia
+B | Enlightened Adepts | Standard |  | janna pyke irelia lux morgana[Blue Buff+Morellonomicon+Rabadon's Deathcap] shen talon[Giant Slayer+Guardian Angel+Infinity Edge] yone
+B | Moonlight Assassins | Slow Roll |  | lissandra diana[Dragon's Claw+Hand of Justice+Sunfire Cape] pyke sylas akali[Blue Buff+Hextech Gunblade+Rapid Firecannon] katarina talon
+B | Moonlight Hunters | Slow Roll |  | aphelios[Guardian Angel+Guinsoo's Rageblade+Quicksilver] sylas teemo kindred yuumi ahri[Guardian Angel+Jeweled Gauntlet+Jeweled Gauntlet] warwick
+B | Spirit Shades | Slow Roll |  | janna teemo zed[Bloodthirster+Guardian Angel+Rapid Firecannon] evelynn kindred yuumi ahri[Guardian Angel+Jeweled Gauntlet+Jeweled Gauntlet] kayn
+B | Warlords Fortune | Slow Roll |  | garen nidalee jarvan_iv jinx[Guinsoo's Rageblade+Quicksilver+Spear of Shojin] katarina[Guardian Angel+Hextech Gunblade+Quicksilver] xin_zhao sejuani azir
