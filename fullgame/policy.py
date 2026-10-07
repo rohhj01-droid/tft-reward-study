@@ -75,7 +75,7 @@ class RerollPolicy:
         # 서로 다른 1성 유닛을 넓게 사면 별이 영영 오르지 않는다.
         owned = {unit.name for row in player.board for unit in row if unit}
         owned |= {unit.name for unit in player.bench if unit}
-        from Simulator.default_agent_stats import COST
+        from Simulator.stats import COST  # 로컬 june의 default_agent_stats에는 COST가 없다
         # mask 의 47 오프셋은 시뮬레이터 액션 인코딩에 묶여 있다. 시뮬레이터가
         # 바뀌면 다른 구간을 읽으면서도 조용히 돌아간다.
         for i, shop_unit in enumerate(shop):
