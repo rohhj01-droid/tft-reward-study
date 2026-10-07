@@ -16,7 +16,7 @@ import torch
 import torch.nn as nn
 
 from hra.env import EconEnv, ACTIONS, HAND_POLICIES
-from hra.model import HRANet
+from hra.model import HRANet, save
 
 HEADS = ['board', 'econ']
 STATE_DIM = 6  # env.state()의 길이. env.py에서 상태를 늘리면 여기도 같이 고쳐야 한다.
@@ -136,12 +136,17 @@ def main():
     ap.add_argument('--econ', type=float, default=0.3)
     ap.add_argument('--episodes', type=int, default=3000)
     ap.add_argument('--seed', type=int, default=None)
+    ap.add_argument('--save', default=None, help='학습한 망을 저장할 경로 (예: checkpoints/b1_e0.3.pt)')
     args = ap.parse_args()
 
     weights = {'board': args.board, 'econ': args.econ}
     print(f'가중치 board:econ = {args.board}:{args.econ}')
 
     net, curve = train(weights, episodes=args.episodes, seed=args.seed)
+    # 학습 직후에 저장한다. 아래 출력에서 터져도 망은 남는다.
+    if args.save:
+        save(net, args.save, weights, seed=args.seed, episodes=args.episodes)
+        print(f'저장: {args.save}')
     show_policy(net, weights)
 
     print('\n수동 정책 기준선 (n=500)')

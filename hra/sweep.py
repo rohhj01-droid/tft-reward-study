@@ -18,6 +18,7 @@ import numpy as np
 import torch
 
 from hra.env import EconEnv, ACTIONS
+from hra.model import save
 from hra.train import train
 
 # board는 1로 고정하고 econ만 흔든다. 행동 선택은 가중합의 argmax라 두 가중치를
@@ -54,6 +55,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--seeds', type=int, default=5)
     ap.add_argument('--episodes', type=int, default=1200)
+    ap.add_argument('--save-dir', default=None, help='시드별 망을 저장할 폴더 (예: checkpoints/sweep)')
     args = ap.parse_args()
 
     rows = []
@@ -63,6 +65,11 @@ def main():
         for seed in range(args.seeds):
             net, _ = train(weights, episodes=args.episodes, seed=seed, verbose=False)
             score, roll = rollout_stats(net, weights)
+            if args.save_dir:
+                # 라벨 '1.0:0.3'을 그대로 쓰면 ':' 때문에 Windows에서 저장이 안 된다.
+                name = f"b{weights['board']}_e{weights['econ']}_seed{seed}.pt"
+                save(net, os.path.join(args.save_dir, name), weights,
+                     seed=seed, episodes=args.episodes, board_value=score, roll_pct=roll)
             scores.append(score)
             rolls.append(roll)
             print(f'  {label}  seed {seed}: board_value {score:.1f}, ROLL {roll:.0f}%', flush=True)
