@@ -46,7 +46,8 @@ class BattleEconEnv:
         self.n_rounds = n_rounds
 
     def reset(self):
-        self.gold, self.level, self.exp, self.rnd = 2, 3, 0, 3
+        # 경험치 2: 2-1 계획 단계는 레벨 3, 경험치 2/6이다(hra/env.py reset과 같다)
+        self.gold, self.level, self.exp, self.rnd = 2, 3, 2, 3
         self.copies = [0] * len(self.comp)
         self.pool = [POOL_SIZE[c - 1] for c in self.costs]
         self.tier = self.fixed_tier or random.choice(TIERS)

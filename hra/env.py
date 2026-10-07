@@ -36,7 +36,9 @@ class EconEnv:
     def reset(self):
         self.gold = 2
         self.level = 3
-        self.exp = 0
+        # 3라운드는 2-1 계획 단계다. 레벨 2는 첫 웨이브 뒤, 라운드마다 2경험치라 2-1은 레벨 3, 경험치 2/6이다
+        # (위키 경험치 문서 2020-09 판). 시뮬레이터도 june 9deeee4부터 같다.
+        self.exp = 2
         self.rnd = 3
         self.copies = [0] * len(self.comp_costs)
         self.pool = [POOL_SIZE[c - 1] for c in self.comp_costs]
