@@ -9,7 +9,8 @@
 2. 목표 덱 캐리 아이템 만들기: 두 조각이 다 있으면 캐리에게(없으면 맡아 둘 유닛에게) 첫 조각을 올린다.
    맡아 둘 유닛은 보드의 목표 덱 밖 유닛 중 별이 가장 높은 유닛이고, 없으면 만들지 않는다.
 3. 방어 아이템(연승형, 2~3단계): 앞줄 유닛(1코스트 2성 포함)에게 첫 조각을 올린다.
-4. 조각이 4개를 넘으면: 방어 아이템(전략·단계와 상관없이), 그다음 아무 완성 아이템 순서로 하나를 시작한다.
+4. 조각이 4개를 넘으면(4단계부터는 짝이 맞는 조각이 있으면): 방어 아이템(전략·단계와 상관없이), 그다음 아무 완성
+   아이템 순서로 하나를 시작한다.
 시뮬레이터는 조각 둘을 같은 유닛에 연달아 올리면 합친다. 그래서 첫 조각을 올린 다음 행동에서 0이 마저 올린다.
 """
 from collections import Counter
@@ -54,8 +55,9 @@ def _held_completed(player):
     return Counter(it for it in held if it in item_builds and it not in SKIP)
 
 
-def _recipient(player, board, item, starting):
-    """아이템을 줄 유닛 칸. 캐리 아이템이면 캐리 → 맡아 둘 유닛, 방어 아이템이면 앞줄, 그 밖은 별이 높은 유닛."""
+def _recipient(player, board, item, starting, leftover=False):
+    """아이템을 줄 유닛 칸. 캐리 아이템이면 캐리 → 맡아 둘 유닛, 방어 아이템이면 앞줄, 그 밖은 별이 높은 유닛.
+    leftover(남는 조각으로 만든 아이템, 설계 5절 3번)면 그 밖의 아이템도 캐리 → 맡아 둘 유닛 → 별이 높은 유닛 순서다."""
     fits = _open if starting else _room
     units = [(c, u) for c, u in _board(player) if fits(u)]
     names = carriers(board) if board else []
@@ -68,6 +70,11 @@ def _recipient(player, board, item, starting):
         front = [(c, u) for c, u in units if u.name in FRONT_LINE_UNITS]
         if front:
             return _best(front)
+    if leftover and names:
+        for group in ([(c, u) for c, u in units if u.name in names],
+                      [(c, u) for c, u in units if u.name not in board['units']]):
+            if group:
+                return _best(group)
     return _best(units)
 
 
@@ -119,10 +126,11 @@ def item_action(player, board, mode, game_round, mask):
     if mode == 'win' and round_stage(game_round) in (2, 3) and (act := defensive()):  # 3. 방어 아이템
         return act
 
-    if len(comps) > 4:  # 4. 조각 4개 초과
+    # 4. 조각 4개 초과. 4단계(4-1)부터는 하나도 들고 있지 않는다(1단계 측정에서 명당 조각 3.8개가 남아서, 유저 결정)
+    if len(comps) > (4 if round_stage(game_round) <= 3 else 0):
         if act := defensive():
             return act
         for item in PAIR.values():
-            if act := start(item, _recipient(player, board, item, starting=True)):
+            if act := start(item, _recipient(player, board, item, starting=True, leftover=True)):
                 return act
     return None

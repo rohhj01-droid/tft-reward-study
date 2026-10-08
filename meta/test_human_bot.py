@@ -105,6 +105,24 @@ def builds_something_with_more_than_four_components_test():
     assert item_action(p, NO_TANK_DECK, 'lose', 12, FULL).startswith('6_0_')
 
 
+def slams_leftover_components_from_stage_four_test():
+    """4단계(4-1)부터는 남는 조각을 들고 있지 않고 짝이 맞으면 바로 완성 아이템으로 만든다(1단계 측정 뒤 유저 결정,
+    2026-10-09). 3단계까지는 4개까지 들고 있는다."""
+    from meta.human_items import item_action
+    p = item_player([Unit(name='garen', stars=2, items=[])], ['bf_sword', 'needlessly_large_rod'])
+    assert item_action(p, NO_TANK_DECK, 'lose', 15, FULL).startswith('6_0_')
+    assert item_action(p, NO_TANK_DECK, 'lose', 12, FULL) is None
+
+
+def leftover_items_go_to_carrier_test():
+    """남는 조각으로 만든 아이템(덱 아이템도 방어 아이템도 아닌 것)은 캐리에게 준다(설계 5절 3번 「캐리나 맡아 둘 유닛에게」).
+    별이 더 높은 덱 밖 유닛이 있어도 보드의 캐리가 먼저다."""
+    from meta.human_items import item_action
+    p = item_player([Unit(name='garen', stars=2, items=[]), Unit(name='jhin', stars=1, items=[])],
+                    ['bf_sword', 'needlessly_large_rod'])
+    assert item_action(p, SHARPSHOOTERS, 'lose', 15, FULL).startswith('6_4_')
+
+
 def does_not_start_item_on_unit_holding_component_test():
     """조각을 든 유닛에는 새로 만들지 않는다. 캐리가 주걱 하나를 들고 있으면 맡아 둘 유닛에게 만든다."""
     from meta.human_items import item_action
