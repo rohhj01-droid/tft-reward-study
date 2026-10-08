@@ -1,11 +1,13 @@
 """
 사람처럼 노는 봇(meta/human_bot_design.md). 기본 봇 위에 얹는 정책 하나로, 1라운드부터 끝까지 맡는다.
 
-지금(0단계)은 덱 봇(meta.lobby.DeckPolicy)과 같은 규칙을 1라운드부터 쓰고, 자리 맞추기만 구석 배치다. 아이템(1단계),
-초반 전략과 레벨·리롤(2단계), 덱 고르기(3단계)를 차례로 더한다.
+행동할 때마다 할 일이 있는 첫 단계만 움직인다: 보드 채우기 → 벤치 정리 → 사기 → 교체 → 아이템 → 자리 맞추기 → 레벨·리롤.
+지금(1단계)은 덱 봇 규칙에 아이템(meta/human_items.py)을 더했고, 자리 맞추기는 구석 배치다. 초반 전략과 레벨·리롤
+(2단계), 덱 고르기(3단계)를 차례로 더한다.
 """
 from analysis.battle import corner_positions
 from Simulator.utils import x_y_to_1d_coord
+from meta.human_items import item_action
 from meta.lobby import DeckPolicy
 
 KNOBS = {}  # 손잡이 값(설계 6절). 단계마다 채운다
@@ -17,9 +19,15 @@ class HumanPolicy(DeckPolicy):
         self.others = others  # 다른 플레이어(정찰)
         self.rng = rng        # 이 플레이어의 난수(시드 고정)
         self.knobs = dict(KNOBS, **(knobs or {}))
-        self.moves, self.mode, self.rebuilt, self.switches, self.last_round = {}, None, False, 0, None
+        self.moves, self.mode, self.rebuilt, self.switches, self.last_round = {}, 'win', False, 0, None
         self.choose_decks = board is None
         self.set_board(board)
+
+    def __call__(self, player, shop, game_round, mask):
+        self.agent.current_round = game_round
+        return (self.fill(player, shop, mask) or self.sell(player) or self.buy(player, shop, mask)
+                or self.swap(player) or item_action(player, self.board, self.mode, game_round, mask)
+                or self.reposition(player, game_round) or self.macro(player, game_round))
 
     def reposition(self, player, game_round):
         """자리 맞추기(설계 1절 7번): 원거리는 뒷줄 구석부터 아이템 많은 순, 근접은 앞줄 가운데부터

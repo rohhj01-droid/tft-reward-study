@@ -133,6 +133,16 @@ def never_gives_items_to_summons_test():
     assert item_action(p, SHARPSHOOTERS, 'win', 12, FULL) is None
 
 
+def human_policy_places_items_before_leveling_test():
+    """살 것도 바꿀 것도 없으면 레벨·리롤보다 아이템을 먼저 한다."""
+    import Simulator.champion as cm
+    from meta.human_bot import attach_human
+    p = deck_player(['jhin'], gold=50)
+    p.item_bench[0], p.item_bench[1] = GA[0], GA[1]
+    attach_human(p, [], random.Random(0), board=SHARPSHOOTERS)
+    assert p.default_policy(12, ['garen'] * 5, FULL) == f'6_{0}_0'
+
+
 if __name__ == '__main__':
     for name, test in list(globals().items()):
         if name.endswith('_test'):
