@@ -67,6 +67,23 @@ def _veigar_lockout_after_cast():
     return veigar.idle, [q[2] - cm.MILLIS() for q in cm.que if q[1] is veigar and q[0] == 'clear_idle']
 
 
+def _spots():
+    """원거리 둘(아이템 1개, 3개)과 근접 하나를 놓았을 때 각 유닛의 (열, 줄). 줄 3이 앞, 0이 뒤다."""
+    p = build_player(pool(), 0, to_units([{'name': 'ashe', 'stars': 2, 'items': ['guardian_angel']},
+                                          {'name': 'jinx', 'stars': 2,
+                                           'items': ['infinity_edge', 'giant_slayer', 'guardian_angel']},
+                                          {'name': 'garen', 'stars': 2}]), 'range')
+    return {u.name: (x, y) for x, row in enumerate(p.board) for y, u in enumerate(row) if u}
+
+
+def reroll_spec_triples_only_rerolled_carries_test():
+    """리롤 3성 조건은 1~2코스트에 추천 아이템 3개를 든 캐리만 3성으로 만든다: 닌자 보드 12개의 제드, 결투가 보드 6개의 야스오."""
+    from meta.isolate import _reroll_spec
+    tripled = [(b['key'], u['name']) for b in load_trends() for u in _reroll_spec(b) if u['stars'] == 3]
+    assert sorted({name for _, name in tripled}) == ['yasuo', 'zed'], tripled
+    assert sum(name == 'zed' for _, name in tripled) == 12 and sum(name == 'yasuo' for _, name in tripled) == 6
+
+
 def isolate_variants_reach_battles_test():
     """떼어 재기 조건(meta.isolate)이 일꾼의 전투까지 들어가야 한다. 대전은 판마다 승리 수를 0으로 지운다."""
     from functools import partial
@@ -77,10 +94,13 @@ def isolate_variants_reach_battles_test():
         assert workers.apply(_warlord_wins_after_battle) == {'blue': 5, 'red': 5}
     with Pool(1, initializer=partial(setup, 'cast_time')) as workers:
         assert workers.apply(_veigar_lockout_after_cast) == (False, [500])
+    with Pool(1, initializer=partial(setup, 'corner')) as workers:
+        assert workers.apply(_spots) == {'jinx': (0, 0), 'ashe': (6, 0), 'garen': (3, 3)}
     with Pool(1, initializer=prehotfix) as workers:
         assert workers.apply(_kayn_form_on_board) is None
         assert workers.apply(_warlord_wins_after_battle) == {'blue': 0, 'red': 0}
         assert workers.apply(_veigar_lockout_after_cast) == (True, [])
+        assert workers.apply(_spots) == {'ashe': (3, 0), 'jinx': (2, 0), 'garen': (3, 3)}
 
 
 if __name__ == '__main__':

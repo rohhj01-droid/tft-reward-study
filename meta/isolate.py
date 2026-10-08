@@ -13,6 +13,8 @@
                        코드 한 줄을 바꿔야 해서, 그 줄만 되돌린 june 복사본을 PYTHONPATH에 걸고 돌린다.
   cast_time            스킬을 쓴 유닛이 시전 시간(10.24 게임 파일) 동안 공격·이동하지 않는다. 값이 없는 챔피언은 0초.
   cast_time_half       위와 같고, 값이 없는 챔피언은 0.5초(위키: 대부분 0.5초).
+  reroll3              1~2코스트인데 추천 아이템 3개를 든 캐리(닌자의 제드, 결투가의 야스오)를 3성으로 둔다.
+  corner               원거리를 뒷줄 구석부터 아이템이 많은 순으로 놓는다. 기본은 가운데부터다.
   drop --board 이름    그 보드에서 유닛을 하나씩 빼 본다(조건이 아니라 보드를 바꾼다).
 
 실행: python -m meta.isolate warlord5 --n 60 --jobs 7 --out results/isolate_1024.json
@@ -26,6 +28,7 @@ import sys
 from functools import partial
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from set4 import cost_of
 from meta.pit import average, round_robin
 from meta.real_boards import groups, load_trends, prehotfix, spearman, spec
 
@@ -85,15 +88,47 @@ def _old_ricochet():
         '튕김 규칙을 되돌린 june 복사본을 PYTHONPATH에 걸어야 한다'
 
 
-# 조건 이름 -> (일꾼에서 부를 함수, 그 조건에 걸리는 보드인가)
+def _rerolled(name, items):
+    """1~2코스트인데 추천 아이템 3개를 든 유닛(닌자의 제드, 결투가의 야스오)은 리롤로 3성을 만든 캐리로 본다."""
+    return cost_of(name) <= 2 and len(items) >= 3
+
+
+def _reroll_spec(board):
+    out = spec(board, 2)
+    for unit in out:
+        if _rerolled(unit['name'], unit['items']):
+            unit['stars'] = 3
+    return out
+
+
+def _corner():
+    # 원거리는 뒷줄 구석부터 아이템이 많은 순으로 놓는다(사람이 캐리를 구석에 숨기는 배치). 근접은 지금처럼 앞줄 가운데부터.
+    import analysis.battle as ab
+    from Simulator.stats import RANGE
+
+    def positions(units):
+        spots = [None] * len(units)
+        ranged = sorted((i for i, u in enumerate(units) if RANGE[u.name] > 1), key=lambda i: -len(units[i].items))
+        melee = [i for i, u in enumerate(units) if RANGE[u.name] <= 1]
+        for k, i in enumerate(ranged):
+            spots[i] = ([0, 6, 1, 5, 2, 4, 3][k % 7], [0, 1][k // 7])
+        for k, i in enumerate(melee):
+            spots[i] = (ab.CENTER_OUT[k % 7], [3, 2][k // 7])
+        return spots
+    ab.range_positions = positions
+
+
+# 조건 이름 -> (일꾼에서 부를 함수, 그 조건에 걸리는 보드인가, 보드 만들기(None이면 기본 2성))
 VARIANTS = {
-    'warlord2': (partial(_warlord, 2), lambda b: 'warlord' in b['traits']),
-    'warlord5': (partial(_warlord, 5), lambda b: 'warlord' in b['traits']),
-    'kayn_assassin': (partial(_kayn, 'kayn_shadowassassin'), lambda b: 'kayn' in b['units']),
-    'kayn_rhaast': (partial(_kayn, 'kayn_rhast'), lambda b: 'kayn' in b['units']),
-    'ricochet_counts': (_old_ricochet, lambda b: 'sharpshooter' in b['traits']),
-    'cast_time': (partial(_cast_time, 0), lambda b: True),
-    'cast_time_half': (partial(_cast_time, 0.5), lambda b: True),
+    'warlord2': (partial(_warlord, 2), lambda b: 'warlord' in b['traits'], None),
+    'warlord5': (partial(_warlord, 5), lambda b: 'warlord' in b['traits'], None),
+    'kayn_assassin': (partial(_kayn, 'kayn_shadowassassin'), lambda b: 'kayn' in b['units'], None),
+    'kayn_rhaast': (partial(_kayn, 'kayn_rhast'), lambda b: 'kayn' in b['units'], None),
+    'ricochet_counts': (_old_ricochet, lambda b: 'sharpshooter' in b['traits'], None),
+    'cast_time': (partial(_cast_time, 0), lambda b: True, None),
+    'cast_time_half': (partial(_cast_time, 0.5), lambda b: True, None),
+    'reroll3': (lambda: None, lambda b: any(_rerolled(u, i) for u, i in b['items'].items()), _reroll_spec),
+    'corner': (_corner, lambda b: True, None),
 }
 
 
@@ -145,8 +180,9 @@ def main():
             save(args.out, f'drop:{board["key"]}', {'n': args.n, 'full': base['average']['main'][board['key']],
                                                     'without': out})
         return
-    hit = {b['key'] for b in boards if VARIANTS[args.variant][1](b)}
-    part = round_robin({b['key']: spec(b, 2) for b in boards}, args.n, 'range', args.jobs,
+    _, affected, make = VARIANTS[args.variant]
+    hit = {b['key'] for b in boards if affected(b)}
+    part = round_robin({b['key']: make(b) if make else spec(b, 2) for b in boards}, args.n, 'range', args.jobs,
                        init=partial(setup, args.variant), only=hit)
     matrix = {a: {**row, **part[a]} for a, row in base['main'].items()}
     before, after = base['average']['main'], average(matrix)
