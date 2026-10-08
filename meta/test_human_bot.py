@@ -34,6 +34,105 @@ def human_bot_puts_ranged_carry_in_back_corner_test():
     assert policy.reposition(p, 12) is None
 
 
+def item_player(board_units, item_bench, bench_units=()):
+    """보드 x칸 0줄에 유닛을 놓은 가짜 플레이어. x번째 유닛의 칸 번호는 4x다."""
+    board = [[None] * 4 for _ in range(7)]
+    for x, u in enumerate(board_units):
+        board[x][0] = u
+    return Unit(board=board, bench=list(bench_units) + [None] * (9 - len(bench_units)),
+                item_bench=list(item_bench) + [None] * (10 - len(item_bench)))
+
+
+GA = item_builds['guardian_angel']
+NO_TANK_DECK = {'name': 'x', 'tier': 'B', 'slow': False, 'units': ['jhin', 'vayne'], 'items': {'jhin': ['infinity_edge']}}
+
+
+def builds_carry_item_on_carrier_test():
+    """목표 덱 추천 아이템의 두 조각이 다 있으면 캐리에게 첫 조각을 올린다."""
+    from meta.human_items import item_action
+    p = item_player([Unit(name='jhin', stars=2, items=[]), Unit(name='garen', stars=1, items=[])], [GA[1], GA[0]])
+    assert item_action(p, SHARPSHOOTERS, 'win', 12, FULL) == '6_0_1'
+
+
+def finishes_started_item_test():
+    """조각 하나를 든 유닛이 있고 합칠 조각이 아이템 칸에 있으면 마저 올린다."""
+    from meta.human_items import item_action
+    p = item_player([Unit(name='jhin', stars=2, items=[GA[0]])], [GA[1]])
+    assert item_action(p, SHARPSHOOTERS, 'win', 12, FULL) == '6_0_0'
+
+
+def carry_item_goes_to_holder_when_carrier_absent_test():
+    """캐리가 없으면 보드의 덱 밖 유닛 중 별이 가장 높은 유닛(맡아 둘 유닛)에게 만든다."""
+    from meta.human_items import item_action
+    p = item_player([Unit(name='vayne', stars=1, items=[]), Unit(name='garen', stars=2, items=[])], [GA[0], GA[1]])
+    assert item_action(p, SHARPSHOOTERS, 'win', 12, FULL) == '6_4_0'
+
+
+def holds_components_without_holder_test():
+    """캐리도 맡아 둘 유닛(덱 밖 유닛)도 없고 조각이 4개 이하면 들고 있는다."""
+    from meta.human_items import item_action
+    p = item_player([Unit(name='vayne', stars=1, items=[]), Unit(name='teemo', stars=1, items=[])], [GA[0], GA[1]])
+    assert item_action(p, SHARPSHOOTERS, 'lose', 12, FULL) is None
+
+
+def gives_completed_item_to_carrier_test():
+    """아이템 칸의 완성 아이템(맡긴 유닛을 팔아 돌아온 것)은 캐리에게 준다."""
+    from meta.human_items import item_action
+    p = item_player([Unit(name='garen', stars=2, items=[]), Unit(name='jhin', stars=2, items=[])], ['infinity_edge'])
+    assert item_action(p, SHARPSHOOTERS, 'win', 12, FULL) == '6_4_0'
+
+
+def win_mode_slams_defensive_item_on_one_cost_frontliner_test():
+    """연승형은 2~3단계에 앞줄 유닛이면 1코스트 2성에게도 방어 아이템을 만든다(유저 제안)."""
+    from meta.human_items import item_action
+    p = item_player([Unit(name='garen', stars=2, items=[])], list(item_builds['sunfire_cape']))
+    assert item_action(p, NO_TANK_DECK, 'win', 5, FULL) == '6_0_0'
+
+
+def lose_mode_holds_defensive_components_test():
+    """연패형은 방어 아이템을 미리 만들지 않는다(조각 4개 이하)."""
+    from meta.human_items import item_action
+    p = item_player([Unit(name='garen', stars=2, items=[])], list(item_builds['sunfire_cape']))
+    assert item_action(p, NO_TANK_DECK, 'lose', 5, FULL) is None
+
+
+def builds_something_with_more_than_four_components_test():
+    """조각이 5개 이상이면 연패형이어도 하나를 만든다. 덱 아이템(무한의 대검)도 방어 아이템도 안 되는 조각들이라
+    4번 규칙(아무 완성 아이템)을 탄다."""
+    from meta.human_items import item_action
+    comps = ['bf_sword', 'recurve_bow', 'needlessly_large_rod', 'tear_of_the_goddess', 'giants_belt']
+    p = item_player([Unit(name='garen', stars=2, items=[])], comps)
+    assert item_action(p, NO_TANK_DECK, 'lose', 12, FULL).startswith('6_0_')
+
+
+def does_not_start_item_on_unit_holding_component_test():
+    """조각을 든 유닛에는 새로 만들지 않는다. 캐리가 주걱 하나를 들고 있으면 맡아 둘 유닛에게 만든다."""
+    from meta.human_items import item_action
+    p = item_player([Unit(name='jhin', stars=2, items=['spatula']), Unit(name='garen', stars=1, items=[])], [GA[0], GA[1]])
+    assert item_action(p, SHARPSHOOTERS, 'win', 12, FULL) == '6_4_0'
+
+
+def ignores_consumables_test():
+    """아이템 칸이 소모품으로만 차 있으면 아무것도 하지 않는다(Review Focus)."""
+    from meta.human_items import item_action
+    p = item_player([Unit(name='jhin', stars=2, items=[])], ['champion_duplicator'] * 10)
+    assert item_action(p, SHARPSHOOTERS, 'win', 12, FULL) is None
+
+
+def gives_item_to_higher_star_copy_test():
+    """캐리가 두 장(1성, 2성) 있으면 별이 높은 쪽에 준다(Review Focus)."""
+    from meta.human_items import item_action
+    p = item_player([Unit(name='jhin', stars=1, items=[]), Unit(name='jhin', stars=2, items=[])], ['infinity_edge'])
+    assert item_action(p, SHARPSHOOTERS, 'win', 12, FULL) == '6_4_0'
+
+
+def never_gives_items_to_summons_test():
+    """모래 병사 같은 소환물에는 아이템을 주지 않는다(Review Focus)."""
+    from meta.human_items import item_action
+    p = item_player([Unit(name='sandguard', stars=1, items=[])], ['infinity_edge'])
+    assert item_action(p, SHARPSHOOTERS, 'win', 12, FULL) is None
+
+
 if __name__ == '__main__':
     for name, test in list(globals().items()):
         if name.endswith('_test'):
