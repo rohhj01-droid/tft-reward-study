@@ -1054,3 +1054,55 @@ bunnymuffins 10.24b가 덱마다 적은 상성(Counters) 중 보드로 가를 �
    떨어진다. 그런데 요네·워윅·숙련자의 구현은 공식 설명과 맞아서, 눈에 띄는 버그는 아니다.
 4. 남은 후보: 보드를 만들 때의 가정(리롤 덱의 3성, 캐리 위치), 공식 설명만으로는 안 보이는 엔진 동작(대상 고르기, 마나
    얻는 양, 피해 계산 순서), 그리고 실제 평균 등수에 섞인 "언제 완성했나"의 몫.
+
+## 튕김 규칙을 되돌린 뒤 실제 보드 대전 (2026-10-09)
+
+`python -m meta.real_boards --n 60 --jobs 7 --out results/real_boards_1024.json` (june `1f84313`)
+-> [real_boards_1024.json](real_boards_1024.json). 조건 셋에 67분 걸렸다.
+
+- 원인 떼어 재기 결과를 보고 유저가 튕김 규칙을 되돌리기로 했다(june `1f84313`, 명사수 튕김도 베인 은화살·진 네 번째
+  사격 횟수에 넣는다). 되돌린 시뮬레이터로 「롤체지지 10.24 최종 보드 대전」을 같은 조건으로 다시 돌렸다.
+- 결과 파일은 이번 결과로 바뀌었다. june `ed716f4` 결과는 이 저장소 커밋 `92ee964`의 같은 파일에 있다. 바로 위
+  「원인 떼어 재기」의 기본 결과도 `ed716f4` 기준이다.
+- 이 절 뒤의 떼어 재기는 이번 결과를 기본으로 쓰고, 결과는 [isolate_1024_after_ricochet.json](isolate_1024_after_ricochet.json)에
+  따로 저장한다.
+
+| 조합 (실제 평균 등수 순) | 유닛 | 실제 평균 등수 | 2성 | 5코 1성 | 핫픽스 뒤 |
+|---|---|---|---|---|---|
+| 4ninja-4shade-3cultist-2adept-2assassin-2mystic-1exile-1tormented | 9 | 1.56 | 88.6% | 85.4% | 90.4% |
+| 4ninja-4shade-3cultist-2assassin-2keeper-2mystic-1emperor-1tormented | 9 | 1.70 | 73.3% | 77.7% | 79.9% |
+| 8duelist-2adept-2divine-2enlightened-2exile-2mystic-1ninja | 9 | 1.74 | 77.0% | 78.0% | 77.9% |
+| 6duelist-3adept-3divine-2exile-2mystic-1ninja | 9 | 1.93 | 65.7% | 45.5% | 64.9% |
+| 6dusk-3cultist-2keeper-2mystic-2sharpshooter-2vanguard-1emperor | 9 | 2.15 | 71.5% | 57.0% | 75.2% |
+| 6sharpshooter-4keeper-3warlord-2dusk-1emperor-1ninja | 9 | 2.17 | 51.0% | 66.9% | 52.6% |
+| 9cultist-2keeper-1emperor | 9 | 2.46 | 32.0% | 41.8% | 33.4% |
+| 9cultist-2shade-1tormented | 9 | 2.65 | 60.5% | 57.4% | 67.0% |
+| 4ninja-3cultist-3shade-2adept-2assassin-2mystic-1exile | 8 | 2.65 | 77.5% | 65.6% | 70.2% |
+| 4ninja-3cultist-3shade-2assassin-2keeper-2mystic-1emperor | 8 | 2.66 | 47.6% | 65.8% | 46.5% |
+| 4ninja-4shade-2keeper-2mystic-1emperor-1tormented | 8 | 2.74 | 45.3% | 47.9% | 48.4% |
+| 4ninja-4shade-2adept-2mystic-1exile-1tormented | 8 | 2.79 | 72.4% | 56.9% | 72.4% |
+| 4ninja-4shade-3cultist-2assassin-2mystic-1tormented | 8 | 2.92 | 54.7% | 49.0% | 56.1% |
+| 6duelist-2adept-2divine-2exile-2mystic-1ninja | 8 | 3.04 | 26.2% | 26.0% | 29.1% |
+| 6duelist-2adept-2divine-2enlightened-2exile-2mystic-1ninja | 8 | 3.09 | 37.8% | 23.3% | 34.0% |
+| 4ninja-4shade-3cultist-2keeper-2mystic-1tormented | 8 | 3.15 | 46.9% | 45.8% | 47.7% |
+| 8duelist-2adept-2divine-2exile-1ninja | 8 | 3.16 | 38.8% | 32.0% | 38.8% |
+| 8duelist-3divine-2adept-2enlightened-2exile | 8 | 3.19 | 54.6% | 32.8% | 46.9% |
+| 9warlord-2brawler-2keeper-1emperor-1theboss | 8 | 3.24 | 9.8% | 11.3% | 12.8% |
+| 6keeper-3cultist-3warlord-2assassin-1emperor-1ninja | 8 | 3.25 | 6.7% | 14.7% | 8.0% |
+| 4ninja-4shade-2assassin-2keeper-1emperor-1tormented | 8 | 3.30 | 38.5% | 46.6% | 38.9% |
+| 6divine-3adept-2dazzler-2duelist-2enlightened-1exile-1ninja | 8 | 3.35 | 79.5% | 78.0% | 77.6% |
+| 4ninja-3cultist-3shade-2adept-2assassin-2keeper-1exile | 8 | 3.35 | 43.7% | 66.0% | 36.2% |
+| 4ninja-4shade-3cultist-2assassin-2keeper-1tormented | 8 | 3.39 | 29.5% | 41.2% | 29.2% |
+| 4ninja-4shade-2adept-2assassin-1exile-1tormented | 8 | 3.46 | 54.0% | 56.7% | 51.1% |
+| 9warlord-2assassin-2keeper-1emperor | 8 | 3.50 | 13.7% | 23.4% | 14.6% |
+| 5hunter-3adept-2divine-2mystic-2spirit-1exile-1ninja | 8 | 3.55 | 53.1% | 57.2% | 50.0% |
+
+| 묶음 | 보드 | 2성 (괄호는 p) | 5코 1성 | 핫픽스 뒤 | 기준: 유닛 수 | 기준: 코스트 합 | 되돌리기 전 2성 |
+|---|---|---|---|---|---|---|---|
+| 전체 | 27 | +0.53 (0.003) | +0.43 | +0.59 | +0.79 | +0.56 | +0.40 |
+| 유닛 8명 보드만 | 19 | +0.27 (0.14) | +0.08 | +0.25 | - | +0.30 | +0.22 |
+| 유닛 9명 보드만 | 8 | +0.88 (0.005) | +0.69 | +0.81 | - | +0.43 | +0.81 |
+| 닌자 그림자 빼고 | 15 | +0.41 (0.069) | +0.40 | +0.48 | +0.85 | +0.45 | +0.25 |
+
+읽은 것: 떼어 재기에서 내다본 값(전체 +0.52, 9명 +0.88)과 거의 같다. 전체는 코스트 합 기준(+0.56)과 비슷해졌고, 9명
+보드는 잘 맞는다. 8명 보드는 여전히 +0.27로 맞지 않는다.
