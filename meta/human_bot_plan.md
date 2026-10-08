@@ -12,7 +12,9 @@
 **Tech Stack:** Python 3.11 가상환경, june 시뮬레이터(TFTMuZeroAgent 포크, `fix/set4-accuracy`), numpy. 새 의존성 없음.
 
 **Spec:** [meta/human_bot_design.md](human_bot_design.md) (curt-2 `5562b1c` 뒤 2026-10-08 수정: 선택받은 자 바꾸기,
-캐리와 안정의 뜻). 실제 자료와 지금 봇 측정은 [meta/set4_play.md](set4_play.md).
+캐리와 안정의 뜻. 2026-10-09 수정: 자리 맞추기를 구석 배치로, 시뮬레이터 전투 한계). 실제 자료와 지금 봇 측정은
+[meta/set4_play.md](set4_play.md), 시뮬레이터 전투가 실제와 얼마나 맞는지는 results/README 「롤체지지 10.24 최종 보드 대전」
+아래 절들.
 
 ## Global Constraints
 
@@ -234,7 +236,8 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 
 **Interfaces:**
 - Consumes: Task 1의 `DeckPolicy`, `carriers`, `play(game, bot, knobs)`.
-- Produces: `human_bot.attach_human(player, others, rng, knobs=None, board=None) -> HumanPolicy`,
+- Produces: `HumanPolicy.reposition(player, game_round) -> str | None`(구석 배치, 덱 봇의 것을 덮어씀),
+  `human_bot.attach_human(player, others, rng, knobs=None, board=None) -> HumanPolicy`,
   `human_bot.KNOBS: dict`, `HumanPolicy(agent, board, others, rng, knobs)` 속성 `board`, `mode`(None·'win'·'lose'),
   `rebuilt`(bool), `switches`(int), `choose_decks`(bool, `board`를 안 주면 True).
   `play()`가 돌려주는 `players` 항목에 `carry21`, `mode`, `switches`를 더하고, `curve` 항목을
@@ -268,6 +271,19 @@ def attach_human_takes_over_from_round_one_test():
     assert policy.choose_decks is False and policy.switches == 0
 
 
+def human_bot_puts_ranged_carry_in_back_corner_test():
+    """자리 맞추기는 구석 배치다(analysis.battle.corner_positions): 원거리는 뒷줄 구석부터 아이템 많은 순, 근접은 앞줄
+    가운데부터. 자리가 맞으면 아무것도 하지 않는다."""
+    from Simulator.utils import x_y_to_1d_coord
+    from meta.human_bot import attach_human
+    p = deck_player(['garen', 'jinx'])  # 가렌 (0, 0), 징크스 (1, 0)
+    policy = attach_human(p, [], random.Random(0), board=SHARPSHOOTERS)
+    assert policy.reposition(p, 12) == f'5_{x_y_to_1d_coord(0, 0)}_{x_y_to_1d_coord(3, 3)}'  # 근접은 앞줄 가운데로
+    p = deck_player(['jinx'])  # 원거리 하나가 이미 뒷줄 구석 (0, 0)
+    policy = attach_human(p, [], random.Random(0), board=SHARPSHOOTERS)
+    assert policy.reposition(p, 12) is None
+
+
 if __name__ == '__main__':
     for name, test in list(globals().items()):
         if name.endswith('_test'):
@@ -288,9 +304,11 @@ Expected: `ModuleNotFoundError: No module named 'meta.human_bot'`
 """
 사람처럼 노는 봇(meta/human_bot_design.md). 기본 봇 위에 얹는 정책 하나로, 1라운드부터 끝까지 맡는다.
 
-지금(0단계)은 덱 봇(meta.lobby.DeckPolicy)과 같은 규칙을 1라운드부터 쓴다. 아이템(1단계), 초반 전략과
-레벨·리롤(2단계), 덱 고르기(3단계)를 차례로 더한다.
+지금(0단계)은 덱 봇(meta.lobby.DeckPolicy)과 같은 규칙을 1라운드부터 쓰고, 자리 맞추기만 구석 배치다. 아이템(1단계),
+초반 전략과 레벨·리롤(2단계), 덱 고르기(3단계)를 차례로 더한다.
 """
+from analysis.battle import corner_positions
+from Simulator.utils import x_y_to_1d_coord
 from meta.lobby import DeckPolicy
 
 KNOBS = {}  # 손잡이 값(설계 6절). 단계마다 채운다
@@ -306,6 +324,21 @@ class HumanPolicy(DeckPolicy):
         self.choose_decks = board is None
         self.set_board(board)
 
+    def reposition(self, player, game_round):
+        """자리 맞추기(설계 1절 7번): 원거리는 뒷줄 구석부터 아이템 많은 순, 근접은 앞줄 가운데부터
+        (analysis.battle.corner_positions). 한 라운드에 8번까지. 자리가 다른 첫 유닛을 제자리로 옮긴다(그 칸에 유닛이
+        있으면 맞바꾼다). 유닛 순서를 이름순으로 고정해서, 옮긴 뒤 아이템 수가 같은 유닛끼리 자리를 계속 바꾸지 않게 한다."""
+        if self.moves.get(game_round, 0) >= 8:
+            return None
+        units = sorted(((x, y, u) for x, row in enumerate(player.board) for y, u in enumerate(row)
+                        if u and u.name != 'sandguard'), key=lambda t: (t[2].name, -t[2].stars))
+        for (x, y, _), (tx, ty) in zip(units, corner_positions([u for _, _, u in units])):
+            target = player.board[tx][ty]
+            if (x, y) != (tx, ty) and not (target and target.name == 'sandguard'):
+                self.moves[game_round] = self.moves.get(game_round, 0) + 1
+                return f'5_{x_y_to_1d_coord(x, y)}_{x_y_to_1d_coord(tx, ty)}'
+        return None
+
 
 def attach_human(player, others, rng, knobs=None, board=None):
     """플레이어의 기본 봇에 HumanPolicy를 얹는다. 1라운드부터 이 정책이 맡는다.
@@ -318,7 +351,7 @@ def attach_human(player, others, rng, knobs=None, board=None):
 - [ ] **Step 4: 검사가 통과하는지 본다**
 
 Run: `"$PY" -m meta.test_human_bot`
-Expected: `PASS attach_human_takes_over_from_round_one_test`
+Expected: `PASS attach_human_takes_over_from_round_one_test`, `PASS human_bot_puts_ranged_carry_in_back_corner_test`
 
 - [ ] **Step 5: `play()`에 사람 봇과 새 기록을 넣는다**
 
@@ -637,7 +670,8 @@ Expected:
 git add meta/human_bot.py meta/test_human_bot.py meta/lobby.py meta/play_stats.py
 git commit -m "meta: 사람 봇 뼈대(0단계)와 측정 늘리기
 
-HumanPolicy를 덱 봇 규칙으로 1라운드부터 쓰게 붙였다(meta/human_bot.py). play()에 사람 봇 조건과 기록(5단계 캐리
+HumanPolicy를 덱 봇 규칙으로 1라운드부터 쓰게 붙였다(meta/human_bot.py). 자리 맞추기만 구석 배치(원거리는 뒷줄
+구석부터 아이템 많은 순, analysis.battle.corner_positions)다. play()에 사람 봇 조건과 기록(5단계 캐리
 아이템 비율, 초반 전략, 덱 갈아타기 수, 들고 있는 아이템 수)을 더하고, play_stats를 세 조건·조건 고르기·손잡이 값
 바꾸기·걸린 시간·계열별 등수로 늘렸다. 0단계 기준(끝까지 돎, 같은 시드 같은 판, 시간 1.5배 안쪽)을 확인했다.
 
