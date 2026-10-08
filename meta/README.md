@@ -154,3 +154,6 @@ tftactics 표는 S가 7개로 넓다. 그중 사교도(Chosen Cultists, Dusk Cul
 - bunnymuffins, "TFT Tier List – Patch 10.25 Meta Snapshot Week 2": https://bunnymuffins.lol/?p=2810
 - Riot, 10.24 공식 패치 노트, 2020-11-23:
   https://teamfighttactics.leagueoflegends.com/en-us/news/game-updates/teamfight-tactics-patch-10-24-notes/
+
+사람들이 실제로 어떻게 플레이했는지(롤체지지 최종 보드 통계, 1등 보드, 그때 가이드의 레벨·리롤·덱 고르기)는
+[set4_play.md](set4_play.md)에 따로 모았다.

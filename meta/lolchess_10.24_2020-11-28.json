@@ -1,0 +1,4376 @@
+{
+ "source": {
+  "trends": "https://web.archive.org/web/20201128071110id_/https://lolchess.gg/decks",
+  "trends_note": "지난 24시간 다이아 이상, 최종 보드 특성 조합별(10.24 핫픽스 전)",
+  "winners": "https://web.archive.org/web/20201127031903id_/https://lolchess.gg/decks/matches",
+  "winners_note": "최근 1등 25명의 최종 보드. 소환사 이름·지역·판 번호는 뺐다"
+ },
+ "trends": [
+  {
+   "key": "9cultist-2shade-1tormented",
+   "traits": {
+    "Cultist": 9,
+    "Tormented": 1,
+    "Shade": 2
+   },
+   "pick_rate": 0.091,
+   "games_score": 7476,
+   "win_rate": 0.268,
+   "top4_rate": 0.878,
+   "average_placement": 2.65,
+   "placements": [
+    0.268,
+    0.27,
+    0.199,
+    0.14,
+    0.068,
+    0.039,
+    0.011,
+    0.005
+   ],
+   "units": [
+    {
+     "name": "Kayn",
+     "items": [
+      "HextechGunblade",
+      "HandofJustice",
+      "GuardianAngel"
+     ]
+    },
+    {
+     "name": "Jhin",
+     "items": [
+      "InfinityEdge",
+      "GuardianAngel",
+      "GiantSlayer"
+     ]
+    },
+    {
+     "name": "Evelynn",
+     "items": [
+      "HextechGunblade",
+      "IonicSpark",
+      "HandofJustice"
+     ]
+    },
+    {
+     "name": "Kalista",
+     "items": [
+      "RunaansHurricane",
+      "GuinsoosRageblade",
+      "RapidFirecannon"
+     ]
+    },
+    {
+     "name": "Zilean",
+     "items": [
+      "SpearofShojin",
+      "Redemption",
+      "GuardianAngel"
+     ]
+    },
+    {
+     "name": "Aatrox",
+     "items": [
+      "WarmogsArmor",
+      "Redemption",
+      "DragonsClaw"
+     ]
+    },
+    {
+     "name": "Pyke",
+     "items": [
+      "Morellonomicon",
+      "LudensEcho",
+      "FrozenHeart"
+     ]
+    },
+    {
+     "name": "TwistedFate",
+     "items": [
+      "ZekesHerald",
+      "LocketoftheIronSolari",
+      "Morellonomicon"
+     ]
+    },
+    {
+     "name": "Elise",
+     "items": [
+      "IonicSpark",
+      "Redemption",
+      "Zephyr"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "4ninja-4shade-3cultist-2assassin-2mystic-1tormented",
+   "traits": {
+    "Shade": 4,
+    "Ninja": 4,
+    "Tormented": 1,
+    "Cultist": 3,
+    "Assassin": 2,
+    "Mystic": 2
+   },
+   "pick_rate": 0.103,
+   "games_score": 8497,
+   "win_rate": 0.225,
+   "top4_rate": 0.823,
+   "average_placement": 2.92,
+   "placements": [
+    0.225,
+    0.249,
+    0.2,
+    0.149,
+    0.099,
+    0.047,
+    0.023,
+    0.007
+   ],
+   "units": [
+    {
+     "name": "Zed",
+     "items": [
+      "RapidFirecannon",
+      "Quicksilver",
+      "RunaansHurricane"
+     ]
+    },
+    {
+     "name": "Kayn",
+     "items": [
+      "HandofJustice",
+      "HextechGunblade",
+      "GuardianAngel"
+     ]
+    },
+    {
+     "name": "Evelynn",
+     "items": [
+      "ZekesHerald",
+      "LocketoftheIronSolari",
+      "HextechGunblade"
+     ]
+    },
+    {
+     "name": "Akali",
+     "items": [
+      "ZekesHerald",
+      "LocketoftheIronSolari",
+      "InfinityEdge"
+     ]
+    },
+    {
+     "name": "Kennen",
+     "items": [
+      "Morellonomicon",
+      "LocketoftheIronSolari",
+      "GuardianAngel"
+     ]
+    },
+    {
+     "name": "Pyke",
+     "items": [
+      "FrozenHeart",
+      "Morellonomicon",
+      "Zephyr"
+     ]
+    },
+    {
+     "name": "Zilean",
+     "items": [
+      "SpearofShojin",
+      "Redemption",
+      "ZekesHerald"
+     ]
+    },
+    {
+     "name": "Shen",
+     "items": [
+      "Redemption",
+      "WarmogsArmor",
+      "FrozenHeart"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "4ninja-4shade-3cultist-2assassin-2keeper-1tormented",
+   "traits": {
+    "Shade": 4,
+    "Ninja": 4,
+    "Tormented": 1,
+    "Cultist": 3,
+    "Keeper": 2,
+    "Assassin": 2
+   },
+   "pick_rate": 0.121,
+   "games_score": 10000,
+   "win_rate": 0.174,
+   "top4_rate": 0.727,
+   "average_placement": 3.39,
+   "placements": [
+    0.174,
+    0.211,
+    0.184,
+    0.157,
+    0.124,
+    0.073,
+    0.055,
+    0.021
+   ],
+   "units": [
+    {
+     "name": "Zed",
+     "items": [
+      "RapidFirecannon",
+      "Quicksilver",
+      "RunaansHurricane"
+     ]
+    },
+    {
+     "name": "Kayn",
+     "items": [
+      "HandofJustice",
+      "HextechGunblade",
+      "GuardianAngel"
+     ]
+    },
+    {
+     "name": "Evelynn",
+     "items": [
+      "ZekesHerald",
+      "LocketoftheIronSolari",
+      "HextechGunblade"
+     ]
+    },
+    {
+     "name": "Akali",
+     "items": [
+      "ZekesHerald",
+      "LocketoftheIronSolari",
+      "InfinityEdge"
+     ]
+    },
+    {
+     "name": "Kennen",
+     "items": [
+      "Morellonomicon",
+      "LocketoftheIronSolari",
+      "GuardianAngel"
+     ]
+    },
+    {
+     "name": "Pyke",
+     "items": [
+      "FrozenHeart",
+      "Morellonomicon",
+      "ZekesHerald"
+     ]
+    },
+    {
+     "name": "Shen",
+     "items": [
+      "Redemption",
+      "WarmogsArmor",
+      "FrozenHeart"
+     ]
+    },
+    {
+     "name": "Elise",
+     "items": [
+      "ZekesHerald",
+      "LocketoftheIronSolari",
+      "Zephyr"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "6sharpshooter-4keeper-3warlord-2dusk-1emperor-1ninja",
+   "traits": {
+    "Sharpshooter": 6,
+    "Emperor": 1,
+    "Keeper": 4,
+    "Dusk": 2,
+    "Ninja": 1,
+    "Warlord": 3
+   },
+   "pick_rate": 0.046,
+   "games_score": 3826,
+   "win_rate": 0.402,
+   "top4_rate": 0.945,
+   "average_placement": 2.17,
+   "placements": [
+    0.402,
+    0.279,
+    0.166,
+    0.098,
+    0.021,
+    0.018,
+    0.015,
+    0
+   ],
+   "units": [
+    {
+     "name": "Jinx",
+     "items": [
+      "SpearofShojin",
+      "GuinsoosRageblade",
+      "Quicksilver"
+     ]
+    },
+    {
+     "name": "Jhin",
+     "items": [
+      "InfinityEdge",
+      "GiantSlayer",
+      "GuardianAngel"
+     ]
+    },
+    {
+     "name": "Riven",
+     "items": [
+      "IonicSpark",
+      "WarmogsArmor",
+      "Quicksilver"
+     ]
+    },
+    {
+     "name": "Vayne",
+     "items": [
+      "RunaansHurricane",
+      "GuinsoosRageblade",
+      "Quicksilver"
+     ]
+    },
+    {
+     "name": "Azir",
+     "items": [
+      "SpearofShojin",
+      "Morellonomicon",
+      "LudensEcho"
+     ]
+    },
+    {
+     "name": "Teemo",
+     "items": [
+      "ZekesHerald",
+      "SpearofShojin",
+      "LocketoftheIronSolari"
+     ]
+    },
+    {
+     "name": "Kennen",
+     "items": [
+      "Morellonomicon",
+      "Redemption",
+      "LocketoftheIronSolari"
+     ]
+    },
+    {
+     "name": "Nidalee",
+     "items": [
+      "SpearofShojin",
+      "ZekesHerald",
+      "InfinityEdge"
+     ]
+    },
+    {
+     "name": "JarvanIV",
+     "items": [
+      "FrozenHeart",
+      "Redemption",
+      "WarmogsArmor"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "4ninja-4shade-3cultist-2adept-2assassin-2mystic-1exile-1tormented",
+   "traits": {
+    "Shade": 4,
+    "Ninja": 4,
+    "Tormented": 1,
+    "Cultist": 3,
+    "Adept": 2,
+    "Assassin": 2,
+    "Exile": 1,
+    "Mystic": 2
+   },
+   "pick_rate": 0.03,
+   "games_score": 2453,
+   "win_rate": 0.627,
+   "top4_rate": 0.995,
+   "average_placement": 1.56,
+   "placements": [
+    0.627,
+    0.249,
+    0.072,
+    0.048,
+    0.005,
+    0,
+    0,
+    0
+   ],
+   "units": [
+    {
+     "name": "Zed",
+     "items": [
+      "RapidFirecannon",
+      "Quicksilver",
+      "RunaansHurricane"
+     ]
+    },
+    {
+     "name": "Kayn",
+     "items": [
+      "HandofJustice",
+      "GuardianAngel",
+      "RabadonsDeathcap"
+     ]
+    },
+    {
+     "name": "Evelynn",
+     "items": [
+      "ZekesHerald",
+      "LocketoftheIronSolari",
+      "IonicSpark"
+     ]
+    },
+    {
+     "name": "Akali",
+     "items": [
+      "ZekesHerald",
+      "LocketoftheIronSolari",
+      "InfinityEdge"
+     ]
+    },
+    {
+     "name": "Yone",
+     "items": [
+      "Morellonomicon",
+      "HandofJustice",
+      "GuardianAngel"
+     ]
+    },
+    {
+     "name": "Zilean",
+     "items": [
+      "SpearofShojin",
+      "Redemption",
+      "GuardianAngel"
+     ]
+    },
+    {
+     "name": "Pyke",
+     "items": [
+      "ZekesHerald",
+      "FrozenHeart",
+      "Morellonomicon"
+     ]
+    },
+    {
+     "name": "Kennen",
+     "items": [
+      "LocketoftheIronSolari",
+      "Morellonomicon",
+      "Redemption"
+     ]
+    },
+    {
+     "name": "Shen",
+     "items": [
+      "Redemption",
+      "IonicSpark",
+      "FrozenHeart"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "4ninja-4shade-3cultist-2assassin-2keeper-2mystic-1emperor-1tormented",
+   "traits": {
+    "Shade": 4,
+    "Emperor": 1,
+    "Ninja": 4,
+    "Tormented": 1,
+    "Cultist": 3,
+    "Keeper": 2,
+    "Assassin": 2,
+    "Mystic": 2
+   },
+   "pick_rate": 0.03,
+   "games_score": 2488,
+   "win_rate": 0.547,
+   "top4_rate": 0.976,
+   "average_placement": 1.7,
+   "placements": [
+    0.547,
+    0.292,
+    0.113,
+    0.024,
+    0.009,
+    0.014,
+    0,
+    0
+   ],
+   "units": [
+    {
+     "name": "Zed",
+     "items": [
+      "RapidFirecannon",
+      "Quicksilver",
+      "RunaansHurricane"
+     ]
+    },
+    {
+     "name": "Kayn",
+     "items": [
+      "HandofJustice",
+      "HextechGunblade",
+      "RabadonsDeathcap"
+     ]
+    },
+    {
+     "name": "Evelynn",
+     "items": [
+      "ZekesHerald",
+      "LocketoftheIronSolari",
+      "IonicSpark"
+     ]
+    },
+    {
+     "name": "Akali",
+     "items": [
+      "ZekesHerald",
+      "LocketoftheIronSolari",
+      "InfinityEdge"
+     ]
+    },
+    {
+     "name": "Pyke",
+     "items": [
+      "FrozenHeart",
+      "Morellonomicon",
+      "LocketoftheIronSolari"
+     ]
+    },
+    {
+     "name": "Azir",
+     "items": [
+      "ZekesHerald",
+      "GuinsoosRageblade",
+      "LocketoftheIronSolari"
+     ]
+    },
+    {
+     "name": "Zilean",
+     "items": [
+      "SpearofShojin",
+      "LocketoftheIronSolari",
+      "GuardianAngel"
+     ]
+    },
+    {
+     "name": "Shen",
+     "items": [
+      "Redemption",
+      "WarmogsArmor",
+      "DragonsClaw"
+     ]
+    },
+    {
+     "name": "Kennen",
+     "items": [
+      "Morellonomicon",
+      "GuardianAngel",
+      "Redemption"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "6dusk-3cultist-2keeper-2mystic-2sharpshooter-2vanguard-1emperor",
+   "traits": {
+    "Dusk": 6,
+    "Emperor": 1,
+    "Cultist": 3,
+    "Keeper": 2,
+    "Mystic": 2,
+    "Vanguard": 2,
+    "Sharpshooter": 2
+   },
+   "pick_rate": 0.033,
+   "games_score": 2711,
+   "win_rate": 0.446,
+   "top4_rate": 0.935,
+   "average_placement": 2.15,
+   "placements": [
+    0.446,
+    0.212,
+    0.225,
+    0.052,
+    0.017,
+    0.026,
+    0.017,
+    0.004
+   ],
+   "units": [
+    {
+     "name": "Jhin",
+     "items": [
+      "InfinityEdge",
+      "GiantSlayer",
+      "GuardianAngel"
+     ]
+    },
+    {
+     "name": "Riven",
+     "items": [
+      "IonicSpark",
+      "Quicksilver",
+      "RabadonsDeathcap"
+     ]
+    },
+    {
+     "name": "Vayne",
+     "items": [
+      "RunaansHurricane",
+      "GuinsoosRageblade",
+      "Quicksilver"
+     ]
+    },
+    {
+     "name": "Cassiopeia",
+     "items": [
+      "Morellonomicon",
+      "LudensEcho",
+      "RabadonsDeathcap"
+     ]
+    },
+    {
+     "name": "Azir",
+     "items": [
+      "ZekesHerald",
+      "SpearofShojin",
+      "LudensEcho"
+     ]
+    },
+    {
+     "name": "Lillia",
+     "items": [
+      "ThiefsGloves",
+      "Zephyr",
+      "LudensEcho"
+     ]
+    },
+    {
+     "name": "Aatrox",
+     "items": [
+      "Redemption",
+      "FrozenHeart",
+      "WarmogsArmor"
+     ]
+    },
+    {
+     "name": "Zilean",
+     "items": [
+      "SpearofShojin",
+      "GuardianAngel",
+      "RapidFirecannon"
+     ]
+    },
+    {
+     "name": "Thresh",
+     "items": [
+      "Zephyr",
+      "FrozenHeart",
+      "ForceofNature"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "9cultist-2keeper-1emperor",
+   "traits": {
+    "Cultist": 9,
+    "Emperor": 1,
+    "Keeper": 2
+   },
+   "pick_rate": 0.047,
+   "games_score": 3873,
+   "win_rate": 0.3,
+   "top4_rate": 0.9,
+   "average_placement": 2.46,
+   "placements": [
+    0.3,
+    0.327,
+    0.139,
+    0.133,
+    0.055,
+    0.039,
+    0.006,
+    0
+   ],
+   "units": [
+    {
+     "name": "Jhin",
+     "items": [
+      "InfinityEdge",
+      "GuardianAngel",
+      "GiantSlayer"
+     ]
+    },
+    {
+     "name": "Evelynn",
+     "items": [
+      "HextechGunblade",
+      "IonicSpark",
+      "HandofJustice"
+     ]
+    },
+    {
+     "name": "Kalista",
+     "items": [
+      "RunaansHurricane",
+      "GuinsoosRageblade",
+      "RapidFirecannon"
+     ]
+    },
+    {
+     "name": "Pyke",
+     "items": [
+      "Morellonomicon",
+      "LudensEcho",
+      "FrozenHeart"
+     ]
+    },
+    {
+     "name": "Aatrox",
+     "items": [
+      "IonicSpark",
+      "Redemption",
+      "DragonsClaw"
+     ]
+    },
+    {
+     "name": "Zilean",
+     "items": [
+      "SpearofShojin",
+      "GuardianAngel",
+      "LocketoftheIronSolari"
+     ]
+    },
+    {
+     "name": "Azir",
+     "items": [
+      "Morellonomicon",
+      "LudensEcho",
+      "SpearofShojin"
+     ]
+    },
+    {
+     "name": "TwistedFate",
+     "items": [
+      "ZekesHerald",
+      "LocketoftheIronSolari",
+      "Morellonomicon"
+     ]
+    },
+    {
+     "name": "Elise",
+     "items": [
+      "IonicSpark",
+      "WarmogsArmor",
+      "LocketoftheIronSolari"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "9warlord-2brawler-2keeper-1emperor-1theboss",
+   "traits": {
+    "Warlord": 9,
+    "TheBoss": 1,
+    "Emperor": 1,
+    "Keeper": 2,
+    "Brawler": 2
+   },
+   "pick_rate": 0.041,
+   "games_score": 3380,
+   "win_rate": 0.271,
+   "top4_rate": 0.715,
+   "average_placement": 3.24,
+   "placements": [
+    0.271,
+    0.153,
+    0.146,
+    0.146,
+    0.139,
+    0.09,
+    0.038,
+    0.017
+   ],
+   "units": [
+    {
+     "name": "Katarina",
+     "items": [
+      "HextechGunblade",
+      "Quicksilver",
+      "HandofJustice"
+     ]
+    },
+    {
+     "name": "Azir",
+     "items": [
+      "SpearofShojin",
+      "GuinsoosRageblade",
+      "RapidFirecannon"
+     ]
+    },
+    {
+     "name": "Sett",
+     "items": [
+      "HandofJustice",
+      "HextechGunblade",
+      "RabadonsDeathcap"
+     ]
+    },
+    {
+     "name": "XinZhao",
+     "items": [
+      "Bloodthirster",
+      "HandofJustice",
+      "Quicksilver"
+     ]
+    },
+    {
+     "name": "JarvanIV",
+     "items": [
+      "LocketoftheIronSolari",
+      "IonicSpark",
+      "FrozenHeart"
+     ]
+    },
+    {
+     "name": "Vi",
+     "items": [
+      "ThiefsGloves",
+      "WarmogsArmor",
+      "HandofJustice"
+     ]
+    },
+    {
+     "name": "Nidalee",
+     "items": [
+      "Zephyr",
+      "SpearofShojin",
+      "ZekesHerald"
+     ]
+    },
+    {
+     "name": "Garen",
+     "items": [
+      "LocketoftheIronSolari",
+      "WarmogsArmor",
+      "DragonsClaw"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "8duelist-2adept-2divine-2enlightened-2exile-2mystic-1ninja",
+   "traits": {
+    "Duelist": 8,
+    "Exile": 2,
+    "Divine": 2,
+    "Adept": 2,
+    "Enlightened": 2,
+    "Mystic": 2,
+    "Ninja": 1
+   },
+   "pick_rate": 0.018,
+   "games_score": 1478,
+   "win_rate": 0.524,
+   "top4_rate": 1,
+   "average_placement": 1.74,
+   "placements": [
+    0.524,
+    0.27,
+    0.151,
+    0.056,
+    0,
+    0,
+    0,
+    0
+   ],
+   "units": [
+    {
+     "name": "Yasuo",
+     "items": [
+      "HandofJustice",
+      "Quicksilver",
+      "GuardianAngel"
+     ]
+    },
+    {
+     "name": "Yone",
+     "items": [
+      "HextechGunblade",
+      "Morellonomicon",
+      "WarmogsArmor"
+     ]
+    },
+    {
+     "name": "LeeSin",
+     "items": [
+      "WarmogsArmor",
+      "RapidFirecannon",
+      "SpearofShojin"
+     ]
+    },
+    {
+     "name": "Kalista",
+     "items": [
+      "RunaansHurricane",
+      "GuinsoosRageblade",
+      "RapidFirecannon"
+     ]
+    },
+    {
+     "name": "Jax",
+     "items": [
+      "LocketoftheIronSolari",
+      "ZekesHerald",
+      "RunaansHurricane"
+     ]
+    },
+    {
+     "name": "Janna",
+     "items": [
+      "RabadonsDeathcap",
+      "Zephyr",
+      "GuinsoosRageblade"
+     ]
+    },
+    {
+     "name": "XinZhao",
+     "items": [
+      "Bloodthirster",
+      "WarmogsArmor",
+      "InfinityEdge"
+     ]
+    },
+    {
+     "name": "Fiora",
+     "items": [
+      "LocketoftheIronSolari",
+      "Redemption",
+      "InfinityEdge"
+     ]
+    },
+    {
+     "name": "Shen",
+     "items": [
+      "ThiefsGloves",
+      "Zephyr",
+      "ZekesHerald"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "5hunter-3adept-2divine-2mystic-2spirit-1exile-1ninja",
+   "traits": {
+    "Hunter": 5,
+    "Adept": 3,
+    "Divine": 2,
+    "Exile": 1,
+    "Mystic": 2,
+    "Ninja": 1,
+    "Spirit": 2
+   },
+   "pick_rate": 0.04,
+   "games_score": 3274,
+   "win_rate": 0.208,
+   "top4_rate": 0.681,
+   "average_placement": 3.55,
+   "placements": [
+    0.208,
+    0.129,
+    0.194,
+    0.151,
+    0.136,
+    0.086,
+    0.068,
+    0.029
+   ],
+   "units": [
+    {
+     "name": "Ashe",
+     "items": [
+      "GiantSlayer",
+      "GuardianAngel",
+      "GuinsoosRageblade"
+     ]
+    },
+    {
+     "name": "Kindred",
+     "items": [
+      "InfinityEdge",
+      "HandofJustice",
+      "ZekesHerald"
+     ]
+    },
+    {
+     "name": "Yone",
+     "items": [
+      "HextechGunblade",
+      "Morellonomicon",
+      "WarmogsArmor"
+     ]
+    },
+    {
+     "name": "Warwick",
+     "items": [
+      "RunaansHurricane",
+      "StatikkShiv",
+      "WarmogsArmor"
+     ]
+    },
+    {
+     "name": "Aphelios",
+     "items": [
+      "ZekesHerald",
+      "Zephyr",
+      "GuinsoosRageblade"
+     ]
+    },
+    {
+     "name": "Shen",
+     "items": [
+      "DragonsClaw",
+      "Redemption",
+      "LocketoftheIronSolari"
+     ]
+    },
+    {
+     "name": "Yuumi",
+     "items": [
+      "ZekesHerald",
+      "Zephyr",
+      "LocketoftheIronSolari"
+     ]
+    },
+    {
+     "name": "Irelia",
+     "items": [
+      "Redemption",
+      "FrozenHeart",
+      "Zephyr"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "6duelist-3adept-3divine-2exile-2mystic-1ninja",
+   "traits": {
+    "Duelist": 6,
+    "Adept": 3,
+    "Exile": 2,
+    "Divine": 3,
+    "Mystic": 2,
+    "Ninja": 1
+   },
+   "pick_rate": 0.016,
+   "games_score": 1349,
+   "win_rate": 0.496,
+   "top4_rate": 0.974,
+   "average_placement": 1.93,
+   "placements": [
+    0.496,
+    0.235,
+    0.157,
+    0.087,
+    0.017,
+    0,
+    0.009,
+    0
+   ],
+   "units": [
+    {
+     "name": "Yasuo",
+     "items": [
+      "Quicksilver",
+      "HandofJustice",
+      "GuardianAngel"
+     ]
+    },
+    {
+     "name": "Yone",
+     "items": [
+      "Morellonomicon",
+      "HextechGunblade",
+      "HandofJustice"
+     ]
+    },
+    {
+     "name": "Kalista",
+     "items": [
+      "RunaansHurricane",
+      "GuinsoosRageblade",
+      "GuardianAngel"
+     ]
+    },
+    {
+     "name": "LeeSin",
+     "items": [
+      "GuardianAngel",
+      "RapidFirecannon",
+      "Quicksilver"
+     ]
+    },
+    {
+     "name": "Jax",
+     "items": [
+      "LocketoftheIronSolari",
+      "ZekesHerald",
+      "IonicSpark"
+     ]
+    },
+    {
+     "name": "XinZhao",
+     "items": [
+      "Bloodthirster",
+      "Quicksilver",
+      "GuinsoosRageblade"
+     ]
+    },
+    {
+     "name": "Irelia",
+     "items": [
+      "LocketoftheIronSolari",
+      "Redemption",
+      "IonicSpark"
+     ]
+    },
+    {
+     "name": "Shen",
+     "items": [
+      "Zephyr",
+      "Redemption",
+      "IonicSpark"
+     ]
+    },
+    {
+     "name": "Zilean",
+     "items": [
+      "Zephyr",
+      "GuinsoosRageblade",
+      "StatikkShiv"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "6divine-3adept-2dazzler-2duelist-2enlightened-1exile-1ninja",
+   "traits": {
+    "Divine": 6,
+    "Adept": 3,
+    "Duelist": 2,
+    "Dazzler": 2,
+    "Enlightened": 2,
+    "Exile": 1,
+    "Ninja": 1
+   },
+   "pick_rate": 0.047,
+   "games_score": 3849,
+   "win_rate": 0.171,
+   "top4_rate": 0.747,
+   "average_placement": 3.35,
+   "placements": [
+    0.171,
+    0.186,
+    0.204,
+    0.186,
+    0.119,
+    0.091,
+    0.037,
+    0.006
+   ],
+   "units": [
+    {
+     "name": "Warwick",
+     "items": [
+      "RunaansHurricane",
+      "Quicksilver",
+      "HandofJustice"
+     ]
+    },
+    {
+     "name": "Yone",
+     "items": [
+      "GuardianAngel",
+      "HandofJustice",
+      "HextechGunblade"
+     ]
+    },
+    {
+     "name": "Jax",
+     "items": [
+      "LocketoftheIronSolari",
+      "ZekesHerald",
+      "IonicSpark"
+     ]
+    },
+    {
+     "name": "LeeSin",
+     "items": [
+      "RapidFirecannon",
+      "GuardianAngel",
+      "Quicksilver"
+     ]
+    },
+    {
+     "name": "Morgana",
+     "items": [
+      "Morellonomicon",
+      "LudensEcho",
+      "RabadonsDeathcap"
+     ]
+    },
+    {
+     "name": "Irelia",
+     "items": [
+      "LocketoftheIronSolari",
+      "ZekesHerald",
+      "ThiefsGloves"
+     ]
+    },
+    {
+     "name": "Lux",
+     "items": [
+      "RabadonsDeathcap",
+      "Zephyr",
+      "Morellonomicon"
+     ]
+    },
+    {
+     "name": "Shen",
+     "items": [
+      "LocketoftheIronSolari",
+      "Redemption",
+      "IonicSpark"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "6duelist-2adept-2divine-2enlightened-2exile-2mystic-1ninja",
+   "traits": {
+    "Duelist": 6,
+    "Exile": 2,
+    "Divine": 2,
+    "Adept": 2,
+    "Enlightened": 2,
+    "Mystic": 2,
+    "Ninja": 1
+   },
+   "pick_rate": 0.04,
+   "games_score": 3274,
+   "win_rate": 0.186,
+   "top4_rate": 0.778,
+   "average_placement": 3.09,
+   "placements": [
+    0.186,
+    0.251,
+    0.194,
+    0.147,
+    0.133,
+    0.057,
+    0.029,
+    0.004
+   ],
+   "units": [
+    {
+     "name": "Yasuo",
+     "items": [
+      "GuardianAngel",
+      "HandofJustice",
+      "Quicksilver"
+     ]
+    },
+    {
+     "name": "Kalista",
+     "items": [
+      "GuinsoosRageblade",
+      "RunaansHurricane",
+      "RabadonsDeathcap"
+     ]
+    },
+    {
+     "name": "Yone",
+     "items": [
+      "HextechGunblade",
+      "Morellonomicon",
+      "HandofJustice"
+     ]
+    },
+    {
+     "name": "LeeSin",
+     "items": [
+      "WarmogsArmor",
+      "SpearofShojin",
+      "Quicksilver"
+     ]
+    },
+    {
+     "name": "Jax",
+     "items": [
+      "LocketoftheIronSolari",
+      "ZekesHerald",
+      "IonicSpark"
+     ]
+    },
+    {
+     "name": "Fiora",
+     "items": [
+      "LocketoftheIronSolari",
+      "IonicSpark",
+      "Redemption"
+     ]
+    },
+    {
+     "name": "Janna",
+     "items": [
+      "Zephyr",
+      "ZekesHerald",
+      "RabadonsDeathcap"
+     ]
+    },
+    {
+     "name": "Shen",
+     "items": [
+      "IonicSpark",
+      "Zephyr",
+      "Redemption"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "4ninja-3cultist-3shade-2adept-2assassin-2mystic-1exile",
+   "traits": {
+    "Ninja": 4,
+    "Shade": 3,
+    "Cultist": 3,
+    "Adept": 2,
+    "Assassin": 2,
+    "Exile": 1,
+    "Mystic": 2
+   },
+   "pick_rate": 0.02,
+   "games_score": 1666,
+   "win_rate": 0.345,
+   "top4_rate": 0.845,
+   "average_placement": 2.65,
+   "placements": [
+    0.345,
+    0.218,
+    0.204,
+    0.077,
+    0.063,
+    0.042,
+    0.021,
+    0.028
+   ],
+   "units": [
+    {
+     "name": "Zed",
+     "items": [
+      "RapidFirecannon",
+      "Quicksilver",
+      "RunaansHurricane"
+     ]
+    },
+    {
+     "name": "Evelynn",
+     "items": [
+      "ZekesHerald",
+      "LocketoftheIronSolari",
+      "HextechGunblade"
+     ]
+    },
+    {
+     "name": "Yone",
+     "items": [
+      "HandofJustice",
+      "RabadonsDeathcap",
+      "HextechGunblade"
+     ]
+    },
+    {
+     "name": "Akali",
+     "items": [
+      "ZekesHerald",
+      "LocketoftheIronSolari",
+      "InfinityEdge"
+     ]
+    },
+    {
+     "name": "Kennen",
+     "items": [
+      "Morellonomicon",
+      "LocketoftheIronSolari",
+      "GuardianAngel"
+     ]
+    },
+    {
+     "name": "Shen",
+     "items": [
+      "Redemption",
+      "WarmogsArmor",
+      "IonicSpark"
+     ]
+    },
+    {
+     "name": "Pyke",
+     "items": [
+      "FrozenHeart",
+      "LudensEcho",
+      "IonicSpark"
+     ]
+    },
+    {
+     "name": "Zilean",
+     "items": [
+      "SpearofShojin",
+      "GuardianAngel",
+      "Zephyr"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "4ninja-3cultist-3shade-2assassin-2keeper-2mystic-1emperor",
+   "traits": {
+    "Emperor": 1,
+    "Ninja": 4,
+    "Shade": 3,
+    "Cultist": 3,
+    "Keeper": 2,
+    "Assassin": 2,
+    "Mystic": 2
+   },
+   "pick_rate": 0.019,
+   "games_score": 1596,
+   "win_rate": 0.353,
+   "top4_rate": 0.831,
+   "average_placement": 2.66,
+   "placements": [
+    0.353,
+    0.221,
+    0.154,
+    0.103,
+    0.088,
+    0.029,
+    0.037,
+    0.015
+   ],
+   "units": [
+    {
+     "name": "Zed",
+     "items": [
+      "RapidFirecannon",
+      "Quicksilver",
+      "RunaansHurricane"
+     ]
+    },
+    {
+     "name": "Evelynn",
+     "items": [
+      "ZekesHerald",
+      "LocketoftheIronSolari",
+      "HandofJustice"
+     ]
+    },
+    {
+     "name": "Akali",
+     "items": [
+      "ZekesHerald",
+      "LocketoftheIronSolari",
+      "HandofJustice"
+     ]
+    },
+    {
+     "name": "Pyke",
+     "items": [
+      "Morellonomicon",
+      "FrozenHeart",
+      "ZekesHerald"
+     ]
+    },
+    {
+     "name": "Kennen",
+     "items": [
+      "Morellonomicon",
+      "LocketoftheIronSolari",
+      "GuardianAngel"
+     ]
+    },
+    {
+     "name": "Zilean",
+     "items": [
+      "GuardianAngel",
+      "SpearofShojin",
+      "Zephyr"
+     ]
+    },
+    {
+     "name": "Azir",
+     "items": [
+      "ZekesHerald",
+      "SpearofShojin",
+      "Morellonomicon"
+     ]
+    },
+    {
+     "name": "Shen",
+     "items": [
+      "Redemption",
+      "WarmogsArmor",
+      "Zephyr"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "9warlord-2assassin-2keeper-1emperor",
+   "traits": {
+    "Warlord": 9,
+    "Emperor": 1,
+    "Keeper": 2,
+    "Assassin": 2
+   },
+   "pick_rate": 0.033,
+   "games_score": 2699,
+   "win_rate": 0.204,
+   "top4_rate": 0.67,
+   "average_placement": 3.5,
+   "placements": [
+    0.204,
+    0.209,
+    0.117,
+    0.139,
+    0.13,
+    0.104,
+    0.07,
+    0.026
+   ],
+   "units": [
+    {
+     "name": "Katarina",
+     "items": [
+      "HextechGunblade",
+      "Quicksilver",
+      "HandofJustice"
+     ]
+    },
+    {
+     "name": "Azir",
+     "items": [
+      "GuinsoosRageblade",
+      "RapidFirecannon",
+      "Morellonomicon"
+     ]
+    },
+    {
+     "name": "XinZhao",
+     "items": [
+      "Bloodthirster",
+      "HandofJustice",
+      "Quicksilver"
+     ]
+    },
+    {
+     "name": "JarvanIV",
+     "items": [
+      "IonicSpark",
+      "Redemption",
+      "Morellonomicon"
+     ]
+    },
+    {
+     "name": "Pyke",
+     "items": [
+      "Morellonomicon",
+      "IonicSpark",
+      "InfinityEdge"
+     ]
+    },
+    {
+     "name": "Vi",
+     "items": [
+      "ZekesHerald",
+      "ThiefsGloves",
+      "LocketoftheIronSolari"
+     ]
+    },
+    {
+     "name": "Garen",
+     "items": [
+      "IonicSpark",
+      "LocketoftheIronSolari",
+      "WarmogsArmor"
+     ]
+    },
+    {
+     "name": "Nidalee",
+     "items": [
+      "Zephyr",
+      "StatikkShiv",
+      "GiantSlayer"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "4ninja-3cultist-3shade-2adept-2assassin-2keeper-1exile",
+   "traits": {
+    "Ninja": 4,
+    "Shade": 3,
+    "Cultist": 3,
+    "Keeper": 2,
+    "Adept": 2,
+    "Assassin": 2,
+    "Exile": 1
+   },
+   "pick_rate": 0.029,
+   "games_score": 2417,
+   "win_rate": 0.223,
+   "top4_rate": 0.738,
+   "average_placement": 3.35,
+   "placements": [
+    0.223,
+    0.175,
+    0.18,
+    0.16,
+    0.092,
+    0.083,
+    0.053,
+    0.034
+   ],
+   "units": [
+    {
+     "name": "Zed",
+     "items": [
+      "RapidFirecannon",
+      "Quicksilver",
+      "RunaansHurricane"
+     ]
+    },
+    {
+     "name": "Evelynn",
+     "items": [
+      "ZekesHerald",
+      "LocketoftheIronSolari",
+      "HextechGunblade"
+     ]
+    },
+    {
+     "name": "Akali",
+     "items": [
+      "ZekesHerald",
+      "LocketoftheIronSolari",
+      "RapidFirecannon"
+     ]
+    },
+    {
+     "name": "Yone",
+     "items": [
+      "HandofJustice",
+      "HextechGunblade",
+      "GuardianAngel"
+     ]
+    },
+    {
+     "name": "Kennen",
+     "items": [
+      "LocketoftheIronSolari",
+      "Morellonomicon",
+      "ZekesHerald"
+     ]
+    },
+    {
+     "name": "Pyke",
+     "items": [
+      "ZekesHerald",
+      "FrozenHeart",
+      "Morellonomicon"
+     ]
+    },
+    {
+     "name": "Shen",
+     "items": [
+      "FrozenHeart",
+      "DragonsClaw",
+      "IonicSpark"
+     ]
+    },
+    {
+     "name": "Elise",
+     "items": [
+      "Redemption",
+      "ForceofNature",
+      "IonicSpark"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "4ninja-4shade-3cultist-2keeper-2mystic-1tormented",
+   "traits": {
+    "Shade": 4,
+    "Ninja": 4,
+    "Tormented": 1,
+    "Cultist": 3,
+    "Keeper": 2,
+    "Mystic": 2
+   },
+   "pick_rate": 0.026,
+   "games_score": 2159,
+   "win_rate": 0.223,
+   "top4_rate": 0.788,
+   "average_placement": 3.15,
+   "placements": [
+    0.223,
+    0.217,
+    0.179,
+    0.168,
+    0.071,
+    0.087,
+    0.027,
+    0.027
+   ],
+   "units": [
+    {
+     "name": "Zed",
+     "items": [
+      "RapidFirecannon",
+      "Quicksilver",
+      "RunaansHurricane"
+     ]
+    },
+    {
+     "name": "Kayn",
+     "items": [
+      "HandofJustice",
+      "HextechGunblade",
+      "GuardianAngel"
+     ]
+    },
+    {
+     "name": "Evelynn",
+     "items": [
+      "ZekesHerald",
+      "LocketoftheIronSolari",
+      "HextechGunblade"
+     ]
+    },
+    {
+     "name": "Akali",
+     "items": [
+      "ZekesHerald",
+      "LocketoftheIronSolari",
+      "InfinityEdge"
+     ]
+    },
+    {
+     "name": "Kennen",
+     "items": [
+      "Morellonomicon",
+      "LocketoftheIronSolari",
+      "Redemption"
+     ]
+    },
+    {
+     "name": "Zilean",
+     "items": [
+      "ZekesHerald",
+      "SpearofShojin",
+      "LocketoftheIronSolari"
+     ]
+    },
+    {
+     "name": "Shen",
+     "items": [
+      "WarmogsArmor",
+      "Redemption",
+      "Zephyr"
+     ]
+    },
+    {
+     "name": "Elise",
+     "items": [
+      "ZekesHerald",
+      "LocketoftheIronSolari",
+      "Redemption"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "6duelist-2adept-2divine-2exile-2mystic-1ninja",
+   "traits": {
+    "Duelist": 6,
+    "Exile": 2,
+    "Divine": 2,
+    "Adept": 2,
+    "Mystic": 2,
+    "Ninja": 1
+   },
+   "pick_rate": 0.026,
+   "games_score": 2147,
+   "win_rate": 0.197,
+   "top4_rate": 0.82,
+   "average_placement": 3.04,
+   "placements": [
+    0.197,
+    0.224,
+    0.23,
+    0.169,
+    0.087,
+    0.06,
+    0.033,
+    0
+   ],
+   "units": [
+    {
+     "name": "Yasuo",
+     "items": [
+      "Quicksilver",
+      "HandofJustice",
+      "GuardianAngel"
+     ]
+    },
+    {
+     "name": "Kalista",
+     "items": [
+      "RunaansHurricane",
+      "GuinsoosRageblade",
+      "RapidFirecannon"
+     ]
+    },
+    {
+     "name": "Yone",
+     "items": [
+      "Morellonomicon",
+      "RabadonsDeathcap",
+      "HextechGunblade"
+     ]
+    },
+    {
+     "name": "LeeSin",
+     "items": [
+      "RapidFirecannon",
+      "GuardianAngel",
+      "Quicksilver"
+     ]
+    },
+    {
+     "name": "XinZhao",
+     "items": [
+      "Bloodthirster",
+      "HandofJustice",
+      "WarmogsArmor"
+     ]
+    },
+    {
+     "name": "Jax",
+     "items": [
+      "LocketoftheIronSolari",
+      "IonicSpark",
+      "ZekesHerald"
+     ]
+    },
+    {
+     "name": "Janna",
+     "items": [
+      "Zephyr",
+      "ZekesHerald",
+      "Redemption"
+     ]
+    },
+    {
+     "name": "Shen",
+     "items": [
+      "FrozenHeart",
+      "Redemption",
+      "LocketoftheIronSolari"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "4ninja-4shade-2keeper-2mystic-1emperor-1tormented",
+   "traits": {
+    "Shade": 4,
+    "Emperor": 1,
+    "Ninja": 4,
+    "Tormented": 1,
+    "Keeper": 2,
+    "Mystic": 2
+   },
+   "pick_rate": 0.02,
+   "games_score": 1643,
+   "win_rate": 0.257,
+   "top4_rate": 0.821,
+   "average_placement": 2.74,
+   "placements": [
+    0.257,
+    0.293,
+    0.171,
+    0.1,
+    0.107,
+    0.057,
+    0.014,
+    0
+   ],
+   "units": [
+    {
+     "name": "Zed",
+     "items": [
+      "RapidFirecannon",
+      "Quicksilver",
+      "RunaansHurricane"
+     ]
+    },
+    {
+     "name": "Kayn",
+     "items": [
+      "HandofJustice",
+      "HextechGunblade",
+      "GuardianAngel"
+     ]
+    },
+    {
+     "name": "Evelynn",
+     "items": [
+      "ZekesHerald",
+      "LocketoftheIronSolari",
+      "HandofJustice"
+     ]
+    },
+    {
+     "name": "Akali",
+     "items": [
+      "ZekesHerald",
+      "LocketoftheIronSolari",
+      "InfinityEdge"
+     ]
+    },
+    {
+     "name": "Azir",
+     "items": [
+      "ZekesHerald",
+      "SpearofShojin",
+      "StatikkShiv"
+     ]
+    },
+    {
+     "name": "Kennen",
+     "items": [
+      "Morellonomicon",
+      "LocketoftheIronSolari",
+      "LudensEcho"
+     ]
+    },
+    {
+     "name": "Zilean",
+     "items": [
+      "SpearofShojin",
+      "StatikkShiv",
+      "Redemption"
+     ]
+    },
+    {
+     "name": "Shen",
+     "items": [
+      "WarmogsArmor",
+      "DragonsClaw",
+      "ThiefsGloves"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "4ninja-4shade-2adept-2mystic-1exile-1tormented",
+   "traits": {
+    "Shade": 4,
+    "Ninja": 4,
+    "Tormented": 1,
+    "Adept": 2,
+    "Exile": 1,
+    "Mystic": 2
+   },
+   "pick_rate": 0.02,
+   "games_score": 1654,
+   "win_rate": 0.241,
+   "top4_rate": 0.837,
+   "average_placement": 2.79,
+   "placements": [
+    0.241,
+    0.291,
+    0.213,
+    0.092,
+    0.078,
+    0.05,
+    0.014,
+    0.021
+   ],
+   "units": [
+    {
+     "name": "Zed",
+     "items": [
+      "RapidFirecannon",
+      "Quicksilver",
+      "RunaansHurricane"
+     ]
+    },
+    {
+     "name": "Kayn",
+     "items": [
+      "HextechGunblade",
+      "HandofJustice",
+      "GuardianAngel"
+     ]
+    },
+    {
+     "name": "Evelynn",
+     "items": [
+      "ZekesHerald",
+      "LocketoftheIronSolari",
+      "HextechGunblade"
+     ]
+    },
+    {
+     "name": "Yone",
+     "items": [
+      "GuardianAngel",
+      "Morellonomicon",
+      "HextechGunblade"
+     ]
+    },
+    {
+     "name": "Akali",
+     "items": [
+      "ZekesHerald",
+      "LocketoftheIronSolari",
+      "RapidFirecannon"
+     ]
+    },
+    {
+     "name": "Zilean",
+     "items": [
+      "ZekesHerald",
+      "LocketoftheIronSolari",
+      "SpearofShojin"
+     ]
+    },
+    {
+     "name": "Kennen",
+     "items": [
+      "Morellonomicon",
+      "GuardianAngel",
+      "LocketoftheIronSolari"
+     ]
+    },
+    {
+     "name": "Shen",
+     "items": [
+      "Redemption",
+      "ZekesHerald",
+      "IonicSpark"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "8duelist-3divine-2adept-2enlightened-2exile",
+   "traits": {
+    "Duelist": 8,
+    "Exile": 2,
+    "Divine": 3,
+    "Adept": 2,
+    "Enlightened": 2
+   },
+   "pick_rate": 0.024,
+   "games_score": 2007,
+   "win_rate": 0.158,
+   "top4_rate": 0.819,
+   "average_placement": 3.19,
+   "placements": [
+    0.158,
+    0.199,
+    0.263,
+    0.199,
+    0.076,
+    0.076,
+    0.018,
+    0.012
+   ],
+   "units": [
+    {
+     "name": "Yasuo",
+     "items": [
+      "HandofJustice",
+      "Quicksilver",
+      "GuardianAngel"
+     ]
+    },
+    {
+     "name": "Yone",
+     "items": [
+      "RabadonsDeathcap",
+      "HextechGunblade",
+      "Morellonomicon"
+     ]
+    },
+    {
+     "name": "Kalista",
+     "items": [
+      "RunaansHurricane",
+      "GuinsoosRageblade",
+      "GuardianAngel"
+     ]
+    },
+    {
+     "name": "LeeSin",
+     "items": [
+      "SpearofShojin",
+      "GuardianAngel",
+      "Redemption"
+     ]
+    },
+    {
+     "name": "Jax",
+     "items": [
+      "LocketoftheIronSolari",
+      "IonicSpark",
+      "WarmogsArmor"
+     ]
+    },
+    {
+     "name": "XinZhao",
+     "items": [
+      "Bloodthirster",
+      "Quicksilver",
+      "WarmogsArmor"
+     ]
+    },
+    {
+     "name": "Irelia",
+     "items": [
+      "Morellonomicon",
+      "ZekesHerald",
+      "Redemption"
+     ]
+    },
+    {
+     "name": "Fiora",
+     "items": [
+      "LocketoftheIronSolari",
+      "Redemption",
+      "WarmogsArmor"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "8duelist-2adept-2divine-2exile-1ninja",
+   "traits": {
+    "Duelist": 8,
+    "Exile": 2,
+    "Divine": 2,
+    "Adept": 2,
+    "Ninja": 1
+   },
+   "pick_rate": 0.022,
+   "games_score": 1807,
+   "win_rate": 0.156,
+   "top4_rate": 0.805,
+   "average_placement": 3.16,
+   "placements": [
+    0.156,
+    0.24,
+    0.247,
+    0.162,
+    0.11,
+    0.032,
+    0.032,
+    0.019
+   ],
+   "units": [
+    {
+     "name": "Yasuo",
+     "items": [
+      "Quicksilver",
+      "HandofJustice",
+      "GuardianAngel"
+     ]
+    },
+    {
+     "name": "Yone",
+     "items": [
+      "Morellonomicon",
+      "GuardianAngel",
+      "WarmogsArmor"
+     ]
+    },
+    {
+     "name": "Kalista",
+     "items": [
+      "GuinsoosRageblade",
+      "RunaansHurricane",
+      "RabadonsDeathcap"
+     ]
+    },
+    {
+     "name": "LeeSin",
+     "items": [
+      "SpearofShojin",
+      "DragonsClaw",
+      "RapidFirecannon"
+     ]
+    },
+    {
+     "name": "XinZhao",
+     "items": [
+      "Bloodthirster",
+      "Quicksilver",
+      "HandofJustice"
+     ]
+    },
+    {
+     "name": "Jax",
+     "items": [
+      "LocketoftheIronSolari",
+      "IonicSpark",
+      "ZekesHerald"
+     ]
+    },
+    {
+     "name": "Fiora",
+     "items": [
+      "LocketoftheIronSolari",
+      "Redemption",
+      "ZekesHerald"
+     ]
+    },
+    {
+     "name": "Shen",
+     "items": [
+      "Redemption",
+      "Zephyr",
+      "FrozenHeart"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "6keeper-3cultist-3warlord-2assassin-1emperor-1ninja",
+   "traits": {
+    "Keeper": 6,
+    "Emperor": 1,
+    "Cultist": 3,
+    "Assassin": 2,
+    "Ninja": 1,
+    "Warlord": 3
+   },
+   "pick_rate": 0.02,
+   "games_score": 1607,
+   "win_rate": 0.175,
+   "top4_rate": 0.745,
+   "average_placement": 3.25,
+   "placements": [
+    0.175,
+    0.234,
+    0.234,
+    0.102,
+    0.124,
+    0.08,
+    0.015,
+    0.036
+   ],
+   "units": [
+    {
+     "name": "Katarina",
+     "items": [
+      "HextechGunblade",
+      "Quicksilver",
+      "HandofJustice"
+     ]
+    },
+    {
+     "name": "Riven",
+     "items": [
+      "IonicSpark",
+      "GuardianAngel",
+      "DragonsClaw"
+     ]
+    },
+    {
+     "name": "Azir",
+     "items": [
+      "SpearofShojin",
+      "GuinsoosRageblade",
+      "RapidFirecannon"
+     ]
+    },
+    {
+     "name": "Kennen",
+     "items": [
+      "Morellonomicon",
+      "GuardianAngel",
+      "GiantSlayer"
+     ]
+    },
+    {
+     "name": "JarvanIV",
+     "items": [
+      "FrozenHeart",
+      "IonicSpark",
+      "ThiefsGloves"
+     ]
+    },
+    {
+     "name": "Aatrox",
+     "items": [
+      "Redemption",
+      "Zephyr",
+      "IonicSpark"
+     ]
+    },
+    {
+     "name": "Pyke",
+     "items": [
+      "FrozenHeart",
+      "IonicSpark",
+      "WarmogsArmor"
+     ]
+    },
+    {
+     "name": "Elise",
+     "items": [
+      "FrozenHeart",
+      "Zephyr",
+      "IonicSpark"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "4ninja-4shade-2assassin-2keeper-1emperor-1tormented",
+   "traits": {
+    "Shade": 4,
+    "Emperor": 1,
+    "Ninja": 4,
+    "Tormented": 1,
+    "Keeper": 2,
+    "Assassin": 2
+   },
+   "pick_rate": 0.018,
+   "games_score": 1467,
+   "win_rate": 0.184,
+   "top4_rate": 0.752,
+   "average_placement": 3.3,
+   "placements": [
+    0.184,
+    0.2,
+    0.2,
+    0.168,
+    0.104,
+    0.096,
+    0.04,
+    0.008
+   ],
+   "units": [
+    {
+     "name": "Zed",
+     "items": [
+      "RapidFirecannon",
+      "Quicksilver",
+      "RunaansHurricane"
+     ]
+    },
+    {
+     "name": "Kayn",
+     "items": [
+      "HandofJustice",
+      "HextechGunblade",
+      "GuardianAngel"
+     ]
+    },
+    {
+     "name": "Evelynn",
+     "items": [
+      "ZekesHerald",
+      "LocketoftheIronSolari",
+      "HextechGunblade"
+     ]
+    },
+    {
+     "name": "Akali",
+     "items": [
+      "ZekesHerald",
+      "LocketoftheIronSolari",
+      "RapidFirecannon"
+     ]
+    },
+    {
+     "name": "Kennen",
+     "items": [
+      "LocketoftheIronSolari",
+      "Morellonomicon",
+      "ThiefsGloves"
+     ]
+    },
+    {
+     "name": "Pyke",
+     "items": [
+      "ZekesHerald",
+      "Morellonomicon",
+      "LocketoftheIronSolari"
+     ]
+    },
+    {
+     "name": "Azir",
+     "items": [
+      "ZekesHerald",
+      "GuinsoosRageblade",
+      "LocketoftheIronSolari"
+     ]
+    },
+    {
+     "name": "Shen",
+     "items": [
+      "DragonsClaw",
+      "WarmogsArmor",
+      "FrozenHeart"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "4ninja-4shade-2adept-2assassin-1exile-1tormented",
+   "traits": {
+    "Shade": 4,
+    "Ninja": 4,
+    "Tormented": 1,
+    "Adept": 2,
+    "Assassin": 2,
+    "Exile": 1
+   },
+   "pick_rate": 0.019,
+   "games_score": 1596,
+   "win_rate": 0.162,
+   "top4_rate": 0.713,
+   "average_placement": 3.46,
+   "placements": [
+    0.162,
+    0.221,
+    0.154,
+    0.176,
+    0.118,
+    0.103,
+    0.051,
+    0.015
+   ],
+   "units": [
+    {
+     "name": "Zed",
+     "items": [
+      "RapidFirecannon",
+      "Quicksilver",
+      "RunaansHurricane"
+     ]
+    },
+    {
+     "name": "Kayn",
+     "items": [
+      "HandofJustice",
+      "GuardianAngel",
+      "HextechGunblade"
+     ]
+    },
+    {
+     "name": "Evelynn",
+     "items": [
+      "ZekesHerald",
+      "LocketoftheIronSolari",
+      "HextechGunblade"
+     ]
+    },
+    {
+     "name": "Yone",
+     "items": [
+      "HextechGunblade",
+      "HandofJustice",
+      "GuardianAngel"
+     ]
+    },
+    {
+     "name": "Akali",
+     "items": [
+      "ZekesHerald",
+      "LocketoftheIronSolari",
+      "InfinityEdge"
+     ]
+    },
+    {
+     "name": "Kennen",
+     "items": [
+      "Morellonomicon",
+      "LocketoftheIronSolari",
+      "GuardianAngel"
+     ]
+    },
+    {
+     "name": "Pyke",
+     "items": [
+      "Zephyr",
+      "ZekesHerald",
+      "Redemption"
+     ]
+    },
+    {
+     "name": "Shen",
+     "items": [
+      "DragonsClaw",
+      "Zephyr",
+      "ThiefsGloves"
+     ]
+    }
+   ]
+  }
+ ],
+ "winners": [
+  {
+   "traits": [
+    "6 Dusk",
+    "1 Emperor",
+    "3 Cultist",
+    "2 Keeper",
+    "2 Mystic",
+    "2 Vanguard",
+    "2 Sharpshooter"
+   ],
+   "chosen_trait": "Cultist",
+   "units": [
+    {
+     "name": "Vayne",
+     "stars": 3,
+     "items": [
+      "Guinsoo's Rageblade",
+      "Quicksilver",
+      "Bloodthirster"
+     ]
+    },
+    {
+     "name": "Thresh",
+     "stars": 2,
+     "items": [
+      "Zz'Rot Portal"
+     ]
+    },
+    {
+     "name": "Sejuani",
+     "stars": 1,
+     "items": [
+      "Ionic Spark"
+     ]
+    },
+    {
+     "name": "Cassiopeia",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Jhin",
+     "stars": 2,
+     "items": [
+      "Guardian Angel",
+      "Aspect of Dusk"
+     ]
+    },
+    {
+     "name": "Riven",
+     "stars": 2,
+     "items": [
+      "Luden's Echo",
+      "Ionic Spark",
+      "Trap Claw"
+     ]
+    },
+    {
+     "name": "Lillia",
+     "stars": 1,
+     "items": []
+    },
+    {
+     "name": "Azir",
+     "stars": 2,
+     "items": [
+      "Tear of the Goddess"
+     ]
+    },
+    {
+     "name": "Zilean",
+     "stars": 2,
+     "items": []
+    }
+   ]
+  },
+  {
+   "traits": [
+    "1 Emperor",
+    "4 Dusk",
+    "4 Vanguard",
+    "3 Cultist",
+    "2 Keeper",
+    "2 Mystic",
+    "2 Sharpshooter"
+   ],
+   "chosen_trait": "Vanguard",
+   "units": [
+    {
+     "name": "Vayne",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Thresh",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Sejuani",
+     "stars": 1,
+     "items": []
+    },
+    {
+     "name": "Aatrox",
+     "stars": 2,
+     "items": [
+      "Sunfire Cape"
+     ]
+    },
+    {
+     "name": "Cassiopeia",
+     "stars": 2,
+     "items": [
+      "Chalice of Power",
+      "Rabadon's Deathcap"
+     ]
+    },
+    {
+     "name": "Jhin",
+     "stars": 2,
+     "items": [
+      "Giant Slayer",
+      "Guardian Angel",
+      "Last Whisper"
+     ]
+    },
+    {
+     "name": "Riven",
+     "stars": 2,
+     "items": [
+      "Sunfire Cape",
+      "Dragon's Claw"
+     ]
+    },
+    {
+     "name": "Azir",
+     "stars": 1,
+     "items": []
+    },
+    {
+     "name": "Zilean",
+     "stars": 2,
+     "items": [
+      "Runaan's Hurricane"
+     ]
+    }
+   ]
+  },
+  {
+   "traits": [
+    "4 Ninja",
+    "4 Shade",
+    "1 Emperor",
+    "1 Tormented",
+    "2 Keeper",
+    "2 Mystic"
+   ],
+   "chosen_trait": "Shade",
+   "units": [
+    {
+     "name": "Zed",
+     "stars": 2,
+     "items": [
+      "Rapid Firecannon",
+      "Runaan's Hurricane",
+      "Deathblade"
+     ]
+    },
+    {
+     "name": "Akali",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Evelynn",
+     "stars": 2,
+     "items": [
+      "Chalice of Power",
+      "Chalice of Power",
+      "Sunfire Cape"
+     ]
+    },
+    {
+     "name": "Kennen",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Shen",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Azir",
+     "stars": 2,
+     "items": [
+      "Luden's Echo"
+     ]
+    },
+    {
+     "name": "Ezreal",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Kayn",
+     "stars": 2,
+     "items": [
+      "Ionic Spark",
+      "Trap Claw"
+     ]
+    },
+    {
+     "name": "Zilean",
+     "stars": 2,
+     "items": []
+    }
+   ]
+  },
+  {
+   "traits": [
+    "4 Adept",
+    "4 Divine",
+    "2 Duelist",
+    "2 Dazzler",
+    "2 Mystic",
+    "1 Exile",
+    "1 Ninja"
+   ],
+   "chosen_trait": "Adept",
+   "units": [
+    {
+     "name": "Jax",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Irelia",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Lux",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Cassiopeia",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Sejuani",
+     "stars": 2,
+     "items": [
+      "Chalice of Power",
+      "Zz'Rot Portal"
+     ]
+    },
+    {
+     "name": "Shen",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Ezreal",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Lee Sin",
+     "stars": 2,
+     "items": [
+      "Warmog's Armor",
+      "Hextech Gunblade",
+      "Blue Buff"
+     ]
+    },
+    {
+     "name": "Yone",
+     "stars": 2,
+     "items": [
+      "Quicksilver",
+      "Blue Buff",
+      "Hextech Gunblade"
+     ]
+    }
+   ]
+  },
+  {
+   "traits": [
+    "1 The Boss",
+    "1 Emperor",
+    "1 Tormented",
+    "6 Warlord",
+    "2 Duelist",
+    "2 Keeper",
+    "2 Brawler",
+    "1 Exile"
+   ],
+   "chosen_trait": "Duelist",
+   "units": [
+    {
+     "name": "Nidalee",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Jarvan IV",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Vi",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Katarina",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Azir",
+     "stars": 2,
+     "items": [
+      "Quicksilver",
+      "Blue Buff",
+      "Deathblade"
+     ]
+    },
+    {
+     "name": "Kayn",
+     "stars": 2,
+     "items": [
+      "Recurve Bow"
+     ]
+    },
+    {
+     "name": "Lee Sin",
+     "stars": 2,
+     "items": [
+      "Guardian Angel",
+      "Zeke's Herald",
+      "Quicksilver"
+     ]
+    },
+    {
+     "name": "Sett",
+     "stars": 2,
+     "items": [
+      "Chalice of Power",
+      "Spear of Shojin",
+      "Hand of Justice"
+     ]
+    },
+    {
+     "name": "Yone",
+     "stars": 2,
+     "items": [
+      "Warlord's Banner",
+      "Morellonomicon",
+      "Quicksilver"
+     ]
+    }
+   ]
+  },
+  {
+   "traits": [
+    "5 Dusk",
+    "3 Adept",
+    "3 Mystic",
+    "2 Sharpshooter",
+    "1 Exile",
+    "1 Ninja"
+   ],
+   "chosen_trait": "Adept",
+   "units": [
+    {
+     "name": "Vayne",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Thresh",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Cassiopeia",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Jhin",
+     "stars": 2,
+     "items": [
+      "Hand of Justice",
+      "Giant Slayer",
+      "Dragon's Claw"
+     ]
+    },
+    {
+     "name": "Riven",
+     "stars": 2,
+     "items": [
+      "Guardian Angel",
+      "Blue Buff",
+      "Rabadon's Deathcap"
+     ]
+    },
+    {
+     "name": "Shen",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Lillia",
+     "stars": 2,
+     "items": [
+      "Tear of the Goddess"
+     ]
+    },
+    {
+     "name": "Yone",
+     "stars": 2,
+     "items": [
+      "Morellonomicon",
+      "Warmog's Armor",
+      "Jeweled Gauntlet"
+     ]
+    },
+    {
+     "name": "Zilean",
+     "stars": 2,
+     "items": []
+    }
+   ]
+  },
+  {
+   "traits": [
+    "1 Emperor",
+    "4 Dusk",
+    "3 Cultist",
+    "3 Keeper",
+    "3 Vanguard",
+    "2 Mystic",
+    "2 Sharpshooter"
+   ],
+   "chosen_trait": "Keeper",
+   "units": [
+    {
+     "name": "Vayne",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Thresh",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Aatrox",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Cassiopeia",
+     "stars": 2,
+     "items": [
+      "Chalice of Power",
+      "Redemption"
+     ]
+    },
+    {
+     "name": "Jhin",
+     "stars": 2,
+     "items": [
+      "Infinity Edge"
+     ]
+    },
+    {
+     "name": "Riven",
+     "stars": 3,
+     "items": [
+      "Rabadon's Deathcap",
+      "Quicksilver",
+      "Bramble Vest"
+     ]
+    },
+    {
+     "name": "Zilean",
+     "stars": 1,
+     "items": []
+    },
+    {
+     "name": "Azir",
+     "stars": 2,
+     "items": [
+      "Vanguard's Cuirass",
+      "Guinsoo's Rageblade"
+     ]
+    }
+   ]
+  },
+  {
+   "traits": [
+    "1 The Boss",
+    "3 Hunter",
+    "3 Brawler",
+    "3 Elderwood",
+    "2 Divine",
+    "2 Adept",
+    "2 Mystic",
+    "1 Exile",
+    "1 Ninja"
+   ],
+   "chosen_trait": "Elderwood",
+   "units": [
+    {
+     "name": "Kindred",
+     "stars": 2,
+     "items": [
+      "Jeweled Gauntlet",
+      "Jeweled Gauntlet"
+     ]
+    },
+    {
+     "name": "Nunu",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Shen",
+     "stars": 1,
+     "items": [
+      "Zz'Rot Portal"
+     ]
+    },
+    {
+     "name": "Ashe",
+     "stars": 2,
+     "items": [
+      "Guardian Angel",
+      "Guinsoo's Rageblade",
+      "Giant Slayer"
+     ]
+    },
+    {
+     "name": "Warwick",
+     "stars": 2,
+     "items": [
+      "Sunfire Cape",
+      "Runaan's Hurricane",
+      "Dragon's Claw"
+     ]
+    },
+    {
+     "name": "Lee Sin",
+     "stars": 1,
+     "items": [
+      "Redemption"
+     ]
+    },
+    {
+     "name": "Sett",
+     "stars": 1,
+     "items": []
+    },
+    {
+     "name": "Yone",
+     "stars": 1,
+     "items": []
+    },
+    {
+     "name": "Zilean",
+     "stars": 1,
+     "items": []
+    }
+   ]
+  },
+  {
+   "traits": [
+    "1 The Boss",
+    "7 Elderwood",
+    "4 Brawler",
+    "2 Divine",
+    "2 Hunter",
+    "2 Dazzler"
+   ],
+   "chosen_trait": "Elderwood",
+   "units": [
+    {
+     "name": "Maokai",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Lulu",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Lux",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Nunu",
+     "stars": 2,
+     "items": [
+      "Gargoyle Stoneplate",
+      "Warmog's Armor",
+      "Gargoyle Stoneplate"
+     ]
+    },
+    {
+     "name": "Ashe",
+     "stars": 2,
+     "items": [
+      "Last Whisper",
+      "Infinity Edge",
+      "Guardian Angel"
+     ]
+    },
+    {
+     "name": "Warwick",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Sett",
+     "stars": 1,
+     "items": [
+      "Ionic Spark",
+      "Jeweled Gauntlet",
+      "Blue Buff"
+     ]
+    },
+    {
+     "name": "Ezreal",
+     "stars": 2,
+     "items": [
+      "Recurve Bow"
+     ]
+    }
+   ]
+  },
+  {
+   "traits": [
+    "4 Ninja",
+    "1 Tormented",
+    "4 Assassin",
+    "3 Shade",
+    "3 Cultist",
+    "2 Keeper"
+   ],
+   "chosen_trait": "Assassin",
+   "units": [
+    {
+     "name": "Elise",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Pyke",
+     "stars": 3,
+     "items": []
+    },
+    {
+     "name": "Zed",
+     "stars": 3,
+     "items": [
+      "Quicksilver",
+      "Runaan's Hurricane",
+      "Rapid Firecannon"
+     ]
+    },
+    {
+     "name": "Kennen",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Akali",
+     "stars": 3,
+     "items": [
+      "Statikk Shiv",
+      "Locket of the Iron Solari",
+      "Runaan's Hurricane"
+     ]
+    },
+    {
+     "name": "Evelynn",
+     "stars": 3,
+     "items": []
+    },
+    {
+     "name": "Shen",
+     "stars": 1,
+     "items": [
+      "Sunfire Cape",
+      "Ionic Spark",
+      "Youmuu's Ghostblade"
+     ]
+    },
+    {
+     "name": "Kayn",
+     "stars": 1,
+     "items": [
+      "Blue Buff"
+     ]
+    }
+   ]
+  },
+  {
+   "traits": [
+    "1 The Boss",
+    "6 Elderwood",
+    "4 Brawler",
+    "2 Divine",
+    "1 Exile"
+   ],
+   "chosen_trait": "Elderwood",
+   "units": [
+    {
+     "name": "Maokai",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Nunu",
+     "stars": 2,
+     "items": [
+      "Zz'Rot Portal"
+     ]
+    },
+    {
+     "name": "Veigar",
+     "stars": 2,
+     "items": [
+      "Guardian Angel",
+      "Chalice of Power",
+      "Hextech Gunblade"
+     ]
+    },
+    {
+     "name": "Warwick",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Ezreal",
+     "stars": 2,
+     "items": [
+      "Locket of the Iron Solari"
+     ]
+    },
+    {
+     "name": "Lee Sin",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Sett",
+     "stars": 2,
+     "items": [
+      "Elderwood Sprout",
+      "Morellonomicon",
+      "Hextech Gunblade"
+     ]
+    },
+    {
+     "name": "Yone",
+     "stars": 2,
+     "items": [
+      "Hextech Gunblade"
+     ]
+    }
+   ]
+  },
+  {
+   "traits": [
+    "6 Dusk",
+    "1 Tormented",
+    "3 Cultist",
+    "3 Mystic",
+    "2 Vanguard",
+    "2 Sharpshooter"
+   ],
+   "chosen_trait": "Mystic",
+   "units": [
+    {
+     "name": "Vayne",
+     "stars": 2,
+     "items": [
+      "Zephyr",
+      "Giant Slayer",
+      "Rapid Firecannon"
+     ]
+    },
+    {
+     "name": "Thresh",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Aatrox",
+     "stars": 2,
+     "items": [
+      "Warmog's Armor"
+     ]
+    },
+    {
+     "name": "Cassiopeia",
+     "stars": 2,
+     "items": [
+      "Thief's Gloves",
+      "Tear of the Goddess",
+      "Morellonomicon"
+     ]
+    },
+    {
+     "name": "Jhin",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Riven",
+     "stars": 2,
+     "items": [
+      "Titan’s Resolve",
+      "Blue Buff"
+     ]
+    },
+    {
+     "name": "Zilean",
+     "stars": 1,
+     "items": []
+    },
+    {
+     "name": "Kayn",
+     "stars": 2,
+     "items": [
+      "Guardian Angel",
+      "Aspect of Dusk",
+      "Morellonomicon"
+     ]
+    },
+    {
+     "name": "Lillia",
+     "stars": 2,
+     "items": []
+    }
+   ]
+  },
+  {
+   "traits": [
+    "6 Sharpshooter",
+    "2 Dusk",
+    "2 Keeper",
+    "2 Spirit"
+   ],
+   "chosen_trait": "Sharpshooter",
+   "units": [
+    {
+     "name": "Vayne",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Nidalee",
+     "stars": 3,
+     "items": [
+      "Spear of Shojin",
+      "Jeweled Gauntlet",
+      "Quicksilver"
+     ]
+    },
+    {
+     "name": "Jarvan IV",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Teemo",
+     "stars": 2,
+     "items": [
+      "Zeke's Herald"
+     ]
+    },
+    {
+     "name": "Yuumi",
+     "stars": 1,
+     "items": []
+    },
+    {
+     "name": "Jinx",
+     "stars": 2,
+     "items": [
+      "Quicksilver",
+      "Guinsoo's Rageblade",
+      "Spear of Shojin"
+     ]
+    },
+    {
+     "name": "Jhin",
+     "stars": 2,
+     "items": [
+      "Guinsoo's Rageblade"
+     ]
+    },
+    {
+     "name": "Riven",
+     "stars": 2,
+     "items": [
+      "Gargoyle Stoneplate"
+     ]
+    }
+   ]
+  },
+  {
+   "traits": [
+    "1 Tormented",
+    "1 The Boss",
+    "4 Fortune",
+    "2 Assassin",
+    "2 Sharpshooter",
+    "1 Exile"
+   ],
+   "chosen_trait": "Fortune",
+   "units": [
+    {
+     "name": "Annie",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Katarina",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Jinx",
+     "stars": 3,
+     "items": [
+      "Quicksilver",
+      "Guinsoo's Rageblade",
+      "Spear of Shojin"
+     ]
+    },
+    {
+     "name": "Jhin",
+     "stars": 1,
+     "items": [
+      "Last Whisper",
+      "B.F. Sword"
+     ]
+    },
+    {
+     "name": "Lee Sin",
+     "stars": 2,
+     "items": [
+      "Zz'Rot Portal"
+     ]
+    },
+    {
+     "name": "Sett",
+     "stars": 2,
+     "items": [
+      "Ionic Spark",
+      "Vanguard's Cuirass"
+     ]
+    },
+    {
+     "name": "Yone",
+     "stars": 2,
+     "items": [
+      "Guardian Angel",
+      "Statikk Shiv",
+      "Luden's Echo"
+     ]
+    },
+    {
+     "name": "Zilean",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Kayn",
+     "stars": 3,
+     "items": [
+      "Youmuu's Ghostblade",
+      "Ionic Spark",
+      "Guardian Angel"
+     ]
+    }
+   ]
+  },
+  {
+   "traits": [
+    "1 The Boss",
+    "1 Emperor",
+    "1 Tormented",
+    "2 Mystic",
+    "2 Dusk",
+    "2 Keeper",
+    "2 Adept",
+    "2 Vanguard",
+    "1 Exile",
+    "1 Ninja"
+   ],
+   "chosen_trait": "Vanguard",
+   "units": [
+    {
+     "name": "Shen",
+     "stars": 1,
+     "items": []
+    },
+    {
+     "name": "Riven",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Lillia",
+     "stars": 1,
+     "items": []
+    },
+    {
+     "name": "Sett",
+     "stars": 1,
+     "items": [
+      "Sunfire Cape"
+     ]
+    },
+    {
+     "name": "Yone",
+     "stars": 1,
+     "items": [
+      "Zeke's Herald"
+     ]
+    },
+    {
+     "name": "Azir",
+     "stars": 2,
+     "items": [
+      "Chalice of Power",
+      "Luden's Echo"
+     ]
+    },
+    {
+     "name": "Ezreal",
+     "stars": 2,
+     "items": [
+      "Locket of the Iron Solari"
+     ]
+    },
+    {
+     "name": "Kayn",
+     "stars": 2,
+     "items": [
+      "Giant Slayer"
+     ]
+    },
+    {
+     "name": "Zilean",
+     "stars": 2,
+     "items": [
+      "Chalice of Power",
+      "Zeke's Herald",
+      "Zeke's Herald"
+     ]
+    }
+   ]
+  },
+  {
+   "traits": [
+    "1 The Boss",
+    "1 Emperor",
+    "1 Tormented",
+    "2 Brawler",
+    "1 Exile"
+   ],
+   "chosen_trait": "Brawler",
+   "units": [
+    {
+     "name": "Kayn",
+     "stars": 1,
+     "items": [
+      "Guardian Angel"
+     ]
+    },
+    {
+     "name": "Lee Sin",
+     "stars": 1,
+     "items": []
+    },
+    {
+     "name": "Sett",
+     "stars": 1,
+     "items": []
+    },
+    {
+     "name": "Sett",
+     "stars": 1,
+     "items": []
+    },
+    {
+     "name": "Azir",
+     "stars": 2,
+     "items": [
+      "Statikk Shiv",
+      "Tear of the Goddess"
+     ]
+    },
+    {
+     "name": "Sett",
+     "stars": 2,
+     "items": [
+      "Thief's Gloves",
+      "Morellonomicon",
+      "Ionic Spark"
+     ]
+    },
+    {
+     "name": "Sett",
+     "stars": 2,
+     "items": [
+      "Sunfire Cape",
+      "Zz'Rot Portal"
+     ]
+    },
+    {
+     "name": "Yone",
+     "stars": 2,
+     "items": [
+      "Quicksilver",
+      "Blue Buff"
+     ]
+    },
+    {
+     "name": "Zilean",
+     "stars": 2,
+     "items": [
+      "Guardian Angel",
+      "Zephyr"
+     ]
+    }
+   ]
+  },
+  {
+   "traits": [
+    "6 Dusk",
+    "3 Cultist",
+    "3 Sharpshooter",
+    "2 Mystic",
+    "2 Vanguard",
+    "1 Exile"
+   ],
+   "chosen_trait": "Sharpshooter",
+   "units": [
+    {
+     "name": "Vayne",
+     "stars": 1,
+     "items": []
+    },
+    {
+     "name": "Thresh",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Aatrox",
+     "stars": 2,
+     "items": [
+      "Warmog's Armor",
+      "Chain Vest"
+     ]
+    },
+    {
+     "name": "Cassiopeia",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Jhin",
+     "stars": 2,
+     "items": [
+      "Aspect of Dusk",
+      "Infinity Edge",
+      "Quicksilver"
+     ]
+    },
+    {
+     "name": "Riven",
+     "stars": 2,
+     "items": [
+      "Sunfire Cape",
+      "Bramble Vest",
+      "Ionic Spark"
+     ]
+    },
+    {
+     "name": "Zilean",
+     "stars": 1,
+     "items": [
+      "Statikk Shiv"
+     ]
+    },
+    {
+     "name": "Lillia",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Yone",
+     "stars": 2,
+     "items": [
+      "Titan’s Resolve"
+     ]
+    }
+   ]
+  },
+  {
+   "traits": [
+    "6 Dusk",
+    "1 Tormented",
+    "2 Mystic",
+    "2 Sharpshooter",
+    "1 Exile"
+   ],
+   "chosen_trait": "Dusk",
+   "units": [
+    {
+     "name": "Vayne",
+     "stars": 1,
+     "items": []
+    },
+    {
+     "name": "Thresh",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Cassiopeia",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Jhin",
+     "stars": 2,
+     "items": [
+      "Zeke's Herald",
+      "Giant Slayer",
+      "Zeke's Herald"
+     ]
+    },
+    {
+     "name": "Riven",
+     "stars": 2,
+     "items": [
+      "Blue Buff",
+      "Quicksilver"
+     ]
+    },
+    {
+     "name": "Zilean",
+     "stars": 1,
+     "items": []
+    },
+    {
+     "name": "Ezreal",
+     "stars": 2,
+     "items": [
+      "Statikk Shiv"
+     ]
+    },
+    {
+     "name": "Kayn",
+     "stars": 2,
+     "items": [
+      "Frozen Heart"
+     ]
+    },
+    {
+     "name": "Lillia",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Yone",
+     "stars": 2,
+     "items": [
+      "Bloodthirster"
+     ]
+    }
+   ]
+  },
+  {
+   "traits": [
+    "4 Ninja",
+    "1 Emperor",
+    "1 Tormented",
+    "3 Adept",
+    "3 Shade",
+    "2 Keeper",
+    "2 Assassin",
+    "2 Mystic",
+    "1 Exile"
+   ],
+   "chosen_trait": "Shade",
+   "units": [
+    {
+     "name": "Zed",
+     "stars": 2,
+     "items": [
+      "Rapid Firecannon",
+      "Quicksilver",
+      "Runaan's Hurricane"
+     ]
+    },
+    {
+     "name": "Irelia",
+     "stars": 1,
+     "items": []
+    },
+    {
+     "name": "Akali",
+     "stars": 2,
+     "items": [
+      "Zeke's Herald"
+     ]
+    },
+    {
+     "name": "Kennen",
+     "stars": 2,
+     "items": [
+      "Hand of Justice",
+      "Morellonomicon",
+      "Chalice of Power"
+     ]
+    },
+    {
+     "name": "Shen",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Yone",
+     "stars": 1,
+     "items": [
+      "Ionic Spark",
+      "Deathblade",
+      "Youmuu's Ghostblade"
+     ]
+    },
+    {
+     "name": "Azir",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Kayn",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Zilean",
+     "stars": 2,
+     "items": []
+    }
+   ]
+  },
+  {
+   "traits": [
+    "6 Mystic",
+    "4 Vanguard",
+    "2 Dusk",
+    "2 Spirit",
+    "1 Ninja"
+   ],
+   "chosen_trait": "Mystic",
+   "units": [
+    {
+     "name": "Janna",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Thresh",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Yuumi",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Sejuani",
+     "stars": 1,
+     "items": []
+    },
+    {
+     "name": "Aatrox",
+     "stars": 2,
+     "items": [
+      "Guardian Angel",
+      "Zephyr"
+     ]
+    },
+    {
+     "name": "Ahri",
+     "stars": 2,
+     "items": [
+      "Guardian Angel",
+      "Jeweled Gauntlet",
+      "Guinsoo's Rageblade"
+     ]
+    },
+    {
+     "name": "Cassiopeia",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Shen",
+     "stars": 2,
+     "items": [
+      "Sunfire Cape",
+      "Ionic Spark",
+      "Titan’s Resolve"
+     ]
+    },
+    {
+     "name": "Zilean",
+     "stars": 1,
+     "items": [
+      "Vanguard's Cuirass",
+      "Tear of the Goddess",
+      "Zeke's Herald"
+     ]
+    }
+   ]
+  },
+  {
+   "traits": [
+    "6 Divine",
+    "3 Adept",
+    "3 Dazzler",
+    "2 Duelist",
+    "2 Enlightened",
+    "1 Exile",
+    "1 Ninja"
+   ],
+   "chosen_trait": "Dazzler",
+   "units": [
+    {
+     "name": "Wukong",
+     "stars": 1,
+     "items": [
+      "Zephyr"
+     ]
+    },
+    {
+     "name": "Jax",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Irelia",
+     "stars": 2,
+     "items": [
+      "Zeke's Herald",
+      "Chalice of Power"
+     ]
+    },
+    {
+     "name": "Lux",
+     "stars": 3,
+     "items": []
+    },
+    {
+     "name": "Morgana",
+     "stars": 1,
+     "items": [
+      "Morellonomicon"
+     ]
+    },
+    {
+     "name": "Shen",
+     "stars": 1,
+     "items": []
+    },
+    {
+     "name": "Warwick",
+     "stars": 2,
+     "items": [
+      "Runaan's Hurricane",
+      "Quicksilver",
+      "Deathblade"
+     ]
+    },
+    {
+     "name": "Yone",
+     "stars": 1,
+     "items": [
+      "Zz'Rot Portal"
+     ]
+    },
+    {
+     "name": "Lee Sin",
+     "stars": 2,
+     "items": [
+      "Gargoyle Stoneplate"
+     ]
+    }
+   ]
+  },
+  {
+   "traits": [
+    "6 Dusk",
+    "4 Keeper",
+    "2 Vanguard",
+    "2 Sharpshooter",
+    "1 Exile",
+    "1 Ninja"
+   ],
+   "chosen_trait": "Keeper",
+   "units": [
+    {
+     "name": "Vayne",
+     "stars": 3,
+     "items": []
+    },
+    {
+     "name": "Jarvan IV",
+     "stars": 2,
+     "items": [
+      "Zz'Rot Portal"
+     ]
+    },
+    {
+     "name": "Thresh",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Kennen",
+     "stars": 2,
+     "items": [
+      "Aspect of Dusk"
+     ]
+    },
+    {
+     "name": "Aatrox",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Cassiopeia",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Jhin",
+     "stars": 2,
+     "items": [
+      "Deathblade"
+     ]
+    },
+    {
+     "name": "Riven",
+     "stars": 2,
+     "items": [
+      "Guardian Angel",
+      "Morellonomicon",
+      "Titan’s Resolve"
+     ]
+    },
+    {
+     "name": "Yone",
+     "stars": 2,
+     "items": [
+      "Giant Slayer",
+      "Aspect of Dusk",
+      "Blue Buff"
+     ]
+    }
+   ]
+  },
+  {
+   "traits": [
+    "9 Cultist",
+    "2 Duelist"
+   ],
+   "chosen_trait": "Cultist",
+   "units": [
+    {
+     "name": "Elise",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "TwistedFate",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Pyke",
+     "stars": 2,
+     "items": [
+      "Thief's Gloves",
+      "Ionic Spark",
+      "Ionic Spark"
+     ]
+    },
+    {
+     "name": "Kalista",
+     "stars": 2,
+     "items": [
+      "Runaan's Hurricane",
+      "Guinsoo's Rageblade"
+     ]
+    },
+    {
+     "name": "Evelynn",
+     "stars": 3,
+     "items": [
+      "Ionic Spark",
+      "Guardian Angel",
+      "Locket of the Iron Solari"
+     ]
+    },
+    {
+     "name": "Aatrox",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Jhin",
+     "stars": 2,
+     "items": [
+      "Statikk Shiv",
+      "Guardian Angel",
+      "Last Whisper"
+     ]
+    },
+    {
+     "name": "Zilean",
+     "stars": 1,
+     "items": []
+    },
+    {
+     "name": "Lee Sin",
+     "stars": 2,
+     "items": []
+    }
+   ]
+  },
+  {
+   "traits": [
+    "6 Dusk",
+    "1 Emperor",
+    "2 Keeper",
+    "2 Adept",
+    "2 Mystic",
+    "2 Vanguard",
+    "2 Sharpshooter",
+    "1 Exile",
+    "1 Ninja"
+   ],
+   "chosen_trait": "Dusk",
+   "units": [
+    {
+     "name": "Vayne",
+     "stars": 1,
+     "items": []
+    },
+    {
+     "name": "Thresh",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Riven",
+     "stars": 1,
+     "items": [
+      "Ionic Spark",
+      "Hand of Justice",
+      "Sunfire Cape"
+     ]
+    },
+    {
+     "name": "Shen",
+     "stars": 1,
+     "items": []
+    },
+    {
+     "name": "Jhin",
+     "stars": 2,
+     "items": [
+      "Infinity Edge",
+      "Giant Slayer",
+      "Aspect of Dusk"
+     ]
+    },
+    {
+     "name": "Lillia",
+     "stars": 1,
+     "items": [
+      "Zephyr"
+     ]
+    },
+    {
+     "name": "Azir",
+     "stars": 2,
+     "items": [
+      "Deathblade"
+     ]
+    },
+    {
+     "name": "Yone",
+     "stars": 2,
+     "items": [
+      "Vanguard's Cuirass",
+      "Frozen Heart"
+     ]
+    },
+    {
+     "name": "Zilean",
+     "stars": 2,
+     "items": []
+    }
+   ]
+  },
+  {
+   "traits": [
+    "4 Divine",
+    "3 Adept",
+    "3 Dazzler",
+    "3 Elderwood",
+    "2 Hunter",
+    "2 Enlightened",
+    "1 Exile",
+    "1 Ninja"
+   ],
+   "chosen_trait": "Divine",
+   "units": [
+    {
+     "name": "Irelia",
+     "stars": 2,
+     "items": [
+      "Locket of the Iron Solari"
+     ]
+    },
+    {
+     "name": "Lux",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Ashe",
+     "stars": 2,
+     "items": [
+      "Thief's Gloves",
+      "Rabadon's Deathcap",
+      "Hextech Gunblade"
+     ]
+    },
+    {
+     "name": "Morgana",
+     "stars": 2,
+     "items": [
+      "Guardian Angel",
+      "Quicksilver",
+      "Morellonomicon"
+     ]
+    },
+    {
+     "name": "Shen",
+     "stars": 2,
+     "items": []
+    },
+    {
+     "name": "Warwick",
+     "stars": 2,
+     "items": [
+      "Elderwood Sprout",
+      "Sunfire Cape",
+      "Locket of the Iron Solari"
+     ]
+    },
+    {
+     "name": "Yone",
+     "stars": 1,
+     "items": [
+      "Thief's Gloves",
+      "Chalice of Power",
+      "Rabadon's Deathcap"
+     ]
+    },
+    {
+     "name": "Ezreal",
+     "stars": 2,
+     "items": [
+      "Blue Buff",
+      "Trap Claw",
+      "Zephyr"
+     ]
+    }
+   ]
+  }
+ ]
+}
