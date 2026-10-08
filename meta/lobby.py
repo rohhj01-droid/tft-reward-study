@@ -90,6 +90,15 @@ def completion(player, board):
     return len(names & target) / len(target)
 
 
+def board_record(player):
+    """보드 기록: 레벨, 유닛(이름, 비용, 별, 완성 아이템 수), 켜진 특성 인원, 선택받은 자 특성."""
+    units = [u for row in player.board for u in row if u and u.name in BASE_CHAMPION_LIST]
+    return {'level': player.level,
+            'units': [[u.name, u.cost, u.stars, sum(i in item_builds for i in u.items)] for u in units],
+            'traits': {t: n for t, n in player.team_composition.items() if player.team_tiers.get(t, 0) > 0},
+            'chosen': player.chosen or None}
+
+
 class DeckPolicy:
     """기본 봇에 얹어 목표 덱을 따라가게 하는 정책(11라운드에 기본 봇이 덱을 정한 뒤부터). fullgame/policy.py의
     RerollPolicy처럼 할 일이 있는 단계만 발동해서, 할 일이 없는 턴에는 레벨·리롤 판단까지 간다.
@@ -176,15 +185,18 @@ def _register():
         for b in BOARDS:
             default_agent_stats.TEAM_COMPS.append(list(b['units']))
             default_agent_stats.TEAM_COMP_TRAITS.append(chosen_of(b)[1])
-    sim_config.LOGMESSAGES = False  # 켜 두면 실행한 곳에 log.txt가 생긴다
 
 
-def play(game):
-    """한 판. game = (시드, 덱 번호 8개). 돌려주는 값: [(덱 번호, 등수, 탈락 때 덱 완성도, 5단계 시작 때 덱 완성도), ...]
-    탈락 때 완성도는 일찍 죽은 덱일수록 낮게 나와 등수와 엉킨다. 그래서 5단계 시작(21번째 칸) 때 살아 있던 봇의 완성도를
-    따로 잰다(그 전에 탈락하면 None)."""
+def play(game, deck_bots=True):
+    """한 판. game = (시드, 덱 번호 8개). deck_bots=False면 덱을 정해 주지 않은 기본 봇 그대로 돈다(meta.play_stats).
+    돌려주는 값: {'curve': [(칸, 레벨, 골드, 체력), ...] 살아 있는 봇이 그 칸에서 처음 움직일 때,
+                 'players': [{'deck', 'place', 'complete', 'complete21', 'board'}, ...]}
+    탈락 때 완성도(complete)는 일찍 죽은 덱일수록 낮게 나와 등수와 엉킨다. 그래서 5단계 시작(21번째 칸) 때 살아 있던
+    봇의 완성도(complete21)를 따로 잰다(그 전에 탈락하면 None). board는 탈락하거나 끝날 때의 board_record다."""
     seed, decks = game
-    _register()
+    sim_config.LOGMESSAGES = False  # 켜 두면 실행한 곳에 log.txt가 생긴다
+    if deck_bots:
+        _register()
     random.seed(seed)
     np.random.seed(seed)
     with quiet():
@@ -193,10 +205,11 @@ def play(game):
         obs, info = env.reset(options={'default_agent': [True] * N_PLAYERS})
         deck_of = dict(zip(info, decks))
         players = {a: info[a]['player'] for a in info}
-        for a, deck in deck_of.items():
-            players[a].default_agent.comp_number = FIRST_DECK + deck
-            attach(players[a], BOARDS[deck])
-        handed, placement, done, mid = {}, {}, {}, {}
+        if deck_bots:
+            for a, deck in deck_of.items():
+                players[a].default_agent.comp_number = FIRST_DECK + deck
+                attach(players[a], BOARDS[deck])
+        curve, seen, handed, placement, done, mid, boards = [], set(), {}, {}, {}, {}, {}
         rank, guard = N_PLAYERS, 0
         # 종료 신호를 놓치면 루프가 안 끝난다(fullgame/ab_test.py와 같은 상한). 상한에 걸린 판은 아래에서 등수를 메운다.
         while obs and guard < 5000:
@@ -204,24 +217,29 @@ def play(game):
             alive = list(obs)
             actions = []
             for a in alive:
-                game_round = info[a]['game_round']
+                game_round, p = info[a]['game_round'], players[a]
+                if (a, game_round) not in seen:
+                    seen.add((a, game_round))
+                    curve.append((game_round, p.level, p.gold, p.health))
                 if game_round >= 21 and a not in mid:
-                    mid[a] = completion(players[a], BOARDS[deck_of[a]])
-                if game_round >= 11 and handed.get(a) != game_round:
-                    hand_out_items(players[a], BOARDS[deck_of[a]]['items'])
+                    mid[a] = completion(p, BOARDS[deck_of[a]])
+                if deck_bots and game_round >= 11 and handed.get(a) != game_round:
+                    hand_out_items(p, BOARDS[deck_of[a]]['items'])
                     handed[a] = game_round
-                actions.append(players[a].default_policy(game_round, info[a]['shop'], obs[a]['action_mask']))
+                actions.append(p.default_policy(game_round, info[a]['shop'], obs[a]['action_mask']))
             decoded = utils.decode_action(actions)
             obs, _, terminated, _, info = env.step({a: decoded[i] for i, a in enumerate(alive)})
             for a, ended in terminated.items():
                 if ended and a not in placement:
                     placement[a], rank = rank, rank - 1
-                    done[a] = completion(players[a], BOARDS[deck_of[a]])
+                    done[a], boards[a] = completion(players[a], BOARDS[deck_of[a]]), board_record(players[a])
     for a in deck_of:  # 끝까지 terminated가 안 온 플레이어
         if a not in placement:
             placement[a], rank = rank, rank - 1
-            done[a] = completion(players[a], BOARDS[deck_of[a]])
-    return [(deck_of[a], placement[a], done[a], mid.get(a)) for a in deck_of]
+            done[a], boards[a] = completion(players[a], BOARDS[deck_of[a]]), board_record(players[a])
+    return {'curve': curve,
+            'players': [{'deck': deck_of[a], 'place': placement[a], 'complete': done[a], 'complete21': mid.get(a),
+                         'board': boards[a]} for a in deck_of]}
 
 
 def _ranks(values):
@@ -248,7 +266,8 @@ def main():
     with Pool(args.jobs) as workers:
         results = workers.map(play, games, chunksize=1)
 
-    rows = [(g, *player) for g, result in enumerate(results) for player in result]
+    rows = [(g, p['deck'], p['place'], p['complete'], p['complete21'])
+            for g, result in enumerate(results) for p in result['players']]
     by_deck = {d: [r for r in rows if r[1] == d] for d in range(len(BOARDS))}
     pit_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'results', 'pit_1024.json')
     fixed = average(json.load(open(pit_path, encoding='utf-8'))['human']) if os.path.exists(pit_path) else {}
