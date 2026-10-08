@@ -32,7 +32,11 @@ def trends(page):
              'pick_rate': d['pick_rate'], 'games_score': d['games_score'], 'win_rate': d['win_rate'],
              'top4_rate': d['top_rate'], 'average_placement': d['average_placement'],
              'placements': [d['placements'][str(p)]['rate'] for p in range(1, 9)],
-             'units': [{'name': c['key'], 'items': c['items']} for c in d['champions']]} for d in decks]
+             # items는 그 챔피언이 그 조합에서 자주 든 아이템 3개(모든 유닛에 있다), recommended는 페이지에 보이던
+             # 핵심 유닛의 추천 아이템(보드마다 8개)이다. 보드를 실제처럼 만들 때는 recommended를 쓴다.
+             'units': [{'name': c['key'], 'items': c['items'],
+                        'recommended': c['recommend_items'] if c['show_recommend_items'] else []}
+                       for c in d['champions']]} for d in decks]
 
 
 def winners(page):

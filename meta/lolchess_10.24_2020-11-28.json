@@ -35,11 +35,21 @@
       "HextechGunblade",
       "HandofJustice",
       "GuardianAngel"
+     ],
+     "recommended": [
+      "HextechGunblade",
+      "HandofJustice",
+      "GuardianAngel"
      ]
     },
     {
      "name": "Jhin",
      "items": [
+      "InfinityEdge",
+      "GuardianAngel",
+      "GiantSlayer"
+     ],
+     "recommended": [
       "InfinityEdge",
       "GuardianAngel",
       "GiantSlayer"
@@ -51,6 +61,10 @@
       "HextechGunblade",
       "IonicSpark",
       "HandofJustice"
+     ],
+     "recommended": [
+      "HextechGunblade",
+      "IonicSpark"
      ]
     },
     {
@@ -59,7 +73,8 @@
       "RunaansHurricane",
       "GuinsoosRageblade",
       "RapidFirecannon"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Zilean",
@@ -67,7 +82,8 @@
       "SpearofShojin",
       "Redemption",
       "GuardianAngel"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Aatrox",
@@ -75,7 +91,8 @@
       "WarmogsArmor",
       "Redemption",
       "DragonsClaw"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Pyke",
@@ -83,7 +100,8 @@
       "Morellonomicon",
       "LudensEcho",
       "FrozenHeart"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "TwistedFate",
@@ -91,7 +109,8 @@
       "ZekesHerald",
       "LocketoftheIronSolari",
       "Morellonomicon"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Elise",
@@ -99,7 +118,8 @@
       "IonicSpark",
       "Redemption",
       "Zephyr"
-     ]
+     ],
+     "recommended": []
     }
    ]
   },
@@ -135,11 +155,21 @@
       "RapidFirecannon",
       "Quicksilver",
       "RunaansHurricane"
+     ],
+     "recommended": [
+      "RapidFirecannon",
+      "Quicksilver",
+      "RunaansHurricane"
      ]
     },
     {
      "name": "Kayn",
      "items": [
+      "HandofJustice",
+      "HextechGunblade",
+      "GuardianAngel"
+     ],
+     "recommended": [
       "HandofJustice",
       "HextechGunblade",
       "GuardianAngel"
@@ -151,6 +181,10 @@
       "ZekesHerald",
       "LocketoftheIronSolari",
       "HextechGunblade"
+     ],
+     "recommended": [
+      "ZekesHerald",
+      "LocketoftheIronSolari"
      ]
     },
     {
@@ -159,7 +193,8 @@
       "ZekesHerald",
       "LocketoftheIronSolari",
       "InfinityEdge"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Kennen",
@@ -167,7 +202,8 @@
       "Morellonomicon",
       "LocketoftheIronSolari",
       "GuardianAngel"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Pyke",
@@ -175,7 +211,8 @@
       "FrozenHeart",
       "Morellonomicon",
       "Zephyr"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Zilean",
@@ -183,7 +220,8 @@
       "SpearofShojin",
       "Redemption",
       "ZekesHerald"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Shen",
@@ -191,7 +229,8 @@
       "Redemption",
       "WarmogsArmor",
       "FrozenHeart"
-     ]
+     ],
+     "recommended": []
     }
    ]
   },
@@ -227,11 +266,21 @@
       "RapidFirecannon",
       "Quicksilver",
       "RunaansHurricane"
+     ],
+     "recommended": [
+      "RapidFirecannon",
+      "Quicksilver",
+      "RunaansHurricane"
      ]
     },
     {
      "name": "Kayn",
      "items": [
+      "HandofJustice",
+      "HextechGunblade",
+      "GuardianAngel"
+     ],
+     "recommended": [
       "HandofJustice",
       "HextechGunblade",
       "GuardianAngel"
@@ -243,6 +292,10 @@
       "ZekesHerald",
       "LocketoftheIronSolari",
       "HextechGunblade"
+     ],
+     "recommended": [
+      "ZekesHerald",
+      "LocketoftheIronSolari"
      ]
     },
     {
@@ -251,7 +304,8 @@
       "ZekesHerald",
       "LocketoftheIronSolari",
       "InfinityEdge"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Kennen",
@@ -259,7 +313,8 @@
       "Morellonomicon",
       "LocketoftheIronSolari",
       "GuardianAngel"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Pyke",
@@ -267,7 +322,8 @@
       "FrozenHeart",
       "Morellonomicon",
       "ZekesHerald"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Shen",
@@ -275,7 +331,8 @@
       "Redemption",
       "WarmogsArmor",
       "FrozenHeart"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Elise",
@@ -283,7 +340,8 @@
       "ZekesHerald",
       "LocketoftheIronSolari",
       "Zephyr"
-     ]
+     ],
+     "recommended": []
     }
    ]
   },
@@ -319,11 +377,21 @@
       "SpearofShojin",
       "GuinsoosRageblade",
       "Quicksilver"
+     ],
+     "recommended": [
+      "SpearofShojin",
+      "GuinsoosRageblade",
+      "Quicksilver"
      ]
     },
     {
      "name": "Jhin",
      "items": [
+      "InfinityEdge",
+      "GiantSlayer",
+      "GuardianAngel"
+     ],
+     "recommended": [
       "InfinityEdge",
       "GiantSlayer",
       "GuardianAngel"
@@ -335,6 +403,10 @@
       "IonicSpark",
       "WarmogsArmor",
       "Quicksilver"
+     ],
+     "recommended": [
+      "IonicSpark",
+      "WarmogsArmor"
      ]
     },
     {
@@ -343,7 +415,8 @@
       "RunaansHurricane",
       "GuinsoosRageblade",
       "Quicksilver"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Azir",
@@ -351,7 +424,8 @@
       "SpearofShojin",
       "Morellonomicon",
       "LudensEcho"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Teemo",
@@ -359,7 +433,8 @@
       "ZekesHerald",
       "SpearofShojin",
       "LocketoftheIronSolari"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Kennen",
@@ -367,7 +442,8 @@
       "Morellonomicon",
       "Redemption",
       "LocketoftheIronSolari"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Nidalee",
@@ -375,7 +451,8 @@
       "SpearofShojin",
       "ZekesHerald",
       "InfinityEdge"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "JarvanIV",
@@ -383,7 +460,8 @@
       "FrozenHeart",
       "Redemption",
       "WarmogsArmor"
-     ]
+     ],
+     "recommended": []
     }
    ]
   },
@@ -421,11 +499,21 @@
       "RapidFirecannon",
       "Quicksilver",
       "RunaansHurricane"
+     ],
+     "recommended": [
+      "RapidFirecannon",
+      "Quicksilver",
+      "RunaansHurricane"
      ]
     },
     {
      "name": "Kayn",
      "items": [
+      "HandofJustice",
+      "GuardianAngel",
+      "RabadonsDeathcap"
+     ],
+     "recommended": [
       "HandofJustice",
       "GuardianAngel",
       "RabadonsDeathcap"
@@ -437,6 +525,10 @@
       "ZekesHerald",
       "LocketoftheIronSolari",
       "IonicSpark"
+     ],
+     "recommended": [
+      "ZekesHerald",
+      "LocketoftheIronSolari"
      ]
     },
     {
@@ -445,7 +537,8 @@
       "ZekesHerald",
       "LocketoftheIronSolari",
       "InfinityEdge"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Yone",
@@ -453,7 +546,8 @@
       "Morellonomicon",
       "HandofJustice",
       "GuardianAngel"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Zilean",
@@ -461,7 +555,8 @@
       "SpearofShojin",
       "Redemption",
       "GuardianAngel"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Pyke",
@@ -469,7 +564,8 @@
       "ZekesHerald",
       "FrozenHeart",
       "Morellonomicon"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Kennen",
@@ -477,7 +573,8 @@
       "LocketoftheIronSolari",
       "Morellonomicon",
       "Redemption"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Shen",
@@ -485,7 +582,8 @@
       "Redemption",
       "IonicSpark",
       "FrozenHeart"
-     ]
+     ],
+     "recommended": []
     }
    ]
   },
@@ -523,11 +621,21 @@
       "RapidFirecannon",
       "Quicksilver",
       "RunaansHurricane"
+     ],
+     "recommended": [
+      "RapidFirecannon",
+      "Quicksilver",
+      "RunaansHurricane"
      ]
     },
     {
      "name": "Kayn",
      "items": [
+      "HandofJustice",
+      "HextechGunblade",
+      "RabadonsDeathcap"
+     ],
+     "recommended": [
       "HandofJustice",
       "HextechGunblade",
       "RabadonsDeathcap"
@@ -539,6 +647,10 @@
       "ZekesHerald",
       "LocketoftheIronSolari",
       "IonicSpark"
+     ],
+     "recommended": [
+      "ZekesHerald",
+      "LocketoftheIronSolari"
      ]
     },
     {
@@ -547,7 +659,8 @@
       "ZekesHerald",
       "LocketoftheIronSolari",
       "InfinityEdge"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Pyke",
@@ -555,7 +668,8 @@
       "FrozenHeart",
       "Morellonomicon",
       "LocketoftheIronSolari"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Azir",
@@ -563,7 +677,8 @@
       "ZekesHerald",
       "GuinsoosRageblade",
       "LocketoftheIronSolari"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Zilean",
@@ -571,7 +686,8 @@
       "SpearofShojin",
       "LocketoftheIronSolari",
       "GuardianAngel"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Shen",
@@ -579,7 +695,8 @@
       "Redemption",
       "WarmogsArmor",
       "DragonsClaw"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Kennen",
@@ -587,7 +704,8 @@
       "Morellonomicon",
       "GuardianAngel",
       "Redemption"
-     ]
+     ],
+     "recommended": []
     }
    ]
   },
@@ -624,11 +742,21 @@
       "InfinityEdge",
       "GiantSlayer",
       "GuardianAngel"
+     ],
+     "recommended": [
+      "InfinityEdge",
+      "GiantSlayer",
+      "GuardianAngel"
      ]
     },
     {
      "name": "Riven",
      "items": [
+      "IonicSpark",
+      "Quicksilver",
+      "RabadonsDeathcap"
+     ],
+     "recommended": [
       "IonicSpark",
       "Quicksilver",
       "RabadonsDeathcap"
@@ -640,6 +768,10 @@
       "RunaansHurricane",
       "GuinsoosRageblade",
       "Quicksilver"
+     ],
+     "recommended": [
+      "RunaansHurricane",
+      "GuinsoosRageblade"
      ]
     },
     {
@@ -648,7 +780,8 @@
       "Morellonomicon",
       "LudensEcho",
       "RabadonsDeathcap"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Azir",
@@ -656,7 +789,8 @@
       "ZekesHerald",
       "SpearofShojin",
       "LudensEcho"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Lillia",
@@ -664,7 +798,8 @@
       "ThiefsGloves",
       "Zephyr",
       "LudensEcho"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Aatrox",
@@ -672,7 +807,8 @@
       "Redemption",
       "FrozenHeart",
       "WarmogsArmor"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Zilean",
@@ -680,7 +816,8 @@
       "SpearofShojin",
       "GuardianAngel",
       "RapidFirecannon"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Thresh",
@@ -688,7 +825,8 @@
       "Zephyr",
       "FrozenHeart",
       "ForceofNature"
-     ]
+     ],
+     "recommended": []
     }
    ]
   },
@@ -721,11 +859,21 @@
       "InfinityEdge",
       "GuardianAngel",
       "GiantSlayer"
+     ],
+     "recommended": [
+      "InfinityEdge",
+      "GuardianAngel",
+      "GiantSlayer"
      ]
     },
     {
      "name": "Evelynn",
      "items": [
+      "HextechGunblade",
+      "IonicSpark",
+      "HandofJustice"
+     ],
+     "recommended": [
       "HextechGunblade",
       "IonicSpark",
       "HandofJustice"
@@ -737,6 +885,10 @@
       "RunaansHurricane",
       "GuinsoosRageblade",
       "RapidFirecannon"
+     ],
+     "recommended": [
+      "RunaansHurricane",
+      "GuinsoosRageblade"
      ]
     },
     {
@@ -745,7 +897,8 @@
       "Morellonomicon",
       "LudensEcho",
       "FrozenHeart"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Aatrox",
@@ -753,7 +906,8 @@
       "IonicSpark",
       "Redemption",
       "DragonsClaw"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Zilean",
@@ -761,7 +915,8 @@
       "SpearofShojin",
       "GuardianAngel",
       "LocketoftheIronSolari"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Azir",
@@ -769,7 +924,8 @@
       "Morellonomicon",
       "LudensEcho",
       "SpearofShojin"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "TwistedFate",
@@ -777,7 +933,8 @@
       "ZekesHerald",
       "LocketoftheIronSolari",
       "Morellonomicon"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Elise",
@@ -785,7 +942,8 @@
       "IonicSpark",
       "WarmogsArmor",
       "LocketoftheIronSolari"
-     ]
+     ],
+     "recommended": []
     }
    ]
   },
@@ -820,11 +978,21 @@
       "HextechGunblade",
       "Quicksilver",
       "HandofJustice"
+     ],
+     "recommended": [
+      "HextechGunblade",
+      "Quicksilver",
+      "HandofJustice"
      ]
     },
     {
      "name": "Azir",
      "items": [
+      "SpearofShojin",
+      "GuinsoosRageblade",
+      "RapidFirecannon"
+     ],
+     "recommended": [
       "SpearofShojin",
       "GuinsoosRageblade",
       "RapidFirecannon"
@@ -836,6 +1004,10 @@
       "HandofJustice",
       "HextechGunblade",
       "RabadonsDeathcap"
+     ],
+     "recommended": [
+      "HandofJustice",
+      "HextechGunblade"
      ]
     },
     {
@@ -844,7 +1016,8 @@
       "Bloodthirster",
       "HandofJustice",
       "Quicksilver"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "JarvanIV",
@@ -852,7 +1025,8 @@
       "LocketoftheIronSolari",
       "IonicSpark",
       "FrozenHeart"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Vi",
@@ -860,7 +1034,8 @@
       "ThiefsGloves",
       "WarmogsArmor",
       "HandofJustice"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Nidalee",
@@ -868,7 +1043,8 @@
       "Zephyr",
       "SpearofShojin",
       "ZekesHerald"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Garen",
@@ -876,7 +1052,8 @@
       "LocketoftheIronSolari",
       "WarmogsArmor",
       "DragonsClaw"
-     ]
+     ],
+     "recommended": []
     }
    ]
   },
@@ -913,11 +1090,21 @@
       "HandofJustice",
       "Quicksilver",
       "GuardianAngel"
+     ],
+     "recommended": [
+      "HandofJustice",
+      "Quicksilver",
+      "GuardianAngel"
      ]
     },
     {
      "name": "Yone",
      "items": [
+      "HextechGunblade",
+      "Morellonomicon",
+      "WarmogsArmor"
+     ],
+     "recommended": [
       "HextechGunblade",
       "Morellonomicon",
       "WarmogsArmor"
@@ -929,6 +1116,10 @@
       "WarmogsArmor",
       "RapidFirecannon",
       "SpearofShojin"
+     ],
+     "recommended": [
+      "WarmogsArmor",
+      "RapidFirecannon"
      ]
     },
     {
@@ -937,7 +1128,8 @@
       "RunaansHurricane",
       "GuinsoosRageblade",
       "RapidFirecannon"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Jax",
@@ -945,7 +1137,8 @@
       "LocketoftheIronSolari",
       "ZekesHerald",
       "RunaansHurricane"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Janna",
@@ -953,7 +1146,8 @@
       "RabadonsDeathcap",
       "Zephyr",
       "GuinsoosRageblade"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "XinZhao",
@@ -961,7 +1155,8 @@
       "Bloodthirster",
       "WarmogsArmor",
       "InfinityEdge"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Fiora",
@@ -969,7 +1164,8 @@
       "LocketoftheIronSolari",
       "Redemption",
       "InfinityEdge"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Shen",
@@ -977,7 +1173,8 @@
       "ThiefsGloves",
       "Zephyr",
       "ZekesHerald"
-     ]
+     ],
+     "recommended": []
     }
    ]
   },
@@ -1014,11 +1211,21 @@
       "GiantSlayer",
       "GuardianAngel",
       "GuinsoosRageblade"
+     ],
+     "recommended": [
+      "GiantSlayer",
+      "GuardianAngel",
+      "GuinsoosRageblade"
      ]
     },
     {
      "name": "Kindred",
      "items": [
+      "InfinityEdge",
+      "HandofJustice",
+      "ZekesHerald"
+     ],
+     "recommended": [
       "InfinityEdge",
       "HandofJustice",
       "ZekesHerald"
@@ -1030,6 +1237,10 @@
       "HextechGunblade",
       "Morellonomicon",
       "WarmogsArmor"
+     ],
+     "recommended": [
+      "HextechGunblade",
+      "Morellonomicon"
      ]
     },
     {
@@ -1038,7 +1249,8 @@
       "RunaansHurricane",
       "StatikkShiv",
       "WarmogsArmor"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Aphelios",
@@ -1046,7 +1258,8 @@
       "ZekesHerald",
       "Zephyr",
       "GuinsoosRageblade"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Shen",
@@ -1054,7 +1267,8 @@
       "DragonsClaw",
       "Redemption",
       "LocketoftheIronSolari"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Yuumi",
@@ -1062,7 +1276,8 @@
       "ZekesHerald",
       "Zephyr",
       "LocketoftheIronSolari"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Irelia",
@@ -1070,7 +1285,8 @@
       "Redemption",
       "FrozenHeart",
       "Zephyr"
-     ]
+     ],
+     "recommended": []
     }
    ]
   },
@@ -1106,11 +1322,21 @@
       "Quicksilver",
       "HandofJustice",
       "GuardianAngel"
+     ],
+     "recommended": [
+      "Quicksilver",
+      "HandofJustice",
+      "GuardianAngel"
      ]
     },
     {
      "name": "Yone",
      "items": [
+      "Morellonomicon",
+      "HextechGunblade",
+      "HandofJustice"
+     ],
+     "recommended": [
       "Morellonomicon",
       "HextechGunblade",
       "HandofJustice"
@@ -1122,6 +1348,10 @@
       "RunaansHurricane",
       "GuinsoosRageblade",
       "GuardianAngel"
+     ],
+     "recommended": [
+      "RunaansHurricane",
+      "GuinsoosRageblade"
      ]
     },
     {
@@ -1130,7 +1360,8 @@
       "GuardianAngel",
       "RapidFirecannon",
       "Quicksilver"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Jax",
@@ -1138,7 +1369,8 @@
       "LocketoftheIronSolari",
       "ZekesHerald",
       "IonicSpark"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "XinZhao",
@@ -1146,7 +1378,8 @@
       "Bloodthirster",
       "Quicksilver",
       "GuinsoosRageblade"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Irelia",
@@ -1154,7 +1387,8 @@
       "LocketoftheIronSolari",
       "Redemption",
       "IonicSpark"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Shen",
@@ -1162,7 +1396,8 @@
       "Zephyr",
       "Redemption",
       "IonicSpark"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Zilean",
@@ -1170,7 +1405,8 @@
       "Zephyr",
       "GuinsoosRageblade",
       "StatikkShiv"
-     ]
+     ],
+     "recommended": []
     }
    ]
   },
@@ -1207,11 +1443,21 @@
       "RunaansHurricane",
       "Quicksilver",
       "HandofJustice"
+     ],
+     "recommended": [
+      "RunaansHurricane",
+      "Quicksilver",
+      "HandofJustice"
      ]
     },
     {
      "name": "Yone",
      "items": [
+      "GuardianAngel",
+      "HandofJustice",
+      "HextechGunblade"
+     ],
+     "recommended": [
       "GuardianAngel",
       "HandofJustice",
       "HextechGunblade"
@@ -1223,6 +1469,10 @@
       "LocketoftheIronSolari",
       "ZekesHerald",
       "IonicSpark"
+     ],
+     "recommended": [
+      "LocketoftheIronSolari",
+      "ZekesHerald"
      ]
     },
     {
@@ -1231,7 +1481,8 @@
       "RapidFirecannon",
       "GuardianAngel",
       "Quicksilver"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Morgana",
@@ -1239,7 +1490,8 @@
       "Morellonomicon",
       "LudensEcho",
       "RabadonsDeathcap"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Irelia",
@@ -1247,7 +1499,8 @@
       "LocketoftheIronSolari",
       "ZekesHerald",
       "ThiefsGloves"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Lux",
@@ -1255,7 +1508,8 @@
       "RabadonsDeathcap",
       "Zephyr",
       "Morellonomicon"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Shen",
@@ -1263,7 +1517,8 @@
       "LocketoftheIronSolari",
       "Redemption",
       "IonicSpark"
-     ]
+     ],
+     "recommended": []
     }
    ]
   },
@@ -1300,11 +1555,21 @@
       "GuardianAngel",
       "HandofJustice",
       "Quicksilver"
+     ],
+     "recommended": [
+      "GuardianAngel",
+      "HandofJustice",
+      "Quicksilver"
      ]
     },
     {
      "name": "Kalista",
      "items": [
+      "GuinsoosRageblade",
+      "RunaansHurricane",
+      "RabadonsDeathcap"
+     ],
+     "recommended": [
       "GuinsoosRageblade",
       "RunaansHurricane",
       "RabadonsDeathcap"
@@ -1316,6 +1581,10 @@
       "HextechGunblade",
       "Morellonomicon",
       "HandofJustice"
+     ],
+     "recommended": [
+      "HextechGunblade",
+      "Morellonomicon"
      ]
     },
     {
@@ -1324,7 +1593,8 @@
       "WarmogsArmor",
       "SpearofShojin",
       "Quicksilver"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Jax",
@@ -1332,7 +1602,8 @@
       "LocketoftheIronSolari",
       "ZekesHerald",
       "IonicSpark"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Fiora",
@@ -1340,7 +1611,8 @@
       "LocketoftheIronSolari",
       "IonicSpark",
       "Redemption"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Janna",
@@ -1348,7 +1620,8 @@
       "Zephyr",
       "ZekesHerald",
       "RabadonsDeathcap"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Shen",
@@ -1356,7 +1629,8 @@
       "IonicSpark",
       "Zephyr",
       "Redemption"
-     ]
+     ],
+     "recommended": []
     }
    ]
   },
@@ -1393,11 +1667,21 @@
       "RapidFirecannon",
       "Quicksilver",
       "RunaansHurricane"
+     ],
+     "recommended": [
+      "RapidFirecannon",
+      "Quicksilver",
+      "RunaansHurricane"
      ]
     },
     {
      "name": "Evelynn",
      "items": [
+      "ZekesHerald",
+      "LocketoftheIronSolari",
+      "HextechGunblade"
+     ],
+     "recommended": [
       "ZekesHerald",
       "LocketoftheIronSolari",
       "HextechGunblade"
@@ -1409,6 +1693,10 @@
       "HandofJustice",
       "RabadonsDeathcap",
       "HextechGunblade"
+     ],
+     "recommended": [
+      "HandofJustice",
+      "RabadonsDeathcap"
      ]
     },
     {
@@ -1417,7 +1705,8 @@
       "ZekesHerald",
       "LocketoftheIronSolari",
       "InfinityEdge"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Kennen",
@@ -1425,7 +1714,8 @@
       "Morellonomicon",
       "LocketoftheIronSolari",
       "GuardianAngel"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Shen",
@@ -1433,7 +1723,8 @@
       "Redemption",
       "WarmogsArmor",
       "IonicSpark"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Pyke",
@@ -1441,7 +1732,8 @@
       "FrozenHeart",
       "LudensEcho",
       "IonicSpark"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Zilean",
@@ -1449,7 +1741,8 @@
       "SpearofShojin",
       "GuardianAngel",
       "Zephyr"
-     ]
+     ],
+     "recommended": []
     }
    ]
   },
@@ -1486,11 +1779,21 @@
       "RapidFirecannon",
       "Quicksilver",
       "RunaansHurricane"
+     ],
+     "recommended": [
+      "RapidFirecannon",
+      "Quicksilver",
+      "RunaansHurricane"
      ]
     },
     {
      "name": "Evelynn",
      "items": [
+      "ZekesHerald",
+      "LocketoftheIronSolari",
+      "HandofJustice"
+     ],
+     "recommended": [
       "ZekesHerald",
       "LocketoftheIronSolari",
       "HandofJustice"
@@ -1502,6 +1805,10 @@
       "ZekesHerald",
       "LocketoftheIronSolari",
       "HandofJustice"
+     ],
+     "recommended": [
+      "ZekesHerald",
+      "LocketoftheIronSolari"
      ]
     },
     {
@@ -1510,7 +1817,8 @@
       "Morellonomicon",
       "FrozenHeart",
       "ZekesHerald"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Kennen",
@@ -1518,7 +1826,8 @@
       "Morellonomicon",
       "LocketoftheIronSolari",
       "GuardianAngel"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Zilean",
@@ -1526,7 +1835,8 @@
       "GuardianAngel",
       "SpearofShojin",
       "Zephyr"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Azir",
@@ -1534,7 +1844,8 @@
       "ZekesHerald",
       "SpearofShojin",
       "Morellonomicon"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Shen",
@@ -1542,7 +1853,8 @@
       "Redemption",
       "WarmogsArmor",
       "Zephyr"
-     ]
+     ],
+     "recommended": []
     }
    ]
   },
@@ -1576,11 +1888,21 @@
       "HextechGunblade",
       "Quicksilver",
       "HandofJustice"
+     ],
+     "recommended": [
+      "HextechGunblade",
+      "Quicksilver",
+      "HandofJustice"
      ]
     },
     {
      "name": "Azir",
      "items": [
+      "GuinsoosRageblade",
+      "RapidFirecannon",
+      "Morellonomicon"
+     ],
+     "recommended": [
       "GuinsoosRageblade",
       "RapidFirecannon",
       "Morellonomicon"
@@ -1592,6 +1914,10 @@
       "Bloodthirster",
       "HandofJustice",
       "Quicksilver"
+     ],
+     "recommended": [
+      "Bloodthirster",
+      "HandofJustice"
      ]
     },
     {
@@ -1600,7 +1926,8 @@
       "IonicSpark",
       "Redemption",
       "Morellonomicon"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Pyke",
@@ -1608,7 +1935,8 @@
       "Morellonomicon",
       "IonicSpark",
       "InfinityEdge"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Vi",
@@ -1616,7 +1944,8 @@
       "ZekesHerald",
       "ThiefsGloves",
       "LocketoftheIronSolari"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Garen",
@@ -1624,7 +1953,8 @@
       "IonicSpark",
       "LocketoftheIronSolari",
       "WarmogsArmor"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Nidalee",
@@ -1632,7 +1962,8 @@
       "Zephyr",
       "StatikkShiv",
       "GiantSlayer"
-     ]
+     ],
+     "recommended": []
     }
    ]
   },
@@ -1669,11 +2000,21 @@
       "RapidFirecannon",
       "Quicksilver",
       "RunaansHurricane"
+     ],
+     "recommended": [
+      "RapidFirecannon",
+      "Quicksilver",
+      "RunaansHurricane"
      ]
     },
     {
      "name": "Evelynn",
      "items": [
+      "ZekesHerald",
+      "LocketoftheIronSolari",
+      "HextechGunblade"
+     ],
+     "recommended": [
       "ZekesHerald",
       "LocketoftheIronSolari",
       "HextechGunblade"
@@ -1685,6 +2026,10 @@
       "ZekesHerald",
       "LocketoftheIronSolari",
       "RapidFirecannon"
+     ],
+     "recommended": [
+      "ZekesHerald",
+      "LocketoftheIronSolari"
      ]
     },
     {
@@ -1693,7 +2038,8 @@
       "HandofJustice",
       "HextechGunblade",
       "GuardianAngel"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Kennen",
@@ -1701,7 +2047,8 @@
       "LocketoftheIronSolari",
       "Morellonomicon",
       "ZekesHerald"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Pyke",
@@ -1709,7 +2056,8 @@
       "ZekesHerald",
       "FrozenHeart",
       "Morellonomicon"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Shen",
@@ -1717,7 +2065,8 @@
       "FrozenHeart",
       "DragonsClaw",
       "IonicSpark"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Elise",
@@ -1725,7 +2074,8 @@
       "Redemption",
       "ForceofNature",
       "IonicSpark"
-     ]
+     ],
+     "recommended": []
     }
    ]
   },
@@ -1761,11 +2111,21 @@
       "RapidFirecannon",
       "Quicksilver",
       "RunaansHurricane"
+     ],
+     "recommended": [
+      "RapidFirecannon",
+      "Quicksilver",
+      "RunaansHurricane"
      ]
     },
     {
      "name": "Kayn",
      "items": [
+      "HandofJustice",
+      "HextechGunblade",
+      "GuardianAngel"
+     ],
+     "recommended": [
       "HandofJustice",
       "HextechGunblade",
       "GuardianAngel"
@@ -1777,6 +2137,10 @@
       "ZekesHerald",
       "LocketoftheIronSolari",
       "HextechGunblade"
+     ],
+     "recommended": [
+      "ZekesHerald",
+      "LocketoftheIronSolari"
      ]
     },
     {
@@ -1785,7 +2149,8 @@
       "ZekesHerald",
       "LocketoftheIronSolari",
       "InfinityEdge"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Kennen",
@@ -1793,7 +2158,8 @@
       "Morellonomicon",
       "LocketoftheIronSolari",
       "Redemption"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Zilean",
@@ -1801,7 +2167,8 @@
       "ZekesHerald",
       "SpearofShojin",
       "LocketoftheIronSolari"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Shen",
@@ -1809,7 +2176,8 @@
       "WarmogsArmor",
       "Redemption",
       "Zephyr"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Elise",
@@ -1817,7 +2185,8 @@
       "ZekesHerald",
       "LocketoftheIronSolari",
       "Redemption"
-     ]
+     ],
+     "recommended": []
     }
    ]
   },
@@ -1853,11 +2222,21 @@
       "Quicksilver",
       "HandofJustice",
       "GuardianAngel"
+     ],
+     "recommended": [
+      "Quicksilver",
+      "HandofJustice",
+      "GuardianAngel"
      ]
     },
     {
      "name": "Kalista",
      "items": [
+      "RunaansHurricane",
+      "GuinsoosRageblade",
+      "RapidFirecannon"
+     ],
+     "recommended": [
       "RunaansHurricane",
       "GuinsoosRageblade",
       "RapidFirecannon"
@@ -1869,6 +2248,10 @@
       "Morellonomicon",
       "RabadonsDeathcap",
       "HextechGunblade"
+     ],
+     "recommended": [
+      "Morellonomicon",
+      "RabadonsDeathcap"
      ]
     },
     {
@@ -1877,7 +2260,8 @@
       "RapidFirecannon",
       "GuardianAngel",
       "Quicksilver"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "XinZhao",
@@ -1885,7 +2269,8 @@
       "Bloodthirster",
       "HandofJustice",
       "WarmogsArmor"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Jax",
@@ -1893,7 +2278,8 @@
       "LocketoftheIronSolari",
       "IonicSpark",
       "ZekesHerald"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Janna",
@@ -1901,7 +2287,8 @@
       "Zephyr",
       "ZekesHerald",
       "Redemption"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Shen",
@@ -1909,7 +2296,8 @@
       "FrozenHeart",
       "Redemption",
       "LocketoftheIronSolari"
-     ]
+     ],
+     "recommended": []
     }
    ]
   },
@@ -1945,11 +2333,21 @@
       "RapidFirecannon",
       "Quicksilver",
       "RunaansHurricane"
+     ],
+     "recommended": [
+      "RapidFirecannon",
+      "Quicksilver",
+      "RunaansHurricane"
      ]
     },
     {
      "name": "Kayn",
      "items": [
+      "HandofJustice",
+      "HextechGunblade",
+      "GuardianAngel"
+     ],
+     "recommended": [
       "HandofJustice",
       "HextechGunblade",
       "GuardianAngel"
@@ -1961,6 +2359,10 @@
       "ZekesHerald",
       "LocketoftheIronSolari",
       "HandofJustice"
+     ],
+     "recommended": [
+      "ZekesHerald",
+      "LocketoftheIronSolari"
      ]
     },
     {
@@ -1969,7 +2371,8 @@
       "ZekesHerald",
       "LocketoftheIronSolari",
       "InfinityEdge"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Azir",
@@ -1977,7 +2380,8 @@
       "ZekesHerald",
       "SpearofShojin",
       "StatikkShiv"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Kennen",
@@ -1985,7 +2389,8 @@
       "Morellonomicon",
       "LocketoftheIronSolari",
       "LudensEcho"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Zilean",
@@ -1993,7 +2398,8 @@
       "SpearofShojin",
       "StatikkShiv",
       "Redemption"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Shen",
@@ -2001,7 +2407,8 @@
       "WarmogsArmor",
       "DragonsClaw",
       "ThiefsGloves"
-     ]
+     ],
+     "recommended": []
     }
    ]
   },
@@ -2037,11 +2444,21 @@
       "RapidFirecannon",
       "Quicksilver",
       "RunaansHurricane"
+     ],
+     "recommended": [
+      "RapidFirecannon",
+      "Quicksilver",
+      "RunaansHurricane"
      ]
     },
     {
      "name": "Kayn",
      "items": [
+      "HextechGunblade",
+      "HandofJustice",
+      "GuardianAngel"
+     ],
+     "recommended": [
       "HextechGunblade",
       "HandofJustice",
       "GuardianAngel"
@@ -2053,6 +2470,10 @@
       "ZekesHerald",
       "LocketoftheIronSolari",
       "HextechGunblade"
+     ],
+     "recommended": [
+      "ZekesHerald",
+      "LocketoftheIronSolari"
      ]
     },
     {
@@ -2061,7 +2482,8 @@
       "GuardianAngel",
       "Morellonomicon",
       "HextechGunblade"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Akali",
@@ -2069,7 +2491,8 @@
       "ZekesHerald",
       "LocketoftheIronSolari",
       "RapidFirecannon"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Zilean",
@@ -2077,7 +2500,8 @@
       "ZekesHerald",
       "LocketoftheIronSolari",
       "SpearofShojin"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Kennen",
@@ -2085,7 +2509,8 @@
       "Morellonomicon",
       "GuardianAngel",
       "LocketoftheIronSolari"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Shen",
@@ -2093,7 +2518,8 @@
       "Redemption",
       "ZekesHerald",
       "IonicSpark"
-     ]
+     ],
+     "recommended": []
     }
    ]
   },
@@ -2128,11 +2554,21 @@
       "HandofJustice",
       "Quicksilver",
       "GuardianAngel"
+     ],
+     "recommended": [
+      "HandofJustice",
+      "Quicksilver",
+      "GuardianAngel"
      ]
     },
     {
      "name": "Yone",
      "items": [
+      "RabadonsDeathcap",
+      "HextechGunblade",
+      "Morellonomicon"
+     ],
+     "recommended": [
       "RabadonsDeathcap",
       "HextechGunblade",
       "Morellonomicon"
@@ -2144,6 +2580,10 @@
       "RunaansHurricane",
       "GuinsoosRageblade",
       "GuardianAngel"
+     ],
+     "recommended": [
+      "RunaansHurricane",
+      "GuinsoosRageblade"
      ]
     },
     {
@@ -2152,7 +2592,8 @@
       "SpearofShojin",
       "GuardianAngel",
       "Redemption"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Jax",
@@ -2160,7 +2601,8 @@
       "LocketoftheIronSolari",
       "IonicSpark",
       "WarmogsArmor"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "XinZhao",
@@ -2168,7 +2610,8 @@
       "Bloodthirster",
       "Quicksilver",
       "WarmogsArmor"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Irelia",
@@ -2176,7 +2619,8 @@
       "Morellonomicon",
       "ZekesHerald",
       "Redemption"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Fiora",
@@ -2184,7 +2628,8 @@
       "LocketoftheIronSolari",
       "Redemption",
       "WarmogsArmor"
-     ]
+     ],
+     "recommended": []
     }
    ]
   },
@@ -2219,11 +2664,21 @@
       "Quicksilver",
       "HandofJustice",
       "GuardianAngel"
+     ],
+     "recommended": [
+      "Quicksilver",
+      "HandofJustice",
+      "GuardianAngel"
      ]
     },
     {
      "name": "Yone",
      "items": [
+      "Morellonomicon",
+      "GuardianAngel",
+      "WarmogsArmor"
+     ],
+     "recommended": [
       "Morellonomicon",
       "GuardianAngel",
       "WarmogsArmor"
@@ -2235,6 +2690,10 @@
       "GuinsoosRageblade",
       "RunaansHurricane",
       "RabadonsDeathcap"
+     ],
+     "recommended": [
+      "GuinsoosRageblade",
+      "RunaansHurricane"
      ]
     },
     {
@@ -2243,7 +2702,8 @@
       "SpearofShojin",
       "DragonsClaw",
       "RapidFirecannon"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "XinZhao",
@@ -2251,7 +2711,8 @@
       "Bloodthirster",
       "Quicksilver",
       "HandofJustice"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Jax",
@@ -2259,7 +2720,8 @@
       "LocketoftheIronSolari",
       "IonicSpark",
       "ZekesHerald"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Fiora",
@@ -2267,7 +2729,8 @@
       "LocketoftheIronSolari",
       "Redemption",
       "ZekesHerald"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Shen",
@@ -2275,7 +2738,8 @@
       "Redemption",
       "Zephyr",
       "FrozenHeart"
-     ]
+     ],
+     "recommended": []
     }
    ]
   },
@@ -2311,11 +2775,21 @@
       "HextechGunblade",
       "Quicksilver",
       "HandofJustice"
+     ],
+     "recommended": [
+      "HextechGunblade",
+      "Quicksilver",
+      "HandofJustice"
      ]
     },
     {
      "name": "Riven",
      "items": [
+      "IonicSpark",
+      "GuardianAngel",
+      "DragonsClaw"
+     ],
+     "recommended": [
       "IonicSpark",
       "GuardianAngel",
       "DragonsClaw"
@@ -2327,6 +2801,10 @@
       "SpearofShojin",
       "GuinsoosRageblade",
       "RapidFirecannon"
+     ],
+     "recommended": [
+      "SpearofShojin",
+      "GuinsoosRageblade"
      ]
     },
     {
@@ -2335,7 +2813,8 @@
       "Morellonomicon",
       "GuardianAngel",
       "GiantSlayer"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "JarvanIV",
@@ -2343,7 +2822,8 @@
       "FrozenHeart",
       "IonicSpark",
       "ThiefsGloves"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Aatrox",
@@ -2351,7 +2831,8 @@
       "Redemption",
       "Zephyr",
       "IonicSpark"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Pyke",
@@ -2359,7 +2840,8 @@
       "FrozenHeart",
       "IonicSpark",
       "WarmogsArmor"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Elise",
@@ -2367,7 +2849,8 @@
       "FrozenHeart",
       "Zephyr",
       "IonicSpark"
-     ]
+     ],
+     "recommended": []
     }
    ]
   },
@@ -2403,11 +2886,21 @@
       "RapidFirecannon",
       "Quicksilver",
       "RunaansHurricane"
+     ],
+     "recommended": [
+      "RapidFirecannon",
+      "Quicksilver",
+      "RunaansHurricane"
      ]
     },
     {
      "name": "Kayn",
      "items": [
+      "HandofJustice",
+      "HextechGunblade",
+      "GuardianAngel"
+     ],
+     "recommended": [
       "HandofJustice",
       "HextechGunblade",
       "GuardianAngel"
@@ -2419,6 +2912,10 @@
       "ZekesHerald",
       "LocketoftheIronSolari",
       "HextechGunblade"
+     ],
+     "recommended": [
+      "ZekesHerald",
+      "LocketoftheIronSolari"
      ]
     },
     {
@@ -2427,7 +2924,8 @@
       "ZekesHerald",
       "LocketoftheIronSolari",
       "RapidFirecannon"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Kennen",
@@ -2435,7 +2933,8 @@
       "LocketoftheIronSolari",
       "Morellonomicon",
       "ThiefsGloves"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Pyke",
@@ -2443,7 +2942,8 @@
       "ZekesHerald",
       "Morellonomicon",
       "LocketoftheIronSolari"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Azir",
@@ -2451,7 +2951,8 @@
       "ZekesHerald",
       "GuinsoosRageblade",
       "LocketoftheIronSolari"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Shen",
@@ -2459,7 +2960,8 @@
       "DragonsClaw",
       "WarmogsArmor",
       "FrozenHeart"
-     ]
+     ],
+     "recommended": []
     }
    ]
   },
@@ -2495,11 +2997,21 @@
       "RapidFirecannon",
       "Quicksilver",
       "RunaansHurricane"
+     ],
+     "recommended": [
+      "RapidFirecannon",
+      "Quicksilver",
+      "RunaansHurricane"
      ]
     },
     {
      "name": "Kayn",
      "items": [
+      "HandofJustice",
+      "GuardianAngel",
+      "HextechGunblade"
+     ],
+     "recommended": [
       "HandofJustice",
       "GuardianAngel",
       "HextechGunblade"
@@ -2511,6 +3023,10 @@
       "ZekesHerald",
       "LocketoftheIronSolari",
       "HextechGunblade"
+     ],
+     "recommended": [
+      "ZekesHerald",
+      "LocketoftheIronSolari"
      ]
     },
     {
@@ -2519,7 +3035,8 @@
       "HextechGunblade",
       "HandofJustice",
       "GuardianAngel"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Akali",
@@ -2527,7 +3044,8 @@
       "ZekesHerald",
       "LocketoftheIronSolari",
       "InfinityEdge"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Kennen",
@@ -2535,7 +3053,8 @@
       "Morellonomicon",
       "LocketoftheIronSolari",
       "GuardianAngel"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Pyke",
@@ -2543,7 +3062,8 @@
       "Zephyr",
       "ZekesHerald",
       "Redemption"
-     ]
+     ],
+     "recommended": []
     },
     {
      "name": "Shen",
@@ -2551,7 +3071,8 @@
       "DragonsClaw",
       "Zephyr",
       "ThiefsGloves"
-     ]
+     ],
+     "recommended": []
     }
    ]
   }
