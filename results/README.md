@@ -1143,3 +1143,69 @@ bunnymuffins 10.24b가 덱마다 적은 상성(Counters) 중 보드로 가를 �
    크게 올라 9명 보드끼리의 순서가 바뀌었기 때문이다.
 3. 닌자 아닌 8명 보드의 문제(신성 워윅이 높고 총사령관이 낮음)는 배치를 바꿔도 남는다.
 4. 풀게임의 봇과 사람 봇도 배치를 쓴다. 대전에서 배치가 이만큼 결과를 가르면, 봇의 배치 규칙도 사람처럼 맞춰야 한다.
+
+## 구석 배치를 기본으로 한 실제 보드 대전 (2026-10-09)
+
+`python -m meta.real_boards --n 60 --jobs 7 --out results/real_boards_1024.json` (june `1f84313`)
+-> [real_boards_1024.json](real_boards_1024.json).
+
+- 유저 결정으로 구석 배치를 실제 보드 대전의 기본으로 삼았다. `analysis/battle.py`에 `corner_positions`(원거리는 뒷줄
+  구석부터 아이템이 많은 순, 근접은 앞줄 가운데부터)와 `place='corner'`를 넣었다. 기본·5코 1성·핫픽스 뒤 세 조건이
+  구석 배치이고, 예전 기본(가운데 배치)은 비교 조건으로 남겼다. 결과 파일에 조건별 배치(`place`)를 적고,
+  `meta/isolate.py`는 그 배치로 다시 붙인다.
+- 결과 파일은 이번 결과로 바뀌었다. 바로 위 두 절(가운데 배치 기준)의 결과는 이 저장소 커밋 `ac5a146`의 같은 파일에 있다.
+
+| 조합 (실제 평균 등수 순) | 유닛 | 실제 평균 등수 | 2성 (구석) | 5코 1성 (구석) | 핫픽스 뒤 (구석) | 가운데 배치 |
+|---|---|---|---|---|---|---|
+| 4ninja-4shade-3cultist-2adept-2assassin-2mystic-1exile-1tormented | 9 | 1.56 | 86.1% | 83.2% | 84.9% | 87.8% |
+| 4ninja-4shade-3cultist-2assassin-2keeper-2mystic-1emperor-1tormented | 9 | 1.70 | 74.2% | 76.6% | 75.8% | 72.6% |
+| 8duelist-2adept-2divine-2enlightened-2exile-2mystic-1ninja | 9 | 1.74 | 76.4% | 76.7% | 79.9% | 77.1% |
+| 6duelist-3adept-3divine-2exile-2mystic-1ninja | 9 | 1.93 | 69.3% | 49.7% | 69.0% | 68.8% |
+| 6dusk-3cultist-2keeper-2mystic-2sharpshooter-2vanguard-1emperor | 9 | 2.15 | 85.2% | 77.3% | 90.4% | 71.3% |
+| 6sharpshooter-4keeper-3warlord-2dusk-1emperor-1ninja | 9 | 2.17 | 66.7% | 83.3% | 69.0% | 52.2% |
+| 9cultist-2keeper-1emperor | 9 | 2.46 | 36.8% | 46.9% | 40.3% | 30.6% |
+| 9cultist-2shade-1tormented | 9 | 2.65 | 54.2% | 51.3% | 61.0% | 59.4% |
+| 4ninja-3cultist-3shade-2adept-2assassin-2mystic-1exile | 8 | 2.65 | 75.0% | 61.0% | 66.8% | 77.8% |
+| 4ninja-3cultist-3shade-2assassin-2keeper-2mystic-1emperor | 8 | 2.66 | 47.1% | 63.3% | 45.8% | 46.1% |
+| 4ninja-4shade-2keeper-2mystic-1emperor-1tormented | 8 | 2.74 | 45.1% | 46.7% | 52.7% | 45.6% |
+| 4ninja-4shade-2adept-2mystic-1exile-1tormented | 8 | 2.79 | 68.9% | 56.7% | 66.7% | 74.3% |
+| 4ninja-4shade-3cultist-2assassin-2mystic-1tormented | 8 | 2.92 | 49.2% | 47.6% | 50.6% | 52.8% |
+| 6duelist-2adept-2divine-2exile-2mystic-1ninja | 8 | 3.04 | 43.0% | 39.5% | 44.8% | 28.0% |
+| 6duelist-2adept-2divine-2enlightened-2exile-2mystic-1ninja | 8 | 3.09 | 45.2% | 34.3% | 41.9% | 37.5% |
+| 4ninja-4shade-3cultist-2keeper-2mystic-1tormented | 8 | 3.15 | 41.2% | 40.7% | 45.7% | 45.5% |
+| 8duelist-2adept-2divine-2exile-1ninja | 8 | 3.16 | 37.6% | 36.7% | 37.0% | 38.4% |
+| 8duelist-3divine-2adept-2enlightened-2exile | 8 | 3.19 | 55.8% | 35.3% | 47.8% | 53.8% |
+| 9warlord-2brawler-2keeper-1emperor-1theboss | 8 | 3.24 | 11.2% | 7.8% | 11.9% | 12.0% |
+| 6keeper-3cultist-3warlord-2assassin-1emperor-1ninja | 8 | 3.25 | 3.5% | 7.2% | 5.0% | 6.2% |
+| 4ninja-4shade-2assassin-2keeper-1emperor-1tormented | 8 | 3.30 | 34.1% | 39.4% | 33.8% | 37.6% |
+| 6divine-3adept-2dazzler-2duelist-2enlightened-1exile-1ninja | 8 | 3.35 | 73.3% | 75.1% | 71.6% | 78.0% |
+| 4ninja-3cultist-3shade-2adept-2assassin-2keeper-1exile | 8 | 3.35 | 35.5% | 56.5% | 29.4% | 45.7% |
+| 4ninja-4shade-3cultist-2assassin-2keeper-1tormented | 8 | 3.39 | 27.2% | 37.0% | 25.4% | 29.2% |
+| 4ninja-4shade-2adept-2assassin-1exile-1tormented | 8 | 3.46 | 50.8% | 52.9% | 46.4% | 54.2% |
+| 9warlord-2assassin-2keeper-1emperor | 8 | 3.50 | 10.4% | 17.3% | 11.6% | 13.4% |
+| 5hunter-3adept-2divine-2mystic-2spirit-1exile-1ninja | 8 | 3.55 | 47.2% | 50.2% | 44.8% | 54.0% |
+
+| 묶음 | 보드 | 2성 구석 (괄호는 p) | 5코 1성 | 핫픽스 뒤 | 가운데 배치 | 기준: 유닛 수 | 기준: 코스트 합 |
+|---|---|---|---|---|---|---|---|
+| 전체 | 27 | +0.65 (0.000) | +0.58 | +0.73 | +0.48 | +0.79 | +0.56 |
+| 유닛 8명 보드만 | 19 | +0.37 (0.060) | +0.25 | +0.52 | +0.16 | - | +0.30 |
+| 유닛 9명 보드만 | 8 | +0.81 (0.012) | +0.36 | +0.67 | +0.88 | - | +0.43 |
+| 닌자 그림자 빼고 | 15 | +0.55 (0.017) | +0.55 | +0.60 | +0.39 | +0.85 | +0.45 |
+
+짧게 더 본 것(공식 설명과 대조, 코드 읽기):
+
+- 신성: 공격 6번 또는 체력 50% 아래에서 한 번, 군중 제어를 지우고 받는 피해 50% 감소·고정 피해 50%를 3/6/9/15초. 위키의
+  10.24(10.23 변경 뒤) 설명과 같다.
+- 카타리나: 2.5초 동안 가까운 적 4/6/8명에게 총 750/900/1600 피해, 치유 50% 감소. 공식 10.24 값과 같다.
+- 총사령관: 전투 시작에 걸리고, 체력 200/450/700·주문력 20/40/70%, 승리당 10%(5승까지)가 감사 때 위키 값과 같다.
+- 워윅의 처치 시 기절(10.24 전 공포의 근사)은 10.24 표에서 꺼져 있다.
+
+읽은 것:
+
+1. 구석 배치를 기본으로 하니 실제와의 순위 상관이 전체 +0.65, 8명 +0.37, 닌자 빼고 +0.55다. 전체와 8명 모두 코스트 합
+   기준보다 높다. 떼어 재기에서 내다본 값(+0.66, +0.41)과 비슷하다.
+2. 같은 가운데 배치 조건이 이번에 +0.48·8명 +0.16으로, 바로 위 절의 기준(+0.53·+0.27)과 다르다. 같은 조건을 다시 돌린 것이라
+   차이는 판 수에서 오는 흔들림이다. 8명 보드 19개의 순위 상관은 한 번 돌릴 때마다 0.1 안팎 흔들린다고 보고 읽는다.
+3. 핫픽스 뒤 값이 핫픽스 전 자료와 더 잘 맞는다(전체 +0.73, 8명 +0.52). 흔들림 폭 안팎이라 이유를 따지지는 않았다.
+4. 신성 워윅 보드(73.3%)는 여전히 실제(3.35)보다 높고, 총사령관 보드 셋(3.5~11.2%)은 실제(3.24~3.50)보다 낮다.
+   짧게 본 구현에서는 틀린 곳을 찾지 못했다. 사람 봇 설계에 한계로 적었다(meta/human_bot_design.md 8절).

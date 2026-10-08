@@ -22,6 +22,8 @@ from Simulator.observation.token.action import ActionToken
 
 # 가운데 칸부터 바깥으로 채운다
 CENTER_OUT = [3, 2, 4, 1, 5, 0, 6]
+# 구석 칸부터 안으로 채운다
+CORNER_OUT = [0, 6, 1, 5, 2, 4, 3]
 
 
 def range_positions(units):
@@ -39,6 +41,20 @@ def range_positions(units):
     return spots
 
 
+def corner_positions(units):
+    """원거리는 뒷줄 구석부터 아이템이 많은 순으로, 근접은 range_positions처럼 앞줄 가운데부터 놓는다. 사람이 캐리를
+    구석에 숨기는 배치를 흉내 낸 것이고, 상대를 보고 바꾸는 배치는 아니다. 롤체지지 10.24 최종 보드 대전에서 가운데부터
+    놓을 때보다 실제 평균 등수와 더 맞았다(results/README 「원인 떼어 재기 2차」)."""
+    spots = [None] * len(units)
+    ranged = sorted((i for i, u in enumerate(units) if RANGE[u.name] > 1), key=lambda i: -len(units[i].items))
+    melee = [i for i, u in enumerate(units) if RANGE[u.name] <= 1]
+    for k, i in enumerate(ranged):
+        spots[i] = (CORNER_OUT[k % 7], [0, 1][k // 7])
+    for k, i in enumerate(melee):
+        spots[i] = (CENTER_OUT[k % 7], [3, 2][k // 7])
+    return spots
+
+
 def build_player(base_pool, index, units, place='random'):
     p = Player(base_pool, index)
     n = len(units)
@@ -47,7 +63,7 @@ def build_player(base_pool, index, units, place='random'):
     p.max_units = n
     # 아지르는 보드에 놓일 때 옆 빈칸에 모래 병사 둘을 만든다. 마지막에 놓아야 정해 둔 칸을 병사가 먼저 차지하지 않는다.
     units = sorted(units, key=lambda u: u.name == 'azir')
-    spots = range_positions(units) if place == 'range' else None
+    spots = range_positions(units) if place == 'range' else corner_positions(units) if place == 'corner' else None
     for i, unit in enumerate(units):
         p.add_to_bench(unit)
         if spots:
@@ -76,7 +92,8 @@ def to_units(spec):
 
 
 def battle(units_a, units_b, place='random'):
-    """전투 1회. 반환값 1 = A승, 2 = B승, 0 = 무승부. place='range'면 range_positions로 배치한다."""
+    """전투 1회. 반환값 1 = A승, 2 = B승, 0 = 무승부. place는 'random'(무작위), 'range'(range_positions),
+    'corner'(corner_positions)다."""
     base_pool = pool()
     pa = build_player(base_pool, 0, units_a, place)
     pb = build_player(base_pool, 1, units_b, place)

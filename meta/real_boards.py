@@ -13,7 +13,8 @@
   상징 아이템: 그 차이가 2면(전쟁군주 9, 결투가 8) 상징이 하나 더 있는 것이다. 그 특성이 없고 아이템이 3개보다
               적은 첫 유닛이 든다.
   별: 모두 2성. 비교용으로 5코스트만 1성.
-  배치: 근접 앞줄, 원거리 뒷줄(analysis/battle.range_positions).
+  배치: 근접 앞줄 가운데부터, 원거리 뒷줄 구석부터 아이템이 많은 순(analysis/battle.corner_positions). 비교용으로
+        원거리도 가운데부터(analysis/battle.range_positions, 2026-10-09 전 기본).
   수치: 자료가 10.24 중간 패치(12/1) 전이라 그 전 값으로 되돌린다(prehotfix). 비교용으로 지금 값(핫픽스 뒤).
   케인 형태는 고르지 않는다(meta/pit과 같다). 실제로는 최종 보드의 케인은 거의 다 형태가 있다.
 
@@ -36,9 +37,10 @@ SRC = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'lolchess_10.24_2
 SIM_ITEM = {k.replace('_', ''): k for k in item_builds}     # 'LocketoftheIronSolari' -> locket_of_the_iron_solari
 SIM_TRAIT = {k.replace('_', ''): k for k in TRAIT_BREAKS}   # 'TheBoss' -> the_boss
 
-# (이름, 5코스트 별, 핫픽스 전 값으로 되돌리나)
-VARIANTS = [('main', 2, True), ('five_cost_1star', 1, True), ('post_hotfix', 2, False)]
-LABEL = {'main': '2성', 'five_cost_1star': '5코 1성', 'post_hotfix': '핫픽스 뒤'}
+# (이름, 5코스트 별, 핫픽스 전 값으로 되돌리나, 배치)
+VARIANTS = [('main', 2, True, 'corner'), ('five_cost_1star', 1, True, 'corner'), ('post_hotfix', 2, False, 'corner'),
+            ('center', 2, True, 'range')]
+LABEL = {'main': '2성', 'five_cost_1star': '5코 1성', 'post_hotfix': '핫픽스 뒤', 'center': '가운데 배치'}
 
 
 def prehotfix():
@@ -141,38 +143,39 @@ def main():
               + (f'  상징 {b["emblem"]}' if b['emblem'] else ''))
 
     matrices = {}
-    for name, five, pre in VARIANTS:
-        matrices[name] = round_robin({b['key']: spec(b, five) for b in boards}, args.n, 'range', args.jobs,
+    for name, five, pre, place in VARIANTS:
+        matrices[name] = round_robin({b['key']: spec(b, five) for b in boards}, args.n, place, args.jobs,
                                      init=prehotfix if pre else None)
         print(f'{LABEL[name]} 완료', flush=True)
     avg = {name: average(m) for name, m in matrices.items()}
 
     # 상대 26개 x N판이라 평균 승률의 표준오차는 N=60에서 1.3%p 안팎이다.
     print(f'\n보드별 (실제 평균 등수 순, 시뮬레이터는 상대 {len(boards) - 1}개 평균 승률, 매치업당 N={args.n})')
-    print(f'{"조합":58} {"유닛":>4} {"고른 비율":>8} {"평균 등수":>8}' + ''.join(f' {LABEL[v]:>8}' for v, _, _ in VARIANTS))
+    print(f'{"조합":58} {"유닛":>4} {"고른 비율":>8} {"평균 등수":>8}' + ''.join(f' {LABEL[v]:>8}' for v, *_ in VARIANTS))
     for b in sorted(boards, key=lambda b: b['place']):
         print(f'{b["key"][:58]:58} {len(b["units"]):4d} {b["pick_rate"] * 100:7.1f}% {b["place"]:8.2f}'
-              + ''.join(f' {avg[v][b["key"]] * 100:7.1f}%' for v, _, _ in VARIANTS))
+              + ''.join(f' {avg[v][b["key"]] * 100:7.1f}%' for v, *_ in VARIANTS))
 
     # 실제는 등수가 낮을수록 좋으니 부호를 뒤집는다. 상관이 양수면 시뮬레이터가 실제와 같은 쪽으로 줄 세운 것이다.
     summary = {}
     print('\n실제 평균 등수와의 순위 상관 (괄호는 섞어서 이만큼 나올 확률)')
     for label, group in groups(boards):
         real = [-b['place'] for b in group]
-        cols = {v: spearman(real, [avg[v][b['key']] for b in group]) for v, _, _ in VARIANTS}
+        cols = {v: spearman(real, [avg[v][b['key']] for b in group]) for v, *_ in VARIANTS}
         p = perm_p(real, [avg['main'][b['key']] for b in group])
         # 비교 기준: 전투 없이 유닛 수나 코스트 합만으로 줄 세웠을 때. 유닛 수가 다 같은 묶음에서는 못 잰다.
         sizes = [len(b['units']) for b in group]
         base_units = spearman(real, sizes) if len(set(sizes)) > 1 else None
         base_cost = spearman(real, [sum(cost_of(u) for u in b['units']) for b in group])
         summary[label] = {'n': len(group), **cols, 'main_p': p, 'units': base_units, 'cost': base_cost}
-        print(f'  {label:12} ({len(group):2d}개)  ' + '  '.join(f'{LABEL[v]} {cols[v]:+.2f}' for v, _, _ in VARIANTS)
+        print(f'  {label:12} ({len(group):2d}개)  ' + '  '.join(f'{LABEL[v]} {cols[v]:+.2f}' for v, *_ in VARIANTS)
               + f'  (2성 p={p:.3f})  기준: 유닛 수 ' + (f'{base_units:+.2f}' if base_units is not None else '  - ')
               + f', 코스트 합 {base_cost:+.2f}')
 
     if args.out:
         with open(args.out, 'w', encoding='utf-8') as f:
-            json.dump({'n': args.n, 'boards': boards, 'average': avg, 'summary': summary, **matrices},
+            json.dump({'n': args.n, 'place': {v: place for v, _, _, place in VARIANTS}, 'boards': boards,
+                       'average': avg, 'summary': summary, **matrices},
                       f, ensure_ascii=False, indent=1)
         print(f'\n저장: {args.out}')
 

@@ -67,13 +67,20 @@ def _veigar_lockout_after_cast():
     return veigar.idle, [q[2] - cm.MILLIS() for q in cm.que if q[1] is veigar and q[0] == 'clear_idle']
 
 
-def _spots():
+def _spots(place='range'):
     """원거리 둘(아이템 1개, 3개)과 근접 하나를 놓았을 때 각 유닛의 (열, 줄). 줄 3이 앞, 0이 뒤다."""
     p = build_player(pool(), 0, to_units([{'name': 'ashe', 'stars': 2, 'items': ['guardian_angel']},
                                           {'name': 'jinx', 'stars': 2,
                                            'items': ['infinity_edge', 'giant_slayer', 'guardian_angel']},
-                                          {'name': 'garen', 'stars': 2}]), 'range')
+                                          {'name': 'garen', 'stars': 2}]), place)
     return {u.name: (x, y) for x, row in enumerate(p.board) for y, u in enumerate(row) if u}
+
+
+def corner_placement_puts_item_heavy_ranged_unit_in_corner_test():
+    """구석 배치(실제 보드 대전 기본): 아이템이 많은 원거리 유닛이 뒷줄 구석(0열), 다음 원거리가 반대 구석(6열),
+    근접은 앞줄 가운데. 가운데 배치는 원거리도 가운데부터 적힌 순서로 놓는다."""
+    assert _spots('corner') == {'jinx': (0, 0), 'ashe': (6, 0), 'garen': (3, 3)}
+    assert _spots('range') == {'ashe': (3, 0), 'jinx': (2, 0), 'garen': (3, 3)}
 
 
 def reroll_spec_triples_only_rerolled_carries_test():

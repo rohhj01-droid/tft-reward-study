@@ -2,7 +2,7 @@
 실제 보드 대전(meta/real_boards.py)에서 시뮬레이터가 실제와 어긋난 원인을 떼어 잰다.
 
 조건을 하나만 바꾸고, 그 조건에 걸리는 보드가 낀 매치업만 다시 붙인다. 나머지 매치업은 기본 결과
-(results/real_boards_1024.json의 main: 핫픽스 전, 모두 2성)를 그대로 쓴다. 그 뒤 보드별 평균 승률과 실제 평균 등수와의
+(results/real_boards_1024.json의 main: 핫픽스 전, 모두 2성, 그 파일의 배치)를 그대로 쓴다. 그 뒤 보드별 평균 승률과 실제 평균 등수와의
 순위 상관을 다시 낸다.
 
 조건
@@ -14,7 +14,7 @@
   cast_time            스킬을 쓴 유닛이 시전 시간(10.24 게임 파일) 동안 공격·이동하지 않는다. 값이 없는 챔피언은 0초.
   cast_time_half       위와 같고, 값이 없는 챔피언은 0.5초(위키: 대부분 0.5초).
   reroll3              1~2코스트인데 추천 아이템 3개를 든 캐리(닌자의 제드, 결투가의 야스오)를 3성으로 둔다.
-  corner               원거리를 뒷줄 구석부터 아이템이 많은 순으로 놓는다. 기본은 가운데부터다.
+  corner               원거리를 뒷줄 구석부터 아이템이 많은 순으로 놓는다(가운데 배치 기본 결과에서만 뜻이 있다).
   drop --board 이름    그 보드에서 유닛을 하나씩 빼 본다(조건이 아니라 보드를 바꾼다).
 
 실행: python -m meta.isolate warlord5 --n 60 --jobs 7 --out results/isolate_1024.json
@@ -102,20 +102,9 @@ def _reroll_spec(board):
 
 
 def _corner():
-    # 원거리는 뒷줄 구석부터 아이템이 많은 순으로 놓는다(사람이 캐리를 구석에 숨기는 배치). 근접은 지금처럼 앞줄 가운데부터.
+    # 가운데 배치(range_positions)를 구석 배치로 바꾼다. 2026-10-09부터는 기본 결과가 구석 배치라 효과가 없다.
     import analysis.battle as ab
-    from Simulator.stats import RANGE
-
-    def positions(units):
-        spots = [None] * len(units)
-        ranged = sorted((i for i, u in enumerate(units) if RANGE[u.name] > 1), key=lambda i: -len(units[i].items))
-        melee = [i for i, u in enumerate(units) if RANGE[u.name] <= 1]
-        for k, i in enumerate(ranged):
-            spots[i] = ([0, 6, 1, 5, 2, 4, 3][k % 7], [0, 1][k // 7])
-        for k, i in enumerate(melee):
-            spots[i] = (ab.CENTER_OUT[k % 7], [3, 2][k // 7])
-        return spots
-    ab.range_positions = positions
+    ab.range_positions = ab.corner_positions
 
 
 # 조건 이름 -> (일꾼에서 부를 함수, 그 조건에 걸리는 보드인가, 보드 만들기(None이면 기본 2성))
@@ -137,7 +126,7 @@ def setup(name):
     VARIANTS[name][0]()
 
 
-def drop_units(board, boards, n, jobs):
+def drop_units(board, boards, n, jobs, place):
     """board에서 유닛을 하나씩 뺀 보드를 나머지 26개와 붙여 평균 승률을 낸다. 빼서 많이 떨어지는 유닛이 시뮬레이터에서
     그 보드의 힘이다. 유닛을 빼면 그 유닛의 특성 몫과 아이템, 선택받은 자·상징도 같이 빠진다."""
     others = {b['key']: spec(b, 2) for b in boards if b is not board}
@@ -145,7 +134,7 @@ def drop_units(board, boards, n, jobs):
     out = {}
     for unit in board['units']:
         key = f'{board["key"]} -{unit}'
-        m = round_robin({**others, key: [u for u in full if u['name'] != unit]}, n, 'range', jobs,
+        m = round_robin({**others, key: [u for u in full if u['name'] != unit]}, n, place, jobs,
                         init=prehotfix, only={key})
         out[unit] = sum(m[key].values()) / len(m[key])
         print(f'  -{unit:12} {out[unit] * 100:5.1f}%', flush=True)
@@ -172,17 +161,18 @@ def main():
     base = json.load(open(MAIN, encoding='utf-8'))
     assert base['n'] == args.n, f'기본 결과의 판 수({base["n"]})와 같아야 섞을 수 있다'
     boards = load_trends()
+    place = base.get('place', {}).get('main', 'range')  # 기본 결과와 같은 배치로 다시 붙인다
     if args.variant == 'drop':
         board, = [b for b in boards if b['key'].startswith(args.board)]
         print(f'{board["key"]}: 실제 {board["place"]:.2f}, 다 있을 때 {base["average"]["main"][board["key"]] * 100:.1f}%')
-        out = drop_units(board, boards, args.n, args.jobs)
+        out = drop_units(board, boards, args.n, args.jobs, place)
         if args.out:
             save(args.out, f'drop:{board["key"]}', {'n': args.n, 'full': base['average']['main'][board['key']],
                                                     'without': out})
         return
     _, affected, make = VARIANTS[args.variant]
     hit = {b['key'] for b in boards if affected(b)}
-    part = round_robin({b['key']: make(b) if make else spec(b, 2) for b in boards}, args.n, 'range', args.jobs,
+    part = round_robin({b['key']: make(b) if make else spec(b, 2) for b in boards}, args.n, place, args.jobs,
                        init=partial(setup, args.variant), only=hit)
     matrix = {a: {**row, **part[a]} for a, row in base['main'].items()}
     before, after = base['average']['main'], average(matrix)
