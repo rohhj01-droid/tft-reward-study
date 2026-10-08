@@ -653,7 +653,7 @@ if __name__ == '__main__':
 - [ ] **Step 7: 0단계 기준을 확인한다**
 
 Run: `"$PY" -m meta.test_lobby && "$PY" -m meta.test_human_bot`
-Expected: `PASS` 10줄, `PASS` 1줄
+Expected: `PASS` 10줄, `PASS` 2줄
 
 Run: `"$PY" -m meta.play_stats --games 20 --jobs 7 --out "$OUT/stage0_a.json"`
 Run: `"$PY" -m meta.play_stats --games 20 --jobs 7 --out "$OUT/stage0_b.json"`
@@ -939,7 +939,7 @@ def item_action(player, board, mode, game_round, mask):
 - [ ] **Step 4: 검사가 통과하는지 본다**
 
 Run: `"$PY" -m meta.test_human_bot`
-Expected: `PASS` 13줄(뼈대 1 + 아이템 12)
+Expected: `PASS` 14줄(뼈대 2 + 아이템 12)
 
 - [ ] **Step 5: 커밋한다**
 
@@ -1033,7 +1033,7 @@ def attach_human(player, others, rng, knobs=None, board=None):
 - [ ] **Step 4: 검사가 통과하는지 본다**
 
 Run: `"$PY" -m meta.test_human_bot && "$PY" -m meta.test_lobby`
-Expected: `PASS` 14줄, `PASS` 10줄
+Expected: `PASS` 15줄, `PASS` 10줄
 
 - [ ] **Step 5: 1단계 기준을 잰다**
 
@@ -1323,7 +1323,7 @@ def attach_human(player, others, rng, knobs=None, board=None):
 - [ ] **Step 4: 검사가 통과하는지 본다**
 
 Run: `"$PY" -m meta.test_human_bot && "$PY" -m meta.test_lobby`
-Expected: `PASS` 18줄, `PASS` 10줄
+Expected: `PASS` 19줄, `PASS` 10줄
 
 - [ ] **Step 5: 2단계 기준을 잰다**
 
@@ -1709,7 +1709,7 @@ def attach_human(player, others, rng, knobs=None, board=None):
 - [ ] **Step 4: 검사가 통과하는지 본다**
 
 Run: `"$PY" -m meta.test_human_bot && "$PY" -m meta.test_lobby`
-Expected: `PASS` 26줄, `PASS` 10줄
+Expected: `PASS` 27줄, `PASS` 10줄
 
 - [ ] **Step 5: 3단계 기준을 잰다**
 
