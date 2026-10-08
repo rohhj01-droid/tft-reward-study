@@ -137,6 +137,13 @@ def deck_policy_levels_and_rolls_by_style_test():
         assert action == expected, (board['slow'], game_round, level, gold, action)
 
 
+def carriers_are_units_with_most_recommended_items_test():
+    """덱의 캐리는 추천 아이템을 가장 많이 드는 유닛들이다(설계 4절)."""
+    from meta.lobby import carriers
+    assert carriers({'items': {'jhin': ['a', 'b', 'c'], 'riven': ['d', 'e', 'f'], 'aatrox': ['g']}}) == ['jhin', 'riven']
+    assert carriers({'items': {'riven': ['a', 'b', 'c'], 'jhin': ['d', 'e']}}) == ['riven']
+
+
 if __name__ == '__main__':
     for name, test in list(globals().items()):
         if name.endswith('_test'):

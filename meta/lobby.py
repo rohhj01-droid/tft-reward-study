@@ -90,6 +90,12 @@ def completion(player, board):
     return len(names & target) / len(target)
 
 
+def carriers(board):
+    """덱의 캐리: 추천 아이템을 가장 많이 드는 유닛들(보드마다 1~2명)."""
+    most = max(len(held) for held in board['items'].values())
+    return [u for u, held in board['items'].items() if len(held) == most]
+
+
 def board_record(player):
     """보드 기록: 레벨, 유닛(이름, 비용, 별, 완성 아이템 수), 켜진 특성 인원, 선택받은 자 특성."""
     units = [u for row in player.board for u in row if u and u.name in BASE_CHAMPION_LIST]
@@ -107,22 +113,37 @@ class DeckPolicy:
 
     def __init__(self, agent, board):
         self.agent = agent
+        self.moves = {}  # 라운드별 자리 맞추기 횟수. 자리가 안 맞는 보드에서 같은 이동을 되풀이하지 않게 한다
+        self.set_board(board)
+
+    def set_board(self, board):
+        """목표 덱을 정한다. 사람 봇은 덱을 갈아탈 때 다시 부른다."""
+        self.board = board
         self.units = set(board['units'])
         self.trait = chosen_of(board)[1]
         self.slow = board['slow']
-        self.moves = {}  # 라운드별 자리 맞추기 횟수. 자리가 안 맞는 보드에서 같은 이동을 되풀이하지 않게 한다
 
     def __call__(self, player, shop, game_round, mask):
-        agent = self.agent
-        agent.current_round = game_round
-        placement = agent.max_unit_check(player, shop, mask)
-        if placement != ' ':
-            return placement
-        if player.bench_full():
-            for i, u in enumerate(player.bench):
-                if u.name not in self.units:
-                    return '4_' + str(28 + i)
-            return agent.sell_bench_full(player)
+        self.agent.current_round = game_round
+        return (self.fill(player, shop, mask) or self.sell(player) or self.buy(player, shop, mask)
+                or self.swap(player) or self.reposition(player, game_round) or self.macro(player, game_round))
+
+    def fill(self, player, shop, mask):
+        """보드 빈자리 채우기(기본 봇 규칙)."""
+        placement = self.agent.max_unit_check(player, shop, mask)
+        return None if placement == ' ' else placement
+
+    def sell(self, player):
+        """벤치가 꽉 차면 덱 밖 유닛부터 판다."""
+        if not player.bench_full():
+            return None
+        for i, u in enumerate(player.bench):
+            if u.name not in self.units:
+                return '4_' + str(28 + i)
+        return self.agent.sell_bench_full(player)
+
+    def buy(self, player, shop, mask):
+        """덱 유닛과 덱 특성의 선택받은 자를 산다."""
         for i, unit in enumerate(shop):
             if not mask[47 + i][0]:
                 continue
@@ -132,6 +153,10 @@ class DeckPolicy:
                     return '3_' + str(i)
             elif unit in self.units and COST[unit] <= player.gold:
                 return '3_' + str(i)
+        return None
+
+    def swap(self, player):
+        """벤치의 덱 유닛을 보드의 덱 밖 유닛과 바꾼다. 보드에 이미 있는 유닛의 사본은 올리지 않는다."""
         on_board = {u.name for row in player.board for u in row if u}
         for i, u in enumerate(player.bench):
             if u and u.name in self.units and u.name not in on_board:
@@ -139,14 +164,19 @@ class DeckPolicy:
                     for y, b in enumerate(row):
                         if b and b.name in BASE_CHAMPION_LIST and b.name not in self.units:
                             return f'5_{x_y_to_1d_coord(x, y)}_{28 + i}'
-        if self.moves.get(game_round, 0) < 8:
-            for x, row in enumerate(player.board):
-                for y, b in enumerate(row):
-                    move = b and agent.check_unit_location(player, x, y, b.name)
-                    if move:
-                        self.moves[game_round] = self.moves.get(game_round, 0) + 1
-                        return move
-        return self.macro(player, game_round)
+        return None
+
+    def reposition(self, player, game_round):
+        """앞줄·뒷줄 자리 맞추기(기본 봇 규칙). 한 라운드에 8번까지."""
+        if self.moves.get(game_round, 0) >= 8:
+            return None
+        for x, row in enumerate(player.board):
+            for y, b in enumerate(row):
+                move = b and self.agent.check_unit_location(player, x, y, b.name)
+                if move:
+                    self.moves[game_round] = self.moves.get(game_round, 0) + 1
+                    return move
+        return None
 
     def macro(self, player, game_round):
         """레벨·리롤. 느린 리롤 덱은 레벨 6에서 50골드 넘는 몫으로 리롤하고 5단계부터 8로 간다. 보통 덱은 4단계에 7,
@@ -187,15 +217,15 @@ def _register():
             default_agent_stats.TEAM_COMP_TRAITS.append(chosen_of(b)[1])
 
 
-def play(game, deck_bots=True):
-    """한 판. game = (시드, 덱 번호 8개). deck_bots=False면 덱을 정해 주지 않은 기본 봇 그대로 돈다(meta.play_stats).
+def play(game, bot='deck', knobs=None):
+    """한 판. game = (시드, 덱 번호 8개). bot은 'default'(덱을 정해 주지 않은 기본 봇), 'deck'(덱 봇), 'human'(사람 봇).
     돌려주는 값: {'curve': [(칸, 레벨, 골드, 체력), ...] 살아 있는 봇이 그 칸에서 처음 움직일 때,
                  'players': [{'deck', 'place', 'complete', 'complete21', 'board'}, ...]}
     탈락 때 완성도(complete)는 일찍 죽은 덱일수록 낮게 나와 등수와 엉킨다. 그래서 5단계 시작(21번째 칸) 때 살아 있던
     봇의 완성도(complete21)를 따로 잰다(그 전에 탈락하면 None). board는 탈락하거나 끝날 때의 board_record다."""
     seed, decks = game
     sim_config.LOGMESSAGES = False  # 켜 두면 실행한 곳에 log.txt가 생긴다
-    if deck_bots:
+    if bot == 'deck':
         _register()
     random.seed(seed)
     np.random.seed(seed)
@@ -205,7 +235,7 @@ def play(game, deck_bots=True):
         obs, info = env.reset(options={'default_agent': [True] * N_PLAYERS})
         deck_of = dict(zip(info, decks))
         players = {a: info[a]['player'] for a in info}
-        if deck_bots:
+        if bot == 'deck':
             for a, deck in deck_of.items():
                 players[a].default_agent.comp_number = FIRST_DECK + deck
                 attach(players[a], BOARDS[deck])
@@ -223,7 +253,7 @@ def play(game, deck_bots=True):
                     curve.append((game_round, p.level, p.gold, p.health))
                 if game_round >= 21 and a not in mid:
                     mid[a] = completion(p, BOARDS[deck_of[a]])
-                if deck_bots and game_round >= 11 and handed.get(a) != game_round:
+                if bot == 'deck' and game_round >= 11 and handed.get(a) != game_round:
                     hand_out_items(p, BOARDS[deck_of[a]]['items'])
                     handed[a] = game_round
                 actions.append(p.default_policy(game_round, info[a]['shop'], obs[a]['action_mask']))

@@ -100,9 +100,9 @@ def main():
     out = {'games': args.games, 'seed': args.seed}
     real = real_winners()
     summary = {'실제 1등': board_summary(real)}
-    for label, deck_bots in (('기본 봇', False), ('덱 봇', True)):
+    for label, bot in (('기본 봇', 'default'), ('덱 봇', 'deck')):
         with Pool(args.jobs) as workers:  # 조건마다 새 일꾼(덱 봇의 덱 목록 등록이 기본 봇에 새지 않게)
-            results = workers.map(partial(lobby.play, deck_bots=deck_bots), games, chunksize=1)
+            results = workers.map(partial(lobby.play, bot=bot), games, chunksize=1)
         winners = [p['board'] for r in results for p in r['players'] if p['place'] == 1]
         out[label] = {'curve': curve_table([r['curve'] for r in results]), 'winners': board_summary(winners),
                       'winner_boards': winners}
