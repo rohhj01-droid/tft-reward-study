@@ -97,12 +97,26 @@ def carriers(board):
 
 
 def board_record(player):
-    """보드 기록: 레벨, 유닛(이름, 비용, 별, 완성 아이템 수), 켜진 특성 인원, 선택받은 자 특성."""
+    """보드 기록: 레벨, 유닛(이름, 비용, 별, 완성 아이템 수), 켜진 특성 인원, 선택받은 자 특성, 들고 있는 아이템 수.
+    completed_all·components_all은 보드·벤치 유닛과 아이템 칸 전부의 완성 아이템·조각 수다(주걱·소모품 제외)."""
     units = [u for row in player.board for u in row if u and u.name in BASE_CHAMPION_LIST]
+    everyone = [u for row in player.board for u in row if u] + [u for u in player.bench if u]
+    held = [i for u in everyone for i in u.items] + [i for i in player.item_bench if i]
     return {'level': player.level,
             'units': [[u.name, u.cost, u.stars, sum(i in item_builds for i in u.items)] for u in units],
             'traits': {t: n for t, n in player.team_composition.items() if player.team_tiers.get(t, 0) > 0},
-            'chosen': player.chosen or None}
+            'chosen': player.chosen or None,
+            'completed_all': sum(_worth(i) == 2 for i in held), 'components_all': sum(_worth(i) == 1 for i in held)}
+
+
+def carry_share(player, board):
+    """목표 덱 캐리 중 보드에서 완성 아이템을 하나 이상 든 비율(보드에 없는 캐리는 못 든 것으로 센다).
+    목표 덱이 없으면 None."""
+    if board is None:
+        return None
+    holding = {u.name for row in player.board for u in row if u and any(_worth(i) == 2 for i in u.items)}
+    names = carriers(board)
+    return sum(c in holding for c in names) / len(names)
 
 
 class DeckPolicy:
@@ -218,11 +232,13 @@ def _register():
 
 
 def play(game, bot='deck', knobs=None):
-    """한 판. game = (시드, 덱 번호 8개). bot은 'default'(덱을 정해 주지 않은 기본 봇), 'deck'(덱 봇), 'human'(사람 봇).
-    돌려주는 값: {'curve': [(칸, 레벨, 골드, 체력), ...] 살아 있는 봇이 그 칸에서 처음 움직일 때,
-                 'players': [{'deck', 'place', 'complete', 'complete21', 'board'}, ...]}
+    """한 판. game = (시드, 덱 번호 8개). bot은 'default'(덱을 정해 주지 않은 기본 봇), 'deck'(덱 봇),
+    'human'(사람 봇, meta/human_bot.py). knobs는 사람 봇 손잡이 값을 바꿀 때 쓴다(meta.play_stats --knob).
+    돌려주는 값: {'curve': [(칸, 레벨, 골드, 체력, 초반 전략), ...] 살아 있는 봇이 그 칸에서 처음 움직일 때,
+                 'players': [{'deck', 'place', 'complete', 'complete21', 'carry21', 'mode', 'switches', 'board'}, ...]}
     탈락 때 완성도(complete)는 일찍 죽은 덱일수록 낮게 나와 등수와 엉킨다. 그래서 5단계 시작(21번째 칸) 때 살아 있던
-    봇의 완성도(complete21)를 따로 잰다(그 전에 탈락하면 None). board는 탈락하거나 끝날 때의 board_record다."""
+    봇의 완성도(complete21)와 캐리 아이템 비율(carry21)을 따로 잰다(그 전에 탈락하면 None). board는 탈락하거나 끝날
+    때의 board_record다. 덱 번호는 덱 봇과 0~2단계 사람 봇의 목표 덱이다."""
     seed, decks = game
     sim_config.LOGMESSAGES = False  # 켜 두면 실행한 곳에 log.txt가 생긴다
     if bot == 'deck':
@@ -235,11 +251,19 @@ def play(game, bot='deck', knobs=None):
         obs, info = env.reset(options={'default_agent': [True] * N_PLAYERS})
         deck_of = dict(zip(info, decks))
         players = {a: info[a]['player'] for a in info}
+        policies = {}
         if bot == 'deck':
             for a, deck in deck_of.items():
                 players[a].default_agent.comp_number = FIRST_DECK + deck
-                attach(players[a], BOARDS[deck])
-        curve, seen, handed, placement, done, mid, boards = [], set(), {}, {}, {}, {}, {}
+                policies[a] = attach(players[a], BOARDS[deck])
+        elif bot == 'human':
+            from meta.human_bot import attach_human  # human_bot이 이 파일을 불러서, 여기서 늦게 부른다
+            for i, (a, deck) in enumerate(deck_of.items()):
+                others = [players[o] for o in players if o != a]
+                policies[a] = attach_human(players[a], others, random.Random(seed * N_PLAYERS + i), knobs,
+                                           board=BOARDS[deck])
+        mode = lambda a: getattr(policies.get(a), 'mode', None)
+        curve, seen, handed, placement, done, mid, carry, boards = [], set(), {}, {}, {}, {}, {}, {}
         rank, guard = N_PLAYERS, 0
         # 종료 신호를 놓치면 루프가 안 끝난다(fullgame/ab_test.py와 같은 상한). 상한에 걸린 판은 아래에서 등수를 메운다.
         while obs and guard < 5000:
@@ -250,9 +274,10 @@ def play(game, bot='deck', knobs=None):
                 game_round, p = info[a]['game_round'], players[a]
                 if (a, game_round) not in seen:
                     seen.add((a, game_round))
-                    curve.append((game_round, p.level, p.gold, p.health))
+                    curve.append((game_round, p.level, p.gold, p.health, mode(a)))
                 if game_round >= 21 and a not in mid:
                     mid[a] = completion(p, BOARDS[deck_of[a]])
+                    carry[a] = carry_share(p, getattr(policies.get(a), 'board', None))
                 if bot == 'deck' and game_round >= 11 and handed.get(a) != game_round:
                     hand_out_items(p, BOARDS[deck_of[a]]['items'])
                     handed[a] = game_round
@@ -269,6 +294,7 @@ def play(game, bot='deck', knobs=None):
             done[a], boards[a] = completion(players[a], BOARDS[deck_of[a]]), board_record(players[a])
     return {'curve': curve,
             'players': [{'deck': deck_of[a], 'place': placement[a], 'complete': done[a], 'complete21': mid.get(a),
+                         'carry21': carry.get(a), 'mode': mode(a), 'switches': getattr(policies.get(a), 'switches', 0),
                          'board': boards[a]} for a in deck_of]}
 
 
