@@ -92,11 +92,11 @@ def _pair(job):
     return win_rate(*job)
 
 
-def round_robin(specs, n, place, jobs, init=None):
+def round_robin(specs, n, place, jobs, init=None, only=None):
     """init은 일꾼 프로세스마다 먼저 부르는 함수다(수치 바꾸기 등). 윈도우에서는 일꾼이 모듈을 새로 불러서
-    부모에서 바꾼 값이 넘어가지 않는다."""
+    부모에서 바꾼 값이 넘어가지 않는다. only를 주면 그 이름이 낀 매치업만 붙인다."""
     names = list(specs)
-    pairs = [(a, b) for i, a in enumerate(names) for b in names[i + 1:]]
+    pairs = [(a, b) for i, a in enumerate(names) for b in names[i + 1:] if only is None or a in only or b in only]
     with Pool(jobs, initializer=init) as workers:
         rates = workers.map(_pair, [(specs[a], specs[b], n, place) for a, b in pairs], chunksize=1)
     matrix = {a: {} for a in names}

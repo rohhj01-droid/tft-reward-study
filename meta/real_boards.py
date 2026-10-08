@@ -97,6 +97,14 @@ def spec(board, five_cost_stars):
     return out
 
 
+def groups(boards):
+    """순위 상관을 낼 묶음. 실제 등수는 유닛 수(레벨 9까지 갔나)로 크게 갈려서 같은 유닛 수끼리도 본다."""
+    return [('전체', boards),
+            ('유닛 8명 보드만', [b for b in boards if len(b['units']) == 8]),
+            ('유닛 9명 보드만', [b for b in boards if len(b['units']) == 9]),
+            ('닌자 그림자 빼고', [b for b in boards if '4ninja' not in b['key']])]
+
+
 def ranks(values):
     """작은 값이 0번. 같은 값은 평균 순위."""
     s = sorted(values)
@@ -147,13 +155,9 @@ def main():
               + ''.join(f' {avg[v][b["key"]] * 100:7.1f}%' for v, _, _ in VARIANTS))
 
     # 실제는 등수가 낮을수록 좋으니 부호를 뒤집는다. 상관이 양수면 시뮬레이터가 실제와 같은 쪽으로 줄 세운 것이다.
-    subsets = [('전체', boards),
-               ('유닛 8명 보드만', [b for b in boards if len(b['units']) == 8]),
-               ('유닛 9명 보드만', [b for b in boards if len(b['units']) == 9]),
-               ('닌자 그림자 빼고', [b for b in boards if '4ninja' not in b['key']])]
     summary = {}
     print('\n실제 평균 등수와의 순위 상관 (괄호는 섞어서 이만큼 나올 확률)')
-    for label, group in subsets:
+    for label, group in groups(boards):
         real = [-b['place'] for b in group]
         cols = {v: spearman(real, [avg[v][b['key']] for b in group]) for v, _, _ in VARIANTS}
         p = perm_p(real, [avg['main'][b['key']] for b in group])

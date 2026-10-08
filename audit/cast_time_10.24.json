@@ -1,0 +1,239 @@
+{
+ "_source": "https://raw.communitydragon.org/10.24/game/data/characters/<이름>/<이름>.bin.json 의 주 스킬 mSpell.mCastTime(초). null은 파일에 값이 없는 것",
+ "aatrox": {
+  "spell": "TFT4_AatroxQ",
+  "cast_time": 1.2
+ },
+ "ahri": {
+  "spell": "TFT4_AhriQ",
+  "cast_time": null
+ },
+ "akali": {
+  "spell": "TFT4_AkaliQ",
+  "cast_time": null
+ },
+ "annie": {
+  "spell": "TFT4_AnnieW",
+  "cast_time": 0.25
+ },
+ "aphelios": {
+  "spell": "TFT4_ApheliosSpell",
+  "cast_time": 0.5
+ },
+ "ashe": {
+  "spell": "TFT4_AsheQ",
+  "cast_time": 0.5
+ },
+ "azir": {
+  "spell": "TFT4_AzirR",
+  "cast_time": 0.1
+ },
+ "cassiopeia": {
+  "spell": "TFT4_CassiopeiaR",
+  "cast_time": null
+ },
+ "diana": {
+  "spell": "TFT4_DianaW",
+  "cast_time": 0.5
+ },
+ "elise": {
+  "spell": "TFT4_EliseR",
+  "cast_time": null
+ },
+ "evelynn": {
+  "spell": "TFT4_EvelynnR",
+  "cast_time": 0.35
+ },
+ "fiora": {
+  "spell": "TFT4_FioraW",
+  "cast_time": 0.01
+ },
+ "garen": {
+  "spell": "TFT4_GarenE",
+  "cast_time": null
+ },
+ "hecarim": {
+  "spell": "TFT4_HecarimW",
+  "cast_time": 0.5
+ },
+ "irelia": {
+  "spell": "TFT4_IreliaR",
+  "cast_time": 0.5
+ },
+ "janna": {
+  "spell": "TFT4_JannaW",
+  "cast_time": 0.35
+ },
+ "jhin": {
+  "spell": "TFT4_JhinPassiveAttack",
+  "cast_time": null
+ },
+ "jax": {
+  "spell": "TFT4_JaxE",
+  "cast_time": null
+ },
+ "jinx": {
+  "spell": "TFT4_JinxQ",
+  "cast_time": 0.5
+ },
+ "kalista": {
+  "spell": "TFT4_KalistaE",
+  "cast_time": 0.25
+ },
+ "kennen": {
+  "spell": "TFT4_KennenShurikenStorm",
+  "cast_time": null
+ },
+ "kindred": {
+  "spell": "TFT4_KindredQ",
+  "cast_time": 0.01
+ },
+ "leesin": {
+  "spell": "TFT4_LeeSinR",
+  "cast_time": 1.0
+ },
+ "lillia": {
+  "spell": "TFT4_LilliaR",
+  "cast_time": 0.5
+ },
+ "lulu": {
+  "spell": "TFT4_LuluR",
+  "cast_time": 0.25
+ },
+ "lux": {
+  "spell": "TFT4_LuxQ",
+  "cast_time": null
+ },
+ "maokai": {
+  "spell": "TFT4_MaokaiQ",
+  "cast_time": 0.5
+ },
+ "morgana": {
+  "spell": "TFT4_MorganaW",
+  "cast_time": 0.5
+ },
+ "nami": {
+  "spell": "TFT4_NamiQ",
+  "cast_time": 0.3
+ },
+ "nidalee": {
+  "spell": "TFT4_NidaleeQ",
+  "cast_time": 0.25
+ },
+ "pyke": {
+  "spell": "TFT4_PykeE",
+  "cast_time": 0.275
+ },
+ "nunu": {
+  "spell": "TFT4_NunuQ",
+  "cast_time": 0.4
+ },
+ "riven": {
+  "spell": "TFT4_RivenR",
+  "cast_time": 0.65
+ },
+ "sejuani": {
+  "spell": "TFT4_SejuaniR",
+  "cast_time": 0.25
+ },
+ "sett": {
+  "spell": "TFT4_SettR",
+  "cast_time": 0.3
+ },
+ "shen": {
+  "spell": "TFT4_ShenE",
+  "cast_time": 1.0
+ },
+ "sylas": {
+  "spell": "TFT4_SylasQ",
+  "cast_time": 0.4
+ },
+ "tahmkench": {
+  "spell": "TFT4_TahmKenchE",
+  "cast_time": 0.3
+ },
+ "talon": {
+  "spell": "TFT4_TalonQ",
+  "cast_time": 0.3
+ },
+ "teemo": {
+  "spell": "TFT4_TeemoQ",
+  "cast_time": null
+ },
+ "thresh": {
+  "spell": "TFT4_ThreshW",
+  "cast_time": 0.25
+ },
+ "lissandra": {
+  "spell": "TFT4_LissandraQ",
+  "cast_time": 0.4
+ },
+ "twistedfate": {
+  "spell": "TFT4_TwistedFateQ",
+  "cast_time": null
+ },
+ "vayne": {
+  "spell": "TFT4_VayneW",
+  "cast_time": null
+ },
+ "veigar": {
+  "spell": "TFT4_VeigarR",
+  "cast_time": 0.5
+ },
+ "wukong": {
+  "spell": "TFT4_WukongQ",
+  "cast_time": 0.5
+ },
+ "xinzhao": {
+  "spell": "TFT4_XinZhaoR",
+  "cast_time": null
+ },
+ "yasuo": {
+  "spell": "TFT4_YasuoQ",
+  "cast_time": 0.35
+ },
+ "yone": {
+  "spell": "TFT4_YoneR",
+  "cast_time": 0.5
+ },
+ "yuumi": {
+  "spell": "TFT4_YuumiW",
+  "cast_time": 0.5
+ },
+ "zed": {
+  "spell": "TFT4_ZedP",
+  "cast_time": null
+ },
+ "zilean": {
+  "spell": "TFT4_ZileanR",
+  "cast_time": 0.75
+ },
+ "galio": {
+  "spell": "TFT4_GalioW",
+  "cast_time": 0.5
+ },
+ "vi": {
+  "spell": "TFT4_ViE",
+  "cast_time": 0.5
+ },
+ "jarvaniv": {
+  "spell": "TFT4_JarvanIVQE",
+  "cast_time": 0.55
+ },
+ "kayn": {
+  "spell": "TFT4_KaynQ",
+  "cast_time": 0.05
+ },
+ "katarina": {
+  "spell": "TFT4_KatarinaR",
+  "cast_time": null
+ },
+ "ezreal": {
+  "spell": "TFT4_EzrealR",
+  "cast_time": 1.0
+ },
+ "warwick": {
+  "spell": "TFT4_WarwickP",
+  "cast_time": 0.25
+ }
+}
