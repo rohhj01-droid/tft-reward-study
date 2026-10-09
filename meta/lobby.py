@@ -239,7 +239,7 @@ def play(game, bot='deck', knobs=None):
                  'players': [{'deck', 'place', 'complete', 'complete21', 'carry21', 'mode', 'switches', 'board'}, ...]}
     탈락 때 완성도(complete)는 일찍 죽은 덱일수록 낮게 나와 등수와 엉킨다. 그래서 5단계 시작(21번째 칸) 때 살아 있던
     봇의 완성도(complete21)와 캐리 아이템 비율(carry21)을 따로 잰다(그 전에 탈락하면 None). board는 탈락하거나 끝날
-    때의 board_record다. 덱 번호는 덱 봇과 0~2단계 사람 봇의 목표 덱이다."""
+    때의 board_record다. 덱 번호는 덱 봇의 목표 덱이다(사람 봇은 스스로 고른다)."""
     seed, decks = game
     sim_config.LOGMESSAGES = False  # 켜 두면 실행한 곳에 log.txt가 생긴다
     if bot == 'deck':
@@ -261,8 +261,7 @@ def play(game, bot='deck', knobs=None):
             from meta.human_bot import attach_human  # human_bot이 이 파일을 불러서, 여기서 늦게 부른다
             for i, (a, deck) in enumerate(deck_of.items()):
                 others = [players[o] for o in players if o != a]
-                policies[a] = attach_human(players[a], others, random.Random(seed * N_PLAYERS + i), knobs,
-                                           board=BOARDS[deck])
+                policies[a] = attach_human(players[a], others, random.Random(seed * N_PLAYERS + i), knobs)
         mode = lambda a: getattr(policies.get(a), 'mode', None)
         curve, seen, handed, placement, done, mid, carry, boards = [], set(), {}, {}, {}, {}, {}, {}
         rank, guard = N_PLAYERS, 0

@@ -1,19 +1,22 @@
 """
 사람처럼 노는 봇(meta/human_bot_design.md). 기본 봇 위에 얹는 정책 하나로, 1라운드부터 끝까지 맡는다.
 
-행동할 때마다 할 일이 있는 첫 단계만 움직인다: 보드 채우기 → 벤치 정리 → 사기 → 교체 → 캐리 아이템 옮기기 → 아이템
-→ 자리 맞추기 → 레벨·리롤.
-라운드의 첫 행동 때 초반 전략(연승형·연패형)을 정하거나 바꾼다. 아이템은 meta/human_items.py, 레벨·리롤은
-meta/human_macro.py에 있고, 자리 맞추기는 구석 배치(analysis.battle.corner_positions)다. 덱 고르기(3단계)는 다음에 더한다.
+행동할 때마다 할 일이 있는 첫 단계만 움직인다: 보드 채우기 → 벤치 정리 → 다른 특성 선택받은 자 팔기 → 사기 → 교체
+→ 캐리 아이템 옮기기 → 아이템 → 자리 맞추기 → 레벨·리롤. 라운드의 첫 행동 때 초반 전략을 정하거나 바꾸고, 2-1부터
+목표 덱을 고르거나 갈아탄다. 아이템은 meta/human_items.py, 레벨·리롤은 meta/human_macro.py, 덱 고르기는
+meta/human_deck.py에 있고, 자리 맞추기는 구석 배치(analysis.battle.corner_positions)다.
 """
 from analysis.battle import corner_positions
-from Simulator.stats import round_stage
+from Simulator.stats import COST, round_stage
 from Simulator.utils import x_y_to_1d_coord
+from meta.human_deck import SPREAD, choose, copies, held_items, score, scout, units_of
 from meta.human_items import item_action, transfer_action
 from meta.human_macro import action, carry3, early_mode, plan, stable, stay_level
-from meta.lobby import DeckPolicy
+from meta.lobby import BOARDS, DeckPolicy
 
-KNOBS = {'win_threshold': 2, 'lose_hp': 50, 'keep': 50, 'floor_41': 20, 'floor_45': 10, 'hp_low': 40, 'hp_all_in': 20}
+KNOBS = {'win_threshold': 2, 'lose_hp': 50, 'keep': 50, 'floor_41': 20, 'floor_45': 10, 'hp_low': 40, 'hp_all_in': 20,
+         'chosen_bonus': 10, 'item_point': 3, 'tier_weight': 3, 'contest': 1, 'temperature': 3,
+         'switch': {2: 0.1, 3: 0.3, 4: 0.6}, 'early_spread': 6}
 
 
 class HumanPolicy(DeckPolicy):
@@ -27,15 +30,78 @@ class HumanPolicy(DeckPolicy):
         self.choose_decks = board is None
         self.set_board(board)
 
+    def set_board(self, board):
+        if board is None:
+            self.board, self.units, self.trait, self.slow = None, set(), None, False
+        else:
+            super().set_board(board)
+
     def __call__(self, player, shop, game_round, mask):
         self.agent.current_round = game_round
         if game_round != self.last_round:
             self.last_round = game_round
             self.update_mode(player, game_round)
-        return (self.fill(player, shop, mask) or self.sell(player) or self.buy(player, shop, mask)
-                or self.swap(player) or transfer_action(player, self.board)
+            if self.choose_decks and game_round >= 3:
+                self.pick_deck(player, game_round)
+        return (self.fill(player, shop, mask) or self.sell(player) or self.sell_chosen(player)
+                or self.buy(player, shop, mask) or self.swap(player) or transfer_action(player, self.board)
                 or item_action(player, self.board, self.mode or 'win', game_round, mask)
                 or self.reposition(player, game_round) or self.macro(player, game_round))
+
+    def pick_deck(self, player, game_round):
+        """라운드 첫 행동 때 후보 27개의 점수를 매겨 목표 덱을 고르거나 갈아탄다(설계 2절)."""
+        completed, components = held_items(player)
+        mine, others = copies(units_of(player)), scout(self.others)
+        scores = [score(b, mine, player.chosen or None, completed, components, others, self.knobs) for b in BOARDS]
+        current = BOARDS.index(self.board) if self.board else None
+        new = choose(scores, current, round_stage(game_round), self.rng, self.knobs)
+        if new != current:
+            if current is not None:
+                self.switches += 1
+            self.set_board(BOARDS[new])
+
+    def sell(self, player):
+        if self.board is None:  # 목표 덱이 없으면 기본 봇 규칙(짝 아닌 1성부터)
+            return self.agent.sell_bench_full(player) if player.bench_full() else None
+        return super().sell(player)
+
+    def sell_chosen(self, player):
+        """덱을 갈아타서 들고 있는 선택받은 자 특성이 목표 덱과 다르면 판다. 시뮬레이터는 선택받은 자를 들고 있으면
+        상점에 다른 선택받은 자를 내지 않는다(pool.sample)."""
+        if not (self.choose_decks and self.board and player.chosen and player.chosen != self.trait):
+            return None
+        for x, row in enumerate(player.board):
+            for y, u in enumerate(row):
+                if u and u.chosen:
+                    return f'4_{x_y_to_1d_coord(x, y)}'
+        for i, u in enumerate(player.bench):
+            if u and u.chosen:
+                return f'4_{28 + i}'
+        return None
+
+    def buy(self, player, shop, mask):
+        """목표 덱이 없으면 짝·두루 들어가는 유닛·처음 본 선택받은 자를, 있으면 덱 유닛·덱 특성 선택받은 자를 사고
+        4-1 전까지는 보드 유닛의 짝도 산다."""
+        if self.board is None:
+            owned = {u.name for u in units_of(player)}
+            for i, unit in enumerate(shop):
+                if not mask[47 + i][0]:
+                    continue
+                if unit.endswith('_c'):
+                    name = unit.split('_')[0]
+                    if not player.chosen and COST[name] > 1 and 3 * COST[name] <= player.gold:
+                        return '3_' + str(i)
+                elif (unit in owned or SPREAD[unit] >= self.knobs['early_spread']) and COST[unit] <= player.gold:
+                    return '3_' + str(i)
+            return None
+        act = super().buy(player, shop, mask)
+        if act or (self.last_round or 0) >= 15:
+            return act
+        on_board = {u.name for row in player.board for u in row if u}
+        for i, unit in enumerate(shop):
+            if mask[47 + i][0] and not unit.endswith('_c') and unit in on_board and COST[unit] <= player.gold:
+                return '3_' + str(i)
+        return None
 
     def update_mode(self, player, game_round):
         """2-3에 첫 대전 성적으로 초반 전략을 고르고, 연승형이 2~3단계에 두 번 연달아 지면 연패형으로 바꾼다.
@@ -78,7 +144,7 @@ class HumanPolicy(DeckPolicy):
 
 def attach_human(player, others, rng, knobs=None, board=None):
     """플레이어의 기본 봇에 HumanPolicy를 얹는다. 1라운드부터 이 정책이 맡는다.
-    board를 주면 그 덱을 끝까지 쓰고(0~2단계), 주지 않으면 스스로 고른다(3단계)."""
+    board를 주면 그 덱을 끝까지 쓰고, 주지 않으면 스스로 고른다(3단계부터 측정은 주지 않는다)."""
     policy = HumanPolicy(player.default_agent, board, others, rng, knobs)
     player.default_agent.policy = lambda p, shop, game_round, mask: policy(p, shop, game_round, mask)
     return policy

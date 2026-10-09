@@ -266,12 +266,13 @@ def transfer_sells_holder_of_carry_item_test():
 
 
 def human_policy_moves_carry_item_to_arrived_carrier_test():
-    """사람 봇은 아이템 단계 전에 캐리 아이템을 맡은 덱 밖 유닛을 판다."""
+    """사람 봇은 아이템 단계 전에 캐리 아이템을 맡은 덱 밖 유닛을 판다. 상점은 덱에도 보드에도 없는 유닛(바이)이라
+    사기·짝 사기가 끼지 않는다."""
     from meta.human_bot import attach_human
     p = deck_player(['garen', 'jhin'], gold=50)
     p.board[0][0].items = ['guardian_angel']
     attach_human(p, [], random.Random(0), board=SHARPSHOOTERS)
-    assert p.default_policy(12, ['garen'] * 5, FULL) == '4_0'
+    assert p.default_policy(12, ['vi'] * 5, FULL) == '4_0'
 
 
 def macro_buys_exp_toward_nine_without_stability_test():
@@ -282,6 +283,92 @@ def macro_buys_exp_toward_nine_without_stability_test():
     policy = HumanPolicy(None, SHARPSHOOTERS, [], random.Random(0))
     policy.mode = 'win'
     assert policy.macro(p, 21) == '1'
+
+
+D = dict(K, chosen_bonus=10, item_point=3, tier_weight=3, contest=1, temperature=3,
+         switch={2: 0.1, 3: 0.3, 4: 0.6}, early_spread=6)
+
+
+def score_follows_owned_units_and_chosen_test():
+    """황혼 선택받은 자와 황혼 유닛을 들면 Chosen Dusks 점수가 Chosen Hunters보다 높다."""
+    from collections import Counter
+    from meta.human_deck import score
+    from meta.lobby import BOARDS
+    dusks = next(b for b in BOARDS if b['name'] == 'Chosen Dusks')
+    hunters = next(b for b in BOARDS if b['name'] == 'Chosen Hunters')
+    mine = Counter({'riven': 3, 'cassiopeia': 1, 'thresh': 3})
+    assert score(dusks, mine, 'dusk', [], [], Counter(), D) > score(hunters, mine, 'dusk', [], [], Counter(), D)
+
+
+def buildable_counts_completed_and_components_test():
+    """들고 있는 완성 아이템과 조각으로 추천 아이템을 몇 개 만들 수 있는지 센다."""
+    from meta.human_deck import buildable
+    assert buildable(SHARPSHOOTERS, ['infinity_edge'], list(GA)) == 2
+    assert buildable(SHARPSHOOTERS, [], [GA[0]]) == 0
+
+
+def contest_lowers_score_test():
+    """다른 플레이어가 핵심 유닛(캐리와 4·5코스트)을 들고 있으면 그 장수만큼 점수가 내려간다."""
+    from collections import Counter
+    from meta.human_deck import score
+    from meta.lobby import BOARDS
+    sharp = next(b for b in BOARDS if b['name'] == 'Chosen Sharpshooters')
+    base = score(sharp, Counter(), None, [], [], Counter(), D)
+    assert score(sharp, Counter(), None, [], [], Counter({'jhin': 9}), D) == base - 9
+
+
+def choose_is_seeded_and_sticky_test():
+    """처음엔 시드를 고정한 제비뽑기, 그다음엔 문턱을 넘어야 갈아탄다(2단계 10%, 4단계부터 60%)."""
+    from meta.human_deck import choose
+    scores = [1.0, 5.0, 3.0]
+    assert choose(scores, None, 2, random.Random(7), D) == choose(scores, None, 2, random.Random(7), D)
+    assert choose(scores, None, 2, random.Random(7), dict(D, temperature=0.01)) == 1
+    assert choose([10.0, 15.0], 0, 4, random.Random(0), D) == 0
+    assert choose([10.0, 17.0], 0, 4, random.Random(0), D) == 1
+    assert choose([10.0, 12.0], 0, 2, random.Random(0), D) == 1
+
+
+def choose_handles_non_positive_scores_and_late_stages_test():
+    """점수가 모두 0 이하여도, 6단계여도 하나를 고른다(Review Focus)."""
+    from meta.human_deck import choose
+    assert choose([-5.0, -1.0, 0.0], None, 2, random.Random(0), D) in (0, 1, 2)
+    assert choose([-5.0, 3.0], 0, 6, random.Random(0), D) == 1
+
+
+def scout_ignores_eliminated_players_test():
+    """탈락한 플레이어의 유닛은 정찰에서 세지 않는다(Review Focus)."""
+    from meta.human_deck import scout
+    alive = item_player([Unit(name='jhin', stars=2, items=[])], [])
+    alive.health = 30
+    dead = item_player([Unit(name='riven', stars=2, items=[])], [])
+    dead.health = 0
+    assert scout([alive, dead]) == {'jhin': 3}
+
+
+def sells_chosen_of_other_trait_after_switch_test():
+    """덱을 갈아타서 들고 있는 선택받은 자 특성이 목표 덱과 다르면 그 선택받은 자를 판다(벤치 칸은 28부터)."""
+    from meta.human_bot import HumanPolicy
+    from meta.lobby import BOARDS
+    hunters = next(b for b in BOARDS if b['name'] == 'Chosen Hunters')
+    bench = [Unit(name='vayne', stars=1, items=[], chosen=False), Unit(name='garen', stars=1, items=[], chosen=False),
+             Unit(name='riven', stars=2, items=[], chosen='dusk')]
+    p = item_player([], [], bench)
+    p.chosen = 'dusk'
+    policy = HumanPolicy(None, None, [], random.Random(0))
+    policy.set_board(hunters)
+    assert policy.sell_chosen(p) == '4_30'
+
+
+def buys_pairs_and_widely_used_units_before_choosing_test():
+    """목표 덱을 정하기 전에는 짝과 여러 후보 덱에 두루 들어가는 유닛을 산다."""
+    from meta.human_bot import HumanPolicy
+    from meta.human_deck import SPREAD
+    p = item_player([Unit(name='jhin', stars=1, items=[], chosen=False)], [])
+    p.gold, p.chosen = 10, False
+    policy = HumanPolicy(None, None, [], random.Random(0))
+    rare = min(SPREAD, key=SPREAD.get)
+    assert policy.buy(p, [rare, 'jhin', rare, rare, rare], OPEN) == '3_1'
+    assert SPREAD['shen'] >= 6 and policy.buy(p, [rare, 'shen', rare, rare, rare], OPEN) == '3_1'
 
 
 if __name__ == '__main__':
