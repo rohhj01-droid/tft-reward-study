@@ -301,6 +301,133 @@ def macro_knobs_for_gold_after_stage_five_test():
     assert [act(9, 30), act(9, 30, floor_9=20)] == ['0', '2']
 
 
+def buys_five_cost_from_level_eight_after_deck_units_test():
+    """레벨 8부터 상점의 5코스트를 산다. 덱 유닛이 먼저고, 레벨 7이나 골드 5 미만이면 안 산다(설계 9절)."""
+    from meta.human_bot import HumanPolicy
+    p = item_player([Unit(name='garen', stars=1, items=[], chosen=False)], [])
+    p.chosen, p.gold, p.level = False, 30, 8
+    policy = HumanPolicy(None, SHARPSHOOTERS, [], random.Random(0))
+    # 채움 칸은 바이(덱 밖, 보드에도 없음)라 짝 사기 규칙에 안 걸린다
+    assert policy.buy(p, ['yone', 'jhin', 'vi', 'vi', 'vi'], OPEN) == '3_1'  # 덱 유닛(진)이 먼저
+    assert policy.buy(p, ['vi', 'yone', 'vi', 'vi', 'vi'], OPEN) == '3_1'
+    p.level = 7
+    assert policy.buy(p, ['vi', 'yone', 'vi', 'vi', 'vi'], OPEN) is None
+    p.level, p.gold = 8, 4
+    assert policy.buy(p, ['vi', 'yone', 'vi', 'vi', 'vi'], OPEN) is None
+
+
+def five_cost_prefers_active_trait_and_stops_at_two_star_test():
+    """5코스트가 여럿이면 보드에 켜진 특성에 보태는 쪽을 먼저 사고, 같은 이름은 1성으로 쳐서 3장(2성)까지만 산다.
+    선택받은 자 칸은 덱 규칙에 맡긴다(설계 9절)."""
+    from meta.human_bot import HumanPolicy
+    dusk = [Unit(name='riven', stars=1, items=[], chosen=False), Unit(name='vayne', stars=1, items=[], chosen=False)]
+    p = item_player(dusk, [])  # 황혼 2명 → 황혼이 켜진다
+    p.chosen, p.gold, p.level = False, 30, 8
+    policy = HumanPolicy(None, SHARPSHOOTERS, [], random.Random(0))
+    assert policy.buy(p, ['sett', 'lillia', 'vi', 'vi', 'vi'], OPEN) == '3_1'  # 릴리아(황혼)
+    assert policy.buy(p, ['sett', 'kayn', 'vi', 'vi', 'vi'], OPEN) == '3_0'  # 둘 다 안 보태면 앞 칸
+    p = item_player(dusk, [], [Unit(name='yone', stars=2, items=[], chosen=False)])  # 요네 2성 = 3장
+    p.chosen, p.gold, p.level = False, 30, 8
+    assert policy.buy(p, ['yone', 'vi', 'vi', 'vi', 'vi'], OPEN) is None
+    assert policy.buy(p, ['yone_adept_c', 'vi', 'vi', 'vi', 'vi'], OPEN) is None
+
+
+FIVE_BOARD = ['nidalee', 'vayne', 'jarvaniv', 'teemo', 'kennen', 'jinx', 'jhin', 'riven']  # 명사수 5(큰 특성), 수호자 3, 황혼 2
+
+
+def full_board(names, bench_names=('yone',), chosen=()):
+    """보드가 꽉 찬 레벨 8 플레이어. 앞 7명은 0줄 x칸(칸 번호 4x)이고 8번째부터는 1줄에 놓는다. 벤치 칸은 28부터."""
+    units = [Unit(name=n, stars=1, items=[], chosen=(n in chosen and 'keeper')) for n in names]
+    p = item_player(units[:7], [], [Unit(name=n, stars=1, items=[], chosen=False) for n in bench_names])
+    for x, u in enumerate(units[7:]):
+        p.board[x][1] = u
+    p.chosen, p.gold, p.level = False, 30, 8
+    p.num_units_in_play, p.max_units = len(names), len(names)
+    return p
+
+
+def swaps_cheap_side_unit_for_bench_five_cost_test():
+    """빈자리가 없으면 벤치의 5코스트를 보드의 덱 유닛과 바꾼다. 캐리(진·리븐)와 선택받은 자는 두고, 큰 특성(명사수 5)에
+    안 드는 곁가지 유닛 중 가장 싼 자르반(2코스트)을 내린다. 내린 유닛은 그 덱에서 덱 밖으로 친다(설계 9절)."""
+    from meta.human_bot import HumanPolicy
+    p = full_board(FIVE_BOARD)
+    policy = HumanPolicy(None, SHARPSHOOTERS, [], random.Random(0))
+    assert policy.swap(p) == f'5_{4 * 2}_28'
+    assert policy.dropped == {'jarvaniv'} and 'jarvaniv' not in policy.units
+    p = full_board(FIVE_BOARD, chosen=('jarvaniv',))  # 자르반이 선택받은 자면 다음 곁가지(케넨, 3코스트)
+    policy = HumanPolicy(None, SHARPSHOOTERS, [], random.Random(0))  # 자르반을 이미 덱 밖으로 친 정책은 쓰지 않는다
+    assert policy.swap(p) == f'5_{4 * 4}_28'
+    p.level = 7
+    assert policy.swap(p) is None
+
+
+def keeps_big_trait_at_four_and_carriers_test():
+    """큰 특성(4명 이상)이 4명 아래로 떨어지는 바꾸기는 하지 않는다. 캐리만 남으면 바꾸지 않는다(설계 9절)."""
+    from meta.human_bot import HumanPolicy
+    policy = HumanPolicy(None, SHARPSHOOTERS, [], random.Random(0))
+    assert policy.swap(full_board(['nidalee', 'vayne', 'teemo', 'jinx'])) is None  # 명사수 딱 4명
+    assert policy.swap(full_board(['nidalee', 'vayne', 'teemo', 'jinx', 'jhin'])) == f'5_{4 * 0}_28'  # 5명이면 1코스트 니달리
+    assert policy.swap(full_board(['jhin', 'riven'])) is None
+
+
+def swap_counts_emblems_and_chosen_and_skips_summons_test():
+    """큰 특성 수에 상징 아이템과 선택받은 자 특성을 넣고, 소환물은 후보에서 뺀다(Review Focus)."""
+    from Simulator.item_stats import trait_items
+    from meta.human_bot import HumanPolicy
+    policy = HumanPolicy(None, SHARPSHOOTERS, [], random.Random(0))
+    p = full_board(['vayne', 'jhin', 'riven', 'teemo'])  # 황혼 = 베인 + 리븐 + 진의 황혼 망토 + 선택받은 자 = 4(큰 특성)
+    p.board[1][0].items = [trait_items['dusk']]
+    p.chosen = 'dusk'
+    assert policy.swap(p) == f'5_{4 * 3}_28'  # 베인(1코스트)을 내리면 황혼 3이라 안 되고, 티모를 내린다
+    p = full_board(['nidalee', 'vayne', 'teemo', 'jinx', 'jhin'])
+    p.board[5][0] = Unit(name='sandguard', stars=1, items=[], chosen=False)  # 소환물
+    p.num_units_in_play = p.max_units = 6
+    policy = HumanPolicy(None, SHARPSHOOTERS, [], random.Random(0))  # 티모를 이미 덱 밖으로 친 정책은 쓰지 않는다
+    assert policy.swap(p) == f'5_{4 * 0}_28'  # 모래 병사는 후보도 특성 수도 아니다
+
+
+def sells_dropped_unit_right_away_and_forgets_on_switch_test():
+    """5코스트와 바꿔 내린 유닛은 벤치가 안 찼어도 바로 팔고, 덱을 갈아타면 목록을 비운다(설계 9절, Review Focus)."""
+    from meta.human_bot import HumanPolicy
+    from meta.lobby import BOARDS
+    p = item_player([], [], [Unit(name='garen', stars=1, items=[], chosen=False),
+                             Unit(name='jarvaniv', stars=2, items=[], chosen=False)])
+    p.chosen, p.gold, p.level = False, 30, 8
+    policy = HumanPolicy(None, None, [], random.Random(0))
+    policy.set_board(SHARPSHOOTERS)
+    policy.dropped.add('jarvaniv')
+    policy.units.discard('jarvaniv')
+    assert policy.sell(p) == '4_29'
+    policy.set_board(next(b for b in BOARDS if b['name'] == 'Chosen Dusks'))
+    assert policy.dropped == set()
+
+
+def five_cost_replaces_off_deck_unit_and_is_kept_on_full_bench_test():
+    """레벨 8부터 벤치의 5코스트는 보드의 덱 밖 유닛 자리에 올라가고, 벤치가 꽉 차도 팔지 않는다. 레벨 7은 둘 다 아니다
+    (설계 9절, Review Focus). 덱 봇은 그대로 5코스트를 덱 밖으로 본다."""
+    from meta.human_bot import HumanPolicy
+    from meta.lobby import DeckPolicy
+    p = full_board(['garen', 'jhin'])
+    policy = HumanPolicy(None, SHARPSHOOTERS, [], random.Random(0))
+    assert policy.swap(p) == f'5_{4 * 0}_28'
+    assert DeckPolicy(None, SHARPSHOOTERS).swap(p) is None
+    bench = [Unit(name=n, stars=1, items=[], chosen=False) for n in ['yone'] + ['garen'] * 8]
+    p = item_player([], [], bench)
+    p.chosen, p.gold, p.level = False, 30, 8
+    p.bench_full = lambda: True
+    assert policy.sell(p) == '4_29'
+    p.level = 7
+    assert policy.sell(p) == '4_28'
+
+
+def board_summary_counts_five_costs_per_board_test():
+    """1등 보드 표의 「보드당 5코스트 장수」(설계 7절 3b단계)."""
+    from meta.play_stats import board_summary
+    boards = [{'units': [['yone', 5, 2, 0], ['sett', 5, 1, 0], ['garen', 1, 2, 0]], 'traits': {}, 'chosen': None},
+              {'units': [['garen', 1, 2, 0]], 'traits': {}, 'chosen': None}]
+    assert board_summary(boards)['five_per_board'] == 1.0
+
+
 D = dict(K, chosen_bonus=10, item_point=3, tier_weight=3, contest=1, temperature=3,
          switch={2: 0.1, 3: 0.3, 4: 0.6}, early_spread=6)
 

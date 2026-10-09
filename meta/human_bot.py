@@ -4,12 +4,14 @@
 행동할 때마다 할 일이 있는 첫 단계만 움직인다: 보드 채우기 → 벤치 정리 → 다른 특성 선택받은 자 팔기 → 사기 → 교체
 → 캐리 아이템 옮기기 → 아이템 → 자리 맞추기 → 레벨·리롤. 라운드의 첫 행동 때 초반 전략을 정하거나 바꾸고, 2-1부터
 목표 덱을 고르거나 갈아탄다. 아이템은 meta/human_items.py, 레벨·리롤은 meta/human_macro.py, 덱 고르기는
-meta/human_deck.py에 있고, 자리 맞추기는 구석 배치(analysis.battle.corner_positions)다.
+meta/human_deck.py, 레벨 8부터의 덱 밖 5코스트는 meta/human_five.py에 있고, 자리 맞추기는 구석 배치
+(analysis.battle.corner_positions)다.
 """
 from analysis.battle import corner_positions
 from Simulator.stats import COST, round_stage
 from Simulator.utils import x_y_to_1d_coord
 from meta.human_deck import SPREAD, choose, copies, held_items, score, scout, units_of
+from meta.human_five import FIVE_COSTS, pick_five, swap_out
 from meta.human_items import item_action, transfer_action
 from meta.human_macro import action, carry3, early_mode, plan, stable, stay_level
 from meta.lobby import BOARDS, DeckPolicy
@@ -18,7 +20,9 @@ KNOBS = {'win_threshold': 2, 'lose_hp': 50, 'keep': 50, 'floor_41': 20, 'floor_4
          'chosen_bonus': 10, 'item_point': 3, 'tier_weight': 3, 'contest': 1, 'temperature': 3,
          'switch': {2: 0.1, 3: 0.3, 4: 0.6}, 'early_spread': 6,
          # 떼어 재기용: 5단계 레벨 8에서 50 넘는 몫을 경험치(9로)에 쓰는가(0이면 리롤), 레벨 9에서 남길 골드(None이면 50)
-         'xp_to_9': 1, 'floor_9': None}
+         'xp_to_9': 1, 'floor_9': None,
+         # 설계 9절: 5코스트 시작 레벨, 같은 5코스트 사본 상한(1성으로 쳐서), 바꿀 덱 유닛 비용 상한, 큰 특성 기준 인원
+         'five_level': 8, 'five_cap': 3, 'swap_cost_max': 4, 'big_trait': 4}
 
 
 class HumanPolicy(DeckPolicy):
@@ -36,10 +40,16 @@ class HumanPolicy(DeckPolicy):
         self.set_board(board)
 
     def set_board(self, board):
+        self.dropped = set()  # 이 덱에서 5코스트와 바꿔 내린 덱 유닛. 덱 밖으로 치고 바로 판다(설계 9절)
         if board is None:
             self.board, self.units, self.trait, self.slow = None, set(), None, False
         else:
             super().set_board(board)
+
+    def wanted(self, player):
+        """레벨 8부터는 5코스트도 벤치에 두고 보드에 올린다(설계 9절)."""
+        units = super().wanted(player)
+        return units | set(FIVE_COSTS) if player.level >= self.knobs['five_level'] else units
 
     def __call__(self, player, shop, game_round, mask):
         self.agent.current_round = game_round
@@ -66,6 +76,9 @@ class HumanPolicy(DeckPolicy):
             self.set_board(BOARDS[new])
 
     def sell(self, player):
+        for i, u in enumerate(player.bench):  # 5코스트와 바꿔 내린 유닛은 바로 판다(설계 9절)
+            if u and u.name in self.dropped:
+                return f'4_{28 + i}'
         if self.board is None:  # 목표 덱이 없으면 기본 봇 규칙(짝 아닌 1성부터)
             return self.agent.sell_bench_full(player) if player.bench_full() else None
         return super().sell(player)
@@ -87,7 +100,7 @@ class HumanPolicy(DeckPolicy):
 
     def buy(self, player, shop, mask):
         """목표 덱이 없으면 짝·두루 들어가는 유닛·처음 본 선택받은 자를, 있으면 덱 유닛·덱 유닛의 선택받은 자(특성
-        상관없이)를 사고 4-1 전까지는 보드 유닛의 짝도 산다."""
+        상관없이), 레벨 8부터는 덱 밖 5코스트(human_five.pick_five)를 사고 4-1 전까지는 보드 유닛의 짝도 산다."""
         if self.board is None:
             owned = {u.name for u in units_of(player)}
             for i, unit in enumerate(shop):
@@ -101,12 +114,35 @@ class HumanPolicy(DeckPolicy):
                     return '3_' + str(i)
             return None
         act = super().buy(player, shop, mask)
-        if act or (self.last_round or 0) >= 15:
+        if act:
             return act
+        i = pick_five(player, shop, mask, self.knobs)  # 덱 밖 5코스트(설계 9절)
+        if i is not None:
+            return '3_' + str(i)
+        if (self.last_round or 0) >= 15:
+            return None
         on_board = {u.name for row in player.board for u in row if u}
         for i, unit in enumerate(shop):
             if mask[47 + i][0] and not unit.endswith('_c') and unit in on_board and COST[unit] <= player.gold:
                 return '3_' + str(i)
+        return None
+
+    def swap(self, player):
+        """덱 봇 교체 다음에, 레벨 8부터 빈자리가 없으면 벤치의 5코스트를 싼 덱 유닛과 바꾼다(human_five.swap_out).
+        내린 유닛은 dropped에 넣고 덱 유닛에서 뺀다(다시 사지 않고, 벤치가 안 찼어도 판다)."""
+        act = super().swap(player)
+        if act or not self.board or player.level < self.knobs['five_level'] \
+                or player.num_units_in_play < player.max_units:
+            return act
+        on_board = {u.name for row in player.board for u in row if u}
+        for i, u in enumerate(player.bench):
+            if u and u.name in FIVE_COSTS and u.name not in on_board:
+                spot = swap_out(player, self.board, u.name, self.knobs)
+                if spot:
+                    x, y = spot
+                    self.dropped.add(player.board[x][y].name)
+                    self.units.discard(player.board[x][y].name)
+                    return f'5_{x_y_to_1d_coord(x, y)}_{28 + i}'
         return None
 
     def update_mode(self, player, game_round):

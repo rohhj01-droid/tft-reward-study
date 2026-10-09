@@ -161,12 +161,17 @@ class DeckPolicy:
         placement = self.agent.max_unit_check(player, shop, mask)
         return None if placement == ' ' else placement
 
+    def wanted(self, player):
+        """벤치에 두고 보드에 올리는 유닛. 덱 봇은 덱 유닛뿐이다(사람 봇은 레벨 8부터 5코스트를 더한다, 설계 9절)."""
+        return self.units
+
     def sell(self, player):
-        """벤치가 꽉 차면 덱 밖 유닛부터 판다."""
+        """벤치가 꽉 차면 원하지 않는 유닛부터 판다."""
         if not player.bench_full():
             return None
+        wanted = self.wanted(player)
         for i, u in enumerate(player.bench):
-            if u.name not in self.units:
+            if u.name not in wanted:
                 return '4_' + str(28 + i)
         return self.agent.sell_bench_full(player)
 
@@ -185,13 +190,14 @@ class DeckPolicy:
         return None
 
     def swap(self, player):
-        """벤치의 덱 유닛을 보드의 덱 밖 유닛과 바꾼다. 보드에 이미 있는 유닛의 사본은 올리지 않는다."""
+        """벤치의 원하는 유닛을 보드의 원하지 않는 유닛과 바꾼다. 보드에 이미 있는 유닛의 사본은 올리지 않는다."""
+        wanted = self.wanted(player)
         on_board = {u.name for row in player.board for u in row if u}
         for i, u in enumerate(player.bench):
-            if u and u.name in self.units and u.name not in on_board:
+            if u and u.name in wanted and u.name not in on_board:
                 for x, row in enumerate(player.board):
                     for y, b in enumerate(row):
-                        if b and b.name in BASE_CHAMPION_LIST and b.name not in self.units:
+                        if b and b.name in BASE_CHAMPION_LIST and b.name not in wanted:
                             return f'5_{x_y_to_1d_coord(x, y)}_{28 + i}'
         return None
 

@@ -5,7 +5,8 @@
 사람 봇(meta/human_bot.py).
 - 라운드마다 살아 있는 봇의 레벨, 골드, 체력. 「그 라운드에 올린 뒤」 레벨을 보려고 다음 칸 시작 때 값을 쓴다.
   사람 봇은 초반 전략(연승형·연패형)별로도 나눠 본다.
-- 탈락하거나 끝날 때의 보드: 유닛 수, 비용별 별, 완성 아이템 수, 켜진 특성, 선택받은 자 특성, 아이템을 완성으로 쓴 비율.
+- 탈락하거나 끝날 때의 보드: 유닛 수, 비용별 별, 5코스트 장수, 완성 아이템 수, 켜진 특성, 선택받은 자 특성, 아이템을 완성으로
+  쓴 비율.
 - 5단계 시작 때 목표 덱 캐리가 아이템을 든 비율, 덱 계열별 비율과 평균 등수.
 실제 쪽은 롤체지지 1등 보드 25개와 메타 트렌드(meta/lolchess_10.24_2020-11-28.json)다.
 
@@ -100,6 +101,7 @@ def board_summary(boards):
     return {'boards': len(boards), 'units': dict(sorted(Counter(min(len(b['units']), 10) for b in boards).items())),
             'nine_plus': sum(len(b['units']) >= 9 for b in boards) / len(boards),
             'two_star_4cost': two_plus[4], 'two_star_5cost': two_plus[5],
+            'five_per_board': statistics.mean(sum(cost == 5 for _, cost, _, _ in b['units']) for b in boards),
             'three_star_per_board': sum(v for (_, s), v in stars.items() if s == 3) / len(boards),
             'items_median': statistics.median(items),
             'item_use': (sum(a for a, _ in worth) / max(1, sum(b for _, b in worth))) if worth else None,
@@ -183,7 +185,8 @@ def main():
     print('\n실제 메타 트렌드 계열 (몫, 평균 등수):', [(f, fmt(s), round(a, 2)) for f, s, a in out['real_families']])
     print('\n1등 보드')
     keys = [('boards', '보드 수', False), ('nine_plus', '9유닛 이상', True), ('two_star_4cost', '4코스트 2성 이상', True),
-            ('two_star_5cost', '5코스트 2성 이상', True), ('three_star_per_board', '보드당 3성', False),
+            ('two_star_5cost', '5코스트 2성 이상', True), ('five_per_board', '보드당 5코스트 장수', False),
+            ('three_star_per_board', '보드당 3성', False),
             ('items_median', '완성 아이템 가운데 값', False), ('chosen_kinds', '선택받은 자 특성 가짓수', False),
             ('chosen_off_family', '선택받은 자가 계열 특성이 아닌 비율', True), ('no_family', '큰 특성 없는 보드', True)]
     columns = [('실제 1등', out['real_winners'])] + [(CONDITIONS[k] + ' 1등', out[CONDITIONS[k]]['winners'])
