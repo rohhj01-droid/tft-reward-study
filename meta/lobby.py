@@ -125,6 +125,8 @@ class DeckPolicy:
     기본 봇은 54골드가 넘는 몫만, 그것도 레벨 8에서만 리롤해서 덱을 거의 완성하지 못했다(살아 있는 봇의 덱 완성도가
     11라운드 9%, 가장 높을 때 약 30%)."""
 
+    chosen_any_trait = False  # True면 덱 유닛의 선택받은 자를 특성과 상관없이 산다(사람 봇)
+
     def __init__(self, agent, board):
         self.agent = agent
         self.moves = {}  # 라운드별 자리 맞추기 횟수. 자리가 안 맞는 보드에서 같은 이동을 되풀이하지 않게 한다
@@ -163,7 +165,8 @@ class DeckPolicy:
                 continue
             if unit.endswith('_c'):  # 선택받은 자 "이름_특성_c". 값은 1성의 세 배(pool_stats.buy_cost)
                 name, trait = unit.split('_')[:2]
-                if name in self.units and trait == self.trait and not player.chosen and 3 * COST[name] <= player.gold:
+                if (name in self.units and (self.chosen_any_trait or trait == self.trait) and not player.chosen
+                        and 3 * COST[name] <= player.gold):
                     return '3_' + str(i)
             elif unit in self.units and COST[unit] <= player.gold:
                 return '3_' + str(i)

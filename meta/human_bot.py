@@ -20,6 +20,9 @@ KNOBS = {'win_threshold': 2, 'lose_hp': 50, 'keep': 50, 'floor_41': 20, 'floor_4
 
 
 class HumanPolicy(DeckPolicy):
+    # 덱에 들어가는 유닛이면 특성이 달라도 선택받은 자를 산다(실제 1등의 52%가 그랬다, 유저 결정 2026-10-09)
+    chosen_any_trait = True
+
     def __init__(self, agent, board, others, rng, knobs=None):
         self.agent = agent
         self.others = others  # 다른 플레이어(정찰)
@@ -66,22 +69,23 @@ class HumanPolicy(DeckPolicy):
         return super().sell(player)
 
     def sell_chosen(self, player):
-        """덱을 갈아타서 들고 있는 선택받은 자 특성이 목표 덱과 다르면 판다. 시뮬레이터는 선택받은 자를 들고 있으면
-        상점에 다른 선택받은 자를 내지 않는다(pool.sample)."""
-        if not (self.choose_decks and self.board and player.chosen and player.chosen != self.trait):
+        """덱을 갈아타서 들고 있는 선택받은 자 유닛이 새 목표 덱에 없으면 판다. 특성이 덱 특성과 달라도 덱 유닛이면
+        둔다(유저 결정 2026-10-09). 시뮬레이터는 선택받은 자를 들고 있으면 상점에 다른 선택받은 자를 내지 않는다
+        (pool.sample)."""
+        if not (self.choose_decks and self.board and player.chosen):
             return None
         for x, row in enumerate(player.board):
             for y, u in enumerate(row):
-                if u and u.chosen:
+                if u and u.chosen and u.name not in self.units:
                     return f'4_{x_y_to_1d_coord(x, y)}'
         for i, u in enumerate(player.bench):
-            if u and u.chosen:
+            if u and u.chosen and u.name not in self.units:
                 return f'4_{28 + i}'
         return None
 
     def buy(self, player, shop, mask):
-        """목표 덱이 없으면 짝·두루 들어가는 유닛·처음 본 선택받은 자를, 있으면 덱 유닛·덱 특성 선택받은 자를 사고
-        4-1 전까지는 보드 유닛의 짝도 산다."""
+        """목표 덱이 없으면 짝·두루 들어가는 유닛·처음 본 선택받은 자를, 있으면 덱 유닛·덱 유닛의 선택받은 자(특성
+        상관없이)를 사고 4-1 전까지는 보드 유닛의 짝도 산다."""
         if self.board is None:
             owned = {u.name for u in units_of(player)}
             for i, unit in enumerate(shop):

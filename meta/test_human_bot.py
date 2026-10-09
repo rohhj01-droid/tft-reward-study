@@ -359,6 +359,31 @@ def sells_chosen_of_other_trait_after_switch_test():
     assert policy.sell_chosen(p) == '4_30'
 
 
+def buys_chosen_of_deck_unit_with_other_trait_test():
+    """목표 덱에 들어가는 유닛이면 특성이 덱 특성과 달라도 선택받은 자를 산다(실제 1등의 52%가 그랬다, 유저 결정
+    2026-10-09). 덱 봇은 그대로 덱 특성의 선택받은 자만 산다."""
+    from meta.human_bot import HumanPolicy
+    from meta.lobby import BOARDS, DeckPolicy
+    dusks = next(b for b in BOARDS if b['name'] == 'Chosen Dusks')
+    p = item_player([], [])
+    p.gold, p.chosen = 30, False
+    shop = ['vi', 'riven_keeper_c', 'vi', 'vi', 'vi']
+    assert HumanPolicy(None, dusks, [], random.Random(0)).buy(p, shop, OPEN) == '3_1'
+    assert DeckPolicy(None, dusks).buy(p, shop, OPEN) is None
+
+
+def keeps_chosen_unit_of_new_deck_test():
+    """덱을 바꿔도 들고 있는 선택받은 자 유닛이 새 덱에 있으면 특성이 달라도 팔지 않는다(유저 결정 2026-10-09)."""
+    from meta.human_bot import HumanPolicy
+    from meta.lobby import BOARDS
+    dusks = next(b for b in BOARDS if b['name'] == 'Chosen Dusks')
+    p = item_player([], [], [Unit(name='riven', stars=2, items=[], chosen='keeper')])
+    p.chosen = 'keeper'
+    policy = HumanPolicy(None, None, [], random.Random(0))
+    policy.set_board(dusks)
+    assert policy.sell_chosen(p) is None
+
+
 def buys_pairs_and_widely_used_units_before_choosing_test():
     """목표 덱을 정하기 전에는 짝과 여러 후보 덱에 두루 들어가는 유닛을 산다."""
     from meta.human_bot import HumanPolicy
