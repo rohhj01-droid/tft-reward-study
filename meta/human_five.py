@@ -8,7 +8,8 @@ from Simulator.stats import BASE_CHAMPION_LIST, COST
 from meta.decks_1024 import CHAMPION_TRAITS, trait_counts
 from meta.human_deck import copies, units_of
 from meta.lobby import carriers
-from meta.play_stats import FAMILIES
+from meta.pit import chosen_of
+from meta.play_stats import FAMILIES, family
 
 FIVE_COSTS = sorted(name for name, cost in COST.items() if cost == 5)
 # 계열 특성의 기준 인원(결투가·사교도·총사령관 6, 사냥꾼·엘더우드·포츈 3, 나머지 4). 평가와 실제 자료 분류에 쓰는 표 그대로다
@@ -24,6 +25,12 @@ def board_units(player):
 def trait_table(units, chosen):
     """유닛 목록의 특성 수. 시뮬레이터와 같은 방식이다(같은 유닛은 한 번, 상징 아이템은 든 개수만큼, 선택받은 자 특성 +1)."""
     return trait_counts([u.name for u in units], {u.name: u.items for u in units}, chosen or None)
+
+
+def deck_family(board):
+    """목표 덱 표의 계열(FAMILIES에서 처음 맞는 것, 선택받은 자 특성 포함). 계열이 없는 덱이면 None."""
+    name = family(trait_counts(board['units'], board['items'], chosen_of(board)[1]))[0]
+    return None if name == 'other' else name
 
 
 def active_traits(player):
@@ -53,9 +60,13 @@ def swap_out(player, board, five, k):
     """벤치의 5코스트 five를 올리려고 내릴 보드 유닛의 (x, y). 후보는 1~swap_cost_max(4)코스트이고 캐리·선택받은 자가 아니며,
     빼고 five를 넣어도 지키는 특성이 정한 인원 아래로 안 떨어지는 유닛. 지키는 특성은 big_trait(4)명 이상인 특성(4명 위로)과,
     이미 계열 기준 인원(FAMILY_MIN)을 넘은 계열 특성(그 인원 위로, 2026-10-09 유저 결정)이다. 지키는 특성에 안 드는 곁가지
-    유닛 먼저, 그다음 지키는 특성 유닛. 같은 묶음에서는 싼 것, 그다음 별이 낮은 것. 없으면 None."""
+    유닛 먼저, 그다음 지키는 특성 유닛. 같은 묶음에서는 싼 것, 그다음 별이 낮은 것. 목표 덱의 계열이 아직 기준 인원에
+    못 미치면 아무것도 바꾸지 않는다(2026-10-09 유저 결정: 5코스트가 자리를 차지해 마지막 계열 유닛이 못 들어왔다). 없으면 None."""
     units = board_units(player)
     before = trait_table([u for _, _, u in units], player.chosen)
+    deck = deck_family(board)
+    if deck and before.get(deck, 0) < FAMILY_MIN[deck]:
+        return None
     floor = {t: k['big_trait'] for t, n in before.items() if n >= k['big_trait']}
     for t, n in FAMILY_MIN.items():
         if before.get(t, 0) >= n:

@@ -381,20 +381,34 @@ def keeps_family_trait_at_family_threshold_test():
     assert HumanPolicy(None, warlords, [], random.Random(0)).swap(full_board(six + ['azir'])) == f'5_{4 * 0}_28'
 
 
+def does_not_swap_deck_units_before_deck_family_is_complete_test():
+    """목표 덱의 계열이 기준 인원에 못 미치면 덱 유닛을 5코스트로 바꾸지 않는다(유저 결정 2026-10-09: 계열을 못 갖춘 채
+    5코스트가 자리를 차지해 마지막 계열 유닛이 못 들어왔다). 계열을 채우면 곁가지 유닛부터 바꾼다."""
+    from meta.human_bot import HumanPolicy
+    from meta.lobby import BOARDS
+    warlords = next(b for b in BOARDS if b['name'] == 'Chosen Warlords')
+    five = ['garen', 'nidalee', 'jarvaniv', 'vi', 'katarina', 'pyke']  # 총사령관 5명 + 파이크(곁가지)
+    assert HumanPolicy(None, warlords, [], random.Random(0)).swap(full_board(five)) is None
+    six = ['garen', 'nidalee', 'jarvaniv', 'vi', 'katarina', 'xinzhao', 'pyke']  # 총사령관 6명이면 파이크부터
+    assert HumanPolicy(None, warlords, [], random.Random(0)).swap(full_board(six)) == f'5_{4 * 6}_28'
+
+
 def swap_counts_emblems_and_chosen_and_skips_summons_test():
-    """큰 특성 수에 상징 아이템과 선택받은 자 특성을 넣고, 소환물은 후보에서 뺀다(Review Focus)."""
+    """특성 수에 상징 아이템과 선택받은 자 특성을 넣고, 소환물은 후보에서 뺀다(Review Focus). 황혼 덱의 계열(황혼 4)은
+    베인·쓰레쉬(유닛 2) + 진의 황혼 망토(1) + 선택받은 자 특성(1)으로만 채워진다. 둘 중 하나라도 안 세면 계열을 못 채운
+    것으로 보고 아무것도 안 바꾼다. 채웠으면 황혼 유닛과 망토를 든 진은 두고 곁가지 아트록스를 내린다."""
     from Simulator.item_stats import trait_items
     from meta.human_bot import HumanPolicy
-    policy = HumanPolicy(None, SHARPSHOOTERS, [], random.Random(0))
-    p = full_board(['vayne', 'jhin', 'riven', 'teemo'])  # 황혼 = 베인 + 리븐 + 진의 황혼 망토 + 선택받은 자 = 4(큰 특성)
-    p.board[1][0].items = [trait_items['dusk']]
+    from meta.lobby import BOARDS
+    dusks = next(b for b in BOARDS if b['name'] == 'Chosen Dusks')  # 캐리는 리븐
+    p = full_board(['vayne', 'thresh', 'aatrox', 'jhin'])
+    p.board[3][0].items = [trait_items['dusk']]
     p.chosen = 'dusk'
-    assert policy.swap(p) == f'5_{4 * 3}_28'  # 베인(1코스트)을 내리면 황혼 3이라 안 되고, 티모를 내린다
+    assert HumanPolicy(None, dusks, [], random.Random(0)).swap(p) == f'5_{4 * 2}_28'
     p = full_board(['nidalee', 'vayne', 'teemo', 'jinx', 'jhin'])
     p.board[5][0] = Unit(name='sandguard', stars=1, items=[], chosen=False)  # 소환물
     p.num_units_in_play = p.max_units = 6
-    policy = HumanPolicy(None, SHARPSHOOTERS, [], random.Random(0))  # 티모를 이미 덱 밖으로 친 정책은 쓰지 않는다
-    assert policy.swap(p) == f'5_{4 * 0}_28'  # 모래 병사는 후보도 특성 수도 아니다
+    assert HumanPolicy(None, SHARPSHOOTERS, [], random.Random(0)).swap(p) == f'5_{4 * 0}_28'  # 모래 병사는 후보도 특성 수도 아니다
 
 
 def sells_dropped_unit_right_away_and_forgets_on_switch_test():
