@@ -13,7 +13,7 @@ from analysis.battle import corner_positions
 from Simulator.stats import COST, round_stage
 from Simulator.utils import x_y_to_1d_coord
 from meta.human_deck import SPREAD, choose, copies, held_items, score, scout, units_of
-from meta.human_five import FIVE_COSTS, family_buy, family_in, family_short, pick_five, swap_out
+from meta.human_five import FIVE_COSTS, board_units, family_buy, family_in, family_short, pick_five, swap_out
 from meta.human_items import item_action, transfer_action
 from meta.human_macro import action, carry3, early_mode, plan, stable, stay_level
 from meta.lobby import BOARDS, DeckPolicy
@@ -147,10 +147,16 @@ class HumanPolicy(DeckPolicy):
         return None
 
     def swap(self, player):
-        """덱의 계열이 모자라면 벤치의 계열 유닛을 먼저 올린다(human_five.family_in). 그다음 덱 봇 교체, 그다음 레벨 8부터
-        빈자리가 없으면 벤치의 5코스트를 싼 덱 유닛과 바꾼다(human_five.swap_out). 내린 유닛은 dropped에 넣고 덱 유닛에서
-        뺀다(다시 사지 않고, 벤치가 안 찼어도 판다). 같은 이름 사본이 보드에 남으면 빼지 않는다(남은 사본까지 일반 교체로
-        내려가 계열이 깨졌다)."""
+        """벤치의 선택받은 자를 보드의 같은 이름 사본(선택받은 자가 아니고 별이 같거나 낮은 것)과 바꿔 올리는 게 먼저다
+        (설계 1절 5번, 2026-10-10 유저 결정). 다음으로 덱의 계열이 모자라면 벤치의 계열 유닛을 올린다(human_five.family_in).
+        그다음 덱 봇 교체, 그다음 레벨 8부터 빈자리가 없으면 벤치의 5코스트를 싼 덱 유닛과 바꾼다(human_five.swap_out).
+        내린 유닛은 dropped에 넣고 덱 유닛에서 뺀다(다시 사지 않고, 벤치가 안 찼어도 판다). 같은 이름 사본이 보드에 남으면
+        빼지 않는다(남은 사본까지 일반 교체로 내려가 계열이 깨졌다)."""
+        for i, u in enumerate(player.bench):
+            if u and u.chosen:
+                for x, y, b in board_units(player):
+                    if b.name == u.name and not b.chosen and b.stars <= u.stars:
+                        return f'5_{x_y_to_1d_coord(x, y)}_{28 + i}'
         short = self.board and family_short(player, self.board)
         spot = family_in(player, self.board, self.units, short) if short else None
         if spot:

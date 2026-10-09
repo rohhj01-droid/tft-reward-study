@@ -542,6 +542,21 @@ def bench_chosen_does_not_count_for_family_test():
     assert HumanPolicy(None, dusks, [], random.Random(0)).swap(p) == f'5_{4 * 2}_29'
 
 
+def fields_bench_chosen_over_same_name_copy_test():
+    """벤치의 선택받은 자는 보드의 같은 이름 사본(선택받은 자가 아니고 별이 같거나 낮은 것)과 바꿔 올린다. 선택받은 자는
+    보드에 있어야 특성 +1이 붙는데(june fe92c2b), 예전에는 같은 이름이 보드에 있으면 올리지 않아 최종 검토 시험의 12%
+    라운드에서 선택받은 자가 벤치에 있었다(유저 결정 2026-10-10). 보드 사본이 3성이면 둔다."""
+    from meta.human_bot import HumanPolicy
+    p = full_board(SHOOTERS4 + ['jhin'], bench_names=('jhin',))
+    p.level = 7
+    p.chosen = p.bench[0].chosen = 'sharpshooter'
+    p.bench[0].stars = 2  # 선택받은 자는 2성으로 산다
+    policy = HumanPolicy(None, SHARPSHOOTERS, [], random.Random(0))
+    assert policy.swap(p) == f'5_{4 * 4}_28'
+    p.board[4][0].stars = 3
+    assert policy.swap(p) is None
+
+
 def swapping_one_of_two_copies_keeps_the_unit_in_deck_test():
     """5코스트와 바꿔 내린 유닛의 사본이 보드에 남으면 그 이름을 덱 밖으로 치지 않는다. 치면 남은 사본이 지키는 인원 검사
     없이 일반 교체로 내려가 계열이 깨졌다(3b단계 진단 2026-10-09: 총사령관·명사수·사교도 1등 보드가 바꾸기 뒤 계열을 잃음)."""
