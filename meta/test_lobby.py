@@ -137,6 +137,39 @@ def deck_policy_levels_and_rolls_by_style_test():
         assert action == expected, (board['slow'], game_round, level, gold, action)
 
 
+def deck_policy_variants_change_normal_deck_levels_test():
+    """떼어 재기 조건(--variant). fast8: 보통 덱이 4-3(17번째 칸)에 레벨 8로 가서 30골드를 남기고 리롤한다(ML).
+    level9: 보통 덱이 5단계(21번째 칸)부터 레벨 9를 노린다(B24). 조건이 없으면 지금 규칙 그대로다."""
+    from meta.lobby import apply_variant
+    def act(game_round, level, gold):
+        p = deck_player(['jhin'], gold=gold)
+        p.level = level
+        return DeckPolicy(p.default_agent, SHARPSHOOTERS)(p, ['garen'] * 5, game_round, OPEN)
+    try:
+        apply_variant('fast8')
+        assert [act(17, 7, 60), act(17, 8, 31), act(17, 8, 32)] == ['1', '0', '2']
+        apply_variant('level9')
+        assert [act(21, 8, 60), act(18, 8, 60), act(21, 9, 22)] == ['1', '2', '2']
+    finally:
+        apply_variant(None)
+    assert [act(17, 7, 60), act(17, 8, 31), act(21, 8, 60)] == ['0', '2', '2']
+
+
+def _deck_rules():
+    from meta.lobby import DeckPolicy
+    return DeckPolicy.level8_round, DeckPolicy.level8_floor, DeckPolicy.level9_stage
+
+
+def variant_reaches_workers_test():
+    """--variant 조건이 일꾼 프로세스까지 들어가야 한다(Windows 일꾼은 새 프로세스라 부모가 바꾼 클래스 값을 물려받지 않는다)."""
+    from multiprocessing import Pool
+    from meta.lobby import apply_variant
+    with Pool(1, initializer=apply_variant, initargs=('fast8',)) as workers:
+        assert workers.apply(_deck_rules) == (17, 30, None)
+    with Pool(1, initializer=apply_variant, initargs=('level9',)) as workers:
+        assert workers.apply(_deck_rules) == (18, 20, 5)
+
+
 def carriers_are_units_with_most_recommended_items_test():
     """덱의 캐리는 추천 아이템을 가장 많이 드는 유닛들이다(설계 4절)."""
     from meta.lobby import carriers

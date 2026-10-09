@@ -135,6 +135,9 @@ class DeckPolicy:
     11라운드 9%, 가장 높을 때 약 30%)."""
 
     chosen_any_trait = False  # True면 덱 유닛의 선택받은 자를 특성과 상관없이 산다(사람 봇)
+    # 보통 덱의 레벨·리롤: 이 칸(18 = 4-5)부터 레벨 8, 리롤할 때 남기는 골드, 레벨 9를 노리는 단계(None이면 안 감).
+    # 떼어 재기 조건(apply_variant)이 바꾼다
+    level8_round, level8_floor, level9_stage = 18, 20, None
 
     def __init__(self, agent, board):
         self.agent = agent
@@ -206,17 +209,33 @@ class DeckPolicy:
 
     def macro(self, player, game_round):
         """레벨·리롤. 느린 리롤 덱은 레벨 6에서 50골드 넘는 몫으로 리롤하고 5단계부터 8로 간다. 보통 덱은 4단계에 7,
-        4단계 후반(18번째 칸부터)에 8로 가서 20골드를 남기고 리롤한다."""
+        level8_round(기본 18번째 칸, 4-5)부터 8로 가서 level8_floor(기본 20)골드를 남기고 리롤한다. level9_stage가 있으면
+        그 단계부터 9를 노린다."""
         stage = round_stage(game_round)
         if self.slow:
             target, floor = (5 if stage <= 2 else 6 if stage <= 4 else 8), 50
         else:
-            target, floor = (5 if stage <= 2 else 6 if stage == 3 else 7 if game_round < 18 else 8), 20
+            target = 5 if stage <= 2 else 6 if stage == 3 else 7 if game_round < self.level8_round else 8
+            if self.level9_stage and stage >= self.level9_stage:
+                target = 9
+            floor = self.level8_floor
         if player.level < target and player.gold >= 4:
             return '1'
         if player.level >= target and (self.slow or player.level >= 8) and player.gold >= floor + 2:
             return '2'
         return '0'
+
+
+# 덱 봇 보통 덱 운영의 떼어 재기 조건(python -m meta.lobby --variant). 값은 그때 가이드(meta/set4_play.md 2절)다.
+VARIANTS = {'fast8': {'level8_round': 17, 'level8_floor': 30},  # 빠른 8: 4-3에 8, 30~40골드를 남기고 리롤(ML)
+            'level9': {'level9_stage': 5}}                      # 5단계부터 9(B24: 총사령관·사교도·황혼이 9까지 가서 5코스트)
+_BASE_RULES = {key: getattr(DeckPolicy, key) for key in ('level8_round', 'level8_floor', 'level9_stage')}
+
+
+def apply_variant(name):
+    """DeckPolicy의 보통 덱 레벨·리롤 값을 name 조건으로 바꾼다(None이면 기본). 일꾼마다 Pool initializer로 부른다."""
+    for key, value in dict(_BASE_RULES, **VARIANTS.get(name, {})).items():
+        setattr(DeckPolicy, key, value)
 
 
 def attach(player, board):
@@ -326,6 +345,7 @@ def main():
     ap.add_argument('--jobs', type=int, default=max(1, os.cpu_count() - 1))
     ap.add_argument('--seed', type=int, default=0)
     ap.add_argument('--out', default=None, help='판별 기록 JSON 저장 경로')
+    ap.add_argument('--variant', choices=sorted(VARIANTS), default=None, help='덱 봇 보통 덱 운영의 떼어 재기 조건')
     args = ap.parse_args()
 
     rng = random.Random(args.seed)
@@ -333,7 +353,7 @@ def main():
     # 시뮬레이터가 집합·사전을 도는 순서가 문자열 해시에 따라 프로세스마다 달라서, 시드가 같아도 판이 달라졌다(200판 두 번에서
     # 1600줄 중 266줄만 같았다). 일꾼 프로세스의 해시를 고정한다. 일꾼은 이 환경 변수를 물려받고 새로 시작한다.
     os.environ['PYTHONHASHSEED'] = str(args.seed)
-    with Pool(args.jobs) as workers:
+    with Pool(args.jobs, initializer=apply_variant, initargs=(args.variant,)) as workers:
         results = workers.map(play, games, chunksize=1)
 
     rows = [(g, p['deck'], p['place'], p['complete'], p['complete21'])
@@ -359,7 +379,7 @@ def main():
                       'fixed': fixed.get(b['name'])})
     stats.sort(key=lambda s: s['place'])
 
-    print(f'\n덱별 풀게임 성적 ({args.games}판, 한 판에 봇 8명이 서로 다른 덱), 평균 등수 순')
+    print(f'\n덱별 풀게임 성적 ({args.games}판, 한 판에 봇 8명이 서로 다른 덱, 조건 {args.variant or "기본"}), 평균 등수 순')
     print(f'{"보드":22} {"tftactics":>9} {"10.24b":>7} {"우리 덱":>16} {"판":>4} {"평균 등수":>10} {"4등 안":>7} '
           f'{"5단계 생존":>8} {"5단계 완성도":>9} {"탈락 때 완성도":>10} {"고정 대전":>8}')
     for s in stats:
@@ -384,7 +404,7 @@ def main():
 
     if args.out:
         with open(args.out, 'w', encoding='utf-8') as f:
-            json.dump({'games': args.games, 'seed': args.seed, 'decks': [b['name'] for b in BOARDS],
+            json.dump({'games': args.games, 'seed': args.seed, 'variant': args.variant, 'decks': [b['name'] for b in BOARDS],
                        'rows': rows, 'stats': stats}, f, ensure_ascii=False, indent=1)
         print(f'\n저장: {args.out}')
 
