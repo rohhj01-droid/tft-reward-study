@@ -1,14 +1,15 @@
 """
 사람처럼 노는 봇(meta/human_bot_design.md). 기본 봇 위에 얹는 정책 하나로, 1라운드부터 끝까지 맡는다.
 
-행동할 때마다 할 일이 있는 첫 단계만 움직인다: 보드 채우기 → 벤치 정리 → 사기 → 교체 → 아이템 → 자리 맞추기 → 레벨·리롤.
+행동할 때마다 할 일이 있는 첫 단계만 움직인다: 보드 채우기 → 벤치 정리 → 사기 → 교체 → 캐리 아이템 옮기기 → 아이템
+→ 자리 맞추기 → 레벨·리롤.
 라운드의 첫 행동 때 초반 전략(연승형·연패형)을 정하거나 바꾼다. 아이템은 meta/human_items.py, 레벨·리롤은
 meta/human_macro.py에 있고, 자리 맞추기는 구석 배치(analysis.battle.corner_positions)다. 덱 고르기(3단계)는 다음에 더한다.
 """
 from analysis.battle import corner_positions
 from Simulator.stats import round_stage
 from Simulator.utils import x_y_to_1d_coord
-from meta.human_items import item_action
+from meta.human_items import item_action, transfer_action
 from meta.human_macro import action, carry3, early_mode, plan, stable, stay_level
 from meta.lobby import DeckPolicy
 
@@ -32,7 +33,8 @@ class HumanPolicy(DeckPolicy):
             self.last_round = game_round
             self.update_mode(player, game_round)
         return (self.fill(player, shop, mask) or self.sell(player) or self.buy(player, shop, mask)
-                or self.swap(player) or item_action(player, self.board, self.mode or 'win', game_round, mask)
+                or self.swap(player) or transfer_action(player, self.board)
+                or item_action(player, self.board, self.mode or 'win', game_round, mask)
                 or self.reposition(player, game_round) or self.macro(player, game_round))
 
     def update_mode(self, player, game_round):
@@ -69,7 +71,8 @@ class HumanPolicy(DeckPolicy):
         steady = bool(board) and stable(player, board)
         target, floor = plan(game_round, player.level, player.health, self.mode or 'win', self.rebuilt, stay,
                              done3, steady, self.knobs, rebuild_now=self.rebuilt_at == game_round)
-        exp_first = round_stage(game_round) >= 5 and player.level == 8 and steady
+        # 5단계 레벨 8이면 안정 여부와 상관없이 50 넘는 몫으로 9로 간다(유저 결정 2026-10-09). 9가 되면 넘는 몫은 리롤
+        exp_first = round_stage(game_round) >= 5 and player.level == 8
         return action(player.gold, player.level, target, floor, exp_first)
 
 

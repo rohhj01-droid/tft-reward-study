@@ -78,6 +78,25 @@ def _recipient(player, board, item, starting, leftover=False):
     return _best(units)
 
 
+def transfer_action(player, board):
+    """캐리 아이템 옮기기(유저 결정 2026-10-09): 캐리가 보드에 있고 자리가 있는데, 덱 밖 유닛(보드나 벤치)이 그 캐리의
+    추천 아이템(완성)을 들고 있으면 그 유닛을 판다("4_칸"). 팔면 아이템이 아이템 칸으로 돌아오고 1번 규칙이 캐리에게
+    준다. 시뮬레이터는 아이템 칸에 자리가 모자라면 팔지 못해서, 자리가 있을 때만 판다."""
+    if not board:
+        return None
+    names = carriers(board)
+    wanted = {it for _, u in _board(player) if u.name in names and _room(u) for it in board['items'][u.name]}
+    if not wanted:
+        return None
+    free = sum(it is None for it in player.item_bench)
+    holders = [(c, u) for c, u in _board(player) if u.name not in board['units']]
+    holders += [(28 + i, u) for i, u in enumerate(player.bench) if u and u.name not in board['units']]
+    for coord, u in holders:
+        if any(it in wanted for it in u.items) and len(u.items) <= free:
+            return f'4_{coord}'
+    return None
+
+
 def item_action(player, board, mode, game_round, mask):
     ok = lambda idx, coord: coord is not None and bool(mask[37 + idx][coord])
     comps = [(i, it) for i, it in enumerate(player.item_bench) if it in basic_items and it not in SKIP]

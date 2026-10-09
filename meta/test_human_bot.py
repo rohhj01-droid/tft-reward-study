@@ -237,12 +237,51 @@ def update_mode_switches_and_rebuilds_test():
 
 
 def curve_table_splits_by_deck_style_test():
-    """레벨 곡선은 덱 스타일별로도 낸다. 가이드 레벨은 보통 덱으로만 판정한다(유저 결정 2026-10-09)."""
+    """레벨 곡선은 덱 스타일별로도 낸다. 가이드 레벨은 보통 덱으로만 판정한다(유저 결정 2026-10-09).
+    연패형 골드는 보드를 세우기 전인 3-2 시작 때도 본다."""
     from meta.play_stats import curve_table
     curve = [(16, 7, 30, 50, 'win', False), (16, 5, 60, 50, 'win', True)]
     assert [r['level'] for r in curve_table([curve], style=False)] == [7]
     assert [r['level'] for r in curve_table([curve], style=True)] == [5]
     assert [r['level'] for r in curve_table([curve])] == [6]
+    assert curve_table([[(10, 4, 52, 60, 'lose', False)]], 'lose')[0]['when'] == '3-2 시작'
+
+
+def transfer_sells_holder_of_carry_item_test():
+    """캐리가 보드에 있고 자리가 있는데 덱 밖 유닛(보드나 벤치)이 그 캐리의 추천 아이템을 들고 있으면 그 유닛을 판다(유저
+    결정 2026-10-09). 팔면 아이템이 아이템 칸으로 돌아오고 1번 규칙이 캐리에게 준다. 캐리 아이템이 아니거나 아이템 칸에
+    자리가 모자라면 팔지 않는다(시뮬레이터는 자리가 모자라면 팔지 못한다)."""
+    from meta.human_items import transfer_action
+    holder = Unit(name='garen', stars=2, items=['guardian_angel'])
+    p = item_player([Unit(name='jhin', stars=2, items=[]), holder], [])
+    assert transfer_action(p, SHARPSHOOTERS) == '4_4'
+    holder.items = ['warmogs_armor']
+    assert transfer_action(p, SHARPSHOOTERS) is None
+    holder.items = ['guardian_angel']
+    p.item_bench = ['bf_sword'] * 10
+    assert transfer_action(p, SHARPSHOOTERS) is None
+    bench = item_player([Unit(name='jhin', stars=2, items=[])], [],
+                        bench_units=[Unit(name='garen', stars=1, items=['infinity_edge'])])
+    assert transfer_action(bench, SHARPSHOOTERS) == '4_28'
+
+
+def human_policy_moves_carry_item_to_arrived_carrier_test():
+    """사람 봇은 아이템 단계 전에 캐리 아이템을 맡은 덱 밖 유닛을 판다."""
+    from meta.human_bot import attach_human
+    p = deck_player(['garen', 'jhin'], gold=50)
+    p.board[0][0].items = ['guardian_angel']
+    attach_human(p, [], random.Random(0), board=SHARPSHOOTERS)
+    assert p.default_policy(12, ['garen'] * 5, FULL) == '4_0'
+
+
+def macro_buys_exp_toward_nine_without_stability_test():
+    """5단계 레벨 8이면 안정이 아니어도 50 넘는 몫으로 경험치를 사서 9로 간다(유저 결정 2026-10-09)."""
+    from meta.human_bot import HumanPolicy
+    p = item_player([Unit(name='garen', stars=2, items=[])], [])
+    p.level, p.gold, p.health = 8, 60, 50
+    policy = HumanPolicy(None, SHARPSHOOTERS, [], random.Random(0))
+    policy.mode = 'win'
+    assert policy.macro(p, 21) == '1'
 
 
 if __name__ == '__main__':
