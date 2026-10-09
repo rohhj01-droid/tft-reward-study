@@ -234,7 +234,8 @@ def _register():
 def play(game, bot='deck', knobs=None):
     """한 판. game = (시드, 덱 번호 8개). bot은 'default'(덱을 정해 주지 않은 기본 봇), 'deck'(덱 봇),
     'human'(사람 봇, meta/human_bot.py). knobs는 사람 봇 손잡이 값을 바꿀 때 쓴다(meta.play_stats --knob).
-    돌려주는 값: {'curve': [(칸, 레벨, 골드, 체력, 초반 전략), ...] 살아 있는 봇이 그 칸에서 처음 움직일 때,
+    돌려주는 값: {'curve': [(칸, 레벨, 골드, 체력, 초반 전략, 느린 리롤 덱인가), ...] 살아 있는 봇이 그 칸에서 처음
+                 움직일 때,
                  'players': [{'deck', 'place', 'complete', 'complete21', 'carry21', 'mode', 'switches', 'board'}, ...]}
     탈락 때 완성도(complete)는 일찍 죽은 덱일수록 낮게 나와 등수와 엉킨다. 그래서 5단계 시작(21번째 칸) 때 살아 있던
     봇의 완성도(complete21)와 캐리 아이템 비율(carry21)을 따로 잰다(그 전에 탈락하면 None). board는 탈락하거나 끝날
@@ -274,7 +275,7 @@ def play(game, bot='deck', knobs=None):
                 game_round, p = info[a]['game_round'], players[a]
                 if (a, game_round) not in seen:
                     seen.add((a, game_round))
-                    curve.append((game_round, p.level, p.gold, p.health, mode(a)))
+                    curve.append((game_round, p.level, p.gold, p.health, mode(a), BOARDS[deck_of[a]]['slow']))
                 if game_round >= 21 and a not in mid:
                     mid[a] = completion(p, BOARDS[deck_of[a]])
                     carry[a] = carry_share(p, getattr(policies.get(a), 'board', None))

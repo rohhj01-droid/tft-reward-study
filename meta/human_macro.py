@@ -4,7 +4,6 @@
 plan()이 이번 행동의 (목표 레벨, 남길 골드)를 정하고, action()이 행동 하나("1" 경험치, "2" 리롤, "0" 넘김)로 바꾼다.
 칸 번호(game_round): 2-1 = 3, 2-5 = 6, 3-1 = 9, 3-2 = 10, 4-1 = 15, 4-5 = 18, 5-1 = 21.
 """
-from Simulator.item_stats import item_builds
 from Simulator.stats import COST, round_stage
 from meta.lobby import carriers
 
@@ -12,10 +11,10 @@ STAY = {1: 5, 2: 6, 3: 7}  # 느린 리롤 캐리 비용 -> 머무는 레벨
 
 
 def early_mode(player, k):
-    """2-1의 초반 세기(보드 2성 유닛 수 + 보드 완성 아이템 수)로 연승형('win')·연패형('lose')을 고른다."""
-    units = [u for row in player.board for u in row if u]
-    strength = sum(u.stars >= 2 for u in units) + sum(it in item_builds for u in units for it in u.items)
-    return 'win' if strength >= k['win_threshold'] else 'lose'
+    """2-3에 첫 대전 성적으로 연승형('win')·연패형('lose')을 고른다. 연승이 손잡이 값(2) 이상이면 연승형.
+    처음에는 2-1의 초반 세기(2성 수 + 완성 아이템 수)로 골랐는데, 시뮬레이터의 2-1 보드는 거의 모두 0이라 바꿨다
+    (유저 결정 2026-10-09). 전략은 목표일 뿐이고, 실제 연승·연패는 마음대로 안 되는 경우가 많다(유저)."""
+    return 'win' if player.win_streak >= k['win_threshold'] else 'lose'
 
 
 def stay_level(board):
@@ -42,9 +41,12 @@ def carry3(player, board):
     return any(u and u.name == cheapest and u.stars >= 3 for row in player.board for u in row)
 
 
-def plan(slot, level, hp, mode, rebuilt, stay, done3, steady, k):
+def plan(slot, level, hp, mode, rebuilt, stay, done3, steady, k, rebuild_now=False):
     """(목표 레벨, 남길 골드). 남길 골드가 None이면 리롤하지 않는다.
-    stay: 느린 리롤 머무는 레벨(보통 덱 None), done3: 느린 리롤 캐리가 3성, steady: 안정."""
+    stay: 느린 리롤 머무는 레벨(보통 덱 None), done3: 느린 리롤 캐리가 3성, steady: 안정,
+    rebuild_now: 연패형이 이번 라운드에 보드를 세운다.
+    보통 덱은 정해진 라운드에만 리롤한다: 4-1 라운드에 20까지, 4-5 라운드에 10까지(안정이 아닐 때), 연패형이 보드를
+    세우는 라운드에 20까지. 그 밖의 라운드는 안정 여부와 상관없이 50을 지킨다(유저 결정 2026-10-09)."""
     if slot < 3:
         return level, None
     if slot < 15:
@@ -64,11 +66,9 @@ def plan(slot, level, hp, mode, rebuilt, stay, done3, steady, k):
             floor = None
         elif steady:
             floor = k['keep']
-        elif slot >= 18 and level >= 8:
+        elif slot == 18 and level >= 8:
             floor = k['floor_45']
-        elif slot >= 15 and level >= 7:
-            floor = k['floor_41']
-        elif mode == 'lose' and rebuilt:
+        elif (slot == 15 and level >= 7) or (mode == 'lose' and rebuild_now):
             floor = k['floor_41']
         else:
             floor = k['keep']

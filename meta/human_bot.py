@@ -22,6 +22,7 @@ class HumanPolicy(DeckPolicy):
         self.rng = rng        # 이 플레이어의 난수(시드 고정)
         self.knobs = dict(KNOBS, **(knobs or {}))
         self.moves, self.mode, self.rebuilt, self.switches, self.last_round = {}, None, False, 0, None
+        self.rebuilt_at = None  # 연패형이 보드를 세운 라운드(그 라운드에만 리롤한다)
         self.choose_decks = board is None
         self.set_board(board)
 
@@ -35,16 +36,16 @@ class HumanPolicy(DeckPolicy):
                 or self.reposition(player, game_round) or self.macro(player, game_round))
 
     def update_mode(self, player, game_round):
-        """2-1에 초반 전략을 고르고, 연승형이 2~3단계에 두 번 연달아 지면 연패형으로 바꾼다.
-        연패형은 3-2가 되거나 체력이 손잡이 값(50) 아래로 내려가면 보드를 세운다(rebuilt)."""
-        if game_round < 3:
+        """2-3에 첫 대전 성적으로 초반 전략을 고르고, 연승형이 2~3단계에 두 번 연달아 지면 연패형으로 바꾼다.
+        연패형은 3-2가 되거나 체력이 손잡이 값(50) 아래로 내려가면 보드를 세운다(rebuilt, 그 라운드는 rebuilt_at)."""
+        if game_round < 5:
             return
         if self.mode is None:
             self.mode = early_mode(player, self.knobs)
         if self.mode == 'win' and game_round < 15 and player.loss_streak >= 2:
             self.mode, self.rebuilt = 'lose', False
         if self.mode == 'lose' and not self.rebuilt and (game_round >= 10 or player.health < self.knobs['lose_hp']):
-            self.rebuilt = True
+            self.rebuilt, self.rebuilt_at = True, game_round
 
     def reposition(self, player, game_round):
         """자리 맞추기(설계 1절 7번): 원거리는 뒷줄 구석부터 아이템 많은 순, 근접은 앞줄 가운데부터
@@ -67,7 +68,7 @@ class HumanPolicy(DeckPolicy):
         done3 = stay is not None and carry3(player, board)
         steady = bool(board) and stable(player, board)
         target, floor = plan(game_round, player.level, player.health, self.mode or 'win', self.rebuilt, stay,
-                             done3, steady, self.knobs)
+                             done3, steady, self.knobs, rebuild_now=self.rebuilt_at == game_round)
         exp_first = round_stage(game_round) >= 5 and player.level == 8 and steady
         return action(player.gold, player.level, target, floor, exp_first)
 

@@ -69,11 +69,13 @@ def real_families():
     return sorted(((f, s, w / s) for f, (s, w) in rows.items()), key=lambda r: -r[1])
 
 
-def curve_table(curves, mode=None):
+def curve_table(curves, mode=None, style=None):
+    """칸별 레벨·골드·체력. mode는 초반 전략('win'·'lose'), style은 느린 리롤 덱인가(True·False)로 거른다.
+    가이드 레벨은 보통 덱 기준이라 보통 덱으로 판정한다(유저 결정 2026-10-09)."""
     at = defaultdict(list)
     for curve in curves:
-        for slot, level, gold, hp, m in curve:
-            if mode is None or m == mode:
+        for slot, level, gold, hp, m, slow in curve:
+            if (mode is None or m == mode) and (style is None or slow == style):
                 at[slot].append((level, gold, hp))
     rows = []
     for slot, name, guide in CHECKPOINTS:
@@ -153,6 +155,9 @@ def main():
             modes[p['mode']].append(p['place'])
         out[label] = {'seconds': time.perf_counter() - start, 'curve': curve_table(curves),
                       'curve_win': curve_table(curves, 'win'), 'curve_lose': curve_table(curves, 'lose'),
+                      'curve_normal': curve_table(curves, style=False), 'curve_slow': curve_table(curves, style=True),
+                      'curve_normal_win': curve_table(curves, 'win', False),
+                      'curve_normal_lose': curve_table(curves, 'lose', False),
                       'winners': board_summary([p['board'] for p in players if p['place'] == 1]),
                       'all': board_summary([p['board'] for p in players]),
                       'carry21': statistics.mean(carry) if carry else None,
@@ -166,7 +171,9 @@ def main():
         print(f'\n[{label}] {args.games}판 {o["seconds"]:.0f}초, 캐리 아이템(5단계) {fmt(o["carry21"])}, '
               f'아이템 완성 비율(전체 보드) {fmt(o["all"]["item_use"])}, 받은 아이템(조각으로) {fmt(o["all"]["item_worth"], False)}, '
               f'덱 갈아타기 {o["switches"]:.2f}번/명')
-        for tag, rows in (('전체', o['curve']), ('연승형', o['curve_win']), ('연패형', o['curve_lose'])):
+        for tag, rows in (('전체', o['curve']), ('연승형', o['curve_win']), ('연패형', o['curve_lose']),
+                          ('보통 덱', o['curve_normal']), ('보통 연승', o['curve_normal_win']),
+                          ('보통 연패', o['curve_normal_lose']), ('느린 덱', o['curve_slow'])):
             for r in rows:
                 print(f'  {tag:4} {r["when"]:7} 가이드 {r["guide"]:>4} | 레벨 {r["level"]:.2f} 7+ {fmt(r["lv7"])} '
                       f'8+ {fmt(r["lv8"])} 9 {fmt(r["lv9"])} 골드 {r["gold"]:.1f} 체력 {r["hp"]:.1f} (살아 있음 {r["alive"]})')

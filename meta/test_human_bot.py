@@ -172,10 +172,12 @@ def plan_follows_design_curves_test():
         ((6, 4, 90, 'win', False, None, False, False), (5, 50)),     # 연승형 2-5에 5
         ((9, 5, 90, 'win', False, None, False, False), (6, 50)),     # 연승형 3-1에 6
         ((6, 4, 90, 'lose', False, None, False, False), (4, None)),  # 연패형은 모으기만
-        ((10, 4, 60, 'lose', True, None, False, False), (6, 20)),    # 연패형이 보드를 세운다
-        ((15, 7, 60, 'win', False, None, False, False), (7, 20)),    # 4-1에 7, 안정이 아니면 20까지
+        ((12, 6, 60, 'lose', True, None, False, False), (6, 50)),    # 보드를 세운 다음 라운드부터는 다시 모은다
+        ((15, 7, 60, 'win', False, None, False, False), (7, 20)),    # 4-1에 7, 안정이 아니면 그 라운드에 20까지
+        ((16, 7, 60, 'win', False, None, False, False), (7, 50)),    # 4-1 다음 라운드는 안정이 아니어도 50을 지킨다
         ((15, 7, 60, 'win', False, None, False, True), (7, 50)),     # 안정이면 50을 지킨다
-        ((18, 8, 60, 'win', False, None, False, False), (8, 10)),    # 4-5에 8, 안정이 아니면 10까지
+        ((18, 8, 60, 'win', False, None, False, False), (8, 10)),    # 4-5에 8, 안정이 아니면 그 라운드에 10까지
+        ((19, 8, 60, 'win', False, None, False, False), (8, 50)),    # 4-5 다음 라운드도 50을 지킨다
         ((9, 5, 90, 'win', False, 5, False, False), (5, 50)),        # 느린 리롤(1코스트 캐리)은 5에 머문다
         ((15, 6, 60, 'win', False, 7, False, False), (7, None)),     # 3코스트 캐리는 7까지 올리고 그다음 리롤
         ((12, 6, 60, 'win', False, 6, True, False), (8, 50)),        # 캐리가 3성이면 8로
@@ -184,6 +186,8 @@ def plan_follows_design_curves_test():
     ]
     for args, expected in cases:
         assert plan(*args, K) == expected, (args, plan(*args, K), expected)
+    # 연패형이 보드를 세우는 라운드(3-2 또는 체력 50 아래가 된 라운드)에만 20까지 리롤한다
+    assert plan(10, 4, 60, 'lose', True, None, False, False, K, rebuild_now=True) == (6, 20)
 
 
 def action_spends_in_order_test():
@@ -197,11 +201,11 @@ def action_spends_in_order_test():
 
 
 def early_mode_and_board_state_test():
-    """초반 세기(2성 수 + 완성 아이템 수)로 전략을 고르고, 안정과 캐리 3성을 본다."""
+    """초반 전략은 2-3에 첫 대전 성적으로 고른다(2연승 이상이면 연승형, 유저 결정 2026-10-09). 안정과 캐리 3성도 본다."""
     from meta.human_macro import carry3, early_mode, stable
-    strong = item_player([Unit(name='garen', stars=2, items=[]), Unit(name='vayne', stars=2, items=[])], [])
-    weak = item_player([Unit(name='garen', stars=2, items=[]), Unit(name='vayne', stars=1, items=[])], [])
-    assert early_mode(strong, K) == 'win' and early_mode(weak, K) == 'lose'
+    winning, mixed = item_player([], []), item_player([], [])
+    winning.win_streak, mixed.win_streak = 2, 1
+    assert early_mode(winning, K) == 'win' and early_mode(mixed, K) == 'lose'
     half = item_player([Unit(name='jhin', stars=1, items=[]), Unit(name='riven', stars=2, items=[])], [])
     both = item_player([Unit(name='jhin', stars=2, items=[]), Unit(name='riven', stars=2, items=[])], [])
     assert not stable(half, SHARPSHOOTERS) and stable(both, SHARPSHOOTERS)
@@ -215,18 +219,30 @@ def early_mode_and_board_state_test():
 
 
 def update_mode_switches_and_rebuilds_test():
-    """연승형이 2~3단계에 두 번 연달아 지면 연패형으로, 연패형은 3-2나 체력 50 아래에서 보드를 세운다."""
+    """2-3에 전략을 정하고(그 전에는 정하지 않는다), 연승형이 2~3단계에 두 번 연달아 지면 연패형으로, 연패형은 3-2나
+    체력 50 아래에서 보드를 세운다. 보드를 세운 라운드를 기억한다(그 라운드에만 리롤)."""
     from meta.human_bot import HumanPolicy
     p = item_player([Unit(name='garen', stars=2, items=[]), Unit(name='vayne', stars=2, items=[])], [])
-    p.loss_streak, p.health = 0, 90
+    p.loss_streak, p.win_streak, p.health = 0, 2, 90
     policy = HumanPolicy(None, SHARPSHOOTERS, [], random.Random(0))
-    policy.update_mode(p, 3)
+    policy.update_mode(p, 4)
+    assert policy.mode is None
+    policy.update_mode(p, 5)
     assert policy.mode == 'win'
-    p.loss_streak = 2
+    p.loss_streak, p.win_streak = 2, 0
     policy.update_mode(p, 8)
     assert policy.mode == 'lose' and not policy.rebuilt
     policy.update_mode(p, 10)
-    assert policy.rebuilt
+    assert policy.rebuilt and policy.rebuilt_at == 10
+
+
+def curve_table_splits_by_deck_style_test():
+    """레벨 곡선은 덱 스타일별로도 낸다. 가이드 레벨은 보통 덱으로만 판정한다(유저 결정 2026-10-09)."""
+    from meta.play_stats import curve_table
+    curve = [(16, 7, 30, 50, 'win', False), (16, 5, 60, 50, 'win', True)]
+    assert [r['level'] for r in curve_table([curve], style=False)] == [7]
+    assert [r['level'] for r in curve_table([curve], style=True)] == [5]
+    assert [r['level'] for r in curve_table([curve])] == [6]
 
 
 if __name__ == '__main__':
