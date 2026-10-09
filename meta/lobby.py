@@ -135,9 +135,9 @@ class DeckPolicy:
     11라운드 9%, 가장 높을 때 약 30%)."""
 
     chosen_any_trait = False  # True면 덱 유닛의 선택받은 자를 특성과 상관없이 산다(사람 봇)
-    # 보통 덱의 레벨·리롤: 이 칸(18 = 4-5)부터 레벨 8, 리롤할 때 남기는 골드, 레벨 9를 노리는 단계(None이면 안 감).
-    # 떼어 재기 조건(apply_variant)이 바꾼다
-    level8_round, level8_floor, level9_stage = 18, 20, None
+    # 보통 덱의 레벨·리롤: 이 칸(18 = 4-5)부터 레벨 8, 리롤할 때 남기는 골드, 레벨 9를 노리는 단계(None이면 안 감),
+    # 레벨 7에서 10골드를 남기고 리롤하는 칸(None이면 안 함). 떼어 재기 조건(apply_variant)이 바꾼다
+    level8_round, level8_floor, level9_stage, roll7_round = 18, 20, None, None
 
     def __init__(self, agent, board):
         self.agent = agent
@@ -221,6 +221,8 @@ class DeckPolicy:
             floor = self.level8_floor
         if player.level < target and player.gold >= 4:
             return '1'
+        if not self.slow and game_round == self.roll7_round and player.level == 7 and player.gold >= 12:
+            return '2'
         if player.level >= target and (self.slow or player.level >= 8) and player.gold >= floor + 2:
             return '2'
         return '0'
@@ -228,8 +230,9 @@ class DeckPolicy:
 
 # 덱 봇 보통 덱 운영의 떼어 재기 조건(python -m meta.lobby --variant). 값은 그때 가이드(meta/set4_play.md 2절)다.
 VARIANTS = {'fast8': {'level8_round': 17, 'level8_floor': 30},  # 빠른 8: 4-3에 8, 30~40골드를 남기고 리롤(ML)
-            'level9': {'level9_stage': 5}}                      # 5단계부터 9(B24: 총사령관·사교도·황혼이 9까지 가서 5코스트)
-_BASE_RULES = {key: getattr(DeckPolicy, key) for key in ('level8_round', 'level8_floor', 'level9_stage')}
+            'level9': {'level9_stage': 5},                      # 5단계부터 9(B24: 총사령관·사교도·황혼이 9까지 가서 5코스트)
+            'roll7': {'roll7_round': 15}}                       # 4-1에 7에서 10골드쯤 남기고 리롤해 안정(B24 황혼, GH23, BH)
+_BASE_RULES = {key: getattr(DeckPolicy, key) for key in ('level8_round', 'level8_floor', 'level9_stage', 'roll7_round')}
 
 
 def apply_variant(name):

@@ -139,7 +139,8 @@ def deck_policy_levels_and_rolls_by_style_test():
 
 def deck_policy_variants_change_normal_deck_levels_test():
     """떼어 재기 조건(--variant). fast8: 보통 덱이 4-3(17번째 칸)에 레벨 8로 가서 30골드를 남기고 리롤한다(ML).
-    level9: 보통 덱이 5단계(21번째 칸)부터 레벨 9를 노린다(B24). 조건이 없으면 지금 규칙 그대로다."""
+    level9: 보통 덱이 5단계(21번째 칸)부터 레벨 9를 노린다(B24). roll7: 4-1에 레벨 7에서 10골드를 남기고 리롤한다.
+    조건이 없으면 지금 규칙 그대로다."""
     from meta.lobby import apply_variant
     def act(game_round, level, gold):
         p = deck_player(['jhin'], gold=gold)
@@ -150,14 +151,17 @@ def deck_policy_variants_change_normal_deck_levels_test():
         assert [act(17, 7, 60), act(17, 8, 31), act(17, 8, 32)] == ['1', '0', '2']
         apply_variant('level9')
         assert [act(21, 8, 60), act(18, 8, 60), act(21, 9, 22)] == ['1', '2', '2']
+        # roll7: 4-1(15번째 칸)에 레벨 7에서 10골드를 남기고 리롤해 보드를 안정시킨다(B24 황혼, GH23). 4-2부터는 다시 아낀다
+        apply_variant('roll7')
+        assert [act(15, 7, 12), act(15, 7, 11), act(16, 7, 40), act(15, 6, 40)] == ['2', '0', '0', '1']
     finally:
         apply_variant(None)
-    assert [act(17, 7, 60), act(17, 8, 31), act(21, 8, 60)] == ['0', '2', '2']
+    assert [act(17, 7, 60), act(17, 8, 31), act(21, 8, 60), act(15, 7, 40)] == ['0', '2', '2', '0']
 
 
 def _deck_rules():
     from meta.lobby import DeckPolicy
-    return DeckPolicy.level8_round, DeckPolicy.level8_floor, DeckPolicy.level9_stage
+    return DeckPolicy.level8_round, DeckPolicy.level8_floor, DeckPolicy.level9_stage, DeckPolicy.roll7_round
 
 
 def variant_reaches_workers_test():
@@ -165,9 +169,11 @@ def variant_reaches_workers_test():
     from multiprocessing import Pool
     from meta.lobby import apply_variant
     with Pool(1, initializer=apply_variant, initargs=('fast8',)) as workers:
-        assert workers.apply(_deck_rules) == (17, 30, None)
+        assert workers.apply(_deck_rules) == (17, 30, None, None)
     with Pool(1, initializer=apply_variant, initargs=('level9',)) as workers:
-        assert workers.apply(_deck_rules) == (18, 20, 5)
+        assert workers.apply(_deck_rules) == (18, 20, 5, None)
+    with Pool(1, initializer=apply_variant, initargs=('roll7',)) as workers:
+        assert workers.apply(_deck_rules) == (18, 20, None, 15)
 
 
 def carriers_are_units_with_most_recommended_items_test():
