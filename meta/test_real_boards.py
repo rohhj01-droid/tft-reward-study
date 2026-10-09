@@ -52,19 +52,19 @@ def _warlord_wins_after_battle():
     return dict(config.WARLORD_WINS)
 
 
-def _veigar_lockout_after_cast():
-    """베이가(게임 파일 시전 시간 0.5초, 시뮬레이터 스킬에는 시전 뒤 쉬는 시간이 없다)가 스킬을 쓴 직후 행동할 수
-    있는지와 행동 금지가 풀리는 때(지금부터 ms)."""
+def _lockout_after_cast(name):
+    """name이 스킬을 쓴 직후 행동할 수 있는지와 행동 금지가 풀리는 때(지금부터 ms). 베이가는 게임 파일 시전 시간이 0.5초이고,
+    가렌은 파일에 값이 없다. 시뮬레이터는 june a90610f부터 파일 값만큼 묶는다."""
     import Simulator.champion as cm
     from Simulator import field
     field.coordinates = [[None] * 7 for _ in range(8)]
-    veigar = cm.champion('veigar', 'blue', 3, 3, stars=2)
-    foe = cm.champion('garen', 'red', 4, 3, stars=2)
-    cm.blue[:], cm.red[:] = [veigar], [foe]
+    caster = cm.champion(name, 'blue', 3, 3, stars=2)
+    foe = cm.champion('vi' if name == 'garen' else 'garen', 'red', 4, 3, stars=2)
+    cm.blue[:], cm.red[:] = [caster], [foe]
     cm.que.clear()
-    veigar.target = foe
-    veigar.cast()
-    return veigar.idle, [q[2] - cm.MILLIS() for q in cm.que if q[1] is veigar and q[0] == 'clear_idle']
+    caster.target = foe
+    caster.cast()
+    return caster.idle, [q[2] - cm.MILLIS() for q in cm.que if q[1] is caster and q[0] == 'clear_idle']
 
 
 def _spots(place='range'):
@@ -99,14 +99,16 @@ def isolate_variants_reach_battles_test():
         assert workers.apply(_kayn_form_on_board) == 'kayn_rhast'
     with Pool(1, initializer=partial(setup, 'warlord5')) as workers:
         assert workers.apply(_warlord_wins_after_battle) == {'blue': 5, 'red': 5}
-    with Pool(1, initializer=partial(setup, 'cast_time')) as workers:
-        assert workers.apply(_veigar_lockout_after_cast) == (False, [500])
+    # 시전 시간은 june a90610f부터 시뮬레이터에 있어서, cast_time은 기준과 같고 cast_time_half만 값 없는 챔피언을 묶는다
+    with Pool(1, initializer=partial(setup, 'cast_time_half')) as workers:
+        assert workers.apply(_lockout_after_cast, ('garen',)) == (False, [500])
     with Pool(1, initializer=partial(setup, 'corner')) as workers:
         assert workers.apply(_spots) == {'jinx': (0, 0), 'ashe': (6, 0), 'garen': (3, 3)}
     with Pool(1, initializer=prehotfix) as workers:
         assert workers.apply(_kayn_form_on_board) is None
         assert workers.apply(_warlord_wins_after_battle) == {'blue': 0, 'red': 0}
-        assert workers.apply(_veigar_lockout_after_cast) == (True, [])
+        assert workers.apply(_lockout_after_cast, ('veigar',)) == (False, [500])
+        assert workers.apply(_lockout_after_cast, ('garen',)) == (True, [])
         assert workers.apply(_spots) == {'ashe': (3, 0), 'jinx': (2, 0), 'garen': (3, 3)}
 
 
