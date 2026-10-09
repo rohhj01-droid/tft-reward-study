@@ -1,0 +1,13962 @@
+{
+ "games": 100,
+ "seed": 0,
+ "knobs": {},
+ "real_winners": {
+  "boards": 25,
+  "units": {
+   "8": 6,
+   "9": 18,
+   "10": 1
+  },
+  "nine_plus": 0.76,
+  "two_star_4cost": 0.8333333333333334,
+  "two_star_5cost": 0.691358024691358,
+  "five_per_board": 3.24,
+  "three_star_per_board": 0.48,
+  "items_median": 9,
+  "item_use": null,
+  "item_worth": null,
+  "chosen_kinds": 15,
+  "chosen_off_family": 0.5217391304347826,
+  "no_family": 0.08,
+  "families": [
+   [
+    "dusk",
+    9
+   ],
+   [
+    "ninja",
+    3
+   ],
+   [
+    "divine",
+    3
+   ],
+   [
+    "elderwood",
+    2
+   ],
+   [
+    "other",
+    2
+   ],
+   [
+    "warlord",
+    1
+   ],
+   [
+    "hunter",
+    1
+   ],
+   [
+    "sharpshooter",
+    1
+   ],
+   [
+    "fortune",
+    1
+   ],
+   [
+    "mystic",
+    1
+   ],
+   [
+    "cultist",
+    1
+   ]
+  ]
+ },
+ "real_families": [
+  [
+   "ninja",
+   0.4550000000000002,
+   2.9166593406593395
+  ],
+  [
+   "duelist",
+   0.146,
+   2.814520547945206
+  ],
+  [
+   "cultist",
+   0.138,
+   2.5852898550724634
+  ],
+  [
+   "warlord",
+   0.07400000000000001,
+   3.3559459459459458
+  ],
+  [
+   "divine",
+   0.047,
+   3.35
+  ],
+  [
+   "sharpshooter",
+   0.046,
+   2.17
+  ],
+  [
+   "hunter",
+   0.04,
+   3.55
+  ],
+  [
+   "dusk",
+   0.033,
+   2.15
+  ],
+  [
+   "other",
+   0.02,
+   3.25
+  ]
+ ],
+ "기본 봇": {
+  "seconds": 286.9349973000062,
+  "curve": [
+   {
+    "when": "2-1 뒤",
+    "guide": "4",
+    "alive": 800,
+    "level": 3.995,
+    "lv7": 0.0,
+    "lv8": 0.0,
+    "lv9": 0.0,
+    "gold": 15.02625,
+    "hp": 97.4875
+   },
+   {
+    "when": "3-2 시작",
+    "guide": "-",
+    "alive": 800,
+    "level": 5,
+    "lv7": 0.0,
+    "lv8": 0.0,
+    "lv9": 0.0,
+    "gold": 65.0575,
+    "hp": 81.8125
+   },
+   {
+    "when": "3-2 뒤",
+    "guide": "6",
+    "alive": 800,
+    "level": 5,
+    "lv7": 0.0,
+    "lv8": 0.0,
+    "lv9": 0.0,
+    "gold": 74.8275,
+    "hp": 77.7325
+   },
+   {
+    "when": "4-1 뒤",
+    "guide": "7",
+    "alive": 794,
+    "level": 7.1360201511335015,
+    "lv7": 0.9987405541561712,
+    "lv8": 0.13727959697732997,
+    "lv9": 0.0,
+    "gold": 60.20906801007557,
+    "hp": 58.56297229219144
+   },
+   {
+    "when": "4-5 뒤",
+    "guide": "7~8",
+    "alive": 721,
+    "level": 7.927877947295423,
+    "lv7": 1.0,
+    "lv8": 0.9278779472954231,
+    "lv9": 0.0,
+    "gold": 58.74757281553398,
+    "hp": 46.37864077669903
+   },
+   {
+    "when": "5-1 뒤",
+    "guide": "8",
+    "alive": 584,
+    "level": 8,
+    "lv7": 1.0,
+    "lv8": 1.0,
+    "lv9": 0.0,
+    "gold": 70.53938356164383,
+    "hp": 44.05821917808219
+   },
+   {
+    "when": "6-1 뒤",
+    "guide": "8~9",
+    "alive": 290,
+    "level": 8,
+    "lv7": 1.0,
+    "lv8": 1.0,
+    "lv9": 0.0,
+    "gold": 77.87241379310345,
+    "hp": 42.282758620689656
+   }
+  ],
+  "curve_win": [],
+  "curve_lose": [],
+  "curve_normal": [
+   {
+    "when": "2-1 뒤",
+    "guide": "4",
+    "alive": 446,
+    "level": 3.993273542600897,
+    "lv7": 0.0,
+    "lv8": 0.0,
+    "lv9": 0.0,
+    "gold": 15.07847533632287,
+    "hp": 97.347533632287
+   },
+   {
+    "when": "3-2 시작",
+    "guide": "-",
+    "alive": 446,
+    "level": 5,
+    "lv7": 0.0,
+    "lv8": 0.0,
+    "lv9": 0.0,
+    "gold": 65.39013452914799,
+    "hp": 81.40582959641256
+   },
+   {
+    "when": "3-2 뒤",
+    "guide": "6",
+    "alive": 446,
+    "level": 5,
+    "lv7": 0.0,
+    "lv8": 0.0,
+    "lv9": 0.0,
+    "gold": 75.1322869955157,
+    "hp": 77.00224215246637
+   },
+   {
+    "when": "4-1 뒤",
+    "guide": "7",
+    "alive": 441,
+    "level": 7.1519274376417235,
+    "lv7": 0.9977324263038548,
+    "lv8": 0.15419501133786848,
+    "lv9": 0.0,
+    "gold": 59.74603174603175,
+    "hp": 57.95238095238095
+   },
+   {
+    "when": "4-5 뒤",
+    "guide": "7~8",
+    "alive": 395,
+    "level": 7.9291139240506325,
+    "lv7": 1.0,
+    "lv8": 0.9291139240506329,
+    "lv9": 0.0,
+    "gold": 58.665822784810125,
+    "hp": 46.230379746835446
+   },
+   {
+    "when": "5-1 뒤",
+    "guide": "8",
+    "alive": 320,
+    "level": 8,
+    "lv7": 1.0,
+    "lv8": 1.0,
+    "lv9": 0.0,
+    "gold": 70.265625,
+    "hp": 44.140625
+   },
+   {
+    "when": "6-1 뒤",
+    "guide": "8~9",
+    "alive": 155,
+    "level": 8,
+    "lv7": 1.0,
+    "lv8": 1.0,
+    "lv9": 0.0,
+    "gold": 78.51612903225806,
+    "hp": 43.78064516129032
+   }
+  ],
+  "curve_slow": [
+   {
+    "when": "2-1 뒤",
+    "guide": "4",
+    "alive": 354,
+    "level": 3.9971751412429377,
+    "lv7": 0.0,
+    "lv8": 0.0,
+    "lv9": 0.0,
+    "gold": 14.96045197740113,
+    "hp": 97.6638418079096
+   },
+   {
+    "when": "3-2 시작",
+    "guide": "-",
+    "alive": 354,
+    "level": 5,
+    "lv7": 0.0,
+    "lv8": 0.0,
+    "lv9": 0.0,
+    "gold": 64.63841807909604,
+    "hp": 82.32485875706215
+   },
+   {
+    "when": "3-2 뒤",
+    "guide": "6",
+    "alive": 354,
+    "level": 5,
+    "lv7": 0.0,
+    "lv8": 0.0,
+    "lv9": 0.0,
+    "gold": 74.44350282485875,
+    "hp": 78.65254237288136
+   },
+   {
+    "when": "4-1 뒤",
+    "guide": "7",
+    "alive": 353,
+    "level": 7.11614730878187,
+    "lv7": 1.0,
+    "lv8": 0.11614730878186968,
+    "lv9": 0.0,
+    "gold": 60.787535410764875,
+    "hp": 59.32577903682719
+   },
+   {
+    "when": "4-5 뒤",
+    "guide": "7~8",
+    "alive": 326,
+    "level": 7.92638036809816,
+    "lv7": 1.0,
+    "lv8": 0.9263803680981595,
+    "lv9": 0.0,
+    "gold": 58.84662576687116,
+    "hp": 46.558282208588956
+   },
+   {
+    "when": "5-1 뒤",
+    "guide": "8",
+    "alive": 264,
+    "level": 8,
+    "lv7": 1.0,
+    "lv8": 1.0,
+    "lv9": 0.0,
+    "gold": 70.87121212121212,
+    "hp": 43.958333333333336
+   },
+   {
+    "when": "6-1 뒤",
+    "guide": "8~9",
+    "alive": 135,
+    "level": 8,
+    "lv7": 1.0,
+    "lv8": 1.0,
+    "lv9": 0.0,
+    "gold": 77.13333333333334,
+    "hp": 40.56296296296296
+   }
+  ],
+  "curve_normal_win": [],
+  "curve_normal_lose": [],
+  "winners": {
+   "boards": 100,
+   "units": {
+    "8": 100
+   },
+   "nine_plus": 0.0,
+   "two_star_4cost": 0.6756756756756757,
+   "two_star_5cost": 0.6666666666666666,
+   "five_per_board": 0.06,
+   "three_star_per_board": 0.25,
+   "items_median": 1.0,
+   "item_use": 0.42857142857142855,
+   "item_worth": 12.6,
+   "chosen_kinds": 5,
+   "chosen_off_family": 0.0,
+   "no_family": 0.84,
+   "families": [
+    [
+     "other",
+     84
+    ],
+    [
+     "elderwood",
+     6
+    ],
+    [
+     "sharpshooter",
+     4
+    ],
+    [
+     "fortune",
+     2
+    ],
+    [
+     "hunter",
+     2
+    ],
+    [
+     "brawler",
+     1
+    ],
+    [
+     "duelist",
+     1
+    ]
+   ]
+  },
+  "all": {
+   "boards": 800,
+   "units": {
+    "8": 800
+   },
+   "nine_plus": 0.0,
+   "two_star_4cost": 0.3381818181818182,
+   "two_star_5cost": 0.3,
+   "five_per_board": 0.0375,
+   "three_star_per_board": 0.03875,
+   "items_median": 1.0,
+   "item_use": 0.36361518751455857,
+   "item_worth": 10.7325,
+   "chosen_kinds": 11,
+   "chosen_off_family": 0.375,
+   "no_family": 0.93375,
+   "families": [
+    [
+     "other",
+     747
+    ],
+    [
+     "elderwood",
+     30
+    ],
+    [
+     "sharpshooter",
+     8
+    ],
+    [
+     "fortune",
+     7
+    ],
+    [
+     "hunter",
+     3
+    ],
+    [
+     "brawler",
+     3
+    ],
+    [
+     "duelist",
+     1
+    ],
+    [
+     "divine",
+     1
+    ]
+   ]
+  },
+  "carry21": null,
+  "modes": {
+   "None": [
+    800,
+    4.5
+   ]
+  },
+  "switches": 0,
+  "families": [
+   [
+    "other",
+    0.93375,
+    4.587684069611781
+   ],
+   [
+    "elderwood",
+    0.0375,
+    3.7333333333333334
+   ],
+   [
+    "sharpshooter",
+    0.01,
+    2.875
+   ],
+   [
+    "fortune",
+    0.00875,
+    3.2857142857142856
+   ],
+   [
+    "hunter",
+    0.00375,
+    1.3333333333333333
+   ],
+   [
+    "brawler",
+    0.00375,
+    2
+   ],
+   [
+    "duelist",
+    0.00125,
+    1
+   ],
+   [
+    "divine",
+    0.00125,
+    4
+   ]
+  ],
+  "winner_boards": [
+   {
+    "level": 8,
+    "units": [
+     [
+      "zed",
+      2,
+      1,
+      0
+     ],
+     [
+      "vayne",
+      1,
+      2,
+      0
+     ],
+     [
+      "diana",
+      1,
+      1,
+      0
+     ],
+     [
+      "maokai",
+      1,
+      1,
+      0
+     ],
+     [
+      "janna",
+      2,
+      2,
+      0
+     ],
+     [
+      "vi",
+      2,
+      2,
+      0
+     ],
+     [
+      "kindred",
+      3,
+      2,
+      0
+     ],
+     [
+      "vayne",
+      1,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "ninja": 1,
+     "brawler": 2
+    },
+    "chosen": null,
+    "completed_all": 2,
+    "components_all": 8
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "nidalee",
+      1,
+      2,
+      0
+     ],
+     [
+      "katarina",
+      3,
+      1,
+      0
+     ],
+     [
+      "garen",
+      1,
+      2,
+      0
+     ],
+     [
+      "kindred",
+      3,
+      3,
+      0
+     ],
+     [
+      "yasuo",
+      1,
+      2,
+      0
+     ],
+     [
+      "hecarim",
+      2,
+      2,
+      0
+     ],
+     [
+      "maokai",
+      1,
+      1,
+      0
+     ],
+     [
+      "garen",
+      1,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "exile": 1,
+     "warlord": 3,
+     "vanguard": 2
+    },
+    "chosen": null,
+    "completed_all": 2,
+    "components_all": 8
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "aphelios",
+      2,
+      2,
+      0
+     ],
+     [
+      "pyke",
+      2,
+      2,
+      0
+     ],
+     [
+      "vayne",
+      1,
+      2,
+      0
+     ],
+     [
+      "kalista",
+      3,
+      2,
+      0
+     ],
+     [
+      "nunu",
+      3,
+      1,
+      0
+     ],
+     [
+      "jinx",
+      3,
+      2,
+      0
+     ],
+     [
+      "evelynn",
+      3,
+      1,
+      0
+     ],
+     [
+      "vayne",
+      1,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "cultist": 3,
+     "sharpshooter": 2
+    },
+    "chosen": "sharpshooter",
+    "completed_all": 2,
+    "components_all": 5
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "aphelios",
+      2,
+      2,
+      0
+     ],
+     [
+      "elise",
+      1,
+      2,
+      0
+     ],
+     [
+      "lissandra",
+      1,
+      2,
+      0
+     ],
+     [
+      "twistedfate",
+      1,
+      1,
+      0
+     ],
+     [
+      "vi",
+      2,
+      1,
+      0
+     ],
+     [
+      "kalista",
+      3,
+      1,
+      2
+     ],
+     [
+      "elise",
+      1,
+      2,
+      0
+     ],
+     [
+      "kindred",
+      3,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "cultist": 3,
+     "hunter": 2
+    },
+    "chosen": null,
+    "completed_all": 4,
+    "components_all": 5
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "janna",
+      2,
+      2,
+      0
+     ],
+     [
+      "kindred",
+      3,
+      3,
+      0
+     ],
+     [
+      "lissandra",
+      1,
+      1,
+      0
+     ],
+     [
+      "thresh",
+      2,
+      2,
+      1
+     ],
+     [
+      "hecarim",
+      2,
+      2,
+      0
+     ],
+     [
+      "akali",
+      3,
+      1,
+      0
+     ],
+     [
+      "fiora",
+      1,
+      2,
+      0
+     ],
+     [
+      "nidalee",
+      1,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "enlightened": 2,
+     "ninja": 1,
+     "vanguard": 2
+    },
+    "chosen": null,
+    "completed_all": 2,
+    "components_all": 7
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "lissandra",
+      1,
+      1,
+      0
+     ],
+     [
+      "sylas",
+      2,
+      2,
+      0
+     ],
+     [
+      "yuumi",
+      3,
+      2,
+      0
+     ],
+     [
+      "lux",
+      3,
+      1,
+      1
+     ],
+     [
+      "tahmkench",
+      1,
+      1,
+      0
+     ],
+     [
+      "janna",
+      2,
+      3,
+      0
+     ],
+     [
+      "nunu",
+      3,
+      2,
+      0
+     ],
+     [
+      "kennen",
+      3,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "ninja": 1,
+     "brawler": 3,
+     "dazzler": 2,
+     "mystic": 2
+    },
+    "chosen": null,
+    "completed_all": 3,
+    "components_all": 8
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "nami",
+      1,
+      2,
+      0
+     ],
+     [
+      "katarina",
+      3,
+      3,
+      1
+     ],
+     [
+      "diana",
+      1,
+      2,
+      0
+     ],
+     [
+      "jinx",
+      3,
+      1,
+      0
+     ],
+     [
+      "fiora",
+      1,
+      1,
+      0
+     ],
+     [
+      "janna",
+      2,
+      2,
+      0
+     ],
+     [
+      "annie",
+      2,
+      2,
+      0
+     ],
+     [
+      "veigar",
+      3,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "enlightened": 3,
+     "assassin": 2,
+     "fortune": 3,
+     "mage": 3
+    },
+    "chosen": null,
+    "completed_all": 2,
+    "components_all": 7
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "yasuo",
+      1,
+      2,
+      0
+     ],
+     [
+      "fiora",
+      1,
+      2,
+      0
+     ],
+     [
+      "yuumi",
+      3,
+      2,
+      0
+     ],
+     [
+      "irelia",
+      3,
+      1,
+      0
+     ],
+     [
+      "kennen",
+      3,
+      2,
+      0
+     ],
+     [
+      "janna",
+      2,
+      2,
+      0
+     ],
+     [
+      "irelia",
+      3,
+      1,
+      0
+     ],
+     [
+      "jax",
+      2,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 2,
+     "enlightened": 3,
+     "exile": 1,
+     "ninja": 1,
+     "duelist": 3,
+     "mystic": 2
+    },
+    "chosen": null,
+    "completed_all": 3,
+    "components_all": 7
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "janna",
+      2,
+      2,
+      0
+     ],
+     [
+      "pyke",
+      2,
+      1,
+      0
+     ],
+     [
+      "ahri",
+      4,
+      2,
+      0
+     ],
+     [
+      "garen",
+      1,
+      1,
+      0
+     ],
+     [
+      "kindred",
+      3,
+      1,
+      2
+     ],
+     [
+      "twistedfate",
+      1,
+      2,
+      0
+     ],
+     [
+      "diana",
+      1,
+      2,
+      0
+     ],
+     [
+      "aphelios",
+      2,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "spirit": 2,
+     "assassin": 2,
+     "hunter": 2
+    },
+    "chosen": null,
+    "completed_all": 5,
+    "components_all": 8
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "nami",
+      1,
+      2,
+      0
+     ],
+     [
+      "janna",
+      2,
+      2,
+      0
+     ],
+     [
+      "xinzhao",
+      3,
+      1,
+      0
+     ],
+     [
+      "twistedfate",
+      1,
+      2,
+      0
+     ],
+     [
+      "vi",
+      2,
+      2,
+      1
+     ],
+     [
+      "aphelios",
+      2,
+      2,
+      0
+     ],
+     [
+      "elise",
+      1,
+      2,
+      0
+     ],
+     [
+      "vi",
+      2,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "enlightened": 2
+    },
+    "chosen": null,
+    "completed_all": 2,
+    "components_all": 9
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "akali",
+      3,
+      1,
+      0
+     ],
+     [
+      "nidalee",
+      1,
+      2,
+      0
+     ],
+     [
+      "kalista",
+      3,
+      2,
+      0
+     ],
+     [
+      "irelia",
+      3,
+      2,
+      0
+     ],
+     [
+      "yuumi",
+      3,
+      1,
+      0
+     ],
+     [
+      "fiora",
+      1,
+      3,
+      0
+     ],
+     [
+      "zed",
+      2,
+      1,
+      0
+     ],
+     [
+      "diana",
+      1,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "enlightened": 2,
+     "ninja": 2,
+     "assassin": 2,
+     "duelist": 2
+    },
+    "chosen": null,
+    "completed_all": 2,
+    "components_all": 5
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "aphelios",
+      2,
+      2,
+      0
+     ],
+     [
+      "kindred",
+      3,
+      2,
+      0
+     ],
+     [
+      "lillia",
+      5,
+      2,
+      0
+     ],
+     [
+      "yasuo",
+      1,
+      2,
+      0
+     ],
+     [
+      "tahmkench",
+      1,
+      1,
+      0
+     ],
+     [
+      "diana",
+      1,
+      2,
+      0
+     ],
+     [
+      "jax",
+      2,
+      1,
+      0
+     ],
+     [
+      "lissandra",
+      1,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "exile": 1,
+     "duelist": 2,
+     "hunter": 2,
+     "moonlight": 3
+    },
+    "chosen": null,
+    "completed_all": 4,
+    "components_all": 5
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "nunu",
+      3,
+      1,
+      0
+     ],
+     [
+      "ahri",
+      4,
+      2,
+      0
+     ],
+     [
+      "veigar",
+      3,
+      3,
+      0
+     ],
+     [
+      "hecarim",
+      2,
+      2,
+      1
+     ],
+     [
+      "jhin",
+      4,
+      1,
+      0
+     ],
+     [
+      "maokai",
+      1,
+      2,
+      0
+     ],
+     [
+      "wukong",
+      1,
+      2,
+      0
+     ],
+     [
+      "sylas",
+      2,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "elderwood": 4,
+     "brawler": 3,
+     "vanguard": 2
+    },
+    "chosen": null,
+    "completed_all": 2,
+    "components_all": 9
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "fiora",
+      1,
+      1,
+      0
+     ],
+     [
+      "xinzhao",
+      3,
+      3,
+      0
+     ],
+     [
+      "nami",
+      1,
+      2,
+      0
+     ],
+     [
+      "irelia",
+      3,
+      2,
+      0
+     ],
+     [
+      "sylas",
+      2,
+      2,
+      0
+     ],
+     [
+      "diana",
+      1,
+      2,
+      0
+     ],
+     [
+      "jax",
+      2,
+      2,
+      0
+     ],
+     [
+      "fiora",
+      1,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 2,
+     "enlightened": 3,
+     "duelist": 3
+    },
+    "chosen": null,
+    "completed_all": 3,
+    "components_all": 7
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "nunu",
+      3,
+      1,
+      0
+     ],
+     [
+      "lulu",
+      2,
+      1,
+      0
+     ],
+     [
+      "lux",
+      3,
+      2,
+      1
+     ],
+     [
+      "xinzhao",
+      3,
+      1,
+      0
+     ],
+     [
+      "veigar",
+      3,
+      2,
+      0
+     ],
+     [
+      "warwick",
+      4,
+      2,
+      0
+     ],
+     [
+      "tahmkench",
+      1,
+      1,
+      0
+     ],
+     [
+      "kennen",
+      3,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 2,
+     "elderwood": 3,
+     "ninja": 1,
+     "brawler": 3
+    },
+    "chosen": null,
+    "completed_all": 3,
+    "components_all": 8
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "maokai",
+      1,
+      2,
+      0
+     ],
+     [
+      "vayne",
+      1,
+      1,
+      0
+     ],
+     [
+      "irelia",
+      3,
+      2,
+      0
+     ],
+     [
+      "wukong",
+      1,
+      1,
+      0
+     ],
+     [
+      "veigar",
+      3,
+      1,
+      0
+     ],
+     [
+      "sylas",
+      2,
+      2,
+      2
+     ],
+     [
+      "vi",
+      2,
+      2,
+      0
+     ],
+     [
+      "fiora",
+      1,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 2,
+     "enlightened": 2,
+     "brawler": 3
+    },
+    "chosen": null,
+    "completed_all": 5,
+    "components_all": 6
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "vi",
+      2,
+      2,
+      0
+     ],
+     [
+      "tahmkench",
+      1,
+      2,
+      0
+     ],
+     [
+      "lulu",
+      2,
+      2,
+      1
+     ],
+     [
+      "warwick",
+      4,
+      2,
+      0
+     ],
+     [
+      "sejuani",
+      4,
+      1,
+      0
+     ],
+     [
+      "thresh",
+      2,
+      1,
+      0
+     ],
+     [
+      "wukong",
+      1,
+      1,
+      0
+     ],
+     [
+      "maokai",
+      1,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 2,
+     "brawler": 4,
+     "vanguard": 3
+    },
+    "chosen": null,
+    "completed_all": 2,
+    "components_all": 8
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "garen",
+      1,
+      2,
+      0
+     ],
+     [
+      "kalista",
+      3,
+      1,
+      2
+     ],
+     [
+      "elise",
+      1,
+      1,
+      0
+     ],
+     [
+      "wukong",
+      1,
+      2,
+      0
+     ],
+     [
+      "leesin",
+      5,
+      1,
+      0
+     ],
+     [
+      "fiora",
+      1,
+      2,
+      0
+     ],
+     [
+      "wukong",
+      1,
+      1,
+      0
+     ],
+     [
+      "xinzhao",
+      3,
+      3,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 2,
+     "duelist": 4,
+     "vanguard": 2
+    },
+    "chosen": null,
+    "completed_all": 4,
+    "components_all": 4
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "sejuani",
+      4,
+      2,
+      0
+     ],
+     [
+      "sylas",
+      2,
+      1,
+      0
+     ],
+     [
+      "tahmkench",
+      1,
+      2,
+      0
+     ],
+     [
+      "janna",
+      2,
+      2,
+      2
+     ],
+     [
+      "wukong",
+      1,
+      1,
+      0
+     ],
+     [
+      "annie",
+      2,
+      1,
+      0
+     ],
+     [
+      "sylas",
+      2,
+      2,
+      0
+     ],
+     [
+      "xinzhao",
+      3,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "brawler": 2,
+     "fortune": 3,
+     "vanguard": 2
+    },
+    "chosen": null,
+    "completed_all": 4,
+    "components_all": 8
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "lissandra",
+      1,
+      2,
+      0
+     ],
+     [
+      "teemo",
+      2,
+      1,
+      0
+     ],
+     [
+      "kindred",
+      3,
+      2,
+      0
+     ],
+     [
+      "irelia",
+      3,
+      1,
+      0
+     ],
+     [
+      "maokai",
+      1,
+      1,
+      0
+     ],
+     [
+      "nidalee",
+      1,
+      2,
+      0
+     ],
+     [
+      "lux",
+      3,
+      3,
+      0
+     ],
+     [
+      "tahmkench",
+      1,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 2,
+     "spirit": 2,
+     "brawler": 2,
+     "dazzler": 2,
+     "sharpshooter": 2
+    },
+    "chosen": null,
+    "completed_all": 3,
+    "components_all": 8
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "janna",
+      2,
+      3,
+      0
+     ],
+     [
+      "kalista",
+      3,
+      1,
+      0
+     ],
+     [
+      "tahmkench",
+      1,
+      1,
+      0
+     ],
+     [
+      "pyke",
+      2,
+      2,
+      2
+     ],
+     [
+      "sylas",
+      2,
+      1,
+      0
+     ],
+     [
+      "lulu",
+      2,
+      2,
+      0
+     ],
+     [
+      "tahmkench",
+      1,
+      2,
+      0
+     ],
+     [
+      "diana",
+      1,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "assassin": 2,
+     "brawler": 2
+    },
+    "chosen": null,
+    "completed_all": 4,
+    "components_all": 7
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "irelia",
+      3,
+      2,
+      0
+     ],
+     [
+      "fiora",
+      1,
+      2,
+      0
+     ],
+     [
+      "kindred",
+      3,
+      1,
+      0
+     ],
+     [
+      "twistedfate",
+      1,
+      2,
+      2
+     ],
+     [
+      "jax",
+      2,
+      2,
+      0
+     ],
+     [
+      "twistedfate",
+      1,
+      1,
+      0
+     ],
+     [
+      "tahmkench",
+      1,
+      2,
+      0
+     ],
+     [
+      "annie",
+      2,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 2,
+     "enlightened": 2,
+     "duelist": 2
+    },
+    "chosen": null,
+    "completed_all": 2,
+    "components_all": 8
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "vayne",
+      1,
+      2,
+      0
+     ],
+     [
+      "janna",
+      2,
+      2,
+      0
+     ],
+     [
+      "aphelios",
+      2,
+      1,
+      2
+     ],
+     [
+      "elise",
+      1,
+      2,
+      0
+     ],
+     [
+      "garen",
+      1,
+      1,
+      0
+     ],
+     [
+      "diana",
+      1,
+      2,
+      0
+     ],
+     [
+      "tahmkench",
+      1,
+      2,
+      0
+     ],
+     [
+      "lissandra",
+      1,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "moonlight": 3
+    },
+    "chosen": null,
+    "completed_all": 4,
+    "components_all": 7
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "lissandra",
+      1,
+      2,
+      0
+     ],
+     [
+      "diana",
+      1,
+      2,
+      0
+     ],
+     [
+      "twistedfate",
+      1,
+      2,
+      0
+     ],
+     [
+      "vi",
+      2,
+      2,
+      0
+     ],
+     [
+      "kindred",
+      3,
+      2,
+      0
+     ],
+     [
+      "warwick",
+      4,
+      2,
+      0
+     ],
+     [
+      "sejuani",
+      4,
+      2,
+      0
+     ],
+     [
+      "aphelios",
+      2,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "brawler": 2,
+     "hunter": 3,
+     "moonlight": 3
+    },
+    "chosen": null,
+    "completed_all": 3,
+    "components_all": 7
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "nidalee",
+      1,
+      2,
+      0
+     ],
+     [
+      "kindred",
+      3,
+      1,
+      2
+     ],
+     [
+      "nidalee",
+      1,
+      2,
+      0
+     ],
+     [
+      "yasuo",
+      1,
+      1,
+      0
+     ],
+     [
+      "fiora",
+      1,
+      2,
+      0
+     ],
+     [
+      "diana",
+      1,
+      1,
+      0
+     ],
+     [
+      "shen",
+      4,
+      1,
+      0
+     ],
+     [
+      "janna",
+      2,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "enlightened": 2,
+     "exile": 1,
+     "ninja": 1,
+     "duelist": 2,
+     "mystic": 2
+    },
+    "chosen": null,
+    "completed_all": 4,
+    "components_all": 4
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "pyke",
+      2,
+      1,
+      0
+     ],
+     [
+      "jarvaniv",
+      2,
+      1,
+      0
+     ],
+     [
+      "zed",
+      2,
+      2,
+      2
+     ],
+     [
+      "lux",
+      3,
+      2,
+      0
+     ],
+     [
+      "annie",
+      2,
+      1,
+      0
+     ],
+     [
+      "nidalee",
+      1,
+      2,
+      0
+     ],
+     [
+      "jax",
+      2,
+      2,
+      0
+     ],
+     [
+      "diana",
+      1,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 2,
+     "ninja": 1,
+     "assassin": 2
+    },
+    "chosen": null,
+    "completed_all": 5,
+    "components_all": 7
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "xinzhao",
+      3,
+      2,
+      0
+     ],
+     [
+      "lux",
+      3,
+      2,
+      0
+     ],
+     [
+      "jax",
+      2,
+      2,
+      0
+     ],
+     [
+      "irelia",
+      3,
+      2,
+      0
+     ],
+     [
+      "nunu",
+      3,
+      1,
+      0
+     ],
+     [
+      "yasuo",
+      1,
+      2,
+      0
+     ],
+     [
+      "tahmkench",
+      1,
+      1,
+      0
+     ],
+     [
+      "fiora",
+      1,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 3,
+     "enlightened": 2,
+     "exile": 1,
+     "brawler": 2,
+     "duelist": 4
+    },
+    "chosen": null,
+    "completed_all": 2,
+    "components_all": 8
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "nami",
+      1,
+      2,
+      0
+     ],
+     [
+      "nami",
+      1,
+      2,
+      0
+     ],
+     [
+      "lux",
+      3,
+      2,
+      0
+     ],
+     [
+      "annie",
+      2,
+      2,
+      0
+     ],
+     [
+      "veigar",
+      3,
+      3,
+      0
+     ],
+     [
+      "vi",
+      2,
+      2,
+      0
+     ],
+     [
+      "zed",
+      2,
+      2,
+      0
+     ],
+     [
+      "pyke",
+      2,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "ninja": 1,
+     "mage": 3
+    },
+    "chosen": null,
+    "completed_all": 2,
+    "components_all": 5
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "vayne",
+      1,
+      1,
+      0
+     ],
+     [
+      "teemo",
+      2,
+      1,
+      0
+     ],
+     [
+      "ashe",
+      4,
+      2,
+      0
+     ],
+     [
+      "thresh",
+      2,
+      1,
+      0
+     ],
+     [
+      "jarvaniv",
+      2,
+      2,
+      0
+     ],
+     [
+      "zed",
+      2,
+      1,
+      0
+     ],
+     [
+      "hecarim",
+      2,
+      2,
+      0
+     ],
+     [
+      "janna",
+      2,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "dusk": 2,
+     "ninja": 1,
+     "sharpshooter": 2,
+     "vanguard": 2
+    },
+    "chosen": null,
+    "completed_all": 1,
+    "components_all": 7
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "nidalee",
+      1,
+      2,
+      0
+     ],
+     [
+      "jinx",
+      3,
+      2,
+      0
+     ],
+     [
+      "teemo",
+      2,
+      2,
+      1
+     ],
+     [
+      "aphelios",
+      2,
+      2,
+      0
+     ],
+     [
+      "irelia",
+      3,
+      1,
+      0
+     ],
+     [
+      "fiora",
+      1,
+      2,
+      0
+     ],
+     [
+      "nami",
+      1,
+      2,
+      0
+     ],
+     [
+      "evelynn",
+      3,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "enlightened": 3,
+     "sharpshooter": 4
+    },
+    "chosen": "sharpshooter",
+    "completed_all": 2,
+    "components_all": 10
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "diana",
+      1,
+      2,
+      0
+     ],
+     [
+      "aphelios",
+      2,
+      2,
+      0
+     ],
+     [
+      "xinzhao",
+      3,
+      1,
+      0
+     ],
+     [
+      "janna",
+      2,
+      3,
+      0
+     ],
+     [
+      "fiora",
+      1,
+      2,
+      0
+     ],
+     [
+      "nami",
+      1,
+      1,
+      0
+     ],
+     [
+      "fiora",
+      1,
+      1,
+      0
+     ],
+     [
+      "lissandra",
+      1,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "enlightened": 3,
+     "duelist": 2,
+     "moonlight": 3
+    },
+    "chosen": null,
+    "completed_all": 4,
+    "components_all": 5
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "katarina",
+      3,
+      2,
+      0
+     ],
+     [
+      "katarina",
+      3,
+      2,
+      1
+     ],
+     [
+      "janna",
+      2,
+      1,
+      0
+     ],
+     [
+      "xinzhao",
+      3,
+      1,
+      0
+     ],
+     [
+      "yuumi",
+      3,
+      2,
+      0
+     ],
+     [
+      "maokai",
+      1,
+      1,
+      0
+     ],
+     [
+      "zed",
+      2,
+      2,
+      0
+     ],
+     [
+      "jax",
+      2,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "ninja": 1,
+     "duelist": 2,
+     "mystic": 2
+    },
+    "chosen": null,
+    "completed_all": 3,
+    "components_all": 6
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "nidalee",
+      1,
+      1,
+      0
+     ],
+     [
+      "kindred",
+      3,
+      1,
+      0
+     ],
+     [
+      "akali",
+      3,
+      2,
+      0
+     ],
+     [
+      "yuumi",
+      3,
+      1,
+      3
+     ],
+     [
+      "tahmkench",
+      1,
+      2,
+      0
+     ],
+     [
+      "evelynn",
+      3,
+      1,
+      0
+     ],
+     [
+      "teemo",
+      2,
+      2,
+      0
+     ],
+     [
+      "jinx",
+      3,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "ninja": 1,
+     "spirit": 3,
+     "sharpshooter": 3
+    },
+    "chosen": null,
+    "completed_all": 5,
+    "components_all": 5
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "fiora",
+      1,
+      2,
+      0
+     ],
+     [
+      "nunu",
+      3,
+      2,
+      0
+     ],
+     [
+      "janna",
+      2,
+      1,
+      0
+     ],
+     [
+      "yasuo",
+      1,
+      2,
+      0
+     ],
+     [
+      "jax",
+      2,
+      2,
+      1
+     ],
+     [
+      "maokai",
+      1,
+      2,
+      0
+     ],
+     [
+      "wukong",
+      1,
+      2,
+      0
+     ],
+     [
+      "jax",
+      2,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 2,
+     "enlightened": 2,
+     "exile": 1,
+     "brawler": 2,
+     "duelist": 3
+    },
+    "chosen": null,
+    "completed_all": 3,
+    "components_all": 8
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "teemo",
+      2,
+      3,
+      0
+     ],
+     [
+      "jinx",
+      3,
+      2,
+      0
+     ],
+     [
+      "maokai",
+      1,
+      1,
+      0
+     ],
+     [
+      "nidalee",
+      1,
+      1,
+      0
+     ],
+     [
+      "vi",
+      2,
+      2,
+      0
+     ],
+     [
+      "vayne",
+      1,
+      2,
+      0
+     ],
+     [
+      "aphelios",
+      2,
+      2,
+      0
+     ],
+     [
+      "wukong",
+      1,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "brawler": 2,
+     "sharpshooter": 4
+    },
+    "chosen": null,
+    "completed_all": 5,
+    "components_all": 6
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "nami",
+      1,
+      2,
+      0
+     ],
+     [
+      "nami",
+      1,
+      2,
+      0
+     ],
+     [
+      "sylas",
+      2,
+      1,
+      0
+     ],
+     [
+      "aphelios",
+      2,
+      1,
+      0
+     ],
+     [
+      "vi",
+      2,
+      2,
+      1
+     ],
+     [
+      "akali",
+      3,
+      1,
+      0
+     ],
+     [
+      "xinzhao",
+      3,
+      1,
+      0
+     ],
+     [
+      "lissandra",
+      1,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "ninja": 1,
+     "brawler": 2,
+     "moonlight": 3
+    },
+    "chosen": null,
+    "completed_all": 3,
+    "components_all": 6
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "nidalee",
+      1,
+      1,
+      0
+     ],
+     [
+      "riven",
+      4,
+      2,
+      0
+     ],
+     [
+      "garen",
+      1,
+      2,
+      0
+     ],
+     [
+      "yasuo",
+      1,
+      2,
+      0
+     ],
+     [
+      "xinzhao",
+      3,
+      2,
+      0
+     ],
+     [
+      "annie",
+      2,
+      1,
+      0
+     ],
+     [
+      "jarvaniv",
+      2,
+      2,
+      0
+     ],
+     [
+      "fiora",
+      1,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "exile": 1,
+     "warlord": 4,
+     "duelist": 3,
+     "keeper": 2
+    },
+    "chosen": null,
+    "completed_all": 0,
+    "components_all": 10
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "nidalee",
+      1,
+      1,
+      0
+     ],
+     [
+      "janna",
+      2,
+      1,
+      0
+     ],
+     [
+      "jarvaniv",
+      2,
+      2,
+      0
+     ],
+     [
+      "kindred",
+      3,
+      2,
+      1
+     ],
+     [
+      "fiora",
+      1,
+      2,
+      0
+     ],
+     [
+      "lulu",
+      2,
+      1,
+      0
+     ],
+     [
+      "fiora",
+      1,
+      1,
+      0
+     ],
+     [
+      "kennen",
+      3,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "enlightened": 2,
+     "ninja": 1,
+     "keeper": 2
+    },
+    "chosen": null,
+    "completed_all": 3,
+    "components_all": 6
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "lulu",
+      2,
+      3,
+      0
+     ],
+     [
+      "hecarim",
+      2,
+      2,
+      0
+     ],
+     [
+      "nami",
+      1,
+      1,
+      0
+     ],
+     [
+      "twistedfate",
+      1,
+      2,
+      0
+     ],
+     [
+      "maokai",
+      1,
+      1,
+      0
+     ],
+     [
+      "lissandra",
+      1,
+      2,
+      0
+     ],
+     [
+      "jax",
+      2,
+      2,
+      2
+     ],
+     [
+      "veigar",
+      3,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "elderwood": 4,
+     "mage": 4
+    },
+    "chosen": null,
+    "completed_all": 5,
+    "components_all": 7
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "nidalee",
+      1,
+      2,
+      2
+     ],
+     [
+      "nidalee",
+      1,
+      2,
+      0
+     ],
+     [
+      "maokai",
+      1,
+      2,
+      0
+     ],
+     [
+      "nami",
+      1,
+      2,
+      0
+     ],
+     [
+      "wukong",
+      1,
+      2,
+      0
+     ],
+     [
+      "vayne",
+      1,
+      1,
+      0
+     ],
+     [
+      "tahmkench",
+      1,
+      2,
+      0
+     ],
+     [
+      "janna",
+      2,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "enlightened": 2,
+     "brawler": 2,
+     "sharpshooter": 2
+    },
+    "chosen": null,
+    "completed_all": 2,
+    "components_all": 11
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "lissandra",
+      1,
+      2,
+      0
+     ],
+     [
+      "kalista",
+      3,
+      1,
+      0
+     ],
+     [
+      "pyke",
+      2,
+      1,
+      0
+     ],
+     [
+      "akali",
+      3,
+      2,
+      1
+     ],
+     [
+      "yasuo",
+      1,
+      2,
+      0
+     ],
+     [
+      "yuumi",
+      3,
+      2,
+      0
+     ],
+     [
+      "diana",
+      1,
+      2,
+      0
+     ],
+     [
+      "janna",
+      2,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "exile": 1,
+     "ninja": 1,
+     "assassin": 3,
+     "duelist": 2,
+     "mystic": 2
+    },
+    "chosen": null,
+    "completed_all": 3,
+    "components_all": 7
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "lulu",
+      2,
+      1,
+      0
+     ],
+     [
+      "elise",
+      1,
+      1,
+      0
+     ],
+     [
+      "zed",
+      2,
+      1,
+      0
+     ],
+     [
+      "yasuo",
+      1,
+      2,
+      0
+     ],
+     [
+      "jax",
+      2,
+      2,
+      0
+     ],
+     [
+      "kalista",
+      3,
+      1,
+      1
+     ],
+     [
+      "irelia",
+      3,
+      2,
+      0
+     ],
+     [
+      "fiora",
+      1,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 2,
+     "enlightened": 2,
+     "exile": 1,
+     "ninja": 1,
+     "duelist": 4
+    },
+    "chosen": null,
+    "completed_all": 2,
+    "components_all": 9
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "nunu",
+      3,
+      1,
+      0
+     ],
+     [
+      "garen",
+      1,
+      2,
+      0
+     ],
+     [
+      "yuumi",
+      3,
+      2,
+      0
+     ],
+     [
+      "thresh",
+      2,
+      2,
+      0
+     ],
+     [
+      "hecarim",
+      2,
+      2,
+      0
+     ],
+     [
+      "teemo",
+      2,
+      2,
+      0
+     ],
+     [
+      "wukong",
+      1,
+      2,
+      0
+     ],
+     [
+      "sylas",
+      2,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "spirit": 2,
+     "brawler": 2,
+     "vanguard": 4
+    },
+    "chosen": null,
+    "completed_all": 1,
+    "components_all": 8
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "xinzhao",
+      3,
+      2,
+      0
+     ],
+     [
+      "xinzhao",
+      3,
+      2,
+      0
+     ],
+     [
+      "kalista",
+      3,
+      1,
+      0
+     ],
+     [
+      "yasuo",
+      1,
+      2,
+      0
+     ],
+     [
+      "jax",
+      2,
+      2,
+      0
+     ],
+     [
+      "yone",
+      5,
+      2,
+      0
+     ],
+     [
+      "garen",
+      1,
+      1,
+      0
+     ],
+     [
+      "fiora",
+      1,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "exile": 2,
+     "duelist": 6
+    },
+    "chosen": "duelist",
+    "completed_all": 1,
+    "components_all": 9
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "nidalee",
+      1,
+      2,
+      0
+     ],
+     [
+      "hecarim",
+      2,
+      2,
+      0
+     ],
+     [
+      "zed",
+      2,
+      1,
+      0
+     ],
+     [
+      "irelia",
+      3,
+      2,
+      0
+     ],
+     [
+      "wukong",
+      1,
+      2,
+      0
+     ],
+     [
+      "warwick",
+      4,
+      1,
+      0
+     ],
+     [
+      "garen",
+      1,
+      1,
+      0
+     ],
+     [
+      "vi",
+      2,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 3,
+     "ninja": 1,
+     "warlord": 3,
+     "brawler": 2,
+     "vanguard": 3
+    },
+    "chosen": null,
+    "completed_all": 1,
+    "components_all": 5
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "teemo",
+      2,
+      2,
+      0
+     ],
+     [
+      "jarvaniv",
+      2,
+      2,
+      0
+     ],
+     [
+      "nidalee",
+      1,
+      2,
+      0
+     ],
+     [
+      "maokai",
+      1,
+      2,
+      0
+     ],
+     [
+      "akali",
+      3,
+      1,
+      1
+     ],
+     [
+      "twistedfate",
+      1,
+      2,
+      0
+     ],
+     [
+      "garen",
+      1,
+      2,
+      0
+     ],
+     [
+      "jinx",
+      3,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "ninja": 1,
+     "warlord": 3,
+     "sharpshooter": 3
+    },
+    "chosen": null,
+    "completed_all": 4,
+    "components_all": 8
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "ahri",
+      4,
+      2,
+      0
+     ],
+     [
+      "nunu",
+      3,
+      2,
+      0
+     ],
+     [
+      "pyke",
+      2,
+      1,
+      0
+     ],
+     [
+      "elise",
+      1,
+      2,
+      0
+     ],
+     [
+      "hecarim",
+      2,
+      2,
+      0
+     ],
+     [
+      "veigar",
+      3,
+      2,
+      0
+     ],
+     [
+      "twistedfate",
+      1,
+      1,
+      0
+     ],
+     [
+      "maokai",
+      1,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "cultist": 3,
+     "elderwood": 4,
+     "brawler": 2,
+     "mage": 3
+    },
+    "chosen": null,
+    "completed_all": 4,
+    "components_all": 5
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "vayne",
+      1,
+      2,
+      0
+     ],
+     [
+      "nidalee",
+      1,
+      2,
+      0
+     ],
+     [
+      "zed",
+      2,
+      1,
+      0
+     ],
+     [
+      "pyke",
+      2,
+      1,
+      0
+     ],
+     [
+      "tahmkench",
+      1,
+      2,
+      0
+     ],
+     [
+      "diana",
+      1,
+      1,
+      0
+     ],
+     [
+      "vi",
+      2,
+      1,
+      0
+     ],
+     [
+      "janna",
+      2,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "ninja": 1,
+     "assassin": 2,
+     "brawler": 2,
+     "sharpshooter": 2
+    },
+    "chosen": null,
+    "completed_all": 0,
+    "components_all": 12
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "jhin",
+      4,
+      2,
+      0
+     ],
+     [
+      "vi",
+      2,
+      2,
+      0
+     ],
+     [
+      "diana",
+      1,
+      2,
+      0
+     ],
+     [
+      "garen",
+      1,
+      2,
+      0
+     ],
+     [
+      "janna",
+      2,
+      2,
+      0
+     ],
+     [
+      "elise",
+      1,
+      2,
+      0
+     ],
+     [
+      "jarvaniv",
+      2,
+      1,
+      0
+     ],
+     [
+      "aphelios",
+      2,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "warlord": 3,
+     "brawler": 2,
+     "keeper": 2
+    },
+    "chosen": "brawler",
+    "completed_all": 4,
+    "components_all": 5
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "nunu",
+      3,
+      2,
+      0
+     ],
+     [
+      "maokai",
+      1,
+      1,
+      0
+     ],
+     [
+      "janna",
+      2,
+      2,
+      0
+     ],
+     [
+      "yasuo",
+      1,
+      1,
+      0
+     ],
+     [
+      "fiora",
+      1,
+      1,
+      0
+     ],
+     [
+      "yuumi",
+      3,
+      2,
+      0
+     ],
+     [
+      "vi",
+      2,
+      2,
+      1
+     ],
+     [
+      "kennen",
+      3,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "enlightened": 2,
+     "exile": 1,
+     "ninja": 1,
+     "brawler": 3,
+     "duelist": 2,
+     "mystic": 2
+    },
+    "chosen": null,
+    "completed_all": 4,
+    "components_all": 8
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "ahri",
+      4,
+      2,
+      0
+     ],
+     [
+      "teemo",
+      2,
+      1,
+      2
+     ],
+     [
+      "pyke",
+      2,
+      2,
+      0
+     ],
+     [
+      "maokai",
+      1,
+      2,
+      0
+     ],
+     [
+      "aphelios",
+      2,
+      2,
+      0
+     ],
+     [
+      "tahmkench",
+      1,
+      1,
+      0
+     ],
+     [
+      "janna",
+      2,
+      2,
+      0
+     ],
+     [
+      "aphelios",
+      2,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "spirit": 2,
+     "brawler": 2
+    },
+    "chosen": null,
+    "completed_all": 4,
+    "components_all": 8
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "nidalee",
+      1,
+      1,
+      0
+     ],
+     [
+      "jax",
+      2,
+      2,
+      0
+     ],
+     [
+      "akali",
+      3,
+      1,
+      2
+     ],
+     [
+      "lux",
+      3,
+      1,
+      0
+     ],
+     [
+      "wukong",
+      1,
+      2,
+      0
+     ],
+     [
+      "jinx",
+      3,
+      3,
+      0
+     ],
+     [
+      "hecarim",
+      2,
+      1,
+      0
+     ],
+     [
+      "pyke",
+      2,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 3,
+     "ninja": 1,
+     "assassin": 2,
+     "sharpshooter": 2,
+     "vanguard": 2
+    },
+    "chosen": null,
+    "completed_all": 4,
+    "components_all": 8
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "xinzhao",
+      3,
+      3,
+      0
+     ],
+     [
+      "yuumi",
+      3,
+      2,
+      0
+     ],
+     [
+      "yasuo",
+      1,
+      2,
+      0
+     ],
+     [
+      "fiora",
+      1,
+      1,
+      0
+     ],
+     [
+      "nami",
+      1,
+      1,
+      0
+     ],
+     [
+      "irelia",
+      3,
+      2,
+      0
+     ],
+     [
+      "maokai",
+      1,
+      1,
+      0
+     ],
+     [
+      "jax",
+      2,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 2,
+     "enlightened": 3,
+     "exile": 1,
+     "duelist": 4
+    },
+    "chosen": null,
+    "completed_all": 3,
+    "components_all": 6
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "diana",
+      1,
+      2,
+      0
+     ],
+     [
+      "kindred",
+      3,
+      1,
+      0
+     ],
+     [
+      "nidalee",
+      1,
+      1,
+      0
+     ],
+     [
+      "zed",
+      2,
+      2,
+      0
+     ],
+     [
+      "wukong",
+      1,
+      1,
+      0
+     ],
+     [
+      "teemo",
+      2,
+      2,
+      0
+     ],
+     [
+      "fiora",
+      1,
+      2,
+      0
+     ],
+     [
+      "jinx",
+      3,
+      3,
+      0
+     ]
+    ],
+    "traits": {
+     "ninja": 1,
+     "spirit": 2,
+     "sharpshooter": 3
+    },
+    "chosen": null,
+    "completed_all": 2,
+    "components_all": 6
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "katarina",
+      3,
+      2,
+      0
+     ],
+     [
+      "yuumi",
+      3,
+      2,
+      0
+     ],
+     [
+      "nami",
+      1,
+      2,
+      0
+     ],
+     [
+      "teemo",
+      2,
+      2,
+      0
+     ],
+     [
+      "cassiopeia",
+      4,
+      1,
+      0
+     ],
+     [
+      "akali",
+      3,
+      1,
+      0
+     ],
+     [
+      "jinx",
+      3,
+      2,
+      0
+     ],
+     [
+      "jhin",
+      4,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "ninja": 1,
+     "spirit": 2,
+     "assassin": 2,
+     "mystic": 2,
+     "sharpshooter": 3
+    },
+    "chosen": null,
+    "completed_all": 1,
+    "components_all": 7
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "vayne",
+      1,
+      1,
+      0
+     ],
+     [
+      "jhin",
+      4,
+      2,
+      0
+     ],
+     [
+      "nunu",
+      3,
+      2,
+      0
+     ],
+     [
+      "jinx",
+      3,
+      2,
+      0
+     ],
+     [
+      "yasuo",
+      1,
+      2,
+      0
+     ],
+     [
+      "vi",
+      2,
+      1,
+      0
+     ],
+     [
+      "teemo",
+      2,
+      2,
+      0
+     ],
+     [
+      "tahmkench",
+      1,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "exile": 1,
+     "brawler": 3,
+     "sharpshooter": 4
+    },
+    "chosen": null,
+    "completed_all": 3,
+    "components_all": 8
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "pyke",
+      2,
+      2,
+      0
+     ],
+     [
+      "jarvaniv",
+      2,
+      1,
+      0
+     ],
+     [
+      "jax",
+      2,
+      2,
+      0
+     ],
+     [
+      "akali",
+      3,
+      2,
+      0
+     ],
+     [
+      "thresh",
+      2,
+      2,
+      0
+     ],
+     [
+      "wukong",
+      1,
+      2,
+      0
+     ],
+     [
+      "jinx",
+      3,
+      1,
+      0
+     ],
+     [
+      "vi",
+      2,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 2,
+     "ninja": 1,
+     "assassin": 2,
+     "vanguard": 2
+    },
+    "chosen": null,
+    "completed_all": 2,
+    "components_all": 8
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "fiora",
+      1,
+      2,
+      0
+     ],
+     [
+      "jax",
+      2,
+      2,
+      0
+     ],
+     [
+      "janna",
+      2,
+      2,
+      0
+     ],
+     [
+      "maokai",
+      1,
+      2,
+      0
+     ],
+     [
+      "pyke",
+      2,
+      1,
+      0
+     ],
+     [
+      "wukong",
+      1,
+      1,
+      0
+     ],
+     [
+      "tahmkench",
+      1,
+      2,
+      1
+     ],
+     [
+      "tahmkench",
+      1,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 2,
+     "enlightened": 2,
+     "brawler": 2,
+     "duelist": 2
+    },
+    "chosen": null,
+    "completed_all": 3,
+    "components_all": 7
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "katarina",
+      3,
+      1,
+      1
+     ],
+     [
+      "teemo",
+      2,
+      2,
+      0
+     ],
+     [
+      "aphelios",
+      2,
+      2,
+      0
+     ],
+     [
+      "vayne",
+      1,
+      2,
+      0
+     ],
+     [
+      "thresh",
+      2,
+      1,
+      0
+     ],
+     [
+      "evelynn",
+      3,
+      1,
+      0
+     ],
+     [
+      "vayne",
+      1,
+      2,
+      0
+     ],
+     [
+      "zed",
+      2,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "dusk": 2,
+     "ninja": 1,
+     "shade": 2,
+     "sharpshooter": 2
+    },
+    "chosen": null,
+    "completed_all": 4,
+    "components_all": 8
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "riven",
+      4,
+      2,
+      0
+     ],
+     [
+      "fiora",
+      1,
+      2,
+      0
+     ],
+     [
+      "kindred",
+      3,
+      1,
+      1
+     ],
+     [
+      "elise",
+      1,
+      1,
+      0
+     ],
+     [
+      "tahmkench",
+      1,
+      1,
+      0
+     ],
+     [
+      "thresh",
+      2,
+      2,
+      0
+     ],
+     [
+      "jax",
+      2,
+      2,
+      0
+     ],
+     [
+      "xinzhao",
+      3,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "dusk": 2,
+     "duelist": 3,
+     "keeper": 2
+    },
+    "chosen": null,
+    "completed_all": 2,
+    "components_all": 8
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "diana",
+      1,
+      2,
+      0
+     ],
+     [
+      "katarina",
+      3,
+      1,
+      0
+     ],
+     [
+      "zed",
+      2,
+      1,
+      0
+     ],
+     [
+      "vayne",
+      1,
+      1,
+      0
+     ],
+     [
+      "thresh",
+      2,
+      2,
+      0
+     ],
+     [
+      "hecarim",
+      2,
+      2,
+      0
+     ],
+     [
+      "pyke",
+      2,
+      2,
+      0
+     ],
+     [
+      "hecarim",
+      2,
+      2,
+      1
+     ]
+    ],
+    "traits": {
+     "dusk": 2,
+     "ninja": 1,
+     "assassin": 3,
+     "vanguard": 2
+    },
+    "chosen": null,
+    "completed_all": 2,
+    "components_all": 8
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "jarvaniv",
+      2,
+      1,
+      0
+     ],
+     [
+      "jhin",
+      4,
+      2,
+      0
+     ],
+     [
+      "wukong",
+      1,
+      2,
+      0
+     ],
+     [
+      "jinx",
+      3,
+      2,
+      0
+     ],
+     [
+      "fiora",
+      1,
+      1,
+      0
+     ],
+     [
+      "nidalee",
+      1,
+      1,
+      0
+     ],
+     [
+      "garen",
+      1,
+      1,
+      0
+     ],
+     [
+      "hecarim",
+      2,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "warlord": 3,
+     "sharpshooter": 3,
+     "vanguard": 3
+    },
+    "chosen": null,
+    "completed_all": 3,
+    "components_all": 7
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "sejuani",
+      4,
+      2,
+      0
+     ],
+     [
+      "tahmkench",
+      1,
+      2,
+      0
+     ],
+     [
+      "akali",
+      3,
+      1,
+      1
+     ],
+     [
+      "jax",
+      2,
+      2,
+      0
+     ],
+     [
+      "kindred",
+      3,
+      2,
+      0
+     ],
+     [
+      "hecarim",
+      2,
+      2,
+      0
+     ],
+     [
+      "wukong",
+      1,
+      1,
+      0
+     ],
+     [
+      "vi",
+      2,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 2,
+     "ninja": 1,
+     "brawler": 2,
+     "vanguard": 3
+    },
+    "chosen": null,
+    "completed_all": 1,
+    "components_all": 8
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "janna",
+      2,
+      2,
+      0
+     ],
+     [
+      "diana",
+      1,
+      1,
+      0
+     ],
+     [
+      "wukong",
+      1,
+      1,
+      0
+     ],
+     [
+      "diana",
+      1,
+      2,
+      0
+     ],
+     [
+      "jax",
+      2,
+      1,
+      1
+     ],
+     [
+      "aphelios",
+      2,
+      2,
+      1
+     ],
+     [
+      "hecarim",
+      2,
+      1,
+      0
+     ],
+     [
+      "kindred",
+      3,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 2,
+     "hunter": 3,
+     "vanguard": 2
+    },
+    "chosen": "hunter",
+    "completed_all": 4,
+    "components_all": 5
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "zed",
+      2,
+      1,
+      0
+     ],
+     [
+      "jarvaniv",
+      2,
+      1,
+      0
+     ],
+     [
+      "morgana",
+      4,
+      2,
+      1
+     ],
+     [
+      "annie",
+      2,
+      2,
+      0
+     ],
+     [
+      "pyke",
+      2,
+      2,
+      0
+     ],
+     [
+      "elise",
+      1,
+      2,
+      0
+     ],
+     [
+      "kennen",
+      3,
+      2,
+      0
+     ],
+     [
+      "kalista",
+      3,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "cultist": 3,
+     "ninja": 2,
+     "keeper": 3
+    },
+    "chosen": null,
+    "completed_all": 3,
+    "components_all": 8
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "nidalee",
+      1,
+      1,
+      0
+     ],
+     [
+      "vayne",
+      1,
+      2,
+      0
+     ],
+     [
+      "yasuo",
+      1,
+      2,
+      0
+     ],
+     [
+      "xinzhao",
+      3,
+      2,
+      0
+     ],
+     [
+      "janna",
+      2,
+      1,
+      0
+     ],
+     [
+      "irelia",
+      3,
+      2,
+      0
+     ],
+     [
+      "jax",
+      2,
+      2,
+      0
+     ],
+     [
+      "kennen",
+      3,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 2,
+     "enlightened": 2,
+     "exile": 1,
+     "ninja": 1,
+     "duelist": 3,
+     "sharpshooter": 2
+    },
+    "chosen": null,
+    "completed_all": 2,
+    "components_all": 6
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "xinzhao",
+      3,
+      2,
+      0
+     ],
+     [
+      "ashe",
+      4,
+      2,
+      0
+     ],
+     [
+      "yasuo",
+      1,
+      2,
+      0
+     ],
+     [
+      "kennen",
+      3,
+      1,
+      0
+     ],
+     [
+      "janna",
+      2,
+      2,
+      0
+     ],
+     [
+      "elise",
+      1,
+      1,
+      0
+     ],
+     [
+      "wukong",
+      1,
+      2,
+      0
+     ],
+     [
+      "hecarim",
+      2,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "exile": 1,
+     "ninja": 1,
+     "duelist": 2,
+     "keeper": 2,
+     "vanguard": 2
+    },
+    "chosen": null,
+    "completed_all": 3,
+    "components_all": 7
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "diana",
+      1,
+      1,
+      0
+     ],
+     [
+      "nami",
+      1,
+      2,
+      0
+     ],
+     [
+      "jax",
+      2,
+      1,
+      0
+     ],
+     [
+      "kindred",
+      3,
+      2,
+      0
+     ],
+     [
+      "fiora",
+      1,
+      2,
+      0
+     ],
+     [
+      "janna",
+      2,
+      2,
+      0
+     ],
+     [
+      "hecarim",
+      2,
+      2,
+      0
+     ],
+     [
+      "nidalee",
+      1,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "enlightened": 3,
+     "duelist": 2
+    },
+    "chosen": null,
+    "completed_all": 3,
+    "components_all": 7
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "vayne",
+      1,
+      1,
+      0
+     ],
+     [
+      "jhin",
+      4,
+      2,
+      0
+     ],
+     [
+      "nidalee",
+      1,
+      1,
+      0
+     ],
+     [
+      "veigar",
+      3,
+      2,
+      0
+     ],
+     [
+      "elise",
+      1,
+      2,
+      0
+     ],
+     [
+      "jinx",
+      3,
+      3,
+      0
+     ],
+     [
+      "irelia",
+      3,
+      1,
+      0
+     ],
+     [
+      "teemo",
+      2,
+      3,
+      0
+     ]
+    ],
+    "traits": {
+     "sharpshooter": 6
+    },
+    "chosen": "sharpshooter",
+    "completed_all": 1,
+    "components_all": 10
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "vi",
+      2,
+      2,
+      0
+     ],
+     [
+      "wukong",
+      1,
+      1,
+      0
+     ],
+     [
+      "janna",
+      2,
+      1,
+      0
+     ],
+     [
+      "thresh",
+      2,
+      2,
+      0
+     ],
+     [
+      "jax",
+      2,
+      1,
+      0
+     ],
+     [
+      "tahmkench",
+      1,
+      2,
+      0
+     ],
+     [
+      "garen",
+      1,
+      2,
+      0
+     ],
+     [
+      "tahmkench",
+      1,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 2,
+     "brawler": 2,
+     "vanguard": 3
+    },
+    "chosen": null,
+    "completed_all": 3,
+    "components_all": 7
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "nami",
+      1,
+      2,
+      0
+     ],
+     [
+      "janna",
+      2,
+      2,
+      0
+     ],
+     [
+      "fiora",
+      1,
+      1,
+      0
+     ],
+     [
+      "akali",
+      3,
+      1,
+      1
+     ],
+     [
+      "lux",
+      3,
+      2,
+      0
+     ],
+     [
+      "annie",
+      2,
+      2,
+      0
+     ],
+     [
+      "kindred",
+      3,
+      3,
+      0
+     ],
+     [
+      "fiora",
+      1,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "enlightened": 3,
+     "ninja": 1,
+     "hunter": 2
+    },
+    "chosen": "hunter",
+    "completed_all": 1,
+    "components_all": 8
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "kennen",
+      3,
+      1,
+      0
+     ],
+     [
+      "janna",
+      2,
+      2,
+      0
+     ],
+     [
+      "yasuo",
+      1,
+      2,
+      0
+     ],
+     [
+      "xinzhao",
+      3,
+      3,
+      0
+     ],
+     [
+      "nami",
+      1,
+      2,
+      0
+     ],
+     [
+      "elise",
+      1,
+      2,
+      0
+     ],
+     [
+      "fiora",
+      1,
+      2,
+      0
+     ],
+     [
+      "jax",
+      2,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "enlightened": 3,
+     "exile": 1,
+     "ninja": 1,
+     "duelist": 4,
+     "keeper": 2
+    },
+    "chosen": null,
+    "completed_all": 2,
+    "components_all": 5
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "katarina",
+      3,
+      2,
+      0
+     ],
+     [
+      "fiora",
+      1,
+      1,
+      0
+     ],
+     [
+      "akali",
+      3,
+      2,
+      0
+     ],
+     [
+      "lux",
+      3,
+      1,
+      0
+     ],
+     [
+      "fiora",
+      1,
+      2,
+      0
+     ],
+     [
+      "morgana",
+      4,
+      1,
+      0
+     ],
+     [
+      "yasuo",
+      1,
+      2,
+      0
+     ],
+     [
+      "jax",
+      2,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 2,
+     "enlightened": 2,
+     "exile": 1,
+     "ninja": 1,
+     "assassin": 2,
+     "dazzler": 2,
+     "duelist": 3
+    },
+    "chosen": null,
+    "completed_all": 4,
+    "components_all": 7
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "katarina",
+      3,
+      2,
+      0
+     ],
+     [
+      "ahri",
+      4,
+      1,
+      0
+     ],
+     [
+      "kindred",
+      3,
+      2,
+      0
+     ],
+     [
+      "yasuo",
+      1,
+      1,
+      0
+     ],
+     [
+      "fiora",
+      1,
+      2,
+      0
+     ],
+     [
+      "veigar",
+      3,
+      2,
+      0
+     ],
+     [
+      "wukong",
+      1,
+      1,
+      0
+     ],
+     [
+      "yuumi",
+      3,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "exile": 1,
+     "spirit": 3,
+     "duelist": 2
+    },
+    "chosen": null,
+    "completed_all": 1,
+    "components_all": 9
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "kindred",
+      3,
+      2,
+      0
+     ],
+     [
+      "nidalee",
+      1,
+      2,
+      0
+     ],
+     [
+      "twistedfate",
+      1,
+      1,
+      0
+     ],
+     [
+      "vi",
+      2,
+      1,
+      0
+     ],
+     [
+      "veigar",
+      3,
+      1,
+      2
+     ],
+     [
+      "thresh",
+      2,
+      1,
+      0
+     ],
+     [
+      "tahmkench",
+      1,
+      2,
+      0
+     ],
+     [
+      "janna",
+      2,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "brawler": 2
+    },
+    "chosen": null,
+    "completed_all": 4,
+    "components_all": 7
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "nidalee",
+      1,
+      2,
+      0
+     ],
+     [
+      "veigar",
+      3,
+      2,
+      0
+     ],
+     [
+      "lissandra",
+      1,
+      2,
+      0
+     ],
+     [
+      "annie",
+      2,
+      2,
+      0
+     ],
+     [
+      "lulu",
+      2,
+      2,
+      0
+     ],
+     [
+      "nami",
+      1,
+      1,
+      0
+     ],
+     [
+      "hecarim",
+      2,
+      2,
+      1
+     ],
+     [
+      "jinx",
+      3,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "elderwood": 3,
+     "mage": 4,
+     "sharpshooter": 2
+    },
+    "chosen": null,
+    "completed_all": 3,
+    "components_all": 8
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "vayne",
+      1,
+      2,
+      0
+     ],
+     [
+      "ashe",
+      4,
+      2,
+      0
+     ],
+     [
+      "aphelios",
+      2,
+      2,
+      0
+     ],
+     [
+      "lulu",
+      2,
+      2,
+      0
+     ],
+     [
+      "yasuo",
+      1,
+      2,
+      0
+     ],
+     [
+      "garen",
+      1,
+      1,
+      0
+     ],
+     [
+      "teemo",
+      2,
+      3,
+      0
+     ],
+     [
+      "jinx",
+      3,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "exile": 1,
+     "hunter": 2,
+     "sharpshooter": 3
+    },
+    "chosen": null,
+    "completed_all": 1,
+    "components_all": 9
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "janna",
+      2,
+      1,
+      0
+     ],
+     [
+      "thresh",
+      2,
+      1,
+      0
+     ],
+     [
+      "kalista",
+      3,
+      2,
+      0
+     ],
+     [
+      "irelia",
+      3,
+      3,
+      0
+     ],
+     [
+      "xinzhao",
+      3,
+      2,
+      0
+     ],
+     [
+      "janna",
+      2,
+      2,
+      0
+     ],
+     [
+      "yasuo",
+      1,
+      2,
+      0
+     ],
+     [
+      "jhin",
+      4,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "enlightened": 2,
+     "exile": 1,
+     "duelist": 3
+    },
+    "chosen": "duelist",
+    "completed_all": 3,
+    "components_all": 7
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "nami",
+      1,
+      2,
+      0
+     ],
+     [
+      "vayne",
+      1,
+      2,
+      0
+     ],
+     [
+      "garen",
+      1,
+      1,
+      0
+     ],
+     [
+      "teemo",
+      2,
+      2,
+      0
+     ],
+     [
+      "annie",
+      2,
+      2,
+      0
+     ],
+     [
+      "evelynn",
+      3,
+      1,
+      1
+     ],
+     [
+      "hecarim",
+      2,
+      2,
+      0
+     ],
+     [
+      "ashe",
+      4,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "sharpshooter": 2,
+     "vanguard": 2
+    },
+    "chosen": "sharpshooter",
+    "completed_all": 3,
+    "components_all": 7
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "kindred",
+      3,
+      2,
+      0
+     ],
+     [
+      "lulu",
+      2,
+      1,
+      0
+     ],
+     [
+      "lux",
+      3,
+      2,
+      0
+     ],
+     [
+      "tahmkench",
+      1,
+      1,
+      0
+     ],
+     [
+      "nami",
+      1,
+      2,
+      0
+     ],
+     [
+      "yasuo",
+      1,
+      1,
+      0
+     ],
+     [
+      "annie",
+      2,
+      2,
+      1
+     ],
+     [
+      "ashe",
+      4,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "exile": 1,
+     "hunter": 2,
+     "mage": 3
+    },
+    "chosen": "hunter",
+    "completed_all": 3,
+    "components_all": 7
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "diana",
+      1,
+      1,
+      0
+     ],
+     [
+      "jhin",
+      4,
+      2,
+      0
+     ],
+     [
+      "teemo",
+      2,
+      2,
+      0
+     ],
+     [
+      "janna",
+      2,
+      1,
+      0
+     ],
+     [
+      "jax",
+      2,
+      1,
+      0
+     ],
+     [
+      "vayne",
+      1,
+      1,
+      0
+     ],
+     [
+      "kalista",
+      3,
+      1,
+      0
+     ],
+     [
+      "aphelios",
+      2,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "duelist": 2,
+     "sharpshooter": 3
+    },
+    "chosen": null,
+    "completed_all": 3,
+    "components_all": 5
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "diana",
+      1,
+      2,
+      0
+     ],
+     [
+      "janna",
+      2,
+      2,
+      0
+     ],
+     [
+      "zed",
+      2,
+      1,
+      0
+     ],
+     [
+      "yasuo",
+      1,
+      1,
+      0
+     ],
+     [
+      "sylas",
+      2,
+      1,
+      0
+     ],
+     [
+      "kalista",
+      3,
+      2,
+      0
+     ],
+     [
+      "tahmkench",
+      1,
+      2,
+      0
+     ],
+     [
+      "lulu",
+      2,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "exile": 1,
+     "ninja": 1,
+     "brawler": 2,
+     "duelist": 2
+    },
+    "chosen": null,
+    "completed_all": 2,
+    "components_all": 8
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "vi",
+      2,
+      2,
+      0
+     ],
+     [
+      "kindred",
+      3,
+      1,
+      1
+     ],
+     [
+      "yasuo",
+      1,
+      2,
+      0
+     ],
+     [
+      "xinzhao",
+      3,
+      2,
+      0
+     ],
+     [
+      "yasuo",
+      1,
+      1,
+      0
+     ],
+     [
+      "jax",
+      2,
+      2,
+      0
+     ],
+     [
+      "tahmkench",
+      1,
+      2,
+      0
+     ],
+     [
+      "fiora",
+      1,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "exile": 1,
+     "brawler": 2,
+     "duelist": 4
+    },
+    "chosen": null,
+    "completed_all": 3,
+    "components_all": 7
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "teemo",
+      2,
+      1,
+      0
+     ],
+     [
+      "tahmkench",
+      1,
+      2,
+      0
+     ],
+     [
+      "yuumi",
+      3,
+      1,
+      2
+     ],
+     [
+      "elise",
+      1,
+      1,
+      0
+     ],
+     [
+      "kennen",
+      3,
+      2,
+      0
+     ],
+     [
+      "nidalee",
+      1,
+      2,
+      0
+     ],
+     [
+      "fiora",
+      1,
+      1,
+      0
+     ],
+     [
+      "jinx",
+      3,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "ninja": 1,
+     "spirit": 2,
+     "keeper": 2,
+     "sharpshooter": 3
+    },
+    "chosen": null,
+    "completed_all": 4,
+    "components_all": 6
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "leesin",
+      5,
+      2,
+      0
+     ],
+     [
+      "kindred",
+      3,
+      2,
+      0
+     ],
+     [
+      "warwick",
+      4,
+      1,
+      0
+     ],
+     [
+      "nunu",
+      3,
+      1,
+      0
+     ],
+     [
+      "pyke",
+      2,
+      2,
+      0
+     ],
+     [
+      "twistedfate",
+      1,
+      2,
+      0
+     ],
+     [
+      "maokai",
+      1,
+      1,
+      0
+     ],
+     [
+      "teemo",
+      2,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 2,
+     "spirit": 2,
+     "brawler": 3,
+     "hunter": 2
+    },
+    "chosen": null,
+    "completed_all": 0,
+    "components_all": 10
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "lissandra",
+      1,
+      1,
+      0
+     ],
+     [
+      "teemo",
+      2,
+      2,
+      0
+     ],
+     [
+      "thresh",
+      2,
+      2,
+      0
+     ],
+     [
+      "aphelios",
+      2,
+      2,
+      0
+     ],
+     [
+      "thresh",
+      2,
+      2,
+      1
+     ],
+     [
+      "jax",
+      2,
+      1,
+      0
+     ],
+     [
+      "vayne",
+      1,
+      2,
+      0
+     ],
+     [
+      "yasuo",
+      1,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "dusk": 2,
+     "exile": 1,
+     "duelist": 2,
+     "sharpshooter": 2
+    },
+    "chosen": "sharpshooter",
+    "completed_all": 3,
+    "components_all": 6
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "kindred",
+      3,
+      1,
+      0
+     ],
+     [
+      "sylas",
+      2,
+      2,
+      0
+     ],
+     [
+      "zed",
+      2,
+      2,
+      0
+     ],
+     [
+      "lux",
+      3,
+      2,
+      0
+     ],
+     [
+      "kennen",
+      3,
+      2,
+      1
+     ],
+     [
+      "pyke",
+      2,
+      1,
+      0
+     ],
+     [
+      "maokai",
+      1,
+      2,
+      0
+     ],
+     [
+      "kennen",
+      3,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "ninja": 2,
+     "brawler": 2
+    },
+    "chosen": null,
+    "completed_all": 3,
+    "components_all": 6
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "lulu",
+      2,
+      2,
+      0
+     ],
+     [
+      "nidalee",
+      1,
+      2,
+      0
+     ],
+     [
+      "kindred",
+      3,
+      1,
+      0
+     ],
+     [
+      "thresh",
+      2,
+      1,
+      0
+     ],
+     [
+      "wukong",
+      1,
+      1,
+      0
+     ],
+     [
+      "nami",
+      1,
+      1,
+      0
+     ],
+     [
+      "hecarim",
+      2,
+      2,
+      0
+     ],
+     [
+      "veigar",
+      3,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "elderwood": 3,
+     "mage": 3,
+     "vanguard": 3
+    },
+    "chosen": null,
+    "completed_all": 0,
+    "components_all": 8
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "xinzhao",
+      3,
+      1,
+      0
+     ],
+     [
+      "janna",
+      2,
+      1,
+      0
+     ],
+     [
+      "maokai",
+      1,
+      2,
+      0
+     ],
+     [
+      "kalista",
+      3,
+      1,
+      1
+     ],
+     [
+      "vi",
+      2,
+      1,
+      0
+     ],
+     [
+      "lissandra",
+      1,
+      2,
+      0
+     ],
+     [
+      "jax",
+      2,
+      2,
+      0
+     ],
+     [
+      "wukong",
+      1,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 2,
+     "brawler": 2,
+     "duelist": 3
+    },
+    "chosen": null,
+    "completed_all": 1,
+    "components_all": 8
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "jax",
+      2,
+      2,
+      0
+     ],
+     [
+      "vi",
+      2,
+      2,
+      0
+     ],
+     [
+      "evelynn",
+      3,
+      1,
+      1
+     ],
+     [
+      "cassiopeia",
+      4,
+      1,
+      0
+     ],
+     [
+      "fiora",
+      1,
+      2,
+      0
+     ],
+     [
+      "irelia",
+      3,
+      2,
+      0
+     ],
+     [
+      "wukong",
+      1,
+      1,
+      0
+     ],
+     [
+      "fiora",
+      1,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 3,
+     "enlightened": 2,
+     "duelist": 2
+    },
+    "chosen": null,
+    "completed_all": 3,
+    "components_all": 8
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "nidalee",
+      1,
+      2,
+      1
+     ],
+     [
+      "nidalee",
+      1,
+      2,
+      0
+     ],
+     [
+      "kindred",
+      3,
+      1,
+      0
+     ],
+     [
+      "nami",
+      1,
+      1,
+      0
+     ],
+     [
+      "yasuo",
+      1,
+      2,
+      0
+     ],
+     [
+      "aphelios",
+      2,
+      1,
+      0
+     ],
+     [
+      "yasuo",
+      1,
+      2,
+      0
+     ],
+     [
+      "janna",
+      2,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "enlightened": 2,
+     "exile": 1,
+     "hunter": 2
+    },
+    "chosen": null,
+    "completed_all": 3,
+    "components_all": 8
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "leesin",
+      5,
+      2,
+      0
+     ],
+     [
+      "fiora",
+      1,
+      2,
+      0
+     ],
+     [
+      "janna",
+      2,
+      2,
+      0
+     ],
+     [
+      "yasuo",
+      1,
+      2,
+      0
+     ],
+     [
+      "annie",
+      2,
+      1,
+      0
+     ],
+     [
+      "zed",
+      2,
+      1,
+      0
+     ],
+     [
+      "irelia",
+      3,
+      2,
+      0
+     ],
+     [
+      "sylas",
+      2,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 2,
+     "enlightened": 3,
+     "exile": 1,
+     "ninja": 1,
+     "duelist": 3
+    },
+    "chosen": null,
+    "completed_all": 0,
+    "components_all": 6
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "ashe",
+      4,
+      1,
+      0
+     ],
+     [
+      "janna",
+      2,
+      2,
+      0
+     ],
+     [
+      "nami",
+      1,
+      2,
+      0
+     ],
+     [
+      "thresh",
+      2,
+      2,
+      0
+     ],
+     [
+      "fiora",
+      1,
+      1,
+      0
+     ],
+     [
+      "akali",
+      3,
+      2,
+      0
+     ],
+     [
+      "garen",
+      1,
+      2,
+      0
+     ],
+     [
+      "vayne",
+      1,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "dusk": 2,
+     "enlightened": 3,
+     "ninja": 1,
+     "vanguard": 2
+    },
+    "chosen": null,
+    "completed_all": 3,
+    "components_all": 6
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "kindred",
+      3,
+      3,
+      0
+     ],
+     [
+      "jax",
+      2,
+      1,
+      0
+     ],
+     [
+      "teemo",
+      2,
+      1,
+      1
+     ],
+     [
+      "elise",
+      1,
+      1,
+      0
+     ],
+     [
+      "wukong",
+      1,
+      1,
+      0
+     ],
+     [
+      "nami",
+      1,
+      2,
+      0
+     ],
+     [
+      "thresh",
+      2,
+      1,
+      0
+     ],
+     [
+      "jax",
+      2,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 3,
+     "spirit": 2,
+     "vanguard": 2
+    },
+    "chosen": "divine",
+    "completed_all": 4,
+    "components_all": 8
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "kennen",
+      3,
+      2,
+      0
+     ],
+     [
+      "xinzhao",
+      3,
+      2,
+      0
+     ],
+     [
+      "janna",
+      2,
+      1,
+      0
+     ],
+     [
+      "yasuo",
+      1,
+      1,
+      0
+     ],
+     [
+      "jax",
+      2,
+      2,
+      0
+     ],
+     [
+      "yuumi",
+      3,
+      2,
+      0
+     ],
+     [
+      "garen",
+      1,
+      2,
+      0
+     ],
+     [
+      "fiora",
+      1,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "enlightened": 2,
+     "exile": 1,
+     "ninja": 1,
+     "duelist": 4,
+     "mystic": 2
+    },
+    "chosen": null,
+    "completed_all": 1,
+    "components_all": 9
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "teemo",
+      2,
+      2,
+      0
+     ],
+     [
+      "evelynn",
+      3,
+      1,
+      0
+     ],
+     [
+      "aphelios",
+      2,
+      2,
+      0
+     ],
+     [
+      "thresh",
+      2,
+      2,
+      0
+     ],
+     [
+      "nunu",
+      3,
+      1,
+      1
+     ],
+     [
+      "diana",
+      1,
+      2,
+      0
+     ],
+     [
+      "kindred",
+      3,
+      2,
+      0
+     ],
+     [
+      "lissandra",
+      1,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "spirit": 2,
+     "hunter": 2,
+     "moonlight": 3
+    },
+    "chosen": null,
+    "completed_all": 3,
+    "components_all": 3
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "lissandra",
+      1,
+      2,
+      0
+     ],
+     [
+      "jhin",
+      4,
+      2,
+      0
+     ],
+     [
+      "diana",
+      1,
+      2,
+      0
+     ],
+     [
+      "kindred",
+      3,
+      2,
+      0
+     ],
+     [
+      "yasuo",
+      1,
+      1,
+      0
+     ],
+     [
+      "nidalee",
+      1,
+      2,
+      0
+     ],
+     [
+      "aphelios",
+      2,
+      2,
+      0
+     ],
+     [
+      "teemo",
+      2,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "exile": 1,
+     "spirit": 2,
+     "hunter": 2,
+     "moonlight": 3,
+     "sharpshooter": 3
+    },
+    "chosen": null,
+    "completed_all": 4,
+    "components_all": 6
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "fiora",
+      1,
+      2,
+      0
+     ],
+     [
+      "thresh",
+      2,
+      1,
+      0
+     ],
+     [
+      "wukong",
+      1,
+      2,
+      0
+     ],
+     [
+      "yasuo",
+      1,
+      2,
+      0
+     ],
+     [
+      "xinzhao",
+      3,
+      2,
+      0
+     ],
+     [
+      "irelia",
+      3,
+      2,
+      0
+     ],
+     [
+      "garen",
+      1,
+      1,
+      0
+     ],
+     [
+      "jax",
+      2,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 3,
+     "enlightened": 2,
+     "exile": 1,
+     "duelist": 4,
+     "vanguard": 3
+    },
+    "chosen": "duelist",
+    "completed_all": 3,
+    "components_all": 7
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "jax",
+      2,
+      1,
+      0
+     ],
+     [
+      "fiora",
+      1,
+      1,
+      0
+     ],
+     [
+      "janna",
+      2,
+      3,
+      0
+     ],
+     [
+      "irelia",
+      3,
+      2,
+      0
+     ],
+     [
+      "jarvaniv",
+      2,
+      2,
+      0
+     ],
+     [
+      "kennen",
+      3,
+      2,
+      0
+     ],
+     [
+      "nunu",
+      3,
+      2,
+      0
+     ],
+     [
+      "sejuani",
+      4,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 2,
+     "enlightened": 3,
+     "ninja": 1,
+     "duelist": 2,
+     "keeper": 2
+    },
+    "chosen": null,
+    "completed_all": 1,
+    "components_all": 9
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "elise",
+      1,
+      1,
+      0
+     ],
+     [
+      "fiora",
+      1,
+      1,
+      0
+     ],
+     [
+      "vayne",
+      1,
+      2,
+      0
+     ],
+     [
+      "yone",
+      5,
+      1,
+      0
+     ],
+     [
+      "vi",
+      2,
+      2,
+      0
+     ],
+     [
+      "janna",
+      2,
+      2,
+      0
+     ],
+     [
+      "irelia",
+      3,
+      2,
+      2
+     ],
+     [
+      "hecarim",
+      2,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "enlightened": 3,
+     "exile": 1,
+     "adept": 2
+    },
+    "chosen": null,
+    "completed_all": 3,
+    "components_all": 9
+   }
+  ]
+ },
+ "사람 봇": {
+  "seconds": 265.59535259999393,
+  "curve": [
+   {
+    "when": "2-1 뒤",
+    "guide": "4",
+    "alive": 800,
+    "level": 3.99875,
+    "lv7": 0.0,
+    "lv8": 0.0,
+    "lv9": 0.0,
+    "gold": 13.03375,
+    "hp": 97.415
+   },
+   {
+    "when": "3-2 시작",
+    "guide": "-",
+    "alive": 800,
+    "level": 5.235,
+    "lv7": 0.0,
+    "lv8": 0.0,
+    "lv9": 0.0,
+    "gold": 57.7975,
+    "hp": 80.98625
+   },
+   {
+    "when": "3-2 뒤",
+    "guide": "6",
+    "alive": 800,
+    "level": 5.92125,
+    "lv7": 0.00125,
+    "lv8": 0.0,
+    "lv9": 0.0,
+    "gold": 50.22125,
+    "hp": 76.31
+   },
+   {
+    "when": "4-1 뒤",
+    "guide": "7",
+    "alive": 797,
+    "level": 6.6612296110414055,
+    "lv7": 0.7026348808030113,
+    "lv8": 0.0012547051442910915,
+    "lv9": 0.0,
+    "gold": 57.65495608531995,
+    "hp": 57.184441656210794
+   },
+   {
+    "when": "4-5 뒤",
+    "guide": "7~8",
+    "alive": 717,
+    "level": 7.253835425383542,
+    "lv7": 0.8256624825662483,
+    "lv8": 0.4281729428172943,
+    "lv9": 0.0,
+    "gold": 28.98186889818689,
+    "hp": 46.61366806136681
+   },
+   {
+    "when": "5-1 뒤",
+    "guide": "8",
+    "alive": 616,
+    "level": 7.673701298701299,
+    "lv7": 0.862012987012987,
+    "lv8": 0.8116883116883117,
+    "lv9": 0.0,
+    "gold": 42.91396103896104,
+    "hp": 42.131493506493506
+   },
+   {
+    "when": "6-1 뒤",
+    "guide": "8~9",
+    "alive": 335,
+    "level": 8.041791044776119,
+    "lv7": 0.9701492537313433,
+    "lv8": 0.9074626865671642,
+    "lv9": 0.16417910447761194,
+    "gold": 41.7044776119403,
+    "hp": 32.62089552238806
+   }
+  ],
+  "curve_win": [
+   {
+    "when": "3-2 시작",
+    "guide": "-",
+    "alive": 208,
+    "level": 5.899038461538462,
+    "lv7": 0.0,
+    "lv8": 0.0,
+    "lv9": 0.0,
+    "gold": 47.04807692307692,
+    "hp": 95.36538461538461
+   },
+   {
+    "when": "3-2 뒤",
+    "guide": "6",
+    "alive": 201,
+    "level": 5.895522388059701,
+    "lv7": 0.0,
+    "lv8": 0.0,
+    "lv9": 0.0,
+    "gold": 54.79601990049751,
+    "hp": 92.18407960199005
+   },
+   {
+    "when": "4-1 뒤",
+    "guide": "7",
+    "alive": 119,
+    "level": 6.7478991596638656,
+    "lv7": 0.7478991596638656,
+    "lv8": 0.0,
+    "lv9": 0.0,
+    "gold": 58.84033613445378,
+    "hp": 88.84033613445378
+   },
+   {
+    "when": "4-5 뒤",
+    "guide": "7~8",
+    "alive": 119,
+    "level": 7.38655462184874,
+    "lv7": 0.8151260504201681,
+    "lv8": 0.5714285714285714,
+    "lv9": 0.0,
+    "gold": 34.79831932773109,
+    "hp": 79.03361344537815
+   },
+   {
+    "when": "5-1 뒤",
+    "guide": "8",
+    "alive": 119,
+    "level": 7.647058823529412,
+    "lv7": 0.8319327731092437,
+    "lv8": 0.8151260504201681,
+    "lv9": 0.0,
+    "gold": 55.42857142857143,
+    "hp": 69.36974789915966
+   },
+   {
+    "when": "6-1 뒤",
+    "guide": "8~9",
+    "alive": 91,
+    "level": 8.153846153846153,
+    "lv7": 0.967032967032967,
+    "lv8": 0.8791208791208791,
+    "lv9": 0.3076923076923077,
+    "gold": 55.48351648351648,
+    "hp": 47.395604395604394
+   }
+  ],
+  "curve_lose": [
+   {
+    "when": "3-2 시작",
+    "guide": "-",
+    "alive": 592,
+    "level": 5.0016891891891895,
+    "lv7": 0.0,
+    "lv8": 0.0,
+    "lv9": 0.0,
+    "gold": 61.57432432432432,
+    "hp": 75.93412162162163
+   },
+   {
+    "when": "3-2 뒤",
+    "guide": "6",
+    "alive": 599,
+    "level": 5.929883138564274,
+    "lv7": 0.001669449081803005,
+    "lv8": 0.0,
+    "lv9": 0.0,
+    "gold": 48.686143572621035,
+    "hp": 70.98330550918197
+   },
+   {
+    "when": "4-1 뒤",
+    "guide": "7",
+    "alive": 678,
+    "level": 6.646017699115045,
+    "lv7": 0.6946902654867256,
+    "lv8": 0.0014749262536873156,
+    "lv9": 0.0,
+    "gold": 57.44690265486726,
+    "hp": 51.6283185840708
+   },
+   {
+    "when": "4-5 뒤",
+    "guide": "7~8",
+    "alive": 598,
+    "level": 7.2274247491638794,
+    "lv7": 0.8277591973244147,
+    "lv8": 0.3996655518394649,
+    "lv9": 0.0,
+    "gold": 27.82441471571906,
+    "hp": 40.16220735785953
+   },
+   {
+    "when": "5-1 뒤",
+    "guide": "8",
+    "alive": 497,
+    "level": 7.6800804828973845,
+    "lv7": 0.869215291750503,
+    "lv8": 0.8108651911468813,
+    "lv9": 0.0,
+    "gold": 39.91750503018109,
+    "hp": 35.60965794768612
+   },
+   {
+    "when": "6-1 뒤",
+    "guide": "8~9",
+    "alive": 244,
+    "level": 8,
+    "lv7": 0.9713114754098361,
+    "lv8": 0.9180327868852459,
+    "lv9": 0.11065573770491803,
+    "gold": 36.5655737704918,
+    "hp": 27.110655737704917
+   }
+  ],
+  "curve_normal": [
+   {
+    "when": "2-1 뒤",
+    "guide": "4",
+    "alive": 446,
+    "level": 3.997757847533632,
+    "lv7": 0.0,
+    "lv8": 0.0,
+    "lv9": 0.0,
+    "gold": 13.170403587443946,
+    "hp": 97.41928251121077
+   },
+   {
+    "when": "3-2 시작",
+    "guide": "-",
+    "alive": 446,
+    "level": 5.208520179372197,
+    "lv7": 0.0,
+    "lv8": 0.0,
+    "lv9": 0.0,
+    "gold": 58.17040358744394,
+    "hp": 80.5
+   },
+   {
+    "when": "3-2 뒤",
+    "guide": "6",
+    "alive": 446,
+    "level": 5.9058295964125564,
+    "lv7": 0.002242152466367713,
+    "lv8": 0.0,
+    "lv9": 0.0,
+    "gold": 50.318385650224215,
+    "hp": 75.72197309417041
+   },
+   {
+    "when": "4-1 뒤",
+    "guide": "7",
+    "alive": 446,
+    "level": 6.65695067264574,
+    "lv7": 0.6995515695067265,
+    "lv8": 0.0,
+    "lv9": 0.0,
+    "gold": 56.874439461883405,
+    "hp": 55.95291479820628
+   },
+   {
+    "when": "4-5 뒤",
+    "guide": "7~8",
+    "alive": 402,
+    "level": 7.206467661691542,
+    "lv7": 0.8159203980099502,
+    "lv8": 0.39054726368159204,
+    "lv9": 0.0,
+    "gold": 29.34328358208955,
+    "hp": 45.37810945273632
+   },
+   {
+    "when": "5-1 뒤",
+    "guide": "8",
+    "alive": 343,
+    "level": 7.65597667638484,
+    "lv7": 0.8600583090379009,
+    "lv8": 0.7959183673469388,
+    "lv9": 0.0,
+    "gold": 42.19241982507289,
+    "hp": 41.029154518950435
+   },
+   {
+    "when": "6-1 뒤",
+    "guide": "8~9",
+    "alive": 184,
+    "level": 8,
+    "lv7": 0.9565217391304348,
+    "lv8": 0.8967391304347826,
+    "lv9": 0.14673913043478262,
+    "gold": 42.39673913043478,
+    "hp": 32.48913043478261
+   }
+  ],
+  "curve_slow": [
+   {
+    "when": "2-1 뒤",
+    "guide": "4",
+    "alive": 354,
+    "level": 4,
+    "lv7": 0.0,
+    "lv8": 0.0,
+    "lv9": 0.0,
+    "gold": 12.861581920903955,
+    "hp": 97.409604519774
+   },
+   {
+    "when": "3-2 시작",
+    "guide": "-",
+    "alive": 354,
+    "level": 5.268361581920904,
+    "lv7": 0.0,
+    "lv8": 0.0,
+    "lv9": 0.0,
+    "gold": 57.32768361581921,
+    "hp": 81.59887005649718
+   },
+   {
+    "when": "3-2 뒤",
+    "guide": "6",
+    "alive": 354,
+    "level": 5.940677966101695,
+    "lv7": 0.0,
+    "lv8": 0.0,
+    "lv9": 0.0,
+    "gold": 50.09887005649718,
+    "hp": 77.05084745762711
+   },
+   {
+    "when": "4-1 뒤",
+    "guide": "7",
+    "alive": 351,
+    "level": 6.666666666666667,
+    "lv7": 0.7065527065527065,
+    "lv8": 0.002849002849002849,
+    "lv9": 0.0,
+    "gold": 58.64672364672364,
+    "hp": 58.74928774928775
+   },
+   {
+    "when": "4-5 뒤",
+    "guide": "7~8",
+    "alive": 315,
+    "level": 7.314285714285714,
+    "lv7": 0.8380952380952381,
+    "lv8": 0.47619047619047616,
+    "lv9": 0.0,
+    "gold": 28.520634920634922,
+    "hp": 48.19047619047619
+   },
+   {
+    "when": "5-1 뒤",
+    "guide": "8",
+    "alive": 273,
+    "level": 7.695970695970696,
+    "lv7": 0.8644688644688645,
+    "lv8": 0.8315018315018315,
+    "lv9": 0.0,
+    "gold": 43.82051282051282,
+    "hp": 43.51648351648352
+   },
+   {
+    "when": "6-1 뒤",
+    "guide": "8~9",
+    "alive": 151,
+    "level": 8.092715231788079,
+    "lv7": 0.9867549668874173,
+    "lv8": 0.9205298013245033,
+    "lv9": 0.18543046357615894,
+    "gold": 40.86092715231788,
+    "hp": 32.78145695364238
+   }
+  ],
+  "curve_normal_win": [
+   {
+    "when": "3-2 시작",
+    "guide": "-",
+    "alive": 111,
+    "level": 5.837837837837838,
+    "lv7": 0.0,
+    "lv8": 0.0,
+    "lv9": 0.0,
+    "gold": 47.1981981981982,
+    "hp": 94.63063063063063
+   },
+   {
+    "when": "3-2 뒤",
+    "guide": "6",
+    "alive": 105,
+    "level": 5.828571428571428,
+    "lv7": 0.0,
+    "lv8": 0.0,
+    "lv9": 0.0,
+    "gold": 54.714285714285715,
+    "hp": 91.41904761904762
+   },
+   {
+    "when": "4-1 뒤",
+    "guide": "7",
+    "alive": 60,
+    "level": 6.716666666666667,
+    "lv7": 0.7166666666666667,
+    "lv8": 0.0,
+    "lv9": 0.0,
+    "gold": 57.766666666666666,
+    "hp": 88.3
+   },
+   {
+    "when": "4-5 뒤",
+    "guide": "7~8",
+    "alive": 60,
+    "level": 7.283333333333333,
+    "lv7": 0.7833333333333333,
+    "lv8": 0.5,
+    "lv9": 0.0,
+    "gold": 37.2,
+    "hp": 78.31666666666666
+   },
+   {
+    "when": "5-1 뒤",
+    "guide": "8",
+    "alive": 60,
+    "level": 7.583333333333333,
+    "lv7": 0.8,
+    "lv8": 0.7833333333333333,
+    "lv9": 0.0,
+    "gold": 56.45,
+    "hp": 70.23333333333333
+   },
+   {
+    "when": "6-1 뒤",
+    "guide": "8~9",
+    "alive": 47,
+    "level": 8.02127659574468,
+    "lv7": 0.9361702127659575,
+    "lv8": 0.8297872340425532,
+    "lv9": 0.2553191489361702,
+    "gold": 58.08510638297872,
+    "hp": 49.59574468085106
+   }
+  ],
+  "curve_normal_lose": [
+   {
+    "when": "3-2 시작",
+    "guide": "-",
+    "alive": 335,
+    "level": 5,
+    "lv7": 0.0,
+    "lv8": 0.0,
+    "lv9": 0.0,
+    "gold": 61.80597014925373,
+    "hp": 75.8179104477612
+   },
+   {
+    "when": "3-2 뒤",
+    "guide": "6",
+    "alive": 341,
+    "level": 5.929618768328446,
+    "lv7": 0.002932551319648094,
+    "lv8": 0.0,
+    "lv9": 0.0,
+    "gold": 48.96480938416422,
+    "hp": 70.88856304985337
+   },
+   {
+    "when": "4-1 뒤",
+    "guide": "7",
+    "alive": 386,
+    "level": 6.647668393782383,
+    "lv7": 0.6968911917098446,
+    "lv8": 0.0,
+    "lv9": 0.0,
+    "gold": 56.73575129533679,
+    "hp": 50.924870466321245
+   },
+   {
+    "when": "4-5 뒤",
+    "guide": "7~8",
+    "alive": 342,
+    "level": 7.192982456140351,
+    "lv7": 0.8216374269005848,
+    "lv8": 0.3713450292397661,
+    "lv9": 0.0,
+    "gold": 27.964912280701753,
+    "hp": 39.599415204678365
+   },
+   {
+    "when": "5-1 뒤",
+    "guide": "8",
+    "alive": 283,
+    "level": 7.671378091872792,
+    "lv7": 0.872791519434629,
+    "lv8": 0.7985865724381626,
+    "lv9": 0.0,
+    "gold": 39.169611307420496,
+    "hp": 34.83745583038869
+   },
+   {
+    "when": "6-1 뒤",
+    "guide": "8~9",
+    "alive": 137,
+    "level": 7.992700729927007,
+    "lv7": 0.9635036496350365,
+    "lv8": 0.9197080291970803,
+    "lv9": 0.10948905109489052,
+    "gold": 37.01459854014598,
+    "hp": 26.62043795620438
+   }
+  ],
+  "winners": {
+   "boards": 100,
+   "units": {
+    "6": 2,
+    "7": 2,
+    "8": 39,
+    "9": 57
+   },
+   "nine_plus": 0.57,
+   "two_star_4cost": 0.7142857142857143,
+   "two_star_5cost": 0.24307692307692308,
+   "five_per_board": 3.25,
+   "three_star_per_board": 0.77,
+   "items_median": 7.0,
+   "item_use": 0.9334990677439403,
+   "item_worth": 16.09,
+   "chosen_kinds": 17,
+   "chosen_off_family": 0.4827586206896552,
+   "no_family": 0.11,
+   "families": [
+    [
+     "warlord",
+     31
+    ],
+    [
+     "cultist",
+     16
+    ],
+    [
+     "divine",
+     13
+    ],
+    [
+     "other",
+     11
+    ],
+    [
+     "duelist",
+     7
+    ],
+    [
+     "dusk",
+     5
+    ],
+    [
+     "elderwood",
+     5
+    ],
+    [
+     "hunter",
+     5
+    ],
+    [
+     "ninja",
+     4
+    ],
+    [
+     "sharpshooter",
+     2
+    ],
+    [
+     "mystic",
+     1
+    ]
+   ]
+  },
+  "all": {
+   "boards": 800,
+   "units": {
+    "5": 3,
+    "6": 90,
+    "7": 123,
+    "8": 469,
+    "9": 115
+   },
+   "nine_plus": 0.14375,
+   "two_star_4cost": 0.32038834951456313,
+   "two_star_5cost": 0.1291248206599713,
+   "five_per_board": 1.7425,
+   "three_star_per_board": 0.3975,
+   "items_median": 5.0,
+   "item_use": 0.9066666666666666,
+   "item_worth": 12,
+   "chosen_kinds": 21,
+   "chosen_off_family": 0.5073260073260073,
+   "no_family": 0.22125,
+   "families": [
+    [
+     "warlord",
+     194
+    ],
+    [
+     "other",
+     177
+    ],
+    [
+     "cultist",
+     126
+    ],
+    [
+     "ninja",
+     74
+    ],
+    [
+     "divine",
+     73
+    ],
+    [
+     "dusk",
+     62
+    ],
+    [
+     "elderwood",
+     34
+    ],
+    [
+     "sharpshooter",
+     32
+    ],
+    [
+     "hunter",
+     14
+    ],
+    [
+     "duelist",
+     12
+    ],
+    [
+     "mystic",
+     1
+    ],
+    [
+     "brawler",
+     1
+    ]
+   ]
+  },
+  "carry21": 0.667910447761194,
+  "modes": {
+   "lose": [
+    681,
+    4.814977973568282
+   ],
+   "win": [
+    119,
+    2.697478991596639
+   ]
+  },
+  "switches": 0.79125,
+  "families": [
+   [
+    "warlord",
+    0.2425,
+    3.5309278350515463
+   ],
+   [
+    "other",
+    0.22125,
+    5.700564971751413
+   ],
+   [
+    "cultist",
+    0.1575,
+    4.309523809523809
+   ],
+   [
+    "ninja",
+    0.0925,
+    4.702702702702703
+   ],
+   [
+    "divine",
+    0.09125,
+    4.2465753424657535
+   ],
+   [
+    "dusk",
+    0.0775,
+    5.064516129032258
+   ],
+   [
+    "elderwood",
+    0.0425,
+    4.735294117647059
+   ],
+   [
+    "sharpshooter",
+    0.04,
+    5.15625
+   ],
+   [
+    "hunter",
+    0.0175,
+    2.7857142857142856
+   ],
+   [
+    "duelist",
+    0.015,
+    1.6666666666666667
+   ],
+   [
+    "mystic",
+    0.00125,
+    1
+   ],
+   [
+    "brawler",
+    0.00125,
+    5
+   ]
+  ],
+  "winner_boards": [
+   {
+    "level": 8,
+    "units": [
+     [
+      "lillia",
+      5,
+      1,
+      0
+     ],
+     [
+      "thresh",
+      2,
+      2,
+      2
+     ],
+     [
+      "yone",
+      5,
+      1,
+      0
+     ],
+     [
+      "leesin",
+      5,
+      1,
+      0
+     ],
+     [
+      "kayn",
+      5,
+      2,
+      3
+     ],
+     [
+      "riven",
+      4,
+      2,
+      3
+     ],
+     [
+      "zilean",
+      5,
+      1,
+      0
+     ],
+     [
+      "azir",
+      5,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "dusk": 4,
+     "exile": 1,
+     "emperor": 1,
+     "keeper": 2,
+     "tormented": 1
+    },
+    "chosen": "dusk",
+    "completed_all": 8,
+    "components_all": 2
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "azir",
+      5,
+      2,
+      0
+     ],
+     [
+      "xinzhao",
+      3,
+      2,
+      3
+     ],
+     [
+      "zilean",
+      5,
+      2,
+      0
+     ],
+     [
+      "kayn",
+      5,
+      1,
+      0
+     ],
+     [
+      "jarvaniv",
+      2,
+      2,
+      3
+     ],
+     [
+      "garen",
+      1,
+      2,
+      1
+     ],
+     [
+      "katarina",
+      3,
+      1,
+      1
+     ],
+     [
+      "vi",
+      2,
+      2,
+      0
+     ],
+     [
+      "lillia",
+      5,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "warlord": 6,
+     "emperor": 1,
+     "keeper": 2,
+     "tormented": 1,
+     "vanguard": 2
+    },
+    "chosen": "vanguard",
+    "completed_all": 8,
+    "components_all": 1
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "lillia",
+      5,
+      2,
+      2
+     ],
+     [
+      "xinzhao",
+      3,
+      2,
+      1
+     ],
+     [
+      "kayn",
+      5,
+      1,
+      0
+     ],
+     [
+      "jarvaniv",
+      2,
+      2,
+      0
+     ],
+     [
+      "garen",
+      1,
+      2,
+      2
+     ],
+     [
+      "katarina",
+      3,
+      3,
+      3
+     ],
+     [
+      "vi",
+      2,
+      2,
+      0
+     ],
+     [
+      "nidalee",
+      1,
+      2,
+      1
+     ]
+    ],
+    "traits": {
+     "warlord": 6,
+     "tormented": 1
+    },
+    "chosen": "duelist",
+    "completed_all": 9,
+    "components_all": 2
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "thresh",
+      2,
+      2,
+      3
+     ],
+     [
+      "lillia",
+      5,
+      2,
+      1
+     ],
+     [
+      "cassiopeia",
+      4,
+      1,
+      0
+     ],
+     [
+      "vayne",
+      1,
+      1,
+      0
+     ],
+     [
+      "yone",
+      5,
+      1,
+      0
+     ],
+     [
+      "ezreal",
+      5,
+      2,
+      0
+     ],
+     [
+      "azir",
+      5,
+      1,
+      0
+     ],
+     [
+      "vayne",
+      1,
+      3,
+      3
+     ]
+    ],
+    "traits": {
+     "dusk": 5,
+     "exile": 1,
+     "emperor": 1
+    },
+    "chosen": "dusk",
+    "completed_all": 7,
+    "components_all": 2
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "ashe",
+      4,
+      2,
+      3
+     ],
+     [
+      "azir",
+      5,
+      2,
+      0
+     ],
+     [
+      "lulu",
+      2,
+      2,
+      0
+     ],
+     [
+      "nunu",
+      3,
+      3,
+      0
+     ],
+     [
+      "maokai",
+      1,
+      3,
+      3
+     ],
+     [
+      "zilean",
+      5,
+      1,
+      0
+     ],
+     [
+      "ezreal",
+      5,
+      1,
+      0
+     ],
+     [
+      "lux",
+      3,
+      3,
+      2
+     ]
+    ],
+    "traits": {
+     "elderwood": 6,
+     "brawler": 2,
+     "dazzler": 2,
+     "emperor": 1
+    },
+    "chosen": "elderwood",
+    "completed_all": 8,
+    "components_all": 1
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "nidalee",
+      1,
+      2,
+      3
+     ],
+     [
+      "xinzhao",
+      3,
+      3,
+      1
+     ],
+     [
+      "sett",
+      5,
+      1,
+      0
+     ],
+     [
+      "jarvaniv",
+      2,
+      2,
+      0
+     ],
+     [
+      "garen",
+      1,
+      2,
+      1
+     ],
+     [
+      "katarina",
+      3,
+      2,
+      3
+     ],
+     [
+      "vi",
+      2,
+      2,
+      1
+     ],
+     [
+      "zilean",
+      5,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "the_boss": 1,
+     "warlord": 6,
+     "brawler": 2
+    },
+    "chosen": null,
+    "completed_all": 9,
+    "components_all": 2
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "azir",
+      5,
+      1,
+      0
+     ],
+     [
+      "xinzhao",
+      3,
+      2,
+      1
+     ],
+     [
+      "lillia",
+      5,
+      2,
+      0
+     ],
+     [
+      "kayn",
+      5,
+      2,
+      0
+     ],
+     [
+      "jarvaniv",
+      2,
+      2,
+      0
+     ],
+     [
+      "garen",
+      1,
+      2,
+      0
+     ],
+     [
+      "katarina",
+      3,
+      2,
+      3
+     ],
+     [
+      "vi",
+      2,
+      2,
+      2
+     ],
+     [
+      "ezreal",
+      5,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "warlord": 6,
+     "brawler": 2,
+     "emperor": 1,
+     "keeper": 2,
+     "tormented": 1
+    },
+    "chosen": "brawler",
+    "completed_all": 6,
+    "components_all": 1
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "azir",
+      5,
+      1,
+      0
+     ],
+     [
+      "xinzhao",
+      3,
+      2,
+      3
+     ],
+     [
+      "pyke",
+      2,
+      2,
+      1
+     ],
+     [
+      "jarvaniv",
+      2,
+      2,
+      0
+     ],
+     [
+      "garen",
+      1,
+      2,
+      0
+     ],
+     [
+      "katarina",
+      3,
+      2,
+      2
+     ],
+     [
+      "vi",
+      2,
+      2,
+      0
+     ],
+     [
+      "lillia",
+      5,
+      2,
+      0
+     ],
+     [
+      "yone",
+      5,
+      1,
+      1
+     ]
+    ],
+    "traits": {
+     "exile": 1,
+     "warlord": 6,
+     "assassin": 3,
+     "emperor": 1,
+     "keeper": 2
+    },
+    "chosen": "assassin",
+    "completed_all": 7,
+    "components_all": 3
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "azir",
+      5,
+      2,
+      0
+     ],
+     [
+      "lillia",
+      5,
+      1,
+      0
+     ],
+     [
+      "kayn",
+      5,
+      2,
+      0
+     ],
+     [
+      "jarvaniv",
+      2,
+      2,
+      3
+     ],
+     [
+      "garen",
+      1,
+      2,
+      3
+     ],
+     [
+      "katarina",
+      3,
+      2,
+      3
+     ],
+     [
+      "zilean",
+      5,
+      1,
+      0
+     ],
+     [
+      "vi",
+      2,
+      2,
+      1
+     ],
+     [
+      "ezreal",
+      5,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "warlord": 6,
+     "emperor": 1,
+     "keeper": 2,
+     "tormented": 1
+    },
+    "chosen": "warlord",
+    "completed_all": 10,
+    "components_all": 1
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "janna",
+      2,
+      3,
+      3
+     ],
+     [
+      "yasuo",
+      1,
+      3,
+      2
+     ],
+     [
+      "fiora",
+      1,
+      2,
+      0
+     ],
+     [
+      "janna",
+      2,
+      1,
+      0
+     ],
+     [
+      "fiora",
+      1,
+      2,
+      0
+     ],
+     [
+      "shen",
+      4,
+      1,
+      0
+     ],
+     [
+      "jax",
+      2,
+      3,
+      0
+     ],
+     [
+      "kalista",
+      3,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "enlightened": 2,
+     "exile": 1,
+     "ninja": 1,
+     "duelist": 5,
+     "mystic": 2
+    },
+    "chosen": "duelist",
+    "completed_all": 5,
+    "components_all": 1
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "thresh",
+      2,
+      3,
+      3
+     ],
+     [
+      "yuumi",
+      3,
+      2,
+      1
+     ],
+     [
+      "cassiopeia",
+      4,
+      2,
+      0
+     ],
+     [
+      "shen",
+      4,
+      2,
+      2
+     ],
+     [
+      "sejuani",
+      4,
+      2,
+      2
+     ],
+     [
+      "zilean",
+      5,
+      1,
+      0
+     ],
+     [
+      "azir",
+      5,
+      1,
+      0
+     ],
+     [
+      "ahri",
+      4,
+      2,
+      1
+     ]
+    ],
+    "traits": {
+     "dusk": 2,
+     "ninja": 1,
+     "spirit": 2,
+     "emperor": 1,
+     "mystic": 4,
+     "vanguard": 3
+    },
+    "chosen": "vanguard",
+    "completed_all": 9,
+    "components_all": 1
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "kennen",
+      3,
+      3,
+      3
+     ],
+     [
+      "elise",
+      1,
+      1,
+      0
+     ],
+     [
+      "pyke",
+      2,
+      1,
+      0
+     ],
+     [
+      "evelynn",
+      3,
+      2,
+      0
+     ],
+     [
+      "akali",
+      3,
+      3,
+      3
+     ],
+     [
+      "evelynn",
+      3,
+      2,
+      0
+     ],
+     [
+      "zed",
+      2,
+      3,
+      1
+     ],
+     [
+      "elise",
+      1,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "cultist": 3,
+     "ninja": 3,
+     "assassin": 3,
+     "keeper": 2,
+     "shade": 2
+    },
+    "chosen": "assassin",
+    "completed_all": 7,
+    "components_all": 0
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "thresh",
+      2,
+      3,
+      3
+     ],
+     [
+      "cassiopeia",
+      4,
+      2,
+      0
+     ],
+     [
+      "vayne",
+      1,
+      1,
+      0
+     ],
+     [
+      "yone",
+      5,
+      2,
+      0
+     ],
+     [
+      "riven",
+      4,
+      2,
+      3
+     ],
+     [
+      "zilean",
+      5,
+      1,
+      0
+     ],
+     [
+      "vayne",
+      1,
+      2,
+      0
+     ],
+     [
+      "jhin",
+      4,
+      2,
+      2
+     ]
+    ],
+    "traits": {
+     "dusk": 5,
+     "exile": 1,
+     "mystic": 2,
+     "sharpshooter": 2
+    },
+    "chosen": "dusk",
+    "completed_all": 8,
+    "components_all": 1
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "janna",
+      2,
+      3,
+      2
+     ],
+     [
+      "jax",
+      2,
+      2,
+      1
+     ],
+     [
+      "shen",
+      4,
+      1,
+      0
+     ],
+     [
+      "fiora",
+      1,
+      2,
+      0
+     ],
+     [
+      "yone",
+      5,
+      1,
+      0
+     ],
+     [
+      "fiora",
+      1,
+      2,
+      0
+     ],
+     [
+      "yasuo",
+      1,
+      3,
+      3
+     ],
+     [
+      "jax",
+      2,
+      2,
+      0
+     ],
+     [
+      "kalista",
+      3,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "enlightened": 3,
+     "exile": 2,
+     "ninja": 1,
+     "adept": 2,
+     "duelist": 4,
+     "mystic": 2
+    },
+    "chosen": "enlightened",
+    "completed_all": 7,
+    "components_all": 1
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "azir",
+      5,
+      1,
+      0
+     ],
+     [
+      "vi",
+      2,
+      2,
+      3
+     ],
+     [
+      "kayn",
+      5,
+      1,
+      0
+     ],
+     [
+      "jarvaniv",
+      2,
+      2,
+      2
+     ],
+     [
+      "garen",
+      1,
+      2,
+      0
+     ],
+     [
+      "katarina",
+      3,
+      2,
+      1
+     ],
+     [
+      "sett",
+      5,
+      2,
+      0
+     ],
+     [
+      "xinzhao",
+      3,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "the_boss": 1,
+     "warlord": 6,
+     "brawler": 3,
+     "emperor": 1,
+     "keeper": 2,
+     "tormented": 1
+    },
+    "chosen": "brawler",
+    "completed_all": 6,
+    "components_all": 2
+   },
+   {
+    "level": 6,
+    "units": [
+     [
+      "janna",
+      2,
+      3,
+      1
+     ],
+     [
+      "yasuo",
+      1,
+      2,
+      2
+     ],
+     [
+      "jax",
+      2,
+      3,
+      2
+     ],
+     [
+      "fiora",
+      1,
+      3,
+      0
+     ],
+     [
+      "jax",
+      2,
+      2,
+      0
+     ],
+     [
+      "kalista",
+      3,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "enlightened": 2,
+     "exile": 1,
+     "duelist": 4,
+     "mystic": 2
+    },
+    "chosen": "mystic",
+    "completed_all": 5,
+    "components_all": 2
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "nidalee",
+      1,
+      2,
+      1
+     ],
+     [
+      "sett",
+      5,
+      1,
+      0
+     ],
+     [
+      "leesin",
+      5,
+      1,
+      0
+     ],
+     [
+      "jarvaniv",
+      2,
+      2,
+      1
+     ],
+     [
+      "xinzhao",
+      3,
+      2,
+      0
+     ],
+     [
+      "garen",
+      1,
+      2,
+      0
+     ],
+     [
+      "katarina",
+      3,
+      2,
+      2
+     ],
+     [
+      "pyke",
+      2,
+      2,
+      0
+     ],
+     [
+      "vi",
+      2,
+      3,
+      3
+     ]
+    ],
+    "traits": {
+     "the_boss": 1,
+     "warlord": 6,
+     "assassin": 2,
+     "brawler": 2,
+     "duelist": 2
+    },
+    "chosen": "cultist",
+    "completed_all": 7,
+    "components_all": 1
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "lux",
+      3,
+      2,
+      3
+     ],
+     [
+      "zilean",
+      5,
+      1,
+      1
+     ],
+     [
+      "warwick",
+      4,
+      2,
+      3
+     ],
+     [
+      "kayn",
+      5,
+      1,
+      0
+     ],
+     [
+      "irelia",
+      3,
+      2,
+      3
+     ],
+     [
+      "leesin",
+      5,
+      1,
+      0
+     ],
+     [
+      "ezreal",
+      5,
+      1,
+      0
+     ],
+     [
+      "lillia",
+      5,
+      2,
+      1
+     ]
+    ],
+    "traits": {
+     "divine": 4,
+     "dazzler": 2,
+     "tormented": 1
+    },
+    "chosen": "enlightened",
+    "completed_all": 11,
+    "components_all": 2
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "yone",
+      5,
+      1,
+      0
+     ],
+     [
+      "yasuo",
+      1,
+      1,
+      0
+     ],
+     [
+      "shen",
+      4,
+      2,
+      0
+     ],
+     [
+      "jax",
+      2,
+      3,
+      3
+     ],
+     [
+      "fiora",
+      1,
+      2,
+      1
+     ],
+     [
+      "leesin",
+      5,
+      1,
+      0
+     ],
+     [
+      "yasuo",
+      1,
+      3,
+      3
+     ],
+     [
+      "kalista",
+      3,
+      2,
+      0
+     ],
+     [
+      "yasuo",
+      1,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 2,
+     "exile": 2,
+     "ninja": 1,
+     "adept": 2,
+     "duelist": 6
+    },
+    "chosen": "duelist",
+    "completed_all": 7,
+    "components_all": 1
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "lux",
+      3,
+      2,
+      3
+     ],
+     [
+      "lux",
+      3,
+      2,
+      0
+     ],
+     [
+      "kayn",
+      5,
+      2,
+      0
+     ],
+     [
+      "irelia",
+      3,
+      1,
+      0
+     ],
+     [
+      "irelia",
+      3,
+      2,
+      1
+     ],
+     [
+      "jax",
+      2,
+      3,
+      3
+     ],
+     [
+      "warwick",
+      4,
+      2,
+      1
+     ],
+     [
+      "ezreal",
+      5,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 5,
+     "dazzler": 2,
+     "tormented": 1
+    },
+    "chosen": "divine",
+    "completed_all": 8,
+    "components_all": 1
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "elise",
+      1,
+      2,
+      3
+     ],
+     [
+      "kalista",
+      3,
+      2,
+      0
+     ],
+     [
+      "kayn",
+      5,
+      1,
+      0
+     ],
+     [
+      "evelynn",
+      3,
+      2,
+      1
+     ],
+     [
+      "aatrox",
+      4,
+      2,
+      3
+     ],
+     [
+      "evelynn",
+      3,
+      2,
+      0
+     ],
+     [
+      "pyke",
+      2,
+      2,
+      0
+     ],
+     [
+      "twistedfate",
+      1,
+      2,
+      1
+     ]
+    ],
+    "traits": {
+     "cultist": 6,
+     "shade": 3,
+     "tormented": 1
+    },
+    "chosen": "shade",
+    "completed_all": 8,
+    "components_all": 2
+   },
+   {
+    "level": 6,
+    "units": [
+     [
+      "janna",
+      2,
+      2,
+      1
+     ],
+     [
+      "yasuo",
+      1,
+      2,
+      3
+     ],
+     [
+      "jax",
+      2,
+      3,
+      3
+     ],
+     [
+      "fiora",
+      1,
+      2,
+      0
+     ],
+     [
+      "jax",
+      2,
+      2,
+      0
+     ],
+     [
+      "kalista",
+      3,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "enlightened": 2,
+     "exile": 1,
+     "duelist": 5
+    },
+    "chosen": "duelist",
+    "completed_all": 7,
+    "components_all": 0
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "azir",
+      5,
+      1,
+      0
+     ],
+     [
+      "vi",
+      2,
+      2,
+      1
+     ],
+     [
+      "kayn",
+      5,
+      2,
+      0
+     ],
+     [
+      "jarvaniv",
+      2,
+      2,
+      1
+     ],
+     [
+      "yone",
+      5,
+      1,
+      0
+     ],
+     [
+      "garen",
+      1,
+      2,
+      0
+     ],
+     [
+      "katarina",
+      3,
+      2,
+      3
+     ],
+     [
+      "sett",
+      5,
+      1,
+      0
+     ],
+     [
+      "xinzhao",
+      3,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "exile": 1,
+     "the_boss": 1,
+     "warlord": 6,
+     "brawler": 2,
+     "emperor": 1,
+     "keeper": 3,
+     "tormented": 1
+    },
+    "chosen": "keeper",
+    "completed_all": 6,
+    "components_all": 1
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "twistedfate",
+      1,
+      2,
+      3
+     ],
+     [
+      "kalista",
+      3,
+      2,
+      1
+     ],
+     [
+      "pyke",
+      2,
+      2,
+      0
+     ],
+     [
+      "evelynn",
+      3,
+      2,
+      3
+     ],
+     [
+      "aatrox",
+      4,
+      2,
+      2
+     ],
+     [
+      "leesin",
+      5,
+      1,
+      0
+     ],
+     [
+      "yone",
+      5,
+      1,
+      0
+     ],
+     [
+      "ezreal",
+      5,
+      2,
+      1
+     ]
+    ],
+    "traits": {
+     "cultist": 6,
+     "exile": 1,
+     "duelist": 2
+    },
+    "chosen": "cultist",
+    "completed_all": 10,
+    "components_all": 1
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "nidalee",
+      1,
+      2,
+      1
+     ],
+     [
+      "ezreal",
+      5,
+      1,
+      0
+     ],
+     [
+      "vi",
+      2,
+      1,
+      0
+     ],
+     [
+      "katarina",
+      3,
+      1,
+      1
+     ],
+     [
+      "jarvaniv",
+      2,
+      2,
+      3
+     ],
+     [
+      "kayn",
+      5,
+      1,
+      0
+     ],
+     [
+      "xinzhao",
+      3,
+      2,
+      3
+     ],
+     [
+      "azir",
+      5,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "warlord": 6,
+     "emperor": 1,
+     "keeper": 2,
+     "tormented": 1
+    },
+    "chosen": "brawler",
+    "completed_all": 8,
+    "components_all": 1
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "ezreal",
+      5,
+      2,
+      3
+     ],
+     [
+      "twistedfate",
+      1,
+      2,
+      1
+     ],
+     [
+      "pyke",
+      2,
+      1,
+      0
+     ],
+     [
+      "evelynn",
+      3,
+      2,
+      3
+     ],
+     [
+      "aatrox",
+      4,
+      2,
+      0
+     ],
+     [
+      "leesin",
+      5,
+      2,
+      1
+     ],
+     [
+      "zilean",
+      5,
+      2,
+      0
+     ],
+     [
+      "sett",
+      5,
+      2,
+      0
+     ],
+     [
+      "kalista",
+      3,
+      2,
+      1
+     ]
+    ],
+    "traits": {
+     "cultist": 6,
+     "the_boss": 1,
+     "duelist": 2
+    },
+    "chosen": "cultist",
+    "completed_all": 9,
+    "components_all": 0
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "nidalee",
+      1,
+      2,
+      3
+     ],
+     [
+      "yone",
+      5,
+      2,
+      1
+     ],
+     [
+      "zilean",
+      5,
+      2,
+      0
+     ],
+     [
+      "vi",
+      2,
+      2,
+      0
+     ],
+     [
+      "katarina",
+      3,
+      2,
+      3
+     ],
+     [
+      "jarvaniv",
+      2,
+      2,
+      0
+     ],
+     [
+      "leesin",
+      5,
+      1,
+      0
+     ],
+     [
+      "xinzhao",
+      3,
+      2,
+      0
+     ],
+     [
+      "azir",
+      5,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "exile": 1,
+     "warlord": 6,
+     "duelist": 3,
+     "emperor": 1,
+     "keeper": 2
+    },
+    "chosen": "duelist",
+    "completed_all": 7,
+    "components_all": 0
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "azir",
+      5,
+      1,
+      0
+     ],
+     [
+      "xinzhao",
+      3,
+      2,
+      3
+     ],
+     [
+      "kayn",
+      5,
+      2,
+      2
+     ],
+     [
+      "jarvaniv",
+      2,
+      2,
+      0
+     ],
+     [
+      "garen",
+      1,
+      2,
+      0
+     ],
+     [
+      "katarina",
+      3,
+      2,
+      3
+     ],
+     [
+      "vi",
+      2,
+      2,
+      0
+     ],
+     [
+      "ezreal",
+      5,
+      1,
+      0
+     ],
+     [
+      "yone",
+      5,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "exile": 1,
+     "warlord": 6,
+     "emperor": 1,
+     "keeper": 2,
+     "tormented": 1
+    },
+    "chosen": "warlord",
+    "completed_all": 8,
+    "components_all": 0
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "azir",
+      5,
+      1,
+      0
+     ],
+     [
+      "xinzhao",
+      3,
+      2,
+      2
+     ],
+     [
+      "kayn",
+      5,
+      1,
+      0
+     ],
+     [
+      "jarvaniv",
+      2,
+      2,
+      1
+     ],
+     [
+      "garen",
+      1,
+      2,
+      0
+     ],
+     [
+      "katarina",
+      3,
+      2,
+      3
+     ],
+     [
+      "vi",
+      2,
+      2,
+      0
+     ],
+     [
+      "ezreal",
+      5,
+      1,
+      0
+     ],
+     [
+      "yone",
+      5,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "exile": 1,
+     "warlord": 6,
+     "duelist": 2,
+     "emperor": 1,
+     "keeper": 2,
+     "tormented": 1
+    },
+    "chosen": "duelist",
+    "completed_all": 7,
+    "components_all": 1
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "teemo",
+      2,
+      2,
+      3
+     ],
+     [
+      "azir",
+      5,
+      1,
+      0
+     ],
+     [
+      "nidalee",
+      1,
+      2,
+      0
+     ],
+     [
+      "vayne",
+      1,
+      1,
+      0
+     ],
+     [
+      "jinx",
+      3,
+      1,
+      0
+     ],
+     [
+      "yone",
+      5,
+      1,
+      3
+     ],
+     [
+      "teemo",
+      2,
+      2,
+      0
+     ],
+     [
+      "jinx",
+      3,
+      1,
+      0
+     ],
+     [
+      "kennen",
+      3,
+      2,
+      1
+     ]
+    ],
+    "traits": {
+     "exile": 1,
+     "ninja": 1,
+     "spirit": 2,
+     "emperor": 1,
+     "keeper": 2,
+     "sharpshooter": 4
+    },
+    "chosen": "spirit",
+    "completed_all": 8,
+    "components_all": 0
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "kennen",
+      3,
+      2,
+      1
+     ],
+     [
+      "zed",
+      2,
+      1,
+      0
+     ],
+     [
+      "shen",
+      4,
+      1,
+      0
+     ],
+     [
+      "evelynn",
+      3,
+      2,
+      1
+     ],
+     [
+      "akali",
+      3,
+      3,
+      3
+     ],
+     [
+      "kayn",
+      5,
+      1,
+      0
+     ],
+     [
+      "zed",
+      2,
+      3,
+      3
+     ],
+     [
+      "zilean",
+      5,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "ninja": 4,
+     "mystic": 2,
+     "shade": 4,
+     "tormented": 1
+    },
+    "chosen": "shade",
+    "completed_all": 8,
+    "components_all": 0
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "azir",
+      5,
+      1,
+      0
+     ],
+     [
+      "xinzhao",
+      3,
+      2,
+      3
+     ],
+     [
+      "sett",
+      5,
+      1,
+      0
+     ],
+     [
+      "jarvaniv",
+      2,
+      2,
+      0
+     ],
+     [
+      "azir",
+      5,
+      1,
+      0
+     ],
+     [
+      "garen",
+      1,
+      2,
+      0
+     ],
+     [
+      "katarina",
+      3,
+      2,
+      2
+     ],
+     [
+      "vi",
+      2,
+      3,
+      1
+     ],
+     [
+      "ezreal",
+      5,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "the_boss": 1,
+     "warlord": 6,
+     "brawler": 2,
+     "emperor": 1,
+     "keeper": 2,
+     "vanguard": 2
+    },
+    "chosen": "vanguard",
+    "completed_all": 8,
+    "components_all": 0
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "azir",
+      5,
+      2,
+      0
+     ],
+     [
+      "xinzhao",
+      3,
+      2,
+      3
+     ],
+     [
+      "leesin",
+      5,
+      2,
+      0
+     ],
+     [
+      "jarvaniv",
+      2,
+      2,
+      1
+     ],
+     [
+      "garen",
+      1,
+      2,
+      0
+     ],
+     [
+      "katarina",
+      3,
+      2,
+      3
+     ],
+     [
+      "vi",
+      2,
+      2,
+      0
+     ],
+     [
+      "lillia",
+      5,
+      1,
+      0
+     ],
+     [
+      "yone",
+      5,
+      2,
+      1
+     ]
+    ],
+    "traits": {
+     "exile": 1,
+     "warlord": 6,
+     "duelist": 2,
+     "emperor": 1,
+     "keeper": 3
+    },
+    "chosen": "keeper",
+    "completed_all": 8,
+    "components_all": 0
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "azir",
+      5,
+      1,
+      0
+     ],
+     [
+      "lux",
+      3,
+      1,
+      0
+     ],
+     [
+      "sett",
+      5,
+      1,
+      0
+     ],
+     [
+      "kayn",
+      5,
+      1,
+      0
+     ],
+     [
+      "irelia",
+      3,
+      2,
+      3
+     ],
+     [
+      "leesin",
+      5,
+      1,
+      0
+     ],
+     [
+      "zilean",
+      5,
+      1,
+      0
+     ],
+     [
+      "warwick",
+      4,
+      2,
+      3
+     ],
+     [
+      "lillia",
+      5,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 4,
+     "enlightened": 2,
+     "the_boss": 1,
+     "brawler": 2,
+     "emperor": 1,
+     "tormented": 1
+    },
+    "chosen": "enlightened",
+    "completed_all": 6,
+    "components_all": 0
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "lux",
+      3,
+      2,
+      1
+     ],
+     [
+      "azir",
+      5,
+      2,
+      0
+     ],
+     [
+      "yone",
+      5,
+      1,
+      0
+     ],
+     [
+      "lillia",
+      5,
+      1,
+      0
+     ],
+     [
+      "leesin",
+      5,
+      1,
+      0
+     ],
+     [
+      "irelia",
+      3,
+      2,
+      1
+     ],
+     [
+      "warwick",
+      4,
+      2,
+      1
+     ],
+     [
+      "ezreal",
+      5,
+      1,
+      0
+     ],
+     [
+      "zilean",
+      5,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 4,
+     "exile": 1,
+     "adept": 2,
+     "dazzler": 3,
+     "emperor": 1
+    },
+    "chosen": "dazzler",
+    "completed_all": 8,
+    "components_all": 1
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "kalista",
+      3,
+      2,
+      3
+     ],
+     [
+      "jhin",
+      4,
+      2,
+      1
+     ],
+     [
+      "yone",
+      5,
+      1,
+      0
+     ],
+     [
+      "evelynn",
+      3,
+      2,
+      2
+     ],
+     [
+      "aatrox",
+      4,
+      2,
+      2
+     ],
+     [
+      "pyke",
+      2,
+      2,
+      0
+     ],
+     [
+      "twistedfate",
+      1,
+      2,
+      0
+     ],
+     [
+      "ezreal",
+      5,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "cultist": 7,
+     "exile": 1
+    },
+    "chosen": "cultist",
+    "completed_all": 8,
+    "components_all": 1
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "vayne",
+      1,
+      2,
+      3
+     ],
+     [
+      "cassiopeia",
+      4,
+      1,
+      0
+     ],
+     [
+      "yone",
+      5,
+      2,
+      0
+     ],
+     [
+      "riven",
+      4,
+      2,
+      3
+     ],
+     [
+      "leesin",
+      5,
+      2,
+      0
+     ],
+     [
+      "sett",
+      5,
+      2,
+      1
+     ],
+     [
+      "thresh",
+      2,
+      2,
+      0
+     ],
+     [
+      "azir",
+      5,
+      1,
+      1
+     ]
+    ],
+    "traits": {
+     "dusk": 4,
+     "exile": 1,
+     "the_boss": 1,
+     "emperor": 1,
+     "keeper": 2
+    },
+    "chosen": "vanguard",
+    "completed_all": 8,
+    "components_all": 1
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "nidalee",
+      1,
+      2,
+      3
+     ],
+     [
+      "azir",
+      5,
+      2,
+      0
+     ],
+     [
+      "xinzhao",
+      3,
+      2,
+      1
+     ],
+     [
+      "katarina",
+      3,
+      2,
+      3
+     ],
+     [
+      "jarvaniv",
+      2,
+      2,
+      2
+     ],
+     [
+      "kayn",
+      5,
+      1,
+      1
+     ],
+     [
+      "lillia",
+      5,
+      2,
+      0
+     ],
+     [
+      "yone",
+      5,
+      1,
+      0
+     ],
+     [
+      "ezreal",
+      5,
+      1,
+      1
+     ]
+    ],
+    "traits": {
+     "exile": 1,
+     "warlord": 6,
+     "emperor": 1,
+     "keeper": 2,
+     "tormented": 1
+    },
+    "chosen": "warlord",
+    "completed_all": 11,
+    "components_all": 0
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "azir",
+      5,
+      2,
+      0
+     ],
+     [
+      "yone",
+      5,
+      1,
+      0
+     ],
+     [
+      "nidalee",
+      1,
+      2,
+      0
+     ],
+     [
+      "vi",
+      2,
+      2,
+      1
+     ],
+     [
+      "katarina",
+      3,
+      2,
+      2
+     ],
+     [
+      "jarvaniv",
+      2,
+      2,
+      1
+     ],
+     [
+      "sett",
+      5,
+      2,
+      0
+     ],
+     [
+      "xinzhao",
+      3,
+      3,
+      3
+     ],
+     [
+      "lillia",
+      5,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "exile": 1,
+     "the_boss": 1,
+     "warlord": 6,
+     "brawler": 2,
+     "emperor": 1,
+     "keeper": 2
+    },
+    "chosen": "warlord",
+    "completed_all": 7,
+    "components_all": 2
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "jhin",
+      4,
+      2,
+      3
+     ],
+     [
+      "zilean",
+      5,
+      1,
+      0
+     ],
+     [
+      "leesin",
+      5,
+      1,
+      0
+     ],
+     [
+      "evelynn",
+      3,
+      2,
+      2
+     ],
+     [
+      "aatrox",
+      4,
+      2,
+      1
+     ],
+     [
+      "kayn",
+      5,
+      1,
+      0
+     ],
+     [
+      "sett",
+      5,
+      1,
+      0
+     ],
+     [
+      "twistedfate",
+      1,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "cultist": 6,
+     "the_boss": 1,
+     "shade": 2,
+     "tormented": 1
+    },
+    "chosen": "cultist",
+    "completed_all": 7,
+    "components_all": 1
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "azir",
+      5,
+      1,
+      0
+     ],
+     [
+      "jhin",
+      4,
+      2,
+      0
+     ],
+     [
+      "pyke",
+      2,
+      3,
+      3
+     ],
+     [
+      "evelynn",
+      3,
+      2,
+      2
+     ],
+     [
+      "aatrox",
+      4,
+      1,
+      1
+     ],
+     [
+      "kayn",
+      5,
+      1,
+      0
+     ],
+     [
+      "kalista",
+      3,
+      2,
+      0
+     ],
+     [
+      "ezreal",
+      5,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "cultist": 6,
+     "emperor": 1,
+     "shade": 2,
+     "tormented": 1
+    },
+    "chosen": "cultist",
+    "completed_all": 6,
+    "components_all": 0
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "kalista",
+      3,
+      2,
+      3
+     ],
+     [
+      "azir",
+      5,
+      1,
+      0
+     ],
+     [
+      "zilean",
+      5,
+      1,
+      0
+     ],
+     [
+      "kayn",
+      5,
+      1,
+      0
+     ],
+     [
+      "evelynn",
+      3,
+      2,
+      3
+     ],
+     [
+      "yone",
+      5,
+      1,
+      0
+     ],
+     [
+      "jhin",
+      4,
+      2,
+      0
+     ],
+     [
+      "twistedfate",
+      1,
+      3,
+      1
+     ]
+    ],
+    "traits": {
+     "cultist": 6,
+     "exile": 1,
+     "emperor": 1,
+     "shade": 2,
+     "tormented": 1
+    },
+    "chosen": "cultist",
+    "completed_all": 8,
+    "components_all": 2
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "azir",
+      5,
+      1,
+      0
+     ],
+     [
+      "leesin",
+      5,
+      1,
+      0
+     ],
+     [
+      "zilean",
+      5,
+      1,
+      0
+     ],
+     [
+      "evelynn",
+      3,
+      2,
+      2
+     ],
+     [
+      "aatrox",
+      4,
+      1,
+      1
+     ],
+     [
+      "kayn",
+      5,
+      1,
+      0
+     ],
+     [
+      "pyke",
+      2,
+      2,
+      0
+     ],
+     [
+      "pyke",
+      2,
+      2,
+      3
+     ],
+     [
+      "jhin",
+      4,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "cultist": 6,
+     "emperor": 1,
+     "shade": 2,
+     "tormented": 1
+    },
+    "chosen": "cultist",
+    "completed_all": 6,
+    "components_all": 2
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "kalista",
+      3,
+      2,
+      0
+     ],
+     [
+      "sett",
+      5,
+      1,
+      0
+     ],
+     [
+      "jax",
+      2,
+      2,
+      1
+     ],
+     [
+      "fiora",
+      1,
+      1,
+      0
+     ],
+     [
+      "yone",
+      5,
+      1,
+      0
+     ],
+     [
+      "fiora",
+      1,
+      2,
+      0
+     ],
+     [
+      "jax",
+      2,
+      3,
+      3
+     ],
+     [
+      "leesin",
+      5,
+      1,
+      0
+     ],
+     [
+      "yasuo",
+      1,
+      3,
+      3
+     ]
+    ],
+    "traits": {
+     "divine": 2,
+     "exile": 2,
+     "the_boss": 1,
+     "duelist": 6
+    },
+    "chosen": "duelist",
+    "completed_all": 7,
+    "components_all": 1
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "lux",
+      3,
+      2,
+      3
+     ],
+     [
+      "azir",
+      5,
+      1,
+      0
+     ],
+     [
+      "yone",
+      5,
+      1,
+      0
+     ],
+     [
+      "zilean",
+      5,
+      1,
+      0
+     ],
+     [
+      "leesin",
+      5,
+      1,
+      0
+     ],
+     [
+      "irelia",
+      3,
+      2,
+      2
+     ],
+     [
+      "warwick",
+      4,
+      2,
+      3
+     ],
+     [
+      "ezreal",
+      5,
+      1,
+      0
+     ],
+     [
+      "lillia",
+      5,
+      2,
+      1
+     ]
+    ],
+    "traits": {
+     "divine": 4,
+     "exile": 1,
+     "adept": 2,
+     "dazzler": 3,
+     "emperor": 1
+    },
+    "chosen": "dazzler",
+    "completed_all": 10,
+    "components_all": 0
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "azir",
+      5,
+      1,
+      0
+     ],
+     [
+      "xinzhao",
+      3,
+      3,
+      3
+     ],
+     [
+      "kayn",
+      5,
+      2,
+      1
+     ],
+     [
+      "jarvaniv",
+      2,
+      3,
+      2
+     ],
+     [
+      "garen",
+      1,
+      1,
+      0
+     ],
+     [
+      "katarina",
+      3,
+      2,
+      2
+     ],
+     [
+      "leesin",
+      5,
+      1,
+      0
+     ],
+     [
+      "nidalee",
+      1,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "warlord": 6,
+     "duelist": 3,
+     "emperor": 1,
+     "keeper": 2,
+     "tormented": 1
+    },
+    "chosen": "duelist",
+    "completed_all": 8,
+    "components_all": 0
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "lillia",
+      5,
+      1,
+      0
+     ],
+     [
+      "ezreal",
+      5,
+      1,
+      0
+     ],
+     [
+      "warwick",
+      4,
+      2,
+      3
+     ],
+     [
+      "jax",
+      2,
+      2,
+      3
+     ],
+     [
+      "irelia",
+      3,
+      2,
+      1
+     ],
+     [
+      "leesin",
+      5,
+      1,
+      0
+     ],
+     [
+      "yone",
+      5,
+      1,
+      0
+     ],
+     [
+      "azir",
+      5,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 4,
+     "exile": 1,
+     "adept": 2,
+     "duelist": 3,
+     "emperor": 1
+    },
+    "chosen": "duelist",
+    "completed_all": 8,
+    "components_all": 1
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "nidalee",
+      1,
+      2,
+      3
+     ],
+     [
+      "yone",
+      5,
+      2,
+      0
+     ],
+     [
+      "azir",
+      5,
+      1,
+      0
+     ],
+     [
+      "vi",
+      2,
+      2,
+      1
+     ],
+     [
+      "katarina",
+      3,
+      2,
+      3
+     ],
+     [
+      "jarvaniv",
+      2,
+      2,
+      0
+     ],
+     [
+      "leesin",
+      5,
+      1,
+      0
+     ],
+     [
+      "xinzhao",
+      3,
+      2,
+      0
+     ],
+     [
+      "lillia",
+      5,
+      1,
+      1
+     ]
+    ],
+    "traits": {
+     "exile": 1,
+     "warlord": 6,
+     "duelist": 2,
+     "emperor": 1,
+     "keeper": 2
+    },
+    "chosen": "assassin",
+    "completed_all": 9,
+    "components_all": 0
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "zilean",
+      5,
+      1,
+      0
+     ],
+     [
+      "sett",
+      5,
+      2,
+      1
+     ],
+     [
+      "kayn",
+      5,
+      2,
+      0
+     ],
+     [
+      "jarvaniv",
+      2,
+      2,
+      3
+     ],
+     [
+      "xinzhao",
+      3,
+      2,
+      0
+     ],
+     [
+      "garen",
+      1,
+      2,
+      0
+     ],
+     [
+      "katarina",
+      3,
+      2,
+      2
+     ],
+     [
+      "leesin",
+      5,
+      1,
+      0
+     ],
+     [
+      "vi",
+      2,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "the_boss": 1,
+     "warlord": 6,
+     "brawler": 2,
+     "duelist": 2,
+     "tormented": 1
+    },
+    "chosen": "warlord",
+    "completed_all": 6,
+    "components_all": 2
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "azir",
+      5,
+      1,
+      0
+     ],
+     [
+      "katarina",
+      3,
+      1,
+      0
+     ],
+     [
+      "xinzhao",
+      3,
+      2,
+      3
+     ],
+     [
+      "sett",
+      5,
+      1,
+      0
+     ],
+     [
+      "katarina",
+      3,
+      2,
+      0
+     ],
+     [
+      "jarvaniv",
+      2,
+      3,
+      3
+     ],
+     [
+      "leesin",
+      5,
+      1,
+      0
+     ],
+     [
+      "vi",
+      2,
+      2,
+      0
+     ],
+     [
+      "nidalee",
+      1,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "the_boss": 1,
+     "warlord": 6,
+     "brawler": 2,
+     "duelist": 2,
+     "emperor": 1,
+     "keeper": 2
+    },
+    "chosen": null,
+    "completed_all": 6,
+    "components_all": 1
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "sett",
+      5,
+      1,
+      0
+     ],
+     [
+      "leesin",
+      5,
+      1,
+      0
+     ],
+     [
+      "fiora",
+      1,
+      2,
+      2
+     ],
+     [
+      "yasuo",
+      1,
+      1,
+      0
+     ],
+     [
+      "fiora",
+      1,
+      2,
+      0
+     ],
+     [
+      "yasuo",
+      1,
+      3,
+      3
+     ],
+     [
+      "jax",
+      2,
+      2,
+      1
+     ],
+     [
+      "kalista",
+      3,
+      2,
+      0
+     ],
+     [
+      "jax",
+      2,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 2,
+     "exile": 1,
+     "the_boss": 1,
+     "duelist": 6
+    },
+    "chosen": "duelist",
+    "completed_all": 7,
+    "components_all": 1
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "lux",
+      3,
+      2,
+      3
+     ],
+     [
+      "lillia",
+      5,
+      1,
+      0
+     ],
+     [
+      "warwick",
+      4,
+      2,
+      2
+     ],
+     [
+      "kayn",
+      5,
+      1,
+      0
+     ],
+     [
+      "irelia",
+      3,
+      2,
+      0
+     ],
+     [
+      "leesin",
+      5,
+      2,
+      2
+     ],
+     [
+      "yone",
+      5,
+      1,
+      0
+     ],
+     [
+      "azir",
+      5,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 4,
+     "exile": 1,
+     "adept": 3,
+     "emperor": 1,
+     "tormented": 1
+    },
+    "chosen": "adept",
+    "completed_all": 7,
+    "components_all": 0
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "ezreal",
+      5,
+      2,
+      0
+     ],
+     [
+      "xinzhao",
+      3,
+      2,
+      0
+     ],
+     [
+      "sett",
+      5,
+      1,
+      0
+     ],
+     [
+      "jarvaniv",
+      2,
+      2,
+      0
+     ],
+     [
+      "garen",
+      1,
+      2,
+      3
+     ],
+     [
+      "katarina",
+      3,
+      2,
+      3
+     ],
+     [
+      "vi",
+      2,
+      1,
+      0
+     ],
+     [
+      "zilean",
+      5,
+      1,
+      0
+     ],
+     [
+      "yone",
+      5,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "exile": 1,
+     "the_boss": 1,
+     "warlord": 6,
+     "brawler": 2
+    },
+    "chosen": "warlord",
+    "completed_all": 6,
+    "components_all": 1
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "twistedfate",
+      1,
+      3,
+      3
+     ],
+     [
+      "ezreal",
+      5,
+      1,
+      0
+     ],
+     [
+      "yone",
+      5,
+      1,
+      0
+     ],
+     [
+      "zilean",
+      5,
+      1,
+      0
+     ],
+     [
+      "evelynn",
+      3,
+      2,
+      3
+     ],
+     [
+      "aatrox",
+      4,
+      2,
+      2
+     ],
+     [
+      "evelynn",
+      3,
+      2,
+      0
+     ],
+     [
+      "kalista",
+      3,
+      2,
+      0
+     ],
+     [
+      "azir",
+      5,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "cultist": 6,
+     "exile": 1,
+     "emperor": 1
+    },
+    "chosen": "cultist",
+    "completed_all": 8,
+    "components_all": 1
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "kindred",
+      3,
+      2,
+      3
+     ],
+     [
+      "ashe",
+      4,
+      2,
+      2
+     ],
+     [
+      "aphelios",
+      2,
+      2,
+      0
+     ],
+     [
+      "warwick",
+      4,
+      2,
+      0
+     ],
+     [
+      "irelia",
+      3,
+      2,
+      0
+     ],
+     [
+      "irelia",
+      3,
+      2,
+      0
+     ],
+     [
+      "yone",
+      5,
+      2,
+      0
+     ],
+     [
+      "yuumi",
+      3,
+      2,
+      1
+     ],
+     [
+      "aphelios",
+      2,
+      2,
+      2
+     ]
+    ],
+    "traits": {
+     "divine": 2,
+     "exile": 1,
+     "spirit": 2,
+     "adept": 3,
+     "hunter": 4
+    },
+    "chosen": "adept",
+    "completed_all": 8,
+    "components_all": 1
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "ashe",
+      4,
+      2,
+      3
+     ],
+     [
+      "ezreal",
+      5,
+      1,
+      1
+     ],
+     [
+      "sett",
+      5,
+      2,
+      0
+     ],
+     [
+      "maokai",
+      1,
+      2,
+      1
+     ],
+     [
+      "leesin",
+      5,
+      1,
+      0
+     ],
+     [
+      "nunu",
+      3,
+      2,
+      0
+     ],
+     [
+      "zilean",
+      5,
+      1,
+      0
+     ],
+     [
+      "warwick",
+      4,
+      2,
+      2
+     ],
+     [
+      "lux",
+      3,
+      2,
+      3
+     ]
+    ],
+    "traits": {
+     "divine": 4,
+     "elderwood": 4,
+     "the_boss": 1,
+     "brawler": 4,
+     "dazzler": 2,
+     "hunter": 2
+    },
+    "chosen": "divine",
+    "completed_all": 10,
+    "components_all": 0
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "janna",
+      2,
+      2,
+      1
+     ],
+     [
+      "lillia",
+      5,
+      1,
+      0
+     ],
+     [
+      "shen",
+      4,
+      1,
+      0
+     ],
+     [
+      "jax",
+      2,
+      2,
+      3
+     ],
+     [
+      "fiora",
+      1,
+      2,
+      0
+     ],
+     [
+      "leesin",
+      5,
+      1,
+      0
+     ],
+     [
+      "yasuo",
+      1,
+      3,
+      3
+     ],
+     [
+      "kalista",
+      3,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 2,
+     "enlightened": 2,
+     "exile": 1,
+     "ninja": 1,
+     "duelist": 6,
+     "mystic": 2
+    },
+    "chosen": "duelist",
+    "completed_all": 9,
+    "components_all": 1
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "azir",
+      5,
+      2,
+      0
+     ],
+     [
+      "vi",
+      2,
+      2,
+      0
+     ],
+     [
+      "kayn",
+      5,
+      1,
+      0
+     ],
+     [
+      "jarvaniv",
+      2,
+      2,
+      1
+     ],
+     [
+      "garen",
+      1,
+      2,
+      0
+     ],
+     [
+      "katarina",
+      3,
+      3,
+      3
+     ],
+     [
+      "pyke",
+      2,
+      2,
+      3
+     ],
+     [
+      "xinzhao",
+      3,
+      2,
+      3
+     ]
+    ],
+    "traits": {
+     "warlord": 6,
+     "assassin": 2,
+     "emperor": 1,
+     "keeper": 2,
+     "tormented": 1
+    },
+    "chosen": "cultist",
+    "completed_all": 10,
+    "components_all": 1
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "janna",
+      2,
+      2,
+      0
+     ],
+     [
+      "yasuo",
+      1,
+      3,
+      3
+     ],
+     [
+      "leesin",
+      5,
+      1,
+      0
+     ],
+     [
+      "jax",
+      2,
+      2,
+      2
+     ],
+     [
+      "fiora",
+      1,
+      2,
+      0
+     ],
+     [
+      "jax",
+      2,
+      2,
+      0
+     ],
+     [
+      "shen",
+      4,
+      2,
+      0
+     ],
+     [
+      "kalista",
+      3,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 3,
+     "enlightened": 2,
+     "exile": 1,
+     "ninja": 1,
+     "duelist": 5,
+     "mystic": 2
+    },
+    "chosen": "divine",
+    "completed_all": 5,
+    "components_all": 1
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "janna",
+      2,
+      3,
+      2
+     ],
+     [
+      "kalista",
+      3,
+      2,
+      0
+     ],
+     [
+      "shen",
+      4,
+      1,
+      0
+     ],
+     [
+      "jax",
+      2,
+      2,
+      2
+     ],
+     [
+      "fiora",
+      1,
+      2,
+      0
+     ],
+     [
+      "leesin",
+      5,
+      1,
+      0
+     ],
+     [
+      "kalista",
+      3,
+      2,
+      0
+     ],
+     [
+      "yasuo",
+      1,
+      3,
+      1
+     ],
+     [
+      "janna",
+      2,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 2,
+     "enlightened": 2,
+     "exile": 1,
+     "ninja": 1,
+     "duelist": 5,
+     "mystic": 3
+    },
+    "chosen": "mystic",
+    "completed_all": 5,
+    "components_all": 1
+   },
+   {
+    "level": 7,
+    "units": [
+     [
+      "janna",
+      2,
+      3,
+      3
+     ],
+     [
+      "kalista",
+      3,
+      2,
+      0
+     ],
+     [
+      "jax",
+      2,
+      3,
+      0
+     ],
+     [
+      "fiora",
+      1,
+      3,
+      1
+     ],
+     [
+      "yasuo",
+      1,
+      3,
+      2
+     ],
+     [
+      "kalista",
+      3,
+      1,
+      0
+     ],
+     [
+      "janna",
+      2,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "enlightened": 2,
+     "exile": 1,
+     "duelist": 4
+    },
+    "chosen": null,
+    "completed_all": 6,
+    "components_all": 2
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "azir",
+      5,
+      1,
+      0
+     ],
+     [
+      "yone",
+      5,
+      1,
+      0
+     ],
+     [
+      "vi",
+      2,
+      2,
+      2
+     ],
+     [
+      "jarvaniv",
+      2,
+      2,
+      0
+     ],
+     [
+      "garen",
+      1,
+      2,
+      0
+     ],
+     [
+      "katarina",
+      3,
+      2,
+      2
+     ],
+     [
+      "xinzhao",
+      3,
+      2,
+      3
+     ],
+     [
+      "lillia",
+      5,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "exile": 1,
+     "warlord": 6,
+     "emperor": 1,
+     "keeper": 2
+    },
+    "chosen": "warlord",
+    "completed_all": 8,
+    "components_all": 1
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "azir",
+      5,
+      2,
+      0
+     ],
+     [
+      "xinzhao",
+      3,
+      2,
+      3
+     ],
+     [
+      "leesin",
+      5,
+      1,
+      0
+     ],
+     [
+      "jarvaniv",
+      2,
+      2,
+      1
+     ],
+     [
+      "garen",
+      1,
+      2,
+      1
+     ],
+     [
+      "katarina",
+      3,
+      2,
+      2
+     ],
+     [
+      "vi",
+      2,
+      2,
+      0
+     ],
+     [
+      "zilean",
+      5,
+      1,
+      0
+     ],
+     [
+      "yone",
+      5,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "exile": 1,
+     "warlord": 6,
+     "duelist": 2,
+     "emperor": 1,
+     "keeper": 2,
+     "vanguard": 2
+    },
+    "chosen": "vanguard",
+    "completed_all": 7,
+    "components_all": 0
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "elise",
+      1,
+      2,
+      1
+     ],
+     [
+      "azir",
+      5,
+      2,
+      0
+     ],
+     [
+      "pyke",
+      2,
+      3,
+      1
+     ],
+     [
+      "leesin",
+      5,
+      1,
+      0
+     ],
+     [
+      "evelynn",
+      3,
+      2,
+      3
+     ],
+     [
+      "leesin",
+      5,
+      1,
+      0
+     ],
+     [
+      "jhin",
+      4,
+      1,
+      0
+     ],
+     [
+      "sett",
+      5,
+      1,
+      2
+     ],
+     [
+      "kalista",
+      3,
+      2,
+      1
+     ]
+    ],
+    "traits": {
+     "cultist": 6,
+     "the_boss": 1,
+     "duelist": 2,
+     "emperor": 1,
+     "keeper": 2
+    },
+    "chosen": "cultist",
+    "completed_all": 8,
+    "components_all": 3
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "kalista",
+      3,
+      2,
+      2
+     ],
+     [
+      "zilean",
+      5,
+      1,
+      0
+     ],
+     [
+      "pyke",
+      2,
+      2,
+      1
+     ],
+     [
+      "kayn",
+      5,
+      1,
+      0
+     ],
+     [
+      "evelynn",
+      3,
+      2,
+      0
+     ],
+     [
+      "evelynn",
+      3,
+      2,
+      3
+     ],
+     [
+      "leesin",
+      5,
+      1,
+      0
+     ],
+     [
+      "sett",
+      5,
+      1,
+      0
+     ],
+     [
+      "jhin",
+      4,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "cultist": 6,
+     "the_boss": 1,
+     "duelist": 2,
+     "shade": 2,
+     "tormented": 1
+    },
+    "chosen": "cultist",
+    "completed_all": 6,
+    "components_all": 0
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "kennen",
+      3,
+      2,
+      3
+     ],
+     [
+      "azir",
+      5,
+      1,
+      0
+     ],
+     [
+      "leesin",
+      5,
+      1,
+      0
+     ],
+     [
+      "akali",
+      3,
+      2,
+      0
+     ],
+     [
+      "akali",
+      3,
+      2,
+      1
+     ],
+     [
+      "evelynn",
+      3,
+      2,
+      0
+     ],
+     [
+      "zed",
+      2,
+      3,
+      3
+     ],
+     [
+      "shen",
+      4,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "ninja": 4,
+     "emperor": 1,
+     "keeper": 2,
+     "shade": 3
+    },
+    "chosen": "shade",
+    "completed_all": 9,
+    "components_all": 0
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "ashe",
+      4,
+      2,
+      1
+     ],
+     [
+      "lillia",
+      5,
+      1,
+      0
+     ],
+     [
+      "vi",
+      2,
+      2,
+      3
+     ],
+     [
+      "nunu",
+      3,
+      2,
+      2
+     ],
+     [
+      "kayn",
+      5,
+      2,
+      0
+     ],
+     [
+      "sett",
+      5,
+      2,
+      1
+     ],
+     [
+      "zilean",
+      5,
+      1,
+      0
+     ],
+     [
+      "yone",
+      5,
+      2,
+      0
+     ],
+     [
+      "ezreal",
+      5,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "elderwood": 3,
+     "exile": 1,
+     "the_boss": 1,
+     "brawler": 4,
+     "tormented": 1
+    },
+    "chosen": "brawler",
+    "completed_all": 8,
+    "components_all": 1
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "vayne",
+      1,
+      3,
+      3
+     ],
+     [
+      "teemo",
+      2,
+      1,
+      0
+     ],
+     [
+      "jhin",
+      4,
+      2,
+      1
+     ],
+     [
+      "ezreal",
+      5,
+      1,
+      0
+     ],
+     [
+      "lillia",
+      5,
+      1,
+      0
+     ],
+     [
+      "sett",
+      5,
+      1,
+      0
+     ],
+     [
+      "jinx",
+      3,
+      3,
+      0
+     ],
+     [
+      "azir",
+      5,
+      1,
+      0
+     ],
+     [
+      "teemo",
+      2,
+      2,
+      2
+     ]
+    ],
+    "traits": {
+     "dusk": 2,
+     "the_boss": 1,
+     "emperor": 1,
+     "sharpshooter": 5
+    },
+    "chosen": "sharpshooter",
+    "completed_all": 6,
+    "components_all": 2
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "lux",
+      3,
+      2,
+      3
+     ],
+     [
+      "yone",
+      5,
+      1,
+      0
+     ],
+     [
+      "lillia",
+      5,
+      1,
+      0
+     ],
+     [
+      "sett",
+      5,
+      1,
+      0
+     ],
+     [
+      "irelia",
+      3,
+      2,
+      1
+     ],
+     [
+      "irelia",
+      3,
+      2,
+      0
+     ],
+     [
+      "kayn",
+      5,
+      1,
+      0
+     ],
+     [
+      "warwick",
+      4,
+      1,
+      2
+     ],
+     [
+      "lux",
+      3,
+      2,
+      1
+     ]
+    ],
+    "traits": {
+     "divine": 4,
+     "exile": 1,
+     "the_boss": 1,
+     "adept": 2,
+     "brawler": 2,
+     "tormented": 1
+    },
+    "chosen": "divine",
+    "completed_all": 7,
+    "components_all": 1
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "cassiopeia",
+      4,
+      2,
+      3
+     ],
+     [
+      "lillia",
+      5,
+      1,
+      0
+     ],
+     [
+      "vayne",
+      1,
+      2,
+      0
+     ],
+     [
+      "yone",
+      5,
+      2,
+      1
+     ],
+     [
+      "riven",
+      4,
+      2,
+      3
+     ],
+     [
+      "zilean",
+      5,
+      1,
+      0
+     ],
+     [
+      "thresh",
+      2,
+      2,
+      0
+     ],
+     [
+      "thresh",
+      2,
+      2,
+      1
+     ]
+    ],
+    "traits": {
+     "dusk": 5,
+     "exile": 1,
+     "mystic": 2
+    },
+    "chosen": "sharpshooter",
+    "completed_all": 8,
+    "components_all": 1
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "lux",
+      3,
+      2,
+      2
+     ],
+     [
+      "azir",
+      5,
+      1,
+      0
+     ],
+     [
+      "warwick",
+      4,
+      1,
+      1
+     ],
+     [
+      "leesin",
+      5,
+      1,
+      0
+     ],
+     [
+      "irelia",
+      3,
+      2,
+      3
+     ],
+     [
+      "sett",
+      5,
+      1,
+      1
+     ],
+     [
+      "lillia",
+      5,
+      1,
+      0
+     ],
+     [
+      "yone",
+      5,
+      2,
+      0
+     ],
+     [
+      "zilean",
+      5,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 4,
+     "exile": 1,
+     "the_boss": 1,
+     "adept": 2,
+     "brawler": 2,
+     "dazzler": 2,
+     "emperor": 1
+    },
+    "chosen": "dazzler",
+    "completed_all": 7,
+    "components_all": 1
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "kalista",
+      3,
+      1,
+      0
+     ],
+     [
+      "yone",
+      5,
+      1,
+      0
+     ],
+     [
+      "yasuo",
+      1,
+      3,
+      3
+     ],
+     [
+      "jax",
+      2,
+      3,
+      1
+     ],
+     [
+      "fiora",
+      1,
+      2,
+      0
+     ],
+     [
+      "leesin",
+      5,
+      1,
+      0
+     ],
+     [
+      "yasuo",
+      1,
+      2,
+      3
+     ],
+     [
+      "zilean",
+      5,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 2,
+     "exile": 2,
+     "duelist": 6
+    },
+    "chosen": "duelist",
+    "completed_all": 8,
+    "components_all": 2
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "ezreal",
+      5,
+      1,
+      0
+     ],
+     [
+      "lux",
+      3,
+      2,
+      0
+     ],
+     [
+      "warwick",
+      4,
+      2,
+      3
+     ],
+     [
+      "leesin",
+      5,
+      2,
+      0
+     ],
+     [
+      "jax",
+      2,
+      2,
+      1
+     ],
+     [
+      "sett",
+      5,
+      1,
+      0
+     ],
+     [
+      "yone",
+      5,
+      2,
+      0
+     ],
+     [
+      "lillia",
+      5,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 5,
+     "exile": 1,
+     "the_boss": 1,
+     "brawler": 2,
+     "dazzler": 2,
+     "duelist": 2
+    },
+    "chosen": "divine",
+    "completed_all": 7,
+    "components_all": 2
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "azir",
+      5,
+      1,
+      0
+     ],
+     [
+      "kayn",
+      5,
+      2,
+      1
+     ],
+     [
+      "pyke",
+      2,
+      2,
+      2
+     ],
+     [
+      "sett",
+      5,
+      1,
+      1
+     ],
+     [
+      "evelynn",
+      3,
+      2,
+      1
+     ],
+     [
+      "kalista",
+      3,
+      2,
+      0
+     ],
+     [
+      "evelynn",
+      3,
+      2,
+      3
+     ],
+     [
+      "zilean",
+      5,
+      2,
+      0
+     ],
+     [
+      "elise",
+      1,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "cultist": 6,
+     "the_boss": 1,
+     "emperor": 1,
+     "keeper": 2,
+     "shade": 2,
+     "tormented": 1
+    },
+    "chosen": "cultist",
+    "completed_all": 8,
+    "components_all": 0
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "kennen",
+      3,
+      3,
+      0
+     ],
+     [
+      "yone",
+      5,
+      1,
+      0
+     ],
+     [
+      "shen",
+      4,
+      2,
+      0
+     ],
+     [
+      "evelynn",
+      3,
+      3,
+      1
+     ],
+     [
+      "akali",
+      3,
+      3,
+      3
+     ],
+     [
+      "kayn",
+      5,
+      1,
+      0
+     ],
+     [
+      "shen",
+      4,
+      1,
+      0
+     ],
+     [
+      "zed",
+      2,
+      3,
+      3
+     ]
+    ],
+    "traits": {
+     "exile": 1,
+     "ninja": 4,
+     "adept": 2,
+     "shade": 4,
+     "tormented": 1
+    },
+    "chosen": "shade",
+    "completed_all": 7,
+    "components_all": 1
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "lux",
+      3,
+      2,
+      3
+     ],
+     [
+      "warwick",
+      4,
+      1,
+      3
+     ],
+     [
+      "leesin",
+      5,
+      2,
+      0
+     ],
+     [
+      "jax",
+      2,
+      2,
+      1
+     ],
+     [
+      "yone",
+      5,
+      2,
+      0
+     ],
+     [
+      "irelia",
+      3,
+      2,
+      0
+     ],
+     [
+      "kayn",
+      5,
+      1,
+      2
+     ],
+     [
+      "sett",
+      5,
+      1,
+      0
+     ],
+     [
+      "azir",
+      5,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 6,
+     "exile": 1,
+     "the_boss": 1,
+     "adept": 2,
+     "brawler": 2,
+     "duelist": 2,
+     "emperor": 1,
+     "tormented": 1
+    },
+    "chosen": "divine",
+    "completed_all": 9,
+    "components_all": 1
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "kindred",
+      3,
+      3,
+      2
+     ],
+     [
+      "aphelios",
+      2,
+      2,
+      1
+     ],
+     [
+      "ashe",
+      4,
+      2,
+      0
+     ],
+     [
+      "warwick",
+      4,
+      2,
+      0
+     ],
+     [
+      "leesin",
+      5,
+      1,
+      0
+     ],
+     [
+      "yone",
+      5,
+      1,
+      0
+     ],
+     [
+      "ashe",
+      4,
+      2,
+      0
+     ],
+     [
+      "yuumi",
+      3,
+      3,
+      3
+     ]
+    ],
+    "traits": {
+     "divine": 2,
+     "exile": 1,
+     "spirit": 3,
+     "hunter": 4
+    },
+    "chosen": "spirit",
+    "completed_all": 6,
+    "components_all": 3
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "azir",
+      5,
+      1,
+      0
+     ],
+     [
+      "xinzhao",
+      3,
+      2,
+      3
+     ],
+     [
+      "lillia",
+      5,
+      1,
+      0
+     ],
+     [
+      "kayn",
+      5,
+      1,
+      0
+     ],
+     [
+      "jarvaniv",
+      2,
+      2,
+      1
+     ],
+     [
+      "garen",
+      1,
+      2,
+      0
+     ],
+     [
+      "katarina",
+      3,
+      2,
+      3
+     ],
+     [
+      "leesin",
+      5,
+      2,
+      0
+     ],
+     [
+      "ezreal",
+      5,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "warlord": 6,
+     "duelist": 2,
+     "emperor": 1,
+     "keeper": 2,
+     "tormented": 1
+    },
+    "chosen": "warlord",
+    "completed_all": 7,
+    "components_all": 2
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "lillia",
+      5,
+      1,
+      0
+     ],
+     [
+      "jhin",
+      4,
+      1,
+      0
+     ],
+     [
+      "pyke",
+      2,
+      2,
+      0
+     ],
+     [
+      "zilean",
+      5,
+      1,
+      0
+     ],
+     [
+      "evelynn",
+      3,
+      2,
+      1
+     ],
+     [
+      "aatrox",
+      4,
+      1,
+      1
+     ],
+     [
+      "kayn",
+      5,
+      1,
+      0
+     ],
+     [
+      "kalista",
+      3,
+      3,
+      3
+     ],
+     [
+      "ezreal",
+      5,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "cultist": 7,
+     "shade": 2,
+     "tormented": 1
+    },
+    "chosen": "cultist",
+    "completed_all": 5,
+    "components_all": 2
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "jhin",
+      4,
+      2,
+      3
+     ],
+     [
+      "ezreal",
+      5,
+      1,
+      0
+     ],
+     [
+      "pyke",
+      2,
+      2,
+      0
+     ],
+     [
+      "evelynn",
+      3,
+      2,
+      2
+     ],
+     [
+      "aatrox",
+      4,
+      2,
+      3
+     ],
+     [
+      "kayn",
+      5,
+      2,
+      0
+     ],
+     [
+      "yone",
+      5,
+      1,
+      0
+     ],
+     [
+      "kalista",
+      3,
+      3,
+      1
+     ]
+    ],
+    "traits": {
+     "cultist": 6,
+     "exile": 1,
+     "shade": 2,
+     "tormented": 1
+    },
+    "chosen": "cultist",
+    "completed_all": 9,
+    "components_all": 2
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "ashe",
+      4,
+      2,
+      3
+     ],
+     [
+      "zilean",
+      5,
+      1,
+      1
+     ],
+     [
+      "ezreal",
+      5,
+      2,
+      0
+     ],
+     [
+      "maokai",
+      1,
+      2,
+      1
+     ],
+     [
+      "maokai",
+      1,
+      2,
+      0
+     ],
+     [
+      "nunu",
+      3,
+      2,
+      0
+     ],
+     [
+      "ashe",
+      4,
+      1,
+      0
+     ],
+     [
+      "nunu",
+      3,
+      2,
+      1
+     ],
+     [
+      "lulu",
+      2,
+      3,
+      2
+     ]
+    ],
+    "traits": {
+     "elderwood": 5,
+     "brawler": 2,
+     "dazzler": 2
+    },
+    "chosen": "dazzler",
+    "completed_all": 8,
+    "components_all": 1
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "kennen",
+      3,
+      1,
+      1
+     ],
+     [
+      "yone",
+      5,
+      1,
+      0
+     ],
+     [
+      "kalista",
+      3,
+      2,
+      0
+     ],
+     [
+      "shen",
+      4,
+      2,
+      0
+     ],
+     [
+      "jax",
+      2,
+      2,
+      3
+     ],
+     [
+      "fiora",
+      1,
+      2,
+      0
+     ],
+     [
+      "leesin",
+      5,
+      1,
+      0
+     ],
+     [
+      "yasuo",
+      1,
+      3,
+      3
+     ],
+     [
+      "janna",
+      2,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 2,
+     "enlightened": 2,
+     "exile": 2,
+     "ninja": 2,
+     "adept": 3,
+     "duelist": 5,
+     "mystic": 2
+    },
+    "chosen": "adept",
+    "completed_all": 7,
+    "components_all": 1
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "azir",
+      5,
+      1,
+      0
+     ],
+     [
+      "zilean",
+      5,
+      1,
+      0
+     ],
+     [
+      "sett",
+      5,
+      2,
+      3
+     ],
+     [
+      "leesin",
+      5,
+      1,
+      0
+     ],
+     [
+      "jax",
+      2,
+      2,
+      3
+     ],
+     [
+      "lillia",
+      5,
+      1,
+      0
+     ],
+     [
+      "leesin",
+      5,
+      1,
+      0
+     ],
+     [
+      "warwick",
+      4,
+      2,
+      0
+     ],
+     [
+      "yone",
+      5,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 4,
+     "exile": 1,
+     "the_boss": 1,
+     "brawler": 2,
+     "duelist": 2,
+     "emperor": 1
+    },
+    "chosen": "divine",
+    "completed_all": 7,
+    "components_all": 0
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "kindred",
+      3,
+      2,
+      3
+     ],
+     [
+      "kindred",
+      3,
+      2,
+      2
+     ],
+     [
+      "ashe",
+      4,
+      1,
+      0
+     ],
+     [
+      "warwick",
+      4,
+      2,
+      1
+     ],
+     [
+      "zilean",
+      5,
+      1,
+      0
+     ],
+     [
+      "leesin",
+      5,
+      1,
+      0
+     ],
+     [
+      "lillia",
+      5,
+      1,
+      0
+     ],
+     [
+      "aphelios",
+      2,
+      2,
+      0
+     ],
+     [
+      "ashe",
+      4,
+      2,
+      2
+     ]
+    ],
+    "traits": {
+     "divine": 2,
+     "spirit": 2,
+     "hunter": 4
+    },
+    "chosen": "spirit",
+    "completed_all": 8,
+    "components_all": 1
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "azir",
+      5,
+      1,
+      0
+     ],
+     [
+      "sett",
+      5,
+      1,
+      1
+     ],
+     [
+      "kayn",
+      5,
+      1,
+      0
+     ],
+     [
+      "jarvaniv",
+      2,
+      2,
+      2
+     ],
+     [
+      "xinzhao",
+      3,
+      2,
+      0
+     ],
+     [
+      "garen",
+      1,
+      2,
+      0
+     ],
+     [
+      "katarina",
+      3,
+      2,
+      2
+     ],
+     [
+      "leesin",
+      5,
+      1,
+      0
+     ],
+     [
+      "vi",
+      2,
+      2,
+      2
+     ]
+    ],
+    "traits": {
+     "the_boss": 1,
+     "warlord": 6,
+     "brawler": 2,
+     "duelist": 3,
+     "emperor": 1,
+     "keeper": 2,
+     "tormented": 1
+    },
+    "chosen": "duelist",
+    "completed_all": 7,
+    "components_all": 1
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "janna",
+      2,
+      3,
+      3
+     ],
+     [
+      "yone",
+      5,
+      1,
+      0
+     ],
+     [
+      "leesin",
+      5,
+      1,
+      0
+     ],
+     [
+      "jax",
+      2,
+      2,
+      0
+     ],
+     [
+      "fiora",
+      1,
+      3,
+      3
+     ],
+     [
+      "jax",
+      2,
+      2,
+      0
+     ],
+     [
+      "yasuo",
+      1,
+      3,
+      3
+     ],
+     [
+      "kalista",
+      3,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 2,
+     "enlightened": 3,
+     "exile": 2,
+     "duelist": 5
+    },
+    "chosen": "enlightened",
+    "completed_all": 9,
+    "components_all": 1
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "azir",
+      5,
+      1,
+      0
+     ],
+     [
+      "twistedfate",
+      1,
+      2,
+      1
+     ],
+     [
+      "sett",
+      5,
+      1,
+      3
+     ],
+     [
+      "evelynn",
+      3,
+      2,
+      3
+     ],
+     [
+      "aatrox",
+      4,
+      2,
+      0
+     ],
+     [
+      "kayn",
+      5,
+      1,
+      0
+     ],
+     [
+      "zilean",
+      5,
+      2,
+      0
+     ],
+     [
+      "yone",
+      5,
+      1,
+      0
+     ],
+     [
+      "jhin",
+      4,
+      2,
+      1
+     ]
+    ],
+    "traits": {
+     "cultist": 6,
+     "exile": 1,
+     "the_boss": 1,
+     "emperor": 1,
+     "shade": 2,
+     "tormented": 1
+    },
+    "chosen": "cultist",
+    "completed_all": 8,
+    "components_all": 2
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "ashe",
+      4,
+      2,
+      3
+     ],
+     [
+      "warwick",
+      4,
+      2,
+      0
+     ],
+     [
+      "sett",
+      5,
+      1,
+      1
+     ],
+     [
+      "maokai",
+      1,
+      2,
+      0
+     ],
+     [
+      "leesin",
+      5,
+      1,
+      0
+     ],
+     [
+      "nunu",
+      3,
+      3,
+      0
+     ],
+     [
+      "sylas",
+      2,
+      3,
+      3
+     ],
+     [
+      "lillia",
+      5,
+      1,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 2,
+     "elderwood": 4,
+     "the_boss": 1,
+     "brawler": 5,
+     "hunter": 2
+    },
+    "chosen": "elderwood",
+    "completed_all": 7,
+    "components_all": 1
+   },
+   {
+    "level": 7,
+    "units": [
+     [
+      "kennen",
+      3,
+      3,
+      3
+     ],
+     [
+      "shen",
+      4,
+      1,
+      0
+     ],
+     [
+      "evelynn",
+      3,
+      2,
+      0
+     ],
+     [
+      "zed",
+      2,
+      2,
+      0
+     ],
+     [
+      "akali",
+      3,
+      2,
+      1
+     ],
+     [
+      "pyke",
+      2,
+      2,
+      0
+     ],
+     [
+      "zed",
+      2,
+      2,
+      3
+     ]
+    ],
+    "traits": {
+     "ninja": 4,
+     "assassin": 2,
+     "shade": 3
+    },
+    "chosen": "shade",
+    "completed_all": 7,
+    "components_all": 1
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "azir",
+      5,
+      1,
+      0
+     ],
+     [
+      "xinzhao",
+      3,
+      2,
+      3
+     ],
+     [
+      "lillia",
+      5,
+      1,
+      0
+     ],
+     [
+      "katarina",
+      3,
+      1,
+      1
+     ],
+     [
+      "jarvaniv",
+      2,
+      2,
+      1
+     ],
+     [
+      "garen",
+      1,
+      2,
+      0
+     ],
+     [
+      "katarina",
+      3,
+      2,
+      3
+     ],
+     [
+      "vi",
+      2,
+      2,
+      0
+     ],
+     [
+      "ezreal",
+      5,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "warlord": 6,
+     "emperor": 1,
+     "keeper": 2,
+     "vanguard": 2
+    },
+    "chosen": "vanguard",
+    "completed_all": 8,
+    "components_all": 0
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "azir",
+      5,
+      1,
+      0
+     ],
+     [
+      "kalista",
+      3,
+      2,
+      0
+     ],
+     [
+      "leesin",
+      5,
+      1,
+      0
+     ],
+     [
+      "jax",
+      2,
+      3,
+      2
+     ],
+     [
+      "fiora",
+      1,
+      2,
+      0
+     ],
+     [
+      "jax",
+      2,
+      2,
+      0
+     ],
+     [
+      "yasuo",
+      1,
+      3,
+      3
+     ],
+     [
+      "janna",
+      2,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 2,
+     "enlightened": 2,
+     "exile": 1,
+     "duelist": 6,
+     "emperor": 1
+    },
+    "chosen": "duelist",
+    "completed_all": 5,
+    "components_all": 1
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "kindred",
+      3,
+      2,
+      3
+     ],
+     [
+      "kindred",
+      3,
+      1,
+      0
+     ],
+     [
+      "yone",
+      5,
+      1,
+      0
+     ],
+     [
+      "zilean",
+      5,
+      1,
+      0
+     ],
+     [
+      "shen",
+      4,
+      2,
+      2
+     ],
+     [
+      "irelia",
+      3,
+      2,
+      1
+     ],
+     [
+      "warwick",
+      4,
+      1,
+      0
+     ],
+     [
+      "yuumi",
+      3,
+      2,
+      0
+     ],
+     [
+      "ashe",
+      4,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 2,
+     "enlightened": 2,
+     "exile": 1,
+     "ninja": 1,
+     "spirit": 2,
+     "adept": 3,
+     "hunter": 3,
+     "mystic": 3
+    },
+    "chosen": "enlightened",
+    "completed_all": 6,
+    "components_all": 2
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "jhin",
+      4,
+      2,
+      3
+     ],
+     [
+      "kalista",
+      3,
+      2,
+      0
+     ],
+     [
+      "pyke",
+      2,
+      2,
+      1
+     ],
+     [
+      "evelynn",
+      3,
+      2,
+      3
+     ],
+     [
+      "aatrox",
+      4,
+      2,
+      0
+     ],
+     [
+      "leesin",
+      5,
+      1,
+      0
+     ],
+     [
+      "zilean",
+      5,
+      1,
+      0
+     ],
+     [
+      "sett",
+      5,
+      1,
+      0
+     ],
+     [
+      "lillia",
+      5,
+      1,
+      1
+     ]
+    ],
+    "traits": {
+     "cultist": 6,
+     "the_boss": 1,
+     "duelist": 3
+    },
+    "chosen": "duelist",
+    "completed_all": 8,
+    "components_all": 1
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "ezreal",
+      5,
+      1,
+      0
+     ],
+     [
+      "yone",
+      5,
+      2,
+      0
+     ],
+     [
+      "zilean",
+      5,
+      2,
+      0
+     ],
+     [
+      "leesin",
+      5,
+      1,
+      1
+     ],
+     [
+      "jax",
+      2,
+      2,
+      1
+     ],
+     [
+      "fiora",
+      1,
+      3,
+      3
+     ],
+     [
+      "kayn",
+      5,
+      2,
+      0
+     ],
+     [
+      "yasuo",
+      1,
+      3,
+      3
+     ],
+     [
+      "kalista",
+      3,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 2,
+     "exile": 2,
+     "duelist": 6,
+     "tormented": 1
+    },
+    "chosen": "duelist",
+    "completed_all": 8,
+    "components_all": 1
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "ashe",
+      4,
+      2,
+      3
+     ],
+     [
+      "ashe",
+      4,
+      1,
+      0
+     ],
+     [
+      "sylas",
+      2,
+      2,
+      0
+     ],
+     [
+      "ezreal",
+      5,
+      1,
+      0
+     ],
+     [
+      "nunu",
+      3,
+      2,
+      1
+     ],
+     [
+      "zilean",
+      5,
+      1,
+      0
+     ],
+     [
+      "nunu",
+      3,
+      2,
+      1
+     ],
+     [
+      "azir",
+      5,
+      1,
+      0
+     ],
+     [
+      "sett",
+      5,
+      1,
+      2
+     ]
+    ],
+    "traits": {
+     "elderwood": 3,
+     "the_boss": 1,
+     "brawler": 4,
+     "emperor": 1
+    },
+    "chosen": "brawler",
+    "completed_all": 7,
+    "components_all": 1
+   },
+   {
+    "level": 8,
+    "units": [
+     [
+      "kalista",
+      3,
+      3,
+      2
+     ],
+     [
+      "janna",
+      2,
+      1,
+      0
+     ],
+     [
+      "shen",
+      4,
+      1,
+      0
+     ],
+     [
+      "jax",
+      2,
+      3,
+      1
+     ],
+     [
+      "fiora",
+      1,
+      2,
+      0
+     ],
+     [
+      "leesin",
+      5,
+      1,
+      0
+     ],
+     [
+      "yasuo",
+      1,
+      3,
+      3
+     ],
+     [
+      "janna",
+      2,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "divine": 2,
+     "enlightened": 3,
+     "exile": 1,
+     "ninja": 1,
+     "duelist": 5,
+     "mystic": 2
+    },
+    "chosen": "enlightened",
+    "completed_all": 8,
+    "components_all": 2
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "azir",
+      5,
+      2,
+      0
+     ],
+     [
+      "vi",
+      2,
+      2,
+      3
+     ],
+     [
+      "katarina",
+      3,
+      1,
+      0
+     ],
+     [
+      "jarvaniv",
+      2,
+      2,
+      2
+     ],
+     [
+      "garen",
+      1,
+      2,
+      0
+     ],
+     [
+      "katarina",
+      3,
+      2,
+      3
+     ],
+     [
+      "leesin",
+      5,
+      1,
+      0
+     ],
+     [
+      "zilean",
+      5,
+      1,
+      0
+     ],
+     [
+      "xinzhao",
+      3,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "warlord": 6,
+     "duelist": 2,
+     "emperor": 1,
+     "keeper": 2,
+     "vanguard": 2
+    },
+    "chosen": "vanguard",
+    "completed_all": 8,
+    "components_all": 2
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "azir",
+      5,
+      1,
+      0
+     ],
+     [
+      "vi",
+      2,
+      2,
+      1
+     ],
+     [
+      "kayn",
+      5,
+      1,
+      0
+     ],
+     [
+      "jarvaniv",
+      2,
+      2,
+      0
+     ],
+     [
+      "yone",
+      5,
+      2,
+      0
+     ],
+     [
+      "garen",
+      1,
+      2,
+      0
+     ],
+     [
+      "katarina",
+      3,
+      2,
+      2
+     ],
+     [
+      "sett",
+      5,
+      2,
+      0
+     ],
+     [
+      "xinzhao",
+      3,
+      2,
+      1
+     ]
+    ],
+    "traits": {
+     "exile": 1,
+     "the_boss": 1,
+     "warlord": 6,
+     "brawler": 3,
+     "emperor": 1,
+     "keeper": 2,
+     "tormented": 1
+    },
+    "chosen": "brawler",
+    "completed_all": 6,
+    "components_all": 1
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "kindred",
+      3,
+      3,
+      3
+     ],
+     [
+      "aphelios",
+      2,
+      2,
+      0
+     ],
+     [
+      "yuumi",
+      3,
+      3,
+      0
+     ],
+     [
+      "warwick",
+      4,
+      2,
+      2
+     ],
+     [
+      "sett",
+      5,
+      1,
+      0
+     ],
+     [
+      "zilean",
+      5,
+      1,
+      0
+     ],
+     [
+      "yone",
+      5,
+      1,
+      0
+     ],
+     [
+      "azir",
+      5,
+      1,
+      0
+     ],
+     [
+      "ezreal",
+      5,
+      1,
+      1
+     ]
+    ],
+    "traits": {
+     "exile": 1,
+     "spirit": 3,
+     "the_boss": 1,
+     "brawler": 2,
+     "emperor": 1,
+     "hunter": 3,
+     "mystic": 2
+    },
+    "chosen": "spirit",
+    "completed_all": 6,
+    "components_all": 1
+   },
+   {
+    "level": 9,
+    "units": [
+     [
+      "zilean",
+      5,
+      2,
+      1
+     ],
+     [
+      "xinzhao",
+      3,
+      2,
+      3
+     ],
+     [
+      "ezreal",
+      5,
+      1,
+      0
+     ],
+     [
+      "sett",
+      5,
+      1,
+      0
+     ],
+     [
+      "jarvaniv",
+      2,
+      2,
+      0
+     ],
+     [
+      "garen",
+      1,
+      2,
+      1
+     ],
+     [
+      "katarina",
+      3,
+      2,
+      2
+     ],
+     [
+      "vi",
+      2,
+      2,
+      2
+     ],
+     [
+      "azir",
+      5,
+      2,
+      0
+     ]
+    ],
+    "traits": {
+     "the_boss": 1,
+     "warlord": 6,
+     "brawler": 3,
+     "emperor": 1,
+     "keeper": 2
+    },
+    "chosen": "brawler",
+    "completed_all": 9,
+    "components_all": 2
+   }
+  ]
+ }
+}
