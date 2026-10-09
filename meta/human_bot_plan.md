@@ -12,9 +12,10 @@
 **Tech Stack:** Python 3.11 가상환경, june 시뮬레이터(TFTMuZeroAgent 포크, `fix/set4-accuracy`), numpy. 새 의존성 없음.
 
 **Spec:** [meta/human_bot_design.md](human_bot_design.md) (curt-2 `5562b1c` 뒤 2026-10-08 수정: 선택받은 자 바꾸기,
-캐리와 안정의 뜻. 2026-10-09 수정: 자리 맞추기를 구석 배치로, 시뮬레이터 전투 한계). 실제 자료와 지금 봇 측정은
+캐리와 안정의 뜻. 2026-10-09 수정: 자리 맞추기를 구석 배치로, 시뮬레이터 전투 한계. 2026-10-09 저녁 추가(`4b5a691`):
+9절 덱 밖 5코스트 넣기, 7절 3b단계와 4단계 등수 분포, 「이 봇의 자리」 결정 → Task 6c와 Task 7). 실제 자료와 지금 봇 측정은
 [meta/set4_play.md](set4_play.md), 시뮬레이터 전투가 실제와 얼마나 맞는지는 results/README 「롤체지지 10.24 최종 보드 대전」
-아래 절들.
+아래 절들. Task 6c의 비교 기준은 results/README 「확실한 수정 여섯 뒤 새 기준선」의 사람 봇 숫자다.
 
 ## Global Constraints
 
@@ -26,8 +27,10 @@
 - 손잡이 값의 처음 값은 설계 6절 표를 그대로 쓴다(선택받은 자 덤 10, 아이템 하나 점수 3, 티어 비중 3, 겹침 감점 장당 1,
   제비뽑기 온도 3, 갈아타기 문턱 2단계 10%·3단계 30%·4단계부터 60%, 연승형 문턱 2, 연패형 전환 체력 50, 4-1 남길 골드 20,
   4-5 남길 골드 10, 이자 지킬 골드 50, 체력 기준 40·20, 조각 많음 4개 초과). 1단계 사기 기준(두루 들어가는 정도 6)은 이
-  계획에서 정했다(유닛 58종의 가운데 값).
-- 각 단계(0~3)가 끝나면 기준을 넘는지 보고, 못 넘으면 다음 작업으로 가지 말고 숫자를 유저에게 보고한다.
+  계획에서 정했다(유닛 58종의 가운데 값). 9절 손잡이(Task 6c): 5코스트 시작 레벨 8, 5코스트 사본 상한 3장(2성), 바꿀 덱
+  유닛 비용 상한 4, 큰 특성 기준 4명.
+- 각 단계(0~3, 3b)가 끝나면 기준을 넘는지 보고, 못 넘으면 다음 작업으로 가지 말고 숫자를 유저에게 보고한다.
+- 커밋 메시지 끝의 Co-Authored-By 줄은 그때 세션이 알려 주는 것을 쓴다(2026-10-09 저녁부터 `Claude Fable 5.1`).
 
 ## Review Focus
 
@@ -36,6 +39,10 @@
 - 보드에 모래 병사 같은 소환물이 있을 때: 아이템을 소환물에게 주면 안 된다(Task 3의 검사).
 - 정찰할 다른 플레이어 중 이미 탈락한 플레이어가 있을 때: 그 플레이어의 유닛은 세지 않아야 한다(Task 6의 검사).
 - 덱 점수가 모두 0 이하이거나 6단계 이후일 때: 덱 고르기가 오류 없이 하나를 골라야 한다(Task 6의 검사).
+- 보드에 모래 병사 같은 소환물이 있을 때: 5코스트와 바꿀 후보에서 빼고, 특성 수에도 넣지 않는다(Task 6c의 검사).
+- 큰 특성이 상징 아이템이나 선택받은 자 특성으로 4명을 채우고 있을 때: 그 몫을 세어서 바꿔도 되는지 판단한다(Task 6c의 검사).
+- 벤치가 꽉 찼고 벤치에 5코스트가 있을 때: 레벨 8부터는 5코스트를 팔지 않고 덱 밖 유닛부터 판다(Task 6c의 검사).
+- 덱을 갈아탔을 때: 5코스트와 바꿔 내린 유닛 목록을 비우고 새 덱 유닛을 다시 산다(Task 6c의 검사).
 
 ## 실행 환경
 
@@ -63,6 +70,7 @@ OUT=<임시 폴더>                      # 저장소 밖. 비교용 결과를 �
 | `meta/human_items.py` (새로) | 아이템 판단 `item_action` |
 | `meta/human_macro.py` (새로) | 초반 전략 `early_mode`, 레벨·리롤 `plan`·`action`, `stable`·`carry3`·`stay_level` |
 | `meta/human_deck.py` (새로) | 덱 점수 `score`, 고르기 `choose`, 정찰 `scout`, 1단계 사기 기준 `SPREAD` |
+| `meta/human_five.py` (새로, Task 6c) | 덱 밖 5코스트 넣기: 살 5코스트 고르기 `pick_five`, 내릴 덱 유닛 고르기 `swap_out`, 켜진 특성 `active_traits` |
 | `meta/test_lobby.py` (고침) | 캐리 검사 하나를 더한다 |
 | `meta/test_human_bot.py` (새로) | 사람 봇 검사 |
 
@@ -1741,14 +1749,496 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 
 ---
 
-### Task 7: 4단계 메타 비교 (측정과 보고)
+### Task 6c: 덱 밖 5코스트 넣기 `meta/human_five.py` (3b단계)
+
+설계 9절. 레벨 8부터 상점의 5코스트를 사고(덱 유닛 다음, 켜진 특성에 보태는 쪽 먼저, 같은 이름은 2성까지), 보드에
+빈자리가 없으면 싼 덱 유닛(1~4코스트, 캐리·선택받은 자 아님, 큰 특성이 4명 아래로 안 떨어짐)과 바꾸고, 내려온 유닛은
+그 덱에서 덱 밖으로 쳐서 바로 판다. 덱 봇의 동작은 바뀌지 않는다.
 
 **Files:**
-- Create: `results/human_meta_1024.json`, `results/human_meta_1024_tier0.json`
-- Modify: `results/README.md` (맨 아래에 새 절), `meta/set4_play.md` (5절 추가)
+- Create: `meta/human_five.py`
+- Modify: `meta/lobby.py` (`DeckPolicy.sell`·`swap`이 `self.units` 대신 `self.wanted(player)`를 본다. `buy`는 그대로)
+- Modify: `meta/human_bot.py` (`KNOBS` 넷, `set_board`의 `dropped`, `wanted`·`sell`·`buy`·`swap` 고침)
+- Modify: `meta/play_stats.py` (`board_summary`에 `five_per_board`, 1등 보드 표에 줄 하나)
+- Test: `meta/test_human_bot.py`
 
 **Interfaces:**
-- Consumes: `meta.play_stats`의 `--conditions human`, `--knob tier_weight=0`.
+- Consumes: `DeckPolicy.sell/swap/buy`(`meta/lobby.py`), `HumanPolicy`의 단계 순서(`fill → sell → sell_chosen → buy → swap →
+  transfer_action → item_action → reposition → macro`), `meta.human_deck.copies(units)`·`units_of(player)`,
+  `meta.lobby.carriers(board)`, `meta.decks_1024.trait_counts(names, items, chosen)`·`CHAMPION_TRAITS`,
+  `Simulator.origin_class_stats.tiers`, `Simulator.stats.COST`·`BASE_CHAMPION_LIST`, `Simulator.utils.x_y_to_1d_coord`.
+- Produces: `meta.human_five.FIVE_COSTS`(이름 목록), `active_traits(player) -> set`, `pick_five(player, shop, mask, k) -> int | None`
+  (상점 칸 번호), `swap_out(player, board, five, k) -> (x, y) | None`. `DeckPolicy.wanted(player) -> set`(덱 봇은 `self.units`).
+  `HumanPolicy.dropped`(그 덱에서 5코스트와 바꿔 내린 유닛 이름 집합). `KNOBS`의 `five_level` 8, `five_cap` 3, `swap_cost_max` 4,
+  `big_trait` 4. `board_summary`의 `five_per_board`(보드당 5코스트 장수).
+
+- [ ] **Step 1: 5코스트 사기 검사를 쓴다**
+
+`meta/test_human_bot.py`의 `D = dict(...)` 바로 앞에 더한다. `item_player`에 `level`·`gold`·`chosen` 속성을 쓰므로 검사
+안에서 넣는다.
+
+```python
+def buys_five_cost_from_level_eight_after_deck_units_test():
+    """레벨 8부터 상점의 5코스트를 산다. 덱 유닛이 먼저고, 레벨 7이나 골드 5 미만이면 안 산다(설계 9절)."""
+    from meta.human_bot import HumanPolicy
+    p = item_player([Unit(name='garen', stars=1, items=[], chosen=False)], [])
+    p.chosen, p.gold, p.level = False, 30, 8
+    policy = HumanPolicy(None, SHARPSHOOTERS, [], random.Random(0))
+    # 채움 칸은 바이(덱 밖, 보드에도 없음)라 짝 사기 규칙에 안 걸린다
+    assert policy.buy(p, ['yone', 'jhin', 'vi', 'vi', 'vi'], OPEN) == '3_1'  # 덱 유닛(진)이 먼저
+    assert policy.buy(p, ['vi', 'yone', 'vi', 'vi', 'vi'], OPEN) == '3_1'
+    p.level = 7
+    assert policy.buy(p, ['vi', 'yone', 'vi', 'vi', 'vi'], OPEN) is None
+    p.level, p.gold = 8, 4
+    assert policy.buy(p, ['vi', 'yone', 'vi', 'vi', 'vi'], OPEN) is None
+
+
+def five_cost_prefers_active_trait_and_stops_at_two_star_test():
+    """5코스트가 여럿이면 보드에 켜진 특성에 보태는 쪽을 먼저 사고, 같은 이름은 1성으로 쳐서 3장(2성)까지만 산다.
+    선택받은 자 칸은 덱 규칙에 맡긴다(설계 9절)."""
+    from meta.human_bot import HumanPolicy
+    dusk = [Unit(name='riven', stars=1, items=[], chosen=False), Unit(name='vayne', stars=1, items=[], chosen=False)]
+    p = item_player(dusk, [])  # 황혼 2명 → 황혼이 켜진다
+    p.chosen, p.gold, p.level = False, 30, 8
+    policy = HumanPolicy(None, SHARPSHOOTERS, [], random.Random(0))
+    assert policy.buy(p, ['sett', 'lillia', 'vi', 'vi', 'vi'], OPEN) == '3_1'  # 릴리아(황혼)
+    assert policy.buy(p, ['sett', 'kayn', 'vi', 'vi', 'vi'], OPEN) == '3_0'  # 둘 다 안 보태면 앞 칸
+    p = item_player(dusk, [], [Unit(name='yone', stars=2, items=[], chosen=False)])  # 요네 2성 = 3장
+    p.chosen, p.gold, p.level = False, 30, 8
+    assert policy.buy(p, ['yone', 'vi', 'vi', 'vi', 'vi'], OPEN) is None
+    assert policy.buy(p, ['yone_adept_c', 'vi', 'vi', 'vi', 'vi'], OPEN) is None
+```
+
+- [ ] **Step 2: 실패를 확인한다**
+
+Run: `"$PY" -c "from meta import test_human_bot as t; t.buys_five_cost_from_level_eight_after_deck_units_test()"`
+Expected: `AssertionError`(레벨 8에서 요네를 안 사서 None).
+
+- [ ] **Step 3: `meta/human_five.py`를 만들고 사기를 붙인다**
+
+```python
+"""
+사람 봇의 덱 밖 5코스트 넣기(meta/human_bot_design.md 9절). 레벨 8부터 상점의 5코스트를 사고(덱 유닛 다음), 보드에
+빈자리가 없으면 싼 덱 유닛(1~4코스트, 캐리·선택받은 자 아님, 큰 특성이 4명 아래로 안 떨어짐)과 바꾼다.
+규칙은 롤체지지 10.24 1등 보드 25개와 대조했다(설계 9절 표).
+"""
+from Simulator.origin_class_stats import tiers
+from Simulator.stats import BASE_CHAMPION_LIST, COST
+from meta.decks_1024 import CHAMPION_TRAITS, trait_counts
+from meta.human_deck import copies, units_of
+from meta.lobby import carriers
+
+FIVE_COSTS = sorted(name for name, cost in COST.items() if cost == 5)
+
+
+def board_units(player):
+    """보드의 (x, y, 유닛). 소환물(모래 병사 등)은 뺀다."""
+    return [(x, y, u) for x, row in enumerate(player.board) for y, u in enumerate(row)
+            if u and u.name in BASE_CHAMPION_LIST]
+
+
+def trait_table(units, chosen):
+    """유닛 목록의 특성 수. 시뮬레이터와 같은 방식이다(같은 유닛은 한 번, 상징 아이템은 든 개수만큼, 선택받은 자 특성 +1)."""
+    return trait_counts([u.name for u in units], {u.name: u.items for u in units}, chosen or None)
+
+
+def active_traits(player):
+    """보드에 켜진 특성(첫 단계 이상)."""
+    counts = trait_table([u for _, _, u in board_units(player)], player.chosen)
+    return {t for t, n in counts.items() if t in tiers and n >= tiers[t][0]}
+
+
+def pick_five(player, shop, mask, k):
+    """살 5코스트의 상점 칸 번호. 레벨이 five_level(8) 아래거나 골드가 5 미만이면 None. 켜진 특성에 보태는 수가 많은 쪽을
+    고르고 같으면 앞 칸이다. 같은 이름은 1성으로 쳐서 five_cap(3)장까지만 산다. 선택받은 자 칸('_c')은 덱 규칙에 맡긴다."""
+    if player.level < k['five_level'] or player.gold < 5:
+        return None
+    active = active_traits(player)
+    held = copies(units_of(player))
+    best = None
+    for i, unit in enumerate(shop):
+        if not mask[47 + i][0] or unit.endswith('_c') or unit not in FIVE_COSTS or held.get(unit, 0) >= k['five_cap']:
+            continue
+        score = sum(t in active for t in CHAMPION_TRAITS[unit])
+        if best is None or score > best[0]:
+            best = (score, i)
+    return None if best is None else best[1]
+```
+
+`meta/human_bot.py`:
+- import에 `from meta.human_five import FIVE_COSTS, pick_five, swap_out`를 더한다(`swap_out`은 Step 7에서 만든다. 그때까지는
+  `FIVE_COSTS, pick_five`만 넣는다).
+- `KNOBS`에 더한다: `'five_level': 8, 'five_cap': 3, 'swap_cost_max': 4, 'big_trait': 4` (주석: 설계 9절. 5코스트 시작 레벨,
+  같은 5코스트 사본 상한(1성으로 쳐서), 바꿀 덱 유닛 비용 상한, 큰 특성 기준 인원).
+- `buy`에서 `act = super().buy(player, shop, mask)` 다음을 이렇게 바꾼다.
+
+```python
+        act = super().buy(player, shop, mask)
+        if act:
+            return act
+        i = pick_five(player, shop, mask, self.knobs)  # 덱 밖 5코스트(설계 9절)
+        if i is not None:
+            return '3_' + str(i)
+        if (self.last_round or 0) >= 15:
+            return None
+```
+
+모듈 설명(docstring)에 「덱 밖 5코스트는 meta/human_five.py」를 더한다.
+
+- [ ] **Step 4: 검사 둘이 통과하는지 본다**
+
+Run: `"$PY" -c "from meta import test_human_bot as t; t.buys_five_cost_from_level_eight_after_deck_units_test(); t.five_cost_prefers_active_trait_and_stops_at_two_star_test(); print('ok')"`
+Expected: `ok`
+
+- [ ] **Step 5: 바꾸기 검사를 쓴다**
+
+```python
+FIVE_BOARD = ['nidalee', 'vayne', 'jarvaniv', 'teemo', 'kennen', 'jinx', 'jhin', 'riven']  # 명사수 5(큰 특성), 수호자 3, 황혼 2
+
+
+def full_board(names, bench_names=('yone',), chosen=()):
+    """보드가 꽉 찬 레벨 8 플레이어. x번째 유닛의 칸 번호는 4x, 벤치 칸은 28부터."""
+    units = [Unit(name=n, stars=1, items=[], chosen=(n in chosen and 'keeper')) for n in names]
+    p = item_player(units, [], [Unit(name=n, stars=1, items=[], chosen=False) for n in bench_names])
+    p.chosen, p.gold, p.level = False, 30, 8
+    p.num_units_in_play, p.max_units = len(names), len(names)
+    return p
+
+
+def swaps_cheap_side_unit_for_bench_five_cost_test():
+    """빈자리가 없으면 벤치의 5코스트를 보드의 덱 유닛과 바꾼다. 캐리(진·리븐)와 선택받은 자는 두고, 큰 특성(명사수 5)에
+    안 드는 곁가지 유닛 중 가장 싼 자르반(2코스트)을 내린다. 내린 유닛은 그 덱에서 덱 밖으로 친다(설계 9절)."""
+    from meta.human_bot import HumanPolicy
+    p = full_board(FIVE_BOARD)
+    policy = HumanPolicy(None, SHARPSHOOTERS, [], random.Random(0))
+    assert policy.swap(p) == f'5_{4 * 2}_28'
+    assert policy.dropped == {'jarvaniv'} and 'jarvaniv' not in policy.units
+    p = full_board(FIVE_BOARD, chosen=('jarvaniv',))  # 자르반이 선택받은 자면 다음 곁가지(케넨, 3코스트)
+    assert policy.swap(p) == f'5_{4 * 4}_28'
+    p.level = 7
+    assert policy.swap(p) is None
+
+
+def keeps_big_trait_at_four_and_carriers_test():
+    """큰 특성(4명 이상)이 4명 아래로 떨어지는 바꾸기는 하지 않는다. 캐리만 남으면 바꾸지 않는다(설계 9절)."""
+    from meta.human_bot import HumanPolicy
+    policy = HumanPolicy(None, SHARPSHOOTERS, [], random.Random(0))
+    assert policy.swap(full_board(['nidalee', 'vayne', 'teemo', 'jinx'])) is None  # 명사수 딱 4명
+    assert policy.swap(full_board(['nidalee', 'vayne', 'teemo', 'jinx', 'jhin'])) == f'5_{4 * 0}_28'  # 5명이면 1코스트 니달리
+    assert policy.swap(full_board(['jhin', 'riven'])) is None
+
+
+def swap_counts_emblems_and_chosen_and_skips_summons_test():
+    """큰 특성 수에 상징 아이템과 선택받은 자 특성을 넣고, 소환물은 후보에서 뺀다(Review Focus)."""
+    from Simulator.item_stats import trait_items
+    from meta.human_bot import HumanPolicy
+    policy = HumanPolicy(None, SHARPSHOOTERS, [], random.Random(0))
+    p = full_board(['vayne', 'jhin', 'riven', 'teemo'])  # 황혼 = 베인 + 리븐 + 진의 황혼 망토 + 선택받은 자 = 4(큰 특성)
+    p.board[1][0].items = [trait_items['dusk']]
+    p.chosen = 'dusk'
+    assert policy.swap(p) == f'5_{4 * 3}_28'  # 베인(1코스트)을 내리면 황혼 3이라 안 되고, 티모를 내린다
+    p = full_board(['nidalee', 'vayne', 'teemo', 'jinx', 'jhin'])
+    p.board[5][0] = Unit(name='sandguard', stars=1, items=[], chosen=False)  # 소환물
+    p.num_units_in_play = p.max_units = 6
+    assert policy.swap(p) == f'5_{4 * 0}_28'  # 모래 병사는 후보도 특성 수도 아니다
+
+
+def sells_dropped_unit_right_away_and_forgets_on_switch_test():
+    """5코스트와 바꿔 내린 유닛은 벤치가 안 찼어도 바로 팔고, 덱을 갈아타면 목록을 비운다(설계 9절, Review Focus)."""
+    from meta.human_bot import HumanPolicy
+    from meta.lobby import BOARDS
+    p = item_player([], [], [Unit(name='garen', stars=1, items=[], chosen=False),
+                             Unit(name='jarvaniv', stars=2, items=[], chosen=False)])
+    p.chosen, p.gold, p.level = False, 30, 8
+    policy = HumanPolicy(None, None, [], random.Random(0))
+    policy.set_board(SHARPSHOOTERS)
+    policy.dropped.add('jarvaniv')
+    policy.units.discard('jarvaniv')
+    assert policy.sell(p) == '4_29'
+    policy.set_board(next(b for b in BOARDS if b['name'] == 'Chosen Dusks'))
+    assert policy.dropped == set()
+
+
+def five_cost_replaces_off_deck_unit_and_is_kept_on_full_bench_test():
+    """레벨 8부터 벤치의 5코스트는 보드의 덱 밖 유닛 자리에 올라가고, 벤치가 꽉 차도 팔지 않는다. 레벨 7은 둘 다 아니다
+    (설계 9절, Review Focus). 덱 봇은 그대로 5코스트를 덱 밖으로 본다."""
+    from meta.human_bot import HumanPolicy
+    from meta.lobby import DeckPolicy
+    p = full_board(['garen', 'jhin'])
+    policy = HumanPolicy(None, SHARPSHOOTERS, [], random.Random(0))
+    assert policy.swap(p) == f'5_{4 * 0}_28'
+    assert DeckPolicy(None, SHARPSHOOTERS).swap(p) is None
+    bench = [Unit(name=n, stars=1, items=[], chosen=False) for n in ['yone'] + ['garen'] * 8]
+    p = item_player([], [], bench)
+    p.chosen, p.gold, p.level = False, 30, 8
+    p.bench_full = lambda: True
+    assert policy.sell(p) == '4_29'
+    p.level = 7
+    assert policy.sell(p) == '4_28'
+```
+
+`FIVE_BOARD`, `full_board`와 검사 다섯을 `D = dict(...)` 앞에 둔다. 상징 아이템 검사의 황혼 수 4는 베인·리븐(유닛 2) +
+황혼 망토(1) + 선택받은 자 특성(1)이다. 상징과 선택받은 자를 안 세면 황혼이 2라 큰 특성이 아니고, 그러면 가장 싼
+베인(1코스트)을 내리게 되어 검사가 실패한다.
+
+- [ ] **Step 6: 실패를 확인한다**
+
+Run: `"$PY" -c "from meta import test_human_bot as t; t.swaps_cheap_side_unit_for_bench_five_cost_test()"`
+Expected: `AssertionError`(지금 `swap`은 덱 유닛을 내리지 않아 None).
+
+- [ ] **Step 7: 바꾸기를 만든다**
+
+`meta/human_five.py`에 더한다.
+
+```python
+def swap_out(player, board, five, k):
+    """벤치의 5코스트 five를 올리려고 내릴 보드 유닛의 (x, y). 후보는 1~swap_cost_max(4)코스트이고 캐리·선택받은 자가 아니며,
+    빼고 five를 넣어도 big_trait(4)명 이상이던 특성이 그 아래로 안 떨어지는 유닛. 큰 특성에 안 드는 곁가지 유닛 먼저,
+    그다음 큰 특성 유닛. 같은 묶음에서는 싼 것, 그다음 별이 낮은 것. 없으면 None."""
+    units = board_units(player)
+    before = trait_table([u for _, _, u in units], player.chosen)
+    big = {t for t, n in before.items() if n >= k['big_trait']}
+    picks = []
+    for x, y, u in units:
+        if COST[u.name] > k['swap_cost_max'] or u.name in carriers(board) or u.chosen:
+            continue
+        after = trait_table([v for _, _, v in units if v is not u], player.chosen)
+        for t in CHAMPION_TRAITS[five]:
+            after[t] = after.get(t, 0) + 1
+        if any(after.get(t, 0) < k['big_trait'] for t in big):
+            continue
+        picks.append((any(t in big for t in CHAMPION_TRAITS[u.name]), COST[u.name], u.stars, x, y))
+    if not picks:
+        return None
+    return min(picks)[3:]
+```
+
+`meta/lobby.py`의 `DeckPolicy`: `sell`과 `swap`이 `self.units` 대신 `self.wanted(player)`를 보게 한다(`buy`는 그대로
+`self.units`).
+
+```python
+    def wanted(self, player):
+        """벤치에 두고 보드에 올리는 유닛. 덱 봇은 덱 유닛뿐이다(사람 봇은 레벨 8부터 5코스트를 더한다, 설계 9절)."""
+        return self.units
+
+    def sell(self, player):
+        """벤치가 꽉 차면 원하지 않는 유닛부터 판다."""
+        if not player.bench_full():
+            return None
+        wanted = self.wanted(player)
+        for i, u in enumerate(player.bench):
+            if u.name not in wanted:
+                return '4_' + str(28 + i)
+        return self.agent.sell_bench_full(player)
+
+    def swap(self, player):
+        """벤치의 원하는 유닛을 보드의 원하지 않는 유닛과 바꾼다. 보드에 이미 있는 유닛의 사본은 올리지 않는다."""
+        wanted = self.wanted(player)
+        on_board = {u.name for row in player.board for u in row if u}
+        for i, u in enumerate(player.bench):
+            if u and u.name in wanted and u.name not in on_board:
+                for x, row in enumerate(player.board):
+                    for y, b in enumerate(row):
+                        if b and b.name in BASE_CHAMPION_LIST and b.name not in wanted:
+                            return f'5_{x_y_to_1d_coord(x, y)}_{28 + i}'
+        return None
+```
+
+`meta/human_bot.py`의 `HumanPolicy`:
+
+```python
+    def set_board(self, board):
+        self.dropped = set()  # 이 덱에서 5코스트와 바꿔 내린 덱 유닛. 덱 밖으로 치고 바로 판다(설계 9절)
+        if board is None:
+            ...(그대로)
+
+    def wanted(self, player):
+        """레벨 8부터는 5코스트도 벤치에 두고 보드에 올린다(설계 9절)."""
+        units = super().wanted(player)
+        return units | set(FIVE_COSTS) if player.level >= self.knobs['five_level'] else units
+
+    def sell(self, player):
+        for i, u in enumerate(player.bench):  # 5코스트와 바꿔 내린 유닛은 바로 판다(설계 9절)
+            if u and u.name in self.dropped:
+                return f'4_{28 + i}'
+        if self.board is None:  # (그대로)
+            return self.agent.sell_bench_full(player) if player.bench_full() else None
+        return super().sell(player)
+
+    def swap(self, player):
+        """덱 봇 교체 다음에, 레벨 8부터 빈자리가 없으면 벤치의 5코스트를 싼 덱 유닛과 바꾼다(human_five.swap_out).
+        내린 유닛은 dropped에 넣고 덱 유닛에서 뺀다(다시 사지 않고, 벤치가 안 찼어도 판다)."""
+        act = super().swap(player)
+        if act or not self.board or player.level < self.knobs['five_level'] \
+                or player.num_units_in_play < player.max_units:
+            return act
+        on_board = {u.name for row in player.board for u in row if u}
+        for i, u in enumerate(player.bench):
+            if u and u.name in FIVE_COSTS and u.name not in on_board:
+                spot = swap_out(player, self.board, u.name, self.knobs)
+                if spot:
+                    x, y = spot
+                    self.dropped.add(player.board[x][y].name)
+                    self.units.discard(player.board[x][y].name)
+                    return f'5_{x_y_to_1d_coord(x, y)}_{28 + i}'
+        return None
+```
+
+`item_player`로 만든 가짜 플레이어에는 `bench_full`이 없다. `DeckPolicy.sell`이 부르므로 검사에서
+`p.bench_full = lambda: True`처럼 넣는다(위 검사 참고). `set_board`의 `dropped` 초기화는 `super().set_board` 호출보다 앞에 둔다.
+
+- [ ] **Step 8: 검사 다섯과 기존 검사가 모두 통과하는지 본다**
+
+Run: `"$PY" -m meta.test_human_bot && "$PY" -m meta.test_lobby && "$PY" -m meta.test_real_boards`
+Expected: 모두 `PASS …`로 끝나고 오류 없음(사람 봇 검사 43개, 덱 봇 검사 14개, 실제 보드 검사 6개).
+
+- [ ] **Step 9: 1등 보드 표에 「보드당 5코스트 장수」를 더한다**
+
+검사(`meta/test_human_bot.py`, `D = dict(...)` 앞):
+
+```python
+def board_summary_counts_five_costs_per_board_test():
+    """1등 보드 표의 「보드당 5코스트 장수」(설계 7절 3b단계)."""
+    from meta.play_stats import board_summary
+    boards = [{'units': [['yone', 5, 2, 0], ['sett', 5, 1, 0], ['garen', 1, 2, 0]], 'traits': {}, 'chosen': None},
+              {'units': [['garen', 1, 2, 0]], 'traits': {}, 'chosen': None}]
+    assert board_summary(boards)['five_per_board'] == 1.0
+```
+
+Run: `"$PY" -c "from meta import test_human_bot as t; t.board_summary_counts_five_costs_per_board_test()"`
+Expected: `KeyError: 'five_per_board'`
+
+`meta/play_stats.py`의 `board_summary` 반환 사전에 `'two_star_5cost': two_plus[5],` 다음 줄로
+`'five_per_board': statistics.mean(sum(cost == 5 for _, cost, _, _ in b['units']) for b in boards),`를 더하고,
+`main`의 `keys` 목록에서 `('two_star_5cost', '5코스트 2성 이상', True)` 다음에 `('five_per_board', '보드당 5코스트 장수', False)`를
+넣는다. 모듈 설명의 보드 항목에 「5코스트 장수」를 더한다.
+
+Run: `"$PY" -c "from meta import test_human_bot as t; t.board_summary_counts_five_costs_per_board_test(); print('ok')"`
+Expected: `ok`
+
+- [ ] **Step 10: 3b단계를 잰다**
+
+Run: `"$PY" -m meta.play_stats --games 100 --jobs 7 --conditions default,human --out "$OUT/stage3c.json"`
+Expected(보고할 숫자, `[사람 봇]`과 `1등 보드`. 비교 기준은 새 기준선의 사람 봇):
+- `보드당 5코스트 장수`(사람 봇 1등)가 2.0 이상(기준선 0.67, 실제 3.24).
+- `5코스트 2성 이상`이 25%보다, `9유닛 이상`이 49%보다 높다.
+- 3단계 기준 유지: `큰 특성 없는 보드` 15% 이하(기준선 12%), `선택받은 자가 계열 특성이 아닌 비율` 40~65%(45%),
+  `계열` 첫 몫 35% 이하(17%).
+- `아이템 완성 비율(전체 보드)` 80% 이상(90%), 사람 봇 `초`가 기본 봇의 1.5배 안쪽(246초 대 287초).
+- 한 기준이라도 못 넘으면 Task 7로 가지 말고 숫자를 유저에게 보고한다.
+
+- [ ] **Step 11: 커밋한다**
+
+```bash
+git add meta/human_five.py meta/human_bot.py meta/lobby.py meta/play_stats.py meta/test_human_bot.py
+git commit -m "meta: 사람 봇의 덱 밖 5코스트 넣기(meta/human_five.py), 3b단계 재기
+
+설계 9절: 레벨 8부터 상점의 5코스트를 덱 유닛 다음으로 사고(켜진 특성에 보태는 쪽 먼저, 같은 이름은 2성까지), 빈자리가
+없으면 싼 덱 유닛(1~4코스트, 캐리·선택받은 자 아님, 큰 특성이 4명 아래로 안 떨어짐)과 바꾸고, 내린 유닛은 그 덱에서
+덱 밖으로 쳐서 바로 판다. 덱 봇은 그대로다(sell·swap이 wanted()를 보게만 바꿈). 1등 보드 표에 보드당 5코스트 장수를
+더했다. 검사 6개(Review Focus 넷 포함). 3b단계 측정: (숫자).
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+```
+
+커밋 메시지의 「(숫자)」는 Step 10의 실제 숫자(보드당 5코스트 장수, 5코스트 2성, 레벨 9, 큰 특성 없는 보드)로 바꿔 적는다.
+
+---
+
+### Task 7: 4단계 메타 비교 (측정과 보고)
+
+설계 7절 4단계. 2026-10-09에 등수 분포를 더했다(「이 봇의 자리」 결정): 지금까지는 1등 보드만 봐서 「잘 풀린 판」만
+비교했으니, 계열별 1~8등 비율(특히 8등 비율)을 메타 트렌드의 분포와 나란히 놓는다. 두 자료 모두 「마지막 보드가 이 계열인
+판」의 분포라 같은 종류의 숫자다.
+
+**Files:**
+- Modify: `meta/play_stats.py` (`placement_table`, `real_placements`, 출력과 JSON), `meta/test_human_bot.py`
+- Create: `results/human_meta_1024.json`, `results/human_meta_1024_tier0.json`
+- Modify: `results/README.md` (맨 아래에 새 절), `meta/set4_play.md` (6절 추가. 5절은 실제 보드 대전이 이미 쓰고 있다)
+
+**Interfaces:**
+- Consumes: `meta.play_stats`의 `--conditions human`, `--knob tier_weight=0`, `family(traits)`, `REAL`(롤체지지 JSON의
+  `trends[*]['placements']`는 1~8등 비율 목록, `pick_rate`는 고른 비율).
+- Produces: `placement_table(players) -> {계열: [1등 비율, …, 8등 비율]}`, `real_placements() -> 같은 모양`. 조건별 JSON의
+  `placements`, 전체 JSON의 `real_placements`.
+
+- [ ] **Step 0a: 등수 분포 검사를 쓴다**
+
+`meta/test_human_bot.py`의 `D = dict(...)` 앞에 더한다.
+
+```python
+def placement_table_counts_ranks_by_family_test():
+    """계열별 1~8등 비율(설계 7절 4단계). 실제 쪽은 메타 트렌드 조합의 비율을 고른 비율로 가중 평균한다."""
+    from meta.play_stats import placement_table, real_placements
+    players = [{'place': 1, 'board': {'traits': {'dusk': 4}}}, {'place': 8, 'board': {'traits': {'dusk': 6}}},
+               {'place': 3, 'board': {'traits': {}}}]
+    table = placement_table(players)
+    assert table['dusk'] == [0.5, 0, 0, 0, 0, 0, 0, 0.5] and table['other'][2] == 1.0
+    real = real_placements()
+    assert abs(sum(real['ninja']) - 1) < 1e-6 and real['ninja'][0] > real['ninja'][7]
+```
+
+Run: `"$PY" -c "from meta import test_human_bot as t; t.placement_table_counts_ranks_by_family_test()"`
+Expected: `ImportError: cannot import name 'placement_table'`
+
+- [ ] **Step 0b: 만든다**
+
+`meta/play_stats.py`의 `real_families` 다음에 더한다.
+
+```python
+def placement_table(players):
+    """계열별 1~8등 비율. 마지막 보드가 그 계열인 플레이어들의 등수 분포다."""
+    rows = defaultdict(lambda: [0] * 8)
+    for p in players:
+        rows[family(p['board']['traits'])[0]][p['place'] - 1] += 1
+    return {f: [v / sum(c) for v in c] for f, c in rows.items()}
+
+
+def real_placements():
+    """메타 트렌드 계열별 1~8등 비율. 조합의 1~8등 비율을 고른 비율로 가중 평균한다."""
+    rows = defaultdict(lambda: [0.0] * 9)  # 0~7은 가중 합, 8은 가중치 합
+    for t in json.load(open(REAL, encoding='utf-8'))['trends']:
+        name = family({k.lower(): v for k, v in t['traits'].items()})[0]
+        for i, rate in enumerate(t['placements']):
+            rows[name][i] += t['pick_rate'] * rate
+        rows[name][8] += t['pick_rate']
+    return {f: [v / c[8] for v in c[:8]] for f, c in rows.items()}
+```
+
+`main`에서:
+- `out = {...}`에 `'real_placements': real_placements()`를 더한다.
+- 조건별 사전(`'families': family_table(players),` 옆)에 `'placements': placement_table(players),`를 더한다.
+- `print('  계열 (몫, 평균 등수):', ...)` 다음 줄에 더한다.
+
+```python
+        print('  계열별 등수 분포 (4등 안, 8등):',
+              [(f, fmt(sum(o['placements'][f][:4])), fmt(o['placements'][f][7])) for f, _, _ in o['families'][:8]])
+```
+
+- `print('\n실제 메타 트렌드 계열 (몫, 평균 등수):', ...)` 다음 줄에 더한다.
+
+```python
+    print('실제 메타 트렌드 계열별 등수 분포 (4등 안, 8등):',
+          [(f, fmt(sum(out['real_placements'][f][:4])), fmt(out['real_placements'][f][7])) for f, _, _ in out['real_families']])
+```
+
+모듈 설명의 측정 항목에 「계열별 등수 분포」를 더한다.
+
+Run: `"$PY" -c "from meta import test_human_bot as t; t.placement_table_counts_ranks_by_family_test(); print('ok')"`
+Expected: `ok`
+
+- [ ] **Step 0c: 커밋한다**
+
+```bash
+git add meta/play_stats.py meta/test_human_bot.py
+git commit -m "meta: play_stats에 계열별 등수 분포(1~8등 비율)와 실제 메타 트렌드 분포
+
+설계 7절 4단계(2026-10-09 추가): 1등 보드만 보면 잘 풀린 판만 비교하게 되어, 마지막 보드 계열별 등수 분포를 메타 트렌드
+조합의 분포(고른 비율로 가중 평균)와 나란히 놓는다.
+검사: meta/test_human_bot.py::placement_table_counts_ranks_by_family_test
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+```
 
 - [ ] **Step 1: 사람 봇만 400판을 두 번 돌린다**
 
@@ -1767,23 +2257,30 @@ for name in ('results/human_meta_1024.json', 'results/human_meta_1024_tier0.json
     o = d['사람 봇']
     print(name, '| 1등 계열', o['winners']['families'][:6])
     print('   마지막 보드 계열 (몫, 평균 등수):', [(f, round(s, 3), round(a, 2)) for f, s, a in o['families'][:10]])
+    print('   계열별 등수 분포 (4등 안, 8등):', [(f, round(sum(o['placements'][f][:4]), 2), round(o['placements'][f][7], 2))
+                                           for f, _, _ in o['families'][:10]])
 print('실제 1등 계열:', d['real_winners']['families'])
 print('실제 메타 트렌드 계열:', [(f, round(s, 3), round(a, 2)) for f, s, a in d['real_families']])
+print('실제 계열별 등수 분포 (4등 안, 8등):', [(f, round(sum(d['real_placements'][f][:4]), 2), round(d['real_placements'][f][7], 2))
+                                      for f, _, _ in d['real_families']])
 EOF
 ```
-Expected: 계열별 몫과 평균 등수가 두 설정(티어 비중 3, 0)과 실제 두 자료(1등 보드, 메타 트렌드)로 찍힌다.
+Expected: 계열별 몫·평균 등수·등수 분포가 두 설정(티어 비중 3, 0)과 실제 두 자료(1등 보드, 메타 트렌드)로 찍힌다.
 
 - [ ] **Step 3: 문서에 적는다**
 
 `results/README.md` 맨 아래에 `## 10.24 사람 봇 메타 비교 (날짜)` 절을 더한다. 담을 것:
 - 실행 명령 두 줄과 결과 파일 두 개, june 커밋.
-- 1등 보드 표(실제 1등, 사람 봇 1등: 레벨 9, 5코스트 2성, 완성 아이템, 선택받은 자, 큰 특성 없는 보드).
+- 1등 보드 표(실제 1등, 사람 봇 1등: 레벨 9, 5코스트 2성, 보드당 5코스트 장수, 완성 아이템, 선택받은 자, 큰 특성 없는 보드).
 - 계열 표: 계열 | 사람 봇 몫 | 사람 봇 평균 등수 | 티어 0 몫 | 티어 0 평균 등수 | 실제 메타 트렌드 몫 | 실제 평균 등수
   | 실제 1등 보드 수.
+- 등수 분포 표: 계열 | 사람 봇 4등 안 | 사람 봇 8등 | 실제 4등 안 | 실제 8등 (몫이 큰 계열 8개). 그리고 모든 봇을 합친 등수
+  분포는 정의상 1~8등 각 12.5%라 계열별로만 뜻이 있다고 적는다.
 - 읽은 것: 1티어 덱 계열(황혼 dusk, 신성 divine)이 몫과 평균 등수에서 어디쯤인지, 티어 비중을 0으로 두면 무엇이 바뀌는지,
-  실제와 다른 곳. 인과는 주장하지 않는다(떼어 잰 것만 원인으로 적는다).
+  실제와 다른 곳, 8등 비율이 실제보다 높은 계열(대응이 없는 봇의 한계로 읽는다). 인과는 주장하지 않는다(떼어 잰 것만
+  원인으로 적는다). 이 봇은 「계획을 따르는 봇」이라 결과를 그 한계 안에서 읽는다고 적는다(설계 「이 봇의 자리」).
 
-`meta/set4_play.md`의 `## 출처` 바로 위에 `## 5. 사람 봇 결과` 절을 더하고, 위 표 두 개를 줄여 옮긴 뒤
+`meta/set4_play.md`의 `## 출처` 바로 위에 `## 6. 사람 봇 결과` 절을 더하고, 위 표 세 개를 줄여 옮긴 뒤
 results/README의 새 절로 이어지게 적는다.
 
 - [ ] **Step 4: 커밋하고 올린다**
