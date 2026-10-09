@@ -109,6 +109,15 @@ def board_record(player):
             'completed_all': sum(_worth(i) == 2 for i in held), 'components_all': sum(_worth(i) == 1 for i in held)}
 
 
+def finish_order(ended, players, start_hp, rng):
+    """같은 걸음에 끝난 에이전트를 낮은 등수부터 줄 세운다. 같은 라운드 탈락자는 라운드 전 체력(start_hp)이 적은 쪽이
+    아래이고(공식 10.14 노트: 그 라운드 전 체력이 많은 순서), 체력이 남은 사람(우승자)은 맨 위다. 라운드 전 체력이 같으면
+    rng로 섞은 순서를 따른다. 예전에는 이름순이라 마지막 두 명 중 번호가 큰 쪽이 1등이 됐다."""
+    ended = list(ended)
+    rng.shuffle(ended)
+    return sorted(ended, key=lambda a: (players[a].health > 0, start_hp.get(a, 0)))
+
+
 def carry_share(player, board):
     """목표 덱 캐리 중 보드에서 완성 아이템을 하나 이상 든 비율(보드에 없는 캐리는 못 든 것으로 센다).
     목표 덱이 없으면 None."""
@@ -267,6 +276,7 @@ def play(game, bot='deck', knobs=None):
                 policies[a] = attach_human(players[a], others, random.Random(seed * N_PLAYERS + i), knobs)
         mode = lambda a: getattr(policies.get(a), 'mode', None)
         curve, seen, handed, placement, done, mid, carry, boards = [], set(), {}, {}, {}, {}, {}, {}
+        start_hp, ties = {}, random.Random(seed)  # 라운드 시작 체력, 등수 동점 가르기(게임 난수와 따로)
         rank, guard = N_PLAYERS, 0
         # 종료 신호를 놓치면 루프가 안 끝난다(fullgame/ab_test.py와 같은 상한). 상한에 걸린 판은 아래에서 등수를 메운다.
         while obs and guard < 5000:
@@ -277,6 +287,7 @@ def play(game, bot='deck', knobs=None):
                 game_round, p = info[a]['game_round'], players[a]
                 if (a, game_round) not in seen:
                     seen.add((a, game_round))
+                    start_hp[a] = p.health
                     curve.append((game_round, p.level, p.gold, p.health, mode(a), BOARDS[deck_of[a]]['slow']))
                 if game_round >= 21 and a not in mid:
                     mid[a] = completion(p, BOARDS[deck_of[a]])
@@ -287,10 +298,10 @@ def play(game, bot='deck', knobs=None):
                 actions.append(p.default_policy(game_round, info[a]['shop'], obs[a]['action_mask']))
             decoded = utils.decode_action(actions)
             obs, _, terminated, _, info = env.step({a: decoded[i] for i, a in enumerate(alive)})
-            for a, ended in terminated.items():
-                if ended and a not in placement:
-                    placement[a], rank = rank, rank - 1
-                    done[a], boards[a] = completion(players[a], BOARDS[deck_of[a]]), board_record(players[a])
+            ended = [a for a, e in terminated.items() if e and a not in placement]
+            for a in finish_order(ended, players, start_hp, ties):
+                placement[a], rank = rank, rank - 1
+                done[a], boards[a] = completion(players[a], BOARDS[deck_of[a]]), board_record(players[a])
     for a in deck_of:  # 끝까지 terminated가 안 온 플레이어
         if a not in placement:
             placement[a], rank = rank, rank - 1

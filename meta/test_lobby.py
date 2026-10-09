@@ -144,6 +144,36 @@ def carriers_are_units_with_most_recommended_items_test():
     assert carriers({'items': {'riven': ['a', 'b', 'c'], 'jhin': ['d', 'e']}}) == ['riven']
 
 
+def finish_order_puts_survivor_on_top_and_ranks_by_health_before_round_test():
+    """같은 걸음에 끝난 플레이어의 등수(낮은 등수부터): 같은 라운드 탈락자는 라운드 전 체력이 적은 쪽이 아래(공식 10.14),
+    우승자(체력이 남은 사람)는 맨 위다. 라운드 전 체력이 같으면 이름순이 아니라 무작위다. 예전에는 이름순이라 마지막 두 명
+    중 번호가 큰 쪽이 1등이 됐다(21판 중 10판에서 1등이 끝날 때 체력 0 이하)."""
+    import random
+    from meta.lobby import finish_order
+    players = {'a': Unit(health=-5), 'b': Unit(health=-20), 'c': Unit(health=12), 'd': Unit(health=-1)}
+    start = {'a': 30, 'b': 10, 'c': 5, 'd': 30}
+    for seed in range(5):
+        order = finish_order(['a', 'b', 'c', 'd'], players, start, random.Random(seed))
+        assert order[0] == 'b' and order[-1] == 'c' and set(order[1:3]) == {'a', 'd'}, order
+    firsts = {finish_order(['a', 'd'], players, start, random.Random(seed))[0] for seed in range(20)}
+    assert firsts == {'a', 'd'}, firsts
+
+
+def first_place_is_the_survivor_test():
+    """한 판을 끝까지 돌려서 1등이 끝날 때 체력이 남은 플레이어인지 본다(덱 봇, 시드 2000)."""
+    import random
+    from meta import lobby
+    health = {}
+    record = lobby.board_record
+    lobby.board_record = lambda p: health.__setitem__(p.player_num, p.health) or record(p)
+    try:
+        res = lobby.play((2000, random.Random(2000).sample(range(len(lobby.BOARDS)), 8)), bot='deck')
+    finally:
+        lobby.board_record = record
+    first = next(i for i, p in enumerate(res['players']) if p['place'] == 1)
+    assert health[first] > 0, (health, [p['place'] for p in res['players']])
+
+
 if __name__ == '__main__':
     for name, test in list(globals().items()):
         if name.endswith('_test'):
