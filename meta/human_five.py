@@ -1,7 +1,8 @@
 """
 사람 봇의 덱 밖 5코스트 넣기(meta/human_bot_design.md 9절). 레벨 8부터 상점의 5코스트를 사고(덱 유닛 다음), 보드에
 빈자리가 없으면 싼 덱 유닛(1~4코스트, 캐리·선택받은 자 아님, 큰 특성이 4명 아래로 안 떨어짐)과 바꾼다.
-규칙은 롤체지지 10.24 1등 보드 25개와 대조했다(설계 9절 표).
+규칙은 롤체지지 10.24 1등 보드 25개와 대조했다(설계 9절 표). 목표 덱의 계열이 기준 인원에 모자라면 5코스트보다 계열
+유닛을 먼저 사고 먼저 보드에 올린다(family_buy, family_in).
 """
 from Simulator.origin_class_stats import tiers
 from Simulator.stats import BASE_CHAMPION_LIST, COST
@@ -33,6 +34,42 @@ def deck_family(board):
     return None if name == 'other' else name
 
 
+def family_short(player, board):
+    """목표 덱의 계열 특성이 보드에서 기준 인원(FAMILY_MIN)에 모자라면 그 특성. 채웠거나 계열이 없는 덱이면 None."""
+    trait = deck_family(board)
+    counts = trait_table([u for _, _, u in board_units(player)], player.chosen)
+    return trait if trait and counts.get(trait, 0) < FAMILY_MIN[trait] else None
+
+
+def family_buy(player, shop, mask, units, trait):
+    """계열이 모자랄 때 먼저 살 상점 칸: 아직 없는 계열 유닛(목표 덱 유닛 units 중 계열 특성 trait이 있는 것).
+    선택받은 자 칸은 덱 규칙에 맡긴다. 없으면 None(2026-10-09 유저 결정)."""
+    owned = {u.name for u in units_of(player)}
+    for i, unit in enumerate(shop):
+        if (mask[47 + i][0] and unit in units and unit not in owned and trait in CHAMPION_TRAITS[unit]
+                and COST[unit] <= player.gold):
+            return i
+    return None
+
+
+def family_in(player, board, units, trait):
+    """계열이 모자랄 때 벤치의 계열 유닛을 올릴 자리: (벤치 칸, x, y). 올릴 유닛은 목표 덱 유닛 중 계열 특성이 있고 보드에
+    없는 이름이다. 내릴 유닛은 캐리·선택받은 자가 아니고, 빼고 올리면 계열 특성이 느는 유닛(계열 아닌 유닛이나 같은 이름
+    사본)이다. 덱 밖 유닛 먼저, 그다음 싼 것, 별이 낮은 것. 없으면 None(2026-10-09 유저 결정)."""
+    on_board = board_units(player)
+    names = {u.name for _, _, u in on_board}
+    before = trait_table([u for _, _, u in on_board], player.chosen).get(trait, 0)
+    for i, b in enumerate(player.bench):
+        if not b or b.name not in units or b.name in names or trait not in CHAMPION_TRAITS[b.name]:
+            continue
+        picks = [(u.name in units, COST[u.name], u.stars, x, y) for x, y, u in on_board
+                 if u.name not in carriers(board) and not u.chosen
+                 and trait_table([v for _, _, v in on_board if v is not u] + [b], player.chosen).get(trait, 0) > before]
+        if picks:
+            return (i,) + min(picks)[3:]
+    return None
+
+
 def active_traits(player):
     """보드에 켜진 특성(첫 단계 이상)."""
     counts = trait_table([u for _, _, u in board_units(player)], player.chosen)
@@ -62,11 +99,10 @@ def swap_out(player, board, five, k):
     이미 계열 기준 인원(FAMILY_MIN)을 넘은 계열 특성(그 인원 위로, 2026-10-09 유저 결정)이다. 지키는 특성에 안 드는 곁가지
     유닛 먼저, 그다음 지키는 특성 유닛. 같은 묶음에서는 싼 것, 그다음 별이 낮은 것. 목표 덱의 계열이 아직 기준 인원에
     못 미치면 아무것도 바꾸지 않는다(2026-10-09 유저 결정: 5코스트가 자리를 차지해 마지막 계열 유닛이 못 들어왔다). 없으면 None."""
+    if family_short(player, board):
+        return None
     units = board_units(player)
     before = trait_table([u for _, _, u in units], player.chosen)
-    deck = deck_family(board)
-    if deck and before.get(deck, 0) < FAMILY_MIN[deck]:
-        return None
     floor = {t: k['big_trait'] for t, n in before.items() if n >= k['big_trait']}
     for t, n in FAMILY_MIN.items():
         if before.get(t, 0) >= n:

@@ -4,14 +4,14 @@
 행동할 때마다 할 일이 있는 첫 단계만 움직인다: 보드 채우기 → 벤치 정리 → 다른 특성 선택받은 자 팔기 → 사기 → 교체
 → 캐리 아이템 옮기기 → 아이템 → 자리 맞추기 → 레벨·리롤. 라운드의 첫 행동 때 초반 전략을 정하거나 바꾸고, 2-1부터
 목표 덱을 고르거나 갈아탄다. 아이템은 meta/human_items.py, 레벨·리롤은 meta/human_macro.py, 덱 고르기는
-meta/human_deck.py, 레벨 8부터의 덱 밖 5코스트는 meta/human_five.py에 있고, 자리 맞추기는 구석 배치
+meta/human_deck.py, 레벨 8부터의 덱 밖 5코스트와 계열 먼저 규칙은 meta/human_five.py에 있고, 자리 맞추기는 구석 배치
 (analysis.battle.corner_positions)다.
 """
 from analysis.battle import corner_positions
 from Simulator.stats import COST, round_stage
 from Simulator.utils import x_y_to_1d_coord
 from meta.human_deck import SPREAD, choose, copies, held_items, score, scout, units_of
-from meta.human_five import FIVE_COSTS, pick_five, swap_out
+from meta.human_five import FIVE_COSTS, family_buy, family_in, family_short, pick_five, swap_out
 from meta.human_items import item_action, transfer_action
 from meta.human_macro import action, carry3, early_mode, plan, stable, stay_level
 from meta.lobby import BOARDS, DeckPolicy
@@ -47,9 +47,11 @@ class HumanPolicy(DeckPolicy):
             super().set_board(board)
 
     def wanted(self, player):
-        """레벨 8부터는 5코스트도 벤치에 두고 보드에 올린다(설계 9절)."""
+        """레벨 8부터 목표 덱의 계열을 채웠으면 5코스트도 벤치에 두고 보드에 올린다(설계 9절)."""
         units = super().wanted(player)
-        return units | set(FIVE_COSTS) if player.level >= self.knobs['five_level'] else units
+        if player.level < self.knobs['five_level'] or (self.board and family_short(player, self.board)):
+            return units
+        return units | set(FIVE_COSTS)
 
     def __call__(self, player, shop, game_round, mask):
         self.agent.current_round = game_round
@@ -100,7 +102,8 @@ class HumanPolicy(DeckPolicy):
 
     def buy(self, player, shop, mask):
         """목표 덱이 없으면 짝·두루 들어가는 유닛·처음 본 선택받은 자를, 있으면 덱 유닛·덱 유닛의 선택받은 자(특성
-        상관없이), 레벨 8부터는 덱 밖 5코스트(human_five.pick_five)를 사고 4-1 전까지는 보드 유닛의 짝도 산다."""
+        상관없이), 레벨 8부터는 덱 밖 5코스트(human_five.pick_five)를 사고 4-1 전까지는 보드 유닛의 짝도 산다.
+        덱의 계열이 모자라면 아직 없는 계열 유닛을 맨 먼저 사고, 덱 밖 5코스트는 사지 않는다(설계 9절)."""
         if self.board is None:
             owned = {u.name for u in units_of(player)}
             for i, unit in enumerate(shop):
@@ -113,10 +116,14 @@ class HumanPolicy(DeckPolicy):
                 elif (unit in owned or SPREAD[unit] >= self.knobs['early_spread']) and COST[unit] <= player.gold:
                     return '3_' + str(i)
             return None
+        short = family_short(player, self.board)
+        i = family_buy(player, shop, mask, self.units, short) if short else None
+        if i is not None:
+            return '3_' + str(i)
         act = super().buy(player, shop, mask)
         if act:
             return act
-        i = pick_five(player, shop, mask, self.knobs)  # 덱 밖 5코스트(설계 9절)
+        i = None if short else pick_five(player, shop, mask, self.knobs)  # 덱 밖 5코스트(설계 9절)
         if i is not None:
             return '3_' + str(i)
         if (self.last_round or 0) >= 15:
@@ -128,8 +135,15 @@ class HumanPolicy(DeckPolicy):
         return None
 
     def swap(self, player):
-        """덱 봇 교체 다음에, 레벨 8부터 빈자리가 없으면 벤치의 5코스트를 싼 덱 유닛과 바꾼다(human_five.swap_out).
-        내린 유닛은 dropped에 넣고 덱 유닛에서 뺀다(다시 사지 않고, 벤치가 안 찼어도 판다)."""
+        """덱의 계열이 모자라면 벤치의 계열 유닛을 먼저 올린다(human_five.family_in). 그다음 덱 봇 교체, 그다음 레벨 8부터
+        빈자리가 없으면 벤치의 5코스트를 싼 덱 유닛과 바꾼다(human_five.swap_out). 내린 유닛은 dropped에 넣고 덱 유닛에서
+        뺀다(다시 사지 않고, 벤치가 안 찼어도 판다). 같은 이름 사본이 보드에 남으면 빼지 않는다(남은 사본까지 일반 교체로
+        내려가 계열이 깨졌다)."""
+        short = self.board and family_short(player, self.board)
+        spot = family_in(player, self.board, self.units, short) if short else None
+        if spot:
+            i, x, y = spot
+            return f'5_{x_y_to_1d_coord(x, y)}_{28 + i}'
         act = super().swap(player)
         if act or not self.board or player.level < self.knobs['five_level'] \
                 or player.num_units_in_play < player.max_units:
@@ -140,8 +154,10 @@ class HumanPolicy(DeckPolicy):
                 spot = swap_out(player, self.board, u.name, self.knobs)
                 if spot:
                     x, y = spot
-                    self.dropped.add(player.board[x][y].name)
-                    self.units.discard(player.board[x][y].name)
+                    name = player.board[x][y].name
+                    if sum(v.name == name for row in player.board for v in row if v) == 1:
+                        self.dropped.add(name)
+                        self.units.discard(name)
                     return f'5_{x_y_to_1d_coord(x, y)}_{28 + i}'
         return None
 

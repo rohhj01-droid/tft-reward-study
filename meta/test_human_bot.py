@@ -301,10 +301,18 @@ def macro_knobs_for_gold_after_stage_five_test():
     assert [act(9, 30), act(9, 30, floor_9=20)] == ['0', '2']
 
 
+def plain(names):
+    """1성, 아이템 없음, 선택받은 자 아닌 유닛 목록."""
+    return [Unit(name=n, stars=1, items=[], chosen=False) for n in names]
+
+
+SHOOTERS4 = ['nidalee', 'vayne', 'teemo', 'jinx']  # SHARPSHOOTERS 덱의 계열(명사수 4)을 채운다
+
+
 def buys_five_cost_from_level_eight_after_deck_units_test():
-    """레벨 8부터 상점의 5코스트를 산다. 덱 유닛이 먼저고, 레벨 7이나 골드 5 미만이면 안 산다(설계 9절)."""
+    """계열을 채운 보드면 레벨 8부터 상점의 5코스트를 산다. 덱 유닛이 먼저고, 레벨 7이나 골드 5 미만이면 안 산다(설계 9절)."""
     from meta.human_bot import HumanPolicy
-    p = item_player([Unit(name='garen', stars=1, items=[], chosen=False)], [])
+    p = item_player(plain(SHOOTERS4), [])
     p.chosen, p.gold, p.level = False, 30, 8
     policy = HumanPolicy(None, SHARPSHOOTERS, [], random.Random(0))
     # 채움 칸은 바이(덱 밖, 보드에도 없음)라 짝 사기 규칙에 안 걸린다
@@ -320,8 +328,8 @@ def five_cost_prefers_active_trait_and_stops_at_two_star_test():
     """5코스트가 여럿이면 보드에 켜진 특성에 보태는 쪽을 먼저 사고, 같은 이름은 1성으로 쳐서 3장(2성)까지만 산다.
     선택받은 자 칸은 덱 규칙에 맡긴다(설계 9절)."""
     from meta.human_bot import HumanPolicy
-    dusk = [Unit(name='riven', stars=1, items=[], chosen=False), Unit(name='vayne', stars=1, items=[], chosen=False)]
-    p = item_player(dusk, [])  # 황혼 2명 → 황혼이 켜진다
+    dusk = plain(['riven'] + SHOOTERS4)  # 황혼 2명(리븐·베인) → 황혼이 켜진다. 명사수 4명으로 계열을 채웠다
+    p = item_player(dusk, [])
     p.chosen, p.gold, p.level = False, 30, 8
     policy = HumanPolicy(None, SHARPSHOOTERS, [], random.Random(0))
     assert policy.buy(p, ['sett', 'lillia', 'vi', 'vi', 'vi'], OPEN) == '3_1'  # 릴리아(황혼)
@@ -428,21 +436,94 @@ def sells_dropped_unit_right_away_and_forgets_on_switch_test():
 
 
 def five_cost_replaces_off_deck_unit_and_is_kept_on_full_bench_test():
-    """레벨 8부터 벤치의 5코스트는 보드의 덱 밖 유닛 자리에 올라가고, 벤치가 꽉 차도 팔지 않는다. 레벨 7은 둘 다 아니다
-    (설계 9절, Review Focus). 덱 봇은 그대로 5코스트를 덱 밖으로 본다."""
+    """계열을 채운 보드면 레벨 8부터 벤치의 5코스트는 보드의 덱 밖 유닛 자리에 올라가고, 벤치가 꽉 차도 팔지 않는다.
+    레벨 7은 둘 다 아니다(설계 9절, Review Focus). 덱 봇은 그대로 5코스트를 덱 밖으로 본다."""
     from meta.human_bot import HumanPolicy
     from meta.lobby import DeckPolicy
-    p = full_board(['garen', 'jhin'])
+    p = full_board(['garen'] + SHOOTERS4)
     policy = HumanPolicy(None, SHARPSHOOTERS, [], random.Random(0))
     assert policy.swap(p) == f'5_{4 * 0}_28'
     assert DeckPolicy(None, SHARPSHOOTERS).swap(p) is None
     bench = [Unit(name=n, stars=1, items=[], chosen=False) for n in ['yone'] + ['garen'] * 8]
-    p = item_player([], [], bench)
+    p = item_player(plain(SHOOTERS4), [], bench)
     p.chosen, p.gold, p.level = False, 30, 8
     p.bench_full = lambda: True
     assert policy.sell(p) == '4_29'
     p.level = 7
     assert policy.sell(p) == '4_28'
+
+
+WARLORDS5 = ['garen', 'nidalee', 'jarvaniv', 'vi', 'katarina']  # Chosen Warlords의 계열(총사령관 6)에 하나 모자람
+
+
+def buys_missing_family_unit_first_test():
+    """목표 덱의 계열이 기준 인원에 모자라면 아직 없는 계열 유닛을 다른 덱 유닛보다 먼저 산다. 채웠으면 상점 순서대로다
+    (유저 결정 2026-10-09: 계열 없는 1등 보드 절반이 결투가·총사령관 5명에서 멈췄다)."""
+    from meta.human_bot import HumanPolicy
+    from meta.lobby import BOARDS
+    warlords = next(b for b in BOARDS if b['name'] == 'Chosen Warlords')
+    p = item_player(plain(WARLORDS5), [])
+    p.chosen, p.gold, p.level = False, 30, 7
+    policy = HumanPolicy(None, warlords, [], random.Random(0))
+    shop = ['pyke', 'vi', 'xinzhao', 'lulu', 'lulu']
+    assert policy.buy(p, shop, OPEN) == '3_2'  # 파이크(덱 유닛, 계열 아님)·바이(이미 있음)보다 신짜오
+    p.board[5][0] = plain(['xinzhao'])[0]  # 총사령관 6명
+    assert policy.buy(p, shop, OPEN) == '3_0'
+
+
+def no_off_deck_five_cost_before_family_is_complete_test():
+    """계열을 채우기 전에는 덱 밖 5코스트를 사지 않고 원하는 유닛으로도 치지 않는다: 벤치가 차면 먼저 팔고, 보드에 있으면
+    덱 유닛과 바꾼다. 채우면 레벨 8 규칙 그대로다(유저 결정 2026-10-09)."""
+    from meta.human_bot import HumanPolicy
+    from meta.lobby import BOARDS
+    warlords = next(b for b in BOARDS if b['name'] == 'Chosen Warlords')
+    policy = HumanPolicy(None, warlords, [], random.Random(0))
+    p = item_player(plain(WARLORDS5), [], plain(['yone'] + ['lulu'] * 8))
+    p.chosen, p.gold, p.level = False, 30, 8
+    p.bench_full = lambda: True
+    shop = ['yone', 'lulu', 'lulu', 'lulu', 'lulu']
+    assert policy.buy(p, shop, OPEN) is None
+    assert policy.sell(p) == '4_28'  # 요네부터 판다
+    p.board[5][0] = plain(['xinzhao'])[0]  # 총사령관 6명
+    assert policy.buy(p, shop, OPEN) == '3_0'
+    assert policy.sell(p) == '4_29'
+    p = full_board(WARLORDS5 + ['yone'], bench_names=('pyke',))
+    assert policy.swap(p) == f'5_{4 * 5}_28'  # 보드의 요네를 덱 유닛 파이크와 바꾼다
+
+
+def puts_family_unit_on_board_before_other_units_test():
+    """계열이 모자라면 벤치의 계열 유닛(목표 덱 유닛)을 보드의 계열 아닌 유닛과 바꾼다. 덱 밖 유닛 먼저, 그다음 싼 것이고,
+    같은 이름 사본도 후보다. 캐리와 선택받은 자는 두고, 계열을 채웠으면 하지 않는다(유저 결정 2026-10-09)."""
+    from meta.human_bot import HumanPolicy
+    from meta.lobby import BOARDS
+    deck = {b['name']: b for b in BOARDS}
+
+    def swap(name, names, bench, level=8, chosen=()):
+        p = full_board(names, bench_names=(bench,), chosen=chosen)
+        p.level = level
+        return HumanPolicy(None, deck[name], [], random.Random(0)).swap(p)
+
+    duel = ['fiora', 'yasuo', 'jax', 'kalista', 'janna', 'shen']  # 결투가 4명(계열 6명), 캐리는 야스오
+    assert swap('Chosen Duelists', duel + ['yone'], 'leesin', level=7) == f'5_{4 * 4}_28'  # 잔나(2코스트)
+    assert swap('Chosen Duelists', duel + ['sett'], 'leesin', level=7) == f'5_{4 * 6}_28'  # 덱 밖 세트 먼저
+    nidalee2 = ['garen', 'nidalee', 'nidalee', 'jarvaniv', 'vi', 'katarina', 'pyke']  # 총사령관 5명
+    assert swap('Chosen Warlords', nidalee2, 'xinzhao', level=7) == f'5_{4 * 1}_28'  # 니달리 사본(1코스트)
+    cult = ['elise', 'pyke', 'kalista', 'aatrox', 'jhin']  # 사교도 5명(계열 6명), 캐리는 리븐
+    assert swap('Dusk Cultists', cult + ['riven'], 'zilean') is None  # 남은 후보가 캐리뿐
+    assert swap('Dusk Cultists', cult + ['cassiopeia'], 'zilean', chosen=('cassiopeia',)) is None  # 선택받은 자
+    assert swap('Chosen Warlords', WARLORDS5 + ['xinzhao', 'pyke'], 'azir', level=7) is None  # 총사령관 6명이면 안 한다
+
+
+def swapping_one_of_two_copies_keeps_the_unit_in_deck_test():
+    """5코스트와 바꿔 내린 유닛의 사본이 보드에 남으면 그 이름을 덱 밖으로 치지 않는다. 치면 남은 사본이 지키는 인원 검사
+    없이 일반 교체로 내려가 계열이 깨졌다(3b단계 진단 2026-10-09: 총사령관·명사수·사교도 1등 보드가 바꾸기 뒤 계열을 잃음)."""
+    from meta.human_bot import HumanPolicy
+    from meta.lobby import BOARDS
+    warlords = next(b for b in BOARDS if b['name'] == 'Chosen Warlords')
+    p = full_board(['garen', 'garen', 'nidalee', 'jarvaniv', 'vi', 'katarina', 'xinzhao', 'azir'])  # 총사령관 7명
+    policy = HumanPolicy(None, warlords, [], random.Random(0))
+    assert policy.swap(p) == f'5_{4 * 0}_28'
+    assert policy.dropped == set() and 'garen' in policy.units
 
 
 def board_summary_counts_five_costs_per_board_test():
