@@ -161,6 +161,74 @@ def human_policy_places_items_before_leveling_test():
     assert p.default_policy(12, ['garen'] * 5, FULL) == f'6_{0}_0'
 
 
+K = {'win_threshold': 2, 'lose_hp': 50, 'keep': 50, 'floor_41': 20, 'floor_45': 10, 'hp_low': 40, 'hp_all_in': 20}
+
+
+def plan_follows_design_curves_test():
+    """설계 3·4절의 레벨 곡선과 남길 골드. 칸: 2-1 = 3, 2-5 = 6, 3-1 = 9, 3-2 = 10, 4-1 = 15, 4-5 = 18, 5-1 = 21."""
+    from meta.human_macro import plan
+    cases = [
+        ((3, 3, 90, 'win', False, None, False, False), (4, 50)),     # 연승형 2-1에 4, 넘는 몫은 리롤
+        ((6, 4, 90, 'win', False, None, False, False), (5, 50)),     # 연승형 2-5에 5
+        ((9, 5, 90, 'win', False, None, False, False), (6, 50)),     # 연승형 3-1에 6
+        ((6, 4, 90, 'lose', False, None, False, False), (4, None)),  # 연패형은 모으기만
+        ((10, 4, 60, 'lose', True, None, False, False), (6, 20)),    # 연패형이 보드를 세운다
+        ((15, 7, 60, 'win', False, None, False, False), (7, 20)),    # 4-1에 7, 안정이 아니면 20까지
+        ((15, 7, 60, 'win', False, None, False, True), (7, 50)),     # 안정이면 50을 지킨다
+        ((18, 8, 60, 'win', False, None, False, False), (8, 10)),    # 4-5에 8, 안정이 아니면 10까지
+        ((9, 5, 90, 'win', False, 5, False, False), (5, 50)),        # 느린 리롤(1코스트 캐리)은 5에 머문다
+        ((15, 6, 60, 'win', False, 7, False, False), (7, None)),     # 3코스트 캐리는 7까지 올리고 그다음 리롤
+        ((12, 6, 60, 'win', False, 6, True, False), (8, 50)),        # 캐리가 3성이면 8로
+        ((16, 7, 35, 'win', False, None, False, True), (7, 10)),     # 4단계 체력 40 아래면 10까지
+        ((16, 7, 15, 'win', False, None, False, True), (7, 0)),      # 20 아래면 다 쓴다
+    ]
+    for args, expected in cases:
+        assert plan(*args, K) == expected, (args, plan(*args, K), expected)
+
+
+def action_spends_in_order_test():
+    """목표 레벨까지 경험치 → 5단계 레벨 8에서 안정이면 50 넘는 몫을 경험치(9로) → 남길 골드까지 리롤."""
+    from meta.human_macro import action
+    assert action(30, 6, 7, 20, False) == '1'
+    assert action(60, 8, 8, 50, True) == '1'
+    assert action(53, 8, 8, 50, True) == '2'
+    assert action(21, 7, 7, 20, False) == '0'
+    assert action(80, 9, 8, 50, True) == '2'
+
+
+def early_mode_and_board_state_test():
+    """초반 세기(2성 수 + 완성 아이템 수)로 전략을 고르고, 안정과 캐리 3성을 본다."""
+    from meta.human_macro import carry3, early_mode, stable
+    strong = item_player([Unit(name='garen', stars=2, items=[]), Unit(name='vayne', stars=2, items=[])], [])
+    weak = item_player([Unit(name='garen', stars=2, items=[]), Unit(name='vayne', stars=1, items=[])], [])
+    assert early_mode(strong, K) == 'win' and early_mode(weak, K) == 'lose'
+    half = item_player([Unit(name='jhin', stars=1, items=[]), Unit(name='riven', stars=2, items=[])], [])
+    both = item_player([Unit(name='jhin', stars=2, items=[]), Unit(name='riven', stars=2, items=[])], [])
+    assert not stable(half, SHARPSHOOTERS) and stable(both, SHARPSHOOTERS)
+    brawlers = {'name': 'b', 'tier': 'A', 'slow': False, 'units': ['ashe', 'sett'],
+                'items': {'ashe': ['a', 'b', 'c'], 'sett': ['d', 'e', 'f']}}
+    assert stable(item_player([Unit(name='ashe', stars=2, items=[]), Unit(name='sett', stars=1, items=[])], []), brawlers)
+    ninja = {'name': 'n', 'tier': 'S', 'slow': True, 'units': ['zed', 'akali'],
+             'items': {'zed': ['a', 'b', 'c'], 'akali': ['d', 'e', 'f']}}
+    assert carry3(item_player([Unit(name='zed', stars=3, items=[])], []), ninja)
+    assert not carry3(item_player([Unit(name='akali', stars=3, items=[])], []), ninja)
+
+
+def update_mode_switches_and_rebuilds_test():
+    """연승형이 2~3단계에 두 번 연달아 지면 연패형으로, 연패형은 3-2나 체력 50 아래에서 보드를 세운다."""
+    from meta.human_bot import HumanPolicy
+    p = item_player([Unit(name='garen', stars=2, items=[]), Unit(name='vayne', stars=2, items=[])], [])
+    p.loss_streak, p.health = 0, 90
+    policy = HumanPolicy(None, SHARPSHOOTERS, [], random.Random(0))
+    policy.update_mode(p, 3)
+    assert policy.mode == 'win'
+    p.loss_streak = 2
+    policy.update_mode(p, 8)
+    assert policy.mode == 'lose' and not policy.rebuilt
+    policy.update_mode(p, 10)
+    assert policy.rebuilt
+
+
 if __name__ == '__main__':
     for name, test in list(globals().items()):
         if name.endswith('_test'):

@@ -2,15 +2,17 @@
 사람처럼 노는 봇(meta/human_bot_design.md). 기본 봇 위에 얹는 정책 하나로, 1라운드부터 끝까지 맡는다.
 
 행동할 때마다 할 일이 있는 첫 단계만 움직인다: 보드 채우기 → 벤치 정리 → 사기 → 교체 → 아이템 → 자리 맞추기 → 레벨·리롤.
-지금(1단계)은 덱 봇 규칙에 아이템(meta/human_items.py)을 더했고, 자리 맞추기는 구석 배치다. 초반 전략과 레벨·리롤
-(2단계), 덱 고르기(3단계)를 차례로 더한다.
+라운드의 첫 행동 때 초반 전략(연승형·연패형)을 정하거나 바꾼다. 아이템은 meta/human_items.py, 레벨·리롤은
+meta/human_macro.py에 있고, 자리 맞추기는 구석 배치(analysis.battle.corner_positions)다. 덱 고르기(3단계)는 다음에 더한다.
 """
 from analysis.battle import corner_positions
+from Simulator.stats import round_stage
 from Simulator.utils import x_y_to_1d_coord
 from meta.human_items import item_action
+from meta.human_macro import action, carry3, early_mode, plan, stable, stay_level
 from meta.lobby import DeckPolicy
 
-KNOBS = {}  # 손잡이 값(설계 6절). 단계마다 채운다
+KNOBS = {'win_threshold': 2, 'lose_hp': 50, 'keep': 50, 'floor_41': 20, 'floor_45': 10, 'hp_low': 40, 'hp_all_in': 20}
 
 
 class HumanPolicy(DeckPolicy):
@@ -19,15 +21,30 @@ class HumanPolicy(DeckPolicy):
         self.others = others  # 다른 플레이어(정찰)
         self.rng = rng        # 이 플레이어의 난수(시드 고정)
         self.knobs = dict(KNOBS, **(knobs or {}))
-        self.moves, self.mode, self.rebuilt, self.switches, self.last_round = {}, 'win', False, 0, None
+        self.moves, self.mode, self.rebuilt, self.switches, self.last_round = {}, None, False, 0, None
         self.choose_decks = board is None
         self.set_board(board)
 
     def __call__(self, player, shop, game_round, mask):
         self.agent.current_round = game_round
+        if game_round != self.last_round:
+            self.last_round = game_round
+            self.update_mode(player, game_round)
         return (self.fill(player, shop, mask) or self.sell(player) or self.buy(player, shop, mask)
-                or self.swap(player) or item_action(player, self.board, self.mode, game_round, mask)
+                or self.swap(player) or item_action(player, self.board, self.mode or 'win', game_round, mask)
                 or self.reposition(player, game_round) or self.macro(player, game_round))
+
+    def update_mode(self, player, game_round):
+        """2-1에 초반 전략을 고르고, 연승형이 2~3단계에 두 번 연달아 지면 연패형으로 바꾼다.
+        연패형은 3-2가 되거나 체력이 손잡이 값(50) 아래로 내려가면 보드를 세운다(rebuilt)."""
+        if game_round < 3:
+            return
+        if self.mode is None:
+            self.mode = early_mode(player, self.knobs)
+        if self.mode == 'win' and game_round < 15 and player.loss_streak >= 2:
+            self.mode, self.rebuilt = 'lose', False
+        if self.mode == 'lose' and not self.rebuilt and (game_round >= 10 or player.health < self.knobs['lose_hp']):
+            self.rebuilt = True
 
     def reposition(self, player, game_round):
         """자리 맞추기(설계 1절 7번): 원거리는 뒷줄 구석부터 아이템 많은 순, 근접은 앞줄 가운데부터
@@ -43,6 +60,16 @@ class HumanPolicy(DeckPolicy):
                 self.moves[game_round] = self.moves.get(game_round, 0) + 1
                 return f'5_{x_y_to_1d_coord(x, y)}_{x_y_to_1d_coord(tx, ty)}'
         return None
+
+    def macro(self, player, game_round):
+        board = self.board
+        stay = stay_level(board)
+        done3 = stay is not None and carry3(player, board)
+        steady = bool(board) and stable(player, board)
+        target, floor = plan(game_round, player.level, player.health, self.mode or 'win', self.rebuilt, stay,
+                             done3, steady, self.knobs)
+        exp_first = round_stage(game_round) >= 5 and player.level == 8 and steady
+        return action(player.gold, player.level, target, floor, exp_first)
 
 
 def attach_human(player, others, rng, knobs=None, board=None):
