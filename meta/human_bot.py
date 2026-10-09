@@ -16,7 +16,9 @@ from meta.lobby import BOARDS, DeckPolicy
 
 KNOBS = {'win_threshold': 2, 'lose_hp': 50, 'keep': 50, 'floor_41': 20, 'floor_45': 10, 'hp_low': 40, 'hp_all_in': 20,
          'chosen_bonus': 10, 'item_point': 3, 'tier_weight': 3, 'contest': 1, 'temperature': 3,
-         'switch': {2: 0.1, 3: 0.3, 4: 0.6}, 'early_spread': 6}
+         'switch': {2: 0.1, 3: 0.3, 4: 0.6}, 'early_spread': 6,
+         # 떼어 재기용: 5단계 레벨 8에서 50 넘는 몫을 경험치(9로)에 쓰는가(0이면 리롤), 레벨 9에서 남길 골드(None이면 50)
+         'xp_to_9': 1, 'floor_9': None}
 
 
 class HumanPolicy(DeckPolicy):
@@ -141,8 +143,10 @@ class HumanPolicy(DeckPolicy):
         steady = bool(board) and stable(player, board)
         target, floor = plan(game_round, player.level, player.health, self.mode or 'win', self.rebuilt, stay,
                              done3, steady, self.knobs, rebuild_now=self.rebuilt_at == game_round)
+        if player.level >= 9 and floor is not None and self.knobs['floor_9'] is not None:
+            floor = min(floor, self.knobs['floor_9'])
         # 5단계 레벨 8이면 안정 여부와 상관없이 50 넘는 몫으로 9로 간다(유저 결정 2026-10-09). 9가 되면 넘는 몫은 리롤
-        exp_first = round_stage(game_round) >= 5 and player.level == 8
+        exp_first = bool(self.knobs['xp_to_9']) and round_stage(game_round) >= 5 and player.level == 8
         return action(player.gold, player.level, target, floor, exp_first)
 
 

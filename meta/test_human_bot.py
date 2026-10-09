@@ -285,6 +285,22 @@ def macro_buys_exp_toward_nine_without_stability_test():
     assert policy.macro(p, 21) == '1'
 
 
+def macro_knobs_for_gold_after_stage_five_test():
+    """떼어 재기 손잡이. xp_to_9=0이면 5단계 레벨 8에서 경험치 대신 50 넘는 몫으로 리롤한다(기본 봇처럼). floor_9를 주면
+    레벨 9에서 그만큼만 남기고 리롤한다. 둘 다 안 주면 지금 규칙 그대로다(경험치로 9, 9에서는 50을 지킨다)."""
+    from meta.human_bot import HumanPolicy
+
+    def act(level, gold, **knobs):
+        p = item_player([Unit(name='garen', stars=2, items=[])], [])
+        p.level, p.gold, p.health = level, gold, 50
+        policy = HumanPolicy(None, SHARPSHOOTERS, [], random.Random(0), knobs)
+        policy.mode = 'win'
+        return policy.macro(p, 21)
+
+    assert [act(8, 60), act(8, 60, xp_to_9=0)] == ['1', '2']
+    assert [act(9, 30), act(9, 30, floor_9=20)] == ['0', '2']
+
+
 D = dict(K, chosen_bonus=10, item_point=3, tier_weight=3, contest=1, temperature=3,
          switch={2: 0.1, 3: 0.3, 4: 0.6}, early_spread=6)
 
