@@ -370,6 +370,17 @@ def keeps_big_trait_at_four_and_carriers_test():
     assert policy.swap(full_board(['jhin', 'riven'])) is None
 
 
+def keeps_family_trait_at_family_threshold_test():
+    """계열 특성은 계열 기준 인원까지 지킨다(유저 결정 2026-10-09: 3b단계 첫 측정에서 1등 보드 52%가 계열을 잃었다).
+    총사령관은 6명부터 계열이라(meta/play_stats.py의 FAMILIES) 6명이면 하나도 못 내리고, 7명이면 하나는 내린다."""
+    from meta.human_bot import HumanPolicy
+    from meta.lobby import BOARDS
+    warlords = next(b for b in BOARDS if b['name'] == 'Chosen Warlords')  # 캐리는 카타리나
+    six = ['garen', 'nidalee', 'jarvaniv', 'vi', 'katarina', 'xinzhao']
+    assert HumanPolicy(None, warlords, [], random.Random(0)).swap(full_board(six)) is None
+    assert HumanPolicy(None, warlords, [], random.Random(0)).swap(full_board(six + ['azir'])) == f'5_{4 * 0}_28'
+
+
 def swap_counts_emblems_and_chosen_and_skips_summons_test():
     """큰 특성 수에 상징 아이템과 선택받은 자 특성을 넣고, 소환물은 후보에서 뺀다(Review Focus)."""
     from Simulator.item_stats import trait_items

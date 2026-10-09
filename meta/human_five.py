@@ -8,8 +8,11 @@ from Simulator.stats import BASE_CHAMPION_LIST, COST
 from meta.decks_1024 import CHAMPION_TRAITS, trait_counts
 from meta.human_deck import copies, units_of
 from meta.lobby import carriers
+from meta.play_stats import FAMILIES
 
 FIVE_COSTS = sorted(name for name, cost in COST.items() if cost == 5)
+# 계열 특성의 기준 인원(결투가·사교도·총사령관 6, 사냥꾼·엘더우드·포츈 3, 나머지 4). 평가와 실제 자료 분류에 쓰는 표 그대로다
+FAMILY_MIN = {name: n for name, n, _ in FAMILIES}
 
 
 def board_units(player):
@@ -48,11 +51,15 @@ def pick_five(player, shop, mask, k):
 
 def swap_out(player, board, five, k):
     """벤치의 5코스트 five를 올리려고 내릴 보드 유닛의 (x, y). 후보는 1~swap_cost_max(4)코스트이고 캐리·선택받은 자가 아니며,
-    빼고 five를 넣어도 big_trait(4)명 이상이던 특성이 그 아래로 안 떨어지는 유닛. 큰 특성에 안 드는 곁가지 유닛 먼저,
-    그다음 큰 특성 유닛. 같은 묶음에서는 싼 것, 그다음 별이 낮은 것. 없으면 None."""
+    빼고 five를 넣어도 지키는 특성이 정한 인원 아래로 안 떨어지는 유닛. 지키는 특성은 big_trait(4)명 이상인 특성(4명 위로)과,
+    이미 계열 기준 인원(FAMILY_MIN)을 넘은 계열 특성(그 인원 위로, 2026-10-09 유저 결정)이다. 지키는 특성에 안 드는 곁가지
+    유닛 먼저, 그다음 지키는 특성 유닛. 같은 묶음에서는 싼 것, 그다음 별이 낮은 것. 없으면 None."""
     units = board_units(player)
     before = trait_table([u for _, _, u in units], player.chosen)
-    big = {t for t, n in before.items() if n >= k['big_trait']}
+    floor = {t: k['big_trait'] for t, n in before.items() if n >= k['big_trait']}
+    for t, n in FAMILY_MIN.items():
+        if before.get(t, 0) >= n:
+            floor[t] = max(floor.get(t, 0), n)
     picks = []
     for x, y, u in units:
         if COST[u.name] > k['swap_cost_max'] or u.name in carriers(board) or u.chosen:
@@ -60,9 +67,9 @@ def swap_out(player, board, five, k):
         after = trait_table([v for _, _, v in units if v is not u], player.chosen)
         for t in CHAMPION_TRAITS[five]:
             after[t] = after.get(t, 0) + 1
-        if any(after.get(t, 0) < k['big_trait'] for t in big):
+        if any(after.get(t, 0) < n for t, n in floor.items()):
             continue
-        picks.append((any(t in big for t in CHAMPION_TRAITS[u.name]), COST[u.name], u.stars, x, y))
+        picks.append((any(t in floor for t in CHAMPION_TRAITS[u.name]), COST[u.name], u.stars, x, y))
     if not picks:
         return None
     return min(picks)[3:]
