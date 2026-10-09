@@ -565,6 +565,18 @@ def sells_other_units_before_wanted_five_cost_test():
     assert sell(['yone', 'azir', 'sett', 'lillia', 'kayn', 'ezreal', 'zilean', 'leesin', 'sett']) == '4_28'
 
 
+def placement_table_counts_ranks_by_family_test():
+    """계열별 1~8등 비율(설계 7절 4단계). 실제 쪽은 메타 트렌드 조합의 비율을 고른 비율로 가중 평균한다. 롤체지지 비율은
+    소수 셋째 자리로 반올림돼 합이 1에서 0.005 안쪽으로 어긋난다."""
+    from meta.play_stats import placement_table, real_placements
+    players = [{'place': 1, 'board': {'traits': {'dusk': 4}}}, {'place': 8, 'board': {'traits': {'dusk': 6}}},
+               {'place': 3, 'board': {'traits': {}}}]
+    table = placement_table(players)
+    assert table['dusk'] == [0.5, 0, 0, 0, 0, 0, 0, 0.5] and table['other'][2] == 1.0
+    real = real_placements()
+    assert abs(sum(real['ninja']) - 1) < 0.005 and real['ninja'][0] > real['ninja'][7]
+
+
 def board_summary_counts_five_costs_per_board_test():
     """1등 보드 표의 「보드당 5코스트 장수」(설계 7절 3b단계)."""
     from meta.play_stats import board_summary

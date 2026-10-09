@@ -7,7 +7,7 @@
   사람 봇은 초반 전략(연승형·연패형)별로도 나눠 본다.
 - 탈락하거나 끝날 때의 보드: 유닛 수, 비용별 별, 5코스트 장수, 완성 아이템 수, 켜진 특성, 선택받은 자 특성, 아이템을 완성으로
   쓴 비율.
-- 5단계 시작 때 목표 덱 캐리가 아이템을 든 비율, 덱 계열별 비율과 평균 등수.
+- 5단계 시작 때 목표 덱 캐리가 아이템을 든 비율, 덱 계열별 비율과 평균 등수, 계열별 등수 분포(1~8등 비율).
 실제 쪽은 롤체지지 1등 보드 25개와 메타 트렌드(meta/lolchess_10.24_2020-11-28.json)다.
 
 실행: python -m meta.play_stats --games 100 --jobs 7 --out results/play_stats_1024.json
@@ -69,6 +69,25 @@ def real_families():
         rows[name][0] += t['pick_rate']
         rows[name][1] += t['pick_rate'] * t['average_placement']
     return sorted(((f, s, w / s) for f, (s, w) in rows.items()), key=lambda r: -r[1])
+
+
+def placement_table(players):
+    """계열별 1~8등 비율. 마지막 보드가 그 계열인 플레이어들의 등수 분포다."""
+    rows = defaultdict(lambda: [0] * 8)
+    for p in players:
+        rows[family(p['board']['traits'])[0]][p['place'] - 1] += 1
+    return {f: [v / sum(c) for v in c] for f, c in rows.items()}
+
+
+def real_placements():
+    """메타 트렌드 계열별 1~8등 비율. 조합의 1~8등 비율을 고른 비율로 가중 평균한다."""
+    rows = defaultdict(lambda: [0.0] * 9)  # 0~7은 가중 합, 8은 가중치 합
+    for t in json.load(open(REAL, encoding='utf-8'))['trends']:
+        name = family({k.lower(): v for k, v in t['traits'].items()})[0]
+        for i, rate in enumerate(t['placements']):
+            rows[name][i] += t['pick_rate'] * rate
+        rows[name][8] += t['pick_rate']
+    return {f: [v / c[8] for v in c[:8]] for f, c in rows.items()}
 
 
 def curve_table(curves, mode=None, style=None):
@@ -144,7 +163,7 @@ def main():
     games = [(args.seed * 100000 + g, rng.sample(range(len(lobby.BOARDS)), lobby.N_PLAYERS)) for g in range(args.games)]
     os.environ['PYTHONHASHSEED'] = str(args.seed)  # meta.lobby와 같은 이유로 일꾼의 해시를 고정한다
     out = {'games': args.games, 'seed': args.seed, 'knobs': knobs, 'real_winners': board_summary(real_winners()),
-           'real_families': real_families()}
+           'real_families': real_families(), 'real_placements': real_placements()}
     for key in args.conditions.split(','):
         label = CONDITIONS[key]
         start = time.perf_counter()
@@ -166,7 +185,7 @@ def main():
                       'carry21': statistics.mean(carry) if carry else None,
                       'modes': {str(m): [len(v), statistics.mean(v)] for m, v in modes.items()},
                       'switches': statistics.mean(p['switches'] for p in players),
-                      'families': family_table(players),
+                      'families': family_table(players), 'placements': placement_table(players),
                       'winner_boards': [p['board'] for p in players if p['place'] == 1]}
 
     for label in [CONDITIONS[k] for k in args.conditions.split(',')]:
@@ -182,7 +201,11 @@ def main():
                       f'8+ {fmt(r["lv8"])} 9 {fmt(r["lv9"])} 골드 {r["gold"]:.1f} 체력 {r["hp"]:.1f} (살아 있음 {r["alive"]})')
         print('  초반 전략별 (명, 평균 등수):', o['modes'])
         print('  계열 (몫, 평균 등수):', [(f, fmt(s), round(a, 2)) for f, s, a in o['families'][:8]])
+        print('  계열별 등수 분포 (4등 안, 8등):',
+              [(f, fmt(sum(o['placements'][f][:4])), fmt(o['placements'][f][7])) for f, _, _ in o['families'][:8]])
     print('\n실제 메타 트렌드 계열 (몫, 평균 등수):', [(f, fmt(s), round(a, 2)) for f, s, a in out['real_families']])
+    print('실제 메타 트렌드 계열별 등수 분포 (4등 안, 8등):',
+          [(f, fmt(sum(out['real_placements'][f][:4])), fmt(out['real_placements'][f][7])) for f, _, _ in out['real_families']])
     print('\n1등 보드')
     keys = [('boards', '보드 수', False), ('nine_plus', '9유닛 이상', True), ('two_star_4cost', '4코스트 2성 이상', True),
             ('two_star_5cost', '5코스트 2성 이상', True), ('five_per_board', '보드당 5코스트 장수', False),
