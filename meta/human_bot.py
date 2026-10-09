@@ -78,12 +78,22 @@ class HumanPolicy(DeckPolicy):
             self.set_board(BOARDS[new])
 
     def sell(self, player):
-        for i, u in enumerate(player.bench):  # 5코스트와 바꿔 내린 유닛은 바로 판다(설계 9절)
+        """5코스트와 바꿔 내린 유닛은 바로 판다. 그 밖에는 덱 봇 규칙(벤치가 차면 원하지 않는 유닛부터, 다 원하면 기본 봇
+        규칙)인데, 기본 봇 규칙이 원하는 5코스트를 고르면 5코스트가 아닌 유닛을 대신 판다(1성 먼저, 없으면 가장 싼 것.
+        설계 9절)."""
+        for i, u in enumerate(player.bench):
             if u and u.name in self.dropped:
                 return f'4_{28 + i}'
         if self.board is None:  # 목표 덱이 없으면 기본 봇 규칙(짝 아닌 1성부터)
             return self.agent.sell_bench_full(player) if player.bench_full() else None
-        return super().sell(player)
+        act = super().sell(player)
+        unit = act and player.bench[int(act[2:]) - 28]
+        if unit and unit.name in FIVE_COSTS and unit.name in self.wanted(player):
+            rest = [i for i, u in enumerate(player.bench) if u and u.name not in FIVE_COSTS]
+            if rest:
+                ones = [i for i in rest if player.bench[i].stars == 1]
+                return f'4_{28 + (ones[0] if ones else min(rest, key=lambda i: COST[player.bench[i].name]))}'
+        return act
 
     def sell_chosen(self, player):
         """덱을 갈아타서 들고 있는 선택받은 자 유닛이 새 목표 덱에 없으면 판다. 특성이 덱 특성과 달라도 덱 유닛이면

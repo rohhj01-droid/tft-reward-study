@@ -344,8 +344,10 @@ FIVE_BOARD = ['nidalee', 'vayne', 'jarvaniv', 'teemo', 'kennen', 'jinx', 'jhin',
 
 
 def full_board(names, bench_names=('yone',), chosen=()):
-    """보드가 꽉 찬 레벨 8 플레이어. 앞 7명은 0줄 x칸(칸 번호 4x)이고 8번째부터는 1줄에 놓는다. 벤치 칸은 28부터."""
-    units = [Unit(name=n, stars=1, items=[], chosen=(n in chosen and 'keeper')) for n in names]
+    """보드가 꽉 찬 레벨 8 플레이어. 앞 7명은 0줄 x칸(칸 번호 4x)이고 8번째부터는 1줄에 놓는다. 벤치 칸은 28부터.
+    chosen에 든 유닛은 자기 첫 특성의 선택받은 자다."""
+    from meta.decks_1024 import CHAMPION_TRAITS
+    units = [Unit(name=n, stars=1, items=[], chosen=(n in chosen and CHAMPION_TRAITS[n][0])) for n in names]
     p = item_player(units[:7], [], [Unit(name=n, stars=1, items=[], chosen=False) for n in bench_names])
     for x, u in enumerate(units[7:]):
         p.board[x][1] = u
@@ -403,15 +405,15 @@ def does_not_swap_deck_units_before_deck_family_is_complete_test():
 
 def swap_counts_emblems_and_chosen_and_skips_summons_test():
     """특성 수에 상징 아이템과 선택받은 자 특성을 넣고, 소환물은 후보에서 뺀다(Review Focus). 황혼 덱의 계열(황혼 4)은
-    베인·쓰레쉬(유닛 2) + 진의 황혼 망토(1) + 선택받은 자 특성(1)으로만 채워진다. 둘 중 하나라도 안 세면 계열을 못 채운
-    것으로 보고 아무것도 안 바꾼다. 채웠으면 황혼 유닛과 망토를 든 진은 두고 곁가지 아트록스를 내린다."""
+    베인·쓰레쉬(유닛 2) + 진의 황혼 망토(1) + 보드에 있는 선택받은 자 쓰레쉬의 특성(1)으로만 채워진다. 둘 중 하나라도 안
+    세면 계열을 못 채운 것으로 보고 아무것도 안 바꾼다. 채웠으면 황혼 유닛과 망토를 든 진은 두고 곁가지 아트록스를 내린다."""
     from Simulator.item_stats import trait_items
     from meta.human_bot import HumanPolicy
     from meta.lobby import BOARDS
     dusks = next(b for b in BOARDS if b['name'] == 'Chosen Dusks')  # 캐리는 리븐
     p = full_board(['vayne', 'thresh', 'aatrox', 'jhin'])
     p.board[3][0].items = [trait_items['dusk']]
-    p.chosen = 'dusk'
+    p.chosen = p.board[1][0].chosen = 'dusk'  # 쓰레쉬가 선택받은 자(황혼)
     assert HumanPolicy(None, dusks, [], random.Random(0)).swap(p) == f'5_{4 * 2}_28'
     p = full_board(['nidalee', 'vayne', 'teemo', 'jinx', 'jhin'])
     p.board[5][0] = Unit(name='sandguard', stars=1, items=[], chosen=False)  # 소환물
@@ -514,6 +516,19 @@ def puts_family_unit_on_board_before_other_units_test():
     assert swap('Chosen Warlords', WARLORDS5 + ['xinzhao', 'pyke'], 'azir', level=7) is None  # 총사령관 6명이면 안 한다
 
 
+def bench_chosen_does_not_count_for_family_test():
+    """선택받은 자 특성 +1은 보드에 있을 때만 센다(june fe92c2b, 시뮬레이터와 같게). 벤치의 선택받은 자 리븐(황혼)은 황혼
+    계열을 못 채우므로 5코스트를 넣지 않고, 계열 유닛인 리븐을 먼저 올린다(곁가지 아트록스 자리)."""
+    from Simulator.item_stats import trait_items
+    from meta.human_bot import HumanPolicy
+    from meta.lobby import BOARDS
+    dusks = next(b for b in BOARDS if b['name'] == 'Chosen Dusks')
+    p = full_board(['vayne', 'thresh', 'aatrox', 'jhin'], bench_names=('yone', 'riven'))
+    p.board[3][0].items = [trait_items['dusk']]
+    p.chosen = p.bench[1].chosen = 'dusk'
+    assert HumanPolicy(None, dusks, [], random.Random(0)).swap(p) == f'5_{4 * 2}_29'
+
+
 def swapping_one_of_two_copies_keeps_the_unit_in_deck_test():
     """5코스트와 바꿔 내린 유닛의 사본이 보드에 남으면 그 이름을 덱 밖으로 치지 않는다. 치면 남은 사본이 지키는 인원 검사
     없이 일반 교체로 내려가 계열이 깨졌다(3b단계 진단 2026-10-09: 총사령관·명사수·사교도 1등 보드가 바꾸기 뒤 계열을 잃음)."""
@@ -524,6 +539,30 @@ def swapping_one_of_two_copies_keeps_the_unit_in_deck_test():
     policy = HumanPolicy(None, warlords, [], random.Random(0))
     assert policy.swap(p) == f'5_{4 * 0}_28'
     assert policy.dropped == set() and 'garen' in policy.units
+
+
+def sells_other_units_before_wanted_five_cost_test():
+    """벤치가 원하는 유닛으로 꽉 차서 기본 봇 규칙이 5코스트를 고르면 5코스트가 아닌 유닛을 대신 판다(1성 먼저, 없으면 가장
+    싼 것). 벤치가 5코스트뿐이면 기본 봇 규칙 그대로다(유저 결정 2026-10-10: 1등 봇이 판마다 산 5코스트 6장 중 1.8장을
+    기본 봇 규칙이 팔았다)."""
+    from meta.human_bot import HumanPolicy
+    agent = Unit(sell_bench_full=lambda p: '4_28')  # 기본 봇은 벤치 앞의 짝 없는 1성(요네)을 고른다
+    policy = HumanPolicy(agent, SHARPSHOOTERS, [], random.Random(0))
+
+    def sell(names, two_star=()):
+        bench = plain(names)
+        for u in bench:
+            u.stars = 2 if u.name in two_star else 1
+        p = item_player(plain(SHOOTERS4), [], bench)  # 명사수 4명으로 계열을 채웠다
+        p.chosen, p.gold, p.level = False, 30, 8
+        p.bench_full = lambda: True
+        return policy.sell(p)
+
+    deck = ['jhin', 'vayne', 'teemo', 'jinx', 'nidalee', 'kennen', 'riven']  # 모두 덱 유닛
+    assert sell(['yone'] + deck + ['azir'], two_star=('jhin',)) == '4_30'  # 첫 1성 베인
+    assert sell(['yone', 'jhin', 'kennen', 'nidalee', 'riven', 'jinx', 'azir', 'sett', 'lillia'],
+                two_star=('jhin', 'kennen', 'nidalee', 'riven', 'jinx')) == '4_31'  # 다 2성이면 가장 싼 니달리
+    assert sell(['yone', 'azir', 'sett', 'lillia', 'kayn', 'ezreal', 'zilean', 'leesin', 'sett']) == '4_28'
 
 
 def board_summary_counts_five_costs_per_board_test():
