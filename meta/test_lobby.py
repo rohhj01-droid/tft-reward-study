@@ -198,6 +198,40 @@ def finish_order_puts_survivor_on_top_and_ranks_by_health_before_round_test():
     assert firsts == {'a', 'd'}, firsts
 
 
+def board_record_takes_chosen_from_board_test():
+    """보드 기록의 선택받은 자 특성은 보드에 있는 선택받은 자에서 읽는다. player.chosen은 벤치에 있어도 켜져 있어서(상점
+    막기용), june fe92c2b 뒤로는 특성 수에 안 든 선택받은 자가 기록에 남았다(최종 검토)."""
+    from Simulator.champion import champion
+    from meta.lobby import board_record
+    p = deck_player(['fiora'])
+    p.buy_champion(champion('jax', chosen='duelist'))  # 벤치
+    assert p.chosen == 'duelist' and board_record(p)['chosen'] is None
+    p.max_units = 2
+    p.move_bench_to_board(0, 1, 0)
+    assert board_record(p)['chosen'] == 'duelist'
+
+
+def human_bot_curve_uses_the_deck_it_chose_test():
+    """사람 봇의 곡선(느린 리롤 덱인가)과 완성도는 스스로 고른 덱으로 잰다. 예전에는 판마다 정해 준 덱 번호를 봐서 사람
+    봇의 「보통 덱」·「느린 덱」 곡선이 모든 덱을 섞은 값이었다(최종 검토). 모두 느린 덱 Ninja Shades를 고르게 하고, 정해
+    준 덱 번호는 모두 보통 덱으로 둔다. 곡선은 덱을 고른 뒤(2-1 뒤 칸부터)만 본다."""
+    import random
+    import meta.human_bot as hb
+    from meta import lobby
+    ninja = next(b for b in lobby.BOARDS if b['name'] == 'Ninja Shades')
+    normal = [i for i, b in enumerate(lobby.BOARDS) if not b['slow']][:8]
+    pick = hb.HumanPolicy.pick_deck
+    hb.HumanPolicy.pick_deck = lambda self, player, game_round: self.board is None and self.set_board(ninja)
+    try:
+        res = lobby.play((2001, normal), bot='human')
+    finally:
+        hb.HumanPolicy.pick_deck = pick
+    late = [row for row in res['curve'] if row[0] >= 4]
+    assert late and all(row[5] for row in late), late[:3]
+    target = set(ninja['units'])
+    assert all(p['complete'] == len({u[0] for u in p['board']['units']} & target) / len(target) for p in res['players'])
+
+
 def first_place_is_the_survivor_test():
     """한 판을 끝까지 돌려서 1등이 끝날 때 체력이 남은 플레이어인지 본다(덱 봇, 시드 2000)."""
     import random

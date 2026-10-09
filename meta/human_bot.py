@@ -7,6 +7,8 @@
 meta/human_deck.py, 레벨 8부터의 덱 밖 5코스트와 계열 먼저 규칙은 meta/human_five.py에 있고, 자리 맞추기는 구석 배치
 (analysis.battle.corner_positions)다.
 """
+from collections import defaultdict
+
 from analysis.battle import corner_positions
 from Simulator.stats import COST, round_stage
 from Simulator.utils import x_y_to_1d_coord
@@ -185,17 +187,26 @@ class HumanPolicy(DeckPolicy):
 
     def reposition(self, player, game_round):
         """자리 맞추기(설계 1절 7번): 원거리는 뒷줄 구석부터 아이템 많은 순, 근접은 앞줄 가운데부터
-        (analysis.battle.corner_positions). 한 라운드에 8번까지. 자리가 다른 첫 유닛을 제자리로 옮긴다(그 칸에 유닛이
-        있으면 맞바꾼다). 유닛 순서를 이름순으로 고정해서, 옮긴 뒤 아이템 수가 같은 유닛끼리 자리를 계속 바꾸지 않게 한다."""
+        (analysis.battle.corner_positions). 한 라운드에 8번까지. 이름·별·아이템 수가 같은 유닛은 한 종류로 보고, 그 종류에
+        잡힌 자리 중 아무 데나 있으면 제자리로 친다. 제자리가 아닌 첫 유닛을 같은 종류 유닛이 없는 그 종류 자리로 옮긴다
+        (그 칸에 유닛이 있으면 맞바꾼다). 옮길 때마다 제자리 유닛이 늘어서 되풀이하지 않는다. 예전에는 같은 유닛끼리의
+        순서가 칸 순서로 정해져서, 맞바꾸면 순서가 뒤집혀 같은 맞바꾸기를 8번까지 되풀이했다(최종 검토)."""
         if self.moves.get(game_round, 0) >= 8:
             return None
+        kind = lambda u: (u.name, u.stars, len(u.items))
         units = sorted(((x, y, u) for x, row in enumerate(player.board) for y, u in enumerate(row)
-                        if u and u.name != 'sandguard'), key=lambda t: (t[2].name, -t[2].stars))
-        for (x, y, _), (tx, ty) in zip(units, corner_positions([u for _, _, u in units])):
-            target = player.board[tx][ty]
-            if (x, y) != (tx, ty) and not (target and target.name == 'sandguard'):
-                self.moves[game_round] = self.moves.get(game_round, 0) + 1
-                return f'5_{x_y_to_1d_coord(x, y)}_{x_y_to_1d_coord(tx, ty)}'
+                        if u and u.name != 'sandguard'), key=lambda t: (t[2].name, -t[2].stars, -len(t[2].items)))
+        spots = defaultdict(list)
+        for (_, _, u), spot in zip(units, corner_positions([u for _, _, u in units])):
+            spots[kind(u)].append(spot)
+        for x, y, u in units:
+            if (x, y) in spots[kind(u)]:
+                continue
+            for tx, ty in spots[kind(u)]:
+                target = player.board[tx][ty]
+                if not (target and (target.name == 'sandguard' or kind(target) == kind(u))):
+                    self.moves[game_round] = self.moves.get(game_round, 0) + 1
+                    return f'5_{x_y_to_1d_coord(x, y)}_{x_y_to_1d_coord(tx, ty)}'
         return None
 
     def macro(self, player, game_round):

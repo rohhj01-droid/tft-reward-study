@@ -34,6 +34,19 @@ def human_bot_puts_ranged_carry_in_back_corner_test():
     assert policy.reposition(p, 12) is None
 
 
+def reposition_does_not_swap_equal_units_test():
+    """이름·별·아이템 수가 같은 유닛끼리는 자리를 맞바꾸지 않고, 이름·별이 같으면 아이템이 많은 쪽이 앞 순서다. 예전에는
+    둘의 순서가 보드 칸 순서로 정해져서, 맞바꾸면 순서가 뒤집혀 같은 맞바꾸기를 라운드마다 8번까지 되풀이했다(최종 검토:
+    3판 628 플레이어-라운드에 211번). 근접 첫 자리는 (3, 3), 둘째는 (2, 3)이고 칸은 (2, 3)부터 센다."""
+    from meta.human_bot import HumanPolicy
+    policy = HumanPolicy(None, SHARPSHOOTERS, [], random.Random(0))
+    p = item_player([], [])
+    p.board[3][3], p.board[2][3] = plain(['garen', 'garen'])
+    assert policy.reposition(p, 12) is None
+    p.board[3][3].items = ['bf_sword']  # 아이템이 많은 가렌이 첫 자리에 있다
+    assert policy.reposition(p, 13) is None
+
+
 def item_player(board_units, item_bench, bench_units=()):
     """보드 x칸 0줄에 유닛을 놓은 가짜 플레이어. x번째 유닛의 칸 번호는 4x다."""
     board = [[None] * 4 for _ in range(7)]

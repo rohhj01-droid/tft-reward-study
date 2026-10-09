@@ -97,15 +97,16 @@ def carriers(board):
 
 
 def board_record(player):
-    """보드 기록: 레벨, 유닛(이름, 비용, 별, 완성 아이템 수), 켜진 특성 인원, 선택받은 자 특성, 들고 있는 아이템 수.
-    completed_all·components_all은 보드·벤치 유닛과 아이템 칸 전부의 완성 아이템·조각 수다(주걱·소모품 제외)."""
+    """보드 기록: 레벨, 유닛(이름, 비용, 별, 완성 아이템 수), 켜진 특성 인원, 선택받은 자 특성(보드에 있는 선택받은
+    자의 것), 들고 있는 아이템 수. completed_all·components_all은 보드·벤치 유닛과 아이템 칸 전부의 완성 아이템·조각
+    수다(주걱·소모품 제외)."""
     units = [u for row in player.board for u in row if u and u.name in BASE_CHAMPION_LIST]
     everyone = [u for row in player.board for u in row if u] + [u for u in player.bench if u]
     held = [i for u in everyone for i in u.items] + [i for i in player.item_bench if i]
     return {'level': player.level,
             'units': [[u.name, u.cost, u.stars, sum(i in item_builds for i in u.items)] for u in units],
             'traits': {t: n for t, n in player.team_composition.items() if player.team_tiers.get(t, 0) > 0},
-            'chosen': player.chosen or None,
+            'chosen': next((u.chosen for u in units if u.chosen), None),
             'completed_all': sum(_worth(i) == 2 for i in held), 'components_all': sum(_worth(i) == 1 for i in held)}
 
 
@@ -279,7 +280,8 @@ def play(game, bot='deck', knobs=None):
                  'players': [{'deck', 'place', 'complete', 'complete21', 'carry21', 'mode', 'switches', 'board'}, ...]}
     탈락 때 완성도(complete)는 일찍 죽은 덱일수록 낮게 나와 등수와 엉킨다. 그래서 5단계 시작(21번째 칸) 때 살아 있던
     봇의 완성도(complete21)와 캐리 아이템 비율(carry21)을 따로 잰다(그 전에 탈락하면 None). board는 탈락하거나 끝날
-    때의 board_record다. 덱 번호는 덱 봇의 목표 덱이다(사람 봇은 스스로 고른다)."""
+    때의 board_record다. 덱 번호는 덱 봇의 목표 덱이다. 사람 봇은 스스로 고르므로, 곡선의 느린 리롤 덱인가와 완성도는
+    플레이어가 그때 따라가는 덱(target)으로 잰다."""
     seed, decks = game
     sim_config.LOGMESSAGES = False  # 켜 두면 실행한 곳에 log.txt가 생긴다
     if bot == 'deck':
@@ -303,6 +305,7 @@ def play(game, bot='deck', knobs=None):
                 others = [players[o] for o in players if o != a]
                 policies[a] = attach_human(players[a], others, random.Random(seed * N_PLAYERS + i), knobs)
         mode = lambda a: getattr(policies.get(a), 'mode', None)
+        target = lambda a: getattr(policies.get(a), 'board', None) or BOARDS[deck_of[a]]  # 사람 봇은 스스로 고른 덱
         curve, seen, handed, placement, done, mid, carry, boards = [], set(), {}, {}, {}, {}, {}, {}
         start_hp, ties = {}, random.Random(seed)  # 라운드 시작 체력, 등수 동점 가르기(게임 난수와 따로)
         rank, guard = N_PLAYERS, 0
@@ -316,9 +319,9 @@ def play(game, bot='deck', knobs=None):
                 if (a, game_round) not in seen:
                     seen.add((a, game_round))
                     start_hp[a] = p.health
-                    curve.append((game_round, p.level, p.gold, p.health, mode(a), BOARDS[deck_of[a]]['slow']))
+                    curve.append((game_round, p.level, p.gold, p.health, mode(a), target(a)['slow']))
                 if game_round >= 21 and a not in mid:
-                    mid[a] = completion(p, BOARDS[deck_of[a]])
+                    mid[a] = completion(p, target(a))
                     carry[a] = carry_share(p, getattr(policies.get(a), 'board', None))
                 if bot == 'deck' and game_round >= 11 and handed.get(a) != game_round:
                     hand_out_items(p, BOARDS[deck_of[a]]['items'])
@@ -329,11 +332,11 @@ def play(game, bot='deck', knobs=None):
             ended = [a for a, e in terminated.items() if e and a not in placement]
             for a in finish_order(ended, players, start_hp, ties):
                 placement[a], rank = rank, rank - 1
-                done[a], boards[a] = completion(players[a], BOARDS[deck_of[a]]), board_record(players[a])
+                done[a], boards[a] = completion(players[a], target(a)), board_record(players[a])
     for a in deck_of:  # 끝까지 terminated가 안 온 플레이어
         if a not in placement:
             placement[a], rank = rank, rank - 1
-            done[a], boards[a] = completion(players[a], BOARDS[deck_of[a]]), board_record(players[a])
+            done[a], boards[a] = completion(players[a], target(a)), board_record(players[a])
     return {'curve': curve,
             'players': [{'deck': deck_of[a], 'place': placement[a], 'complete': done[a], 'complete21': mid.get(a),
                          'carry21': carry.get(a), 'mode': mode(a), 'switches': getattr(policies.get(a), 'switches', 0),
