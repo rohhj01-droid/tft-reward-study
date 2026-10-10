@@ -24,6 +24,38 @@ def boards_count_traits_like_lolchess_test():
         assert sum(1 for row in p.board for u in row if u and u.name != 'sandguard') == len(b['units']), b['key']
 
 
+def boards_1022_count_traits_like_lolchess_test():
+    """10.22 트렌드 30조합(meta/lolchess_set4_more.json)도 보드가 된다. 9사교도-2선봉대처럼 모자란 특성이 둘이면 인원이 많은
+    쪽이 선택받은 자이고 다른 쪽은 상징 아이템(선봉대 갑옷)이다. 롤체지지의 ThiefsGloves는 도적의 장갑이다."""
+    from meta.real_boards import MORE
+    boards = load_trends(MORE, patch='10.22')
+    assert len(boards) == 30
+    for b in boards:
+        p = build_player(pool(), 0, to_units(spec(b, 2)), 'range')
+        p.update_team_tiers()
+        counted = {t: p.team_composition[t] for t in b['traits']}
+        assert counted == b['traits'], (b['key'], counted)
+    nine = next(b for b in boards if b['key'].startswith('9cultist-2vanguard'))
+    assert nine['chosen'][1] == 'cultist' and 'vanguards_cuirass' in nine['items'][nine['emblem']], nine
+    gloves = next(b for b in boards if b['key'].startswith('4mystic-4vanguard'))
+    assert gloves['items']['aatrox'] == ['thieves_gloves'], gloves['items']
+
+
+def patch_init_reaches_workers_test():
+    """--patch로 고른 패치는 일꾼 프로세스마다 적용된다(수치는 모듈 변수라 부모에서 바꾼 값이 윈도우 일꾼에 안 넘어간다)."""
+    from functools import partial
+    from meta.real_boards import apply_sim_patch
+    from Simulator import patch_manager
+    with Pool(1, initializer=partial(apply_sim_patch, '10.22')) as workers:
+        assert workers.apply(_current_patch) == '10.22'
+    assert patch_manager.get_current_patch() is None
+
+
+def _current_patch():
+    from Simulator import patch_manager
+    return patch_manager.get_current_patch()
+
+
 def ranks_average_ties_test():
     assert ranks([3, 1, 3, 2]) == [2.5, 0, 2.5, 1]
 

@@ -18,7 +18,12 @@
   수치: 자료가 10.24 중간 패치(12/1) 전이라 그 전 값으로 되돌린다(prehotfix). 비교용으로 지금 값(핫픽스 뒤).
   케인 형태는 고르지 않는다(meta/pit과 같다). 실제로는 최종 보드의 케인은 거의 다 형태가 있다.
 
+10.22 자료(meta/lolchess_set4_more.json의 trends['10.22'], 30조합)는 --src와 --patch 10.22로 붙인다(2026-10-11). 그때는
+수치를 시뮬레이터의 10.22 패치로 두고(patch_manager.apply_patch), 비교용으로 지금 값(10.24 핫픽스 뒤)으로도 붙인다.
+가운데 배치 비교는 하지 않는다. 모자란 특성이 둘이면(9사교도-2선봉대) 인원이 많은 쪽이 선택받은 자, 다른 쪽은 상징 아이템이다.
+
 실행: python -m meta.real_boards --n 60 --jobs 7 --out results/real_boards_1024.json
+      python -m meta.real_boards --src meta/lolchess_set4_more.json --patch 10.22 --n 60 --jobs 7 --out results/real_boards_1022.json
 """
 import argparse
 import json
@@ -27,6 +32,7 @@ import random
 import statistics
 import sys
 from collections import Counter
+from functools import partial
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from set4 import CHAMPION_TRAITS, TRAIT_BREAKS, cost_of
@@ -34,13 +40,16 @@ from Simulator.item_stats import item_builds, trait_items
 from meta.pit import average, round_robin
 
 SRC = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'lolchess_10.24_2020-11-28.json')
+MORE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'lolchess_set4_more.json')
 SIM_ITEM = {k.replace('_', ''): k for k in item_builds}     # 'LocketoftheIronSolari' -> locket_of_the_iron_solari
+SIM_ITEM['thiefsgloves'] = SIM_ITEM['thievesgloves']        # 롤체지지 철자
 SIM_TRAIT = {k.replace('_', ''): k for k in TRAIT_BREAKS}   # 'TheBoss' -> the_boss
 
-# (이름, 5코스트 별, 핫픽스 전 값으로 되돌리나, 배치)
-VARIANTS = [('main', 2, True, 'corner'), ('five_cost_1star', 1, True, 'corner'), ('post_hotfix', 2, False, 'corner'),
-            ('center', 2, True, 'range')]
-LABEL = {'main': '2성', 'five_cost_1star': '5코 1성', 'post_hotfix': '핫픽스 뒤', 'center': '가운데 배치'}
+# (이름, 5코스트 별, 일꾼 초기화: 'prehotfix'(10.24 중간 패치 전 값)·'patch'(--patch의 패치 값)·None(지금 값), 배치)
+VARIANTS = [('main', 2, 'prehotfix', 'corner'), ('five_cost_1star', 1, 'prehotfix', 'corner'), ('post_hotfix', 2, None, 'corner'),
+            ('center', 2, 'prehotfix', 'range')]
+PATCH_VARIANTS = [('main', 2, 'patch', 'corner'), ('five_cost_1star', 1, 'patch', 'corner'), ('values_1024', 2, None, 'corner')]
+LABEL = {'main': '2성', 'five_cost_1star': '5코 1성', 'post_hotfix': '핫픽스 뒤', 'center': '가운데 배치', 'values_1024': '10.24 값'}
 
 
 def prehotfix():
@@ -59,9 +68,19 @@ def prehotfix():
     item_stats.damage['runaans_hurricane'] = 1.0
 
 
-def load_trends(path=SRC):
+def apply_sim_patch(name):
+    """시뮬레이터 수치를 그 패치로 둔다(Simulator.patch_manager). 일꾼 프로세스마다 부른다."""
+    from Simulator import patch_manager
+    patch_manager.apply_patch(name)
+
+
+def load_trends(path=SRC, patch=None):
+    """트렌드 조합을 보드로. path의 trends가 패치별 사전(lolchess_set4_more.json)이면 patch의 첫 보관본을 쓴다."""
+    trends = json.load(open(path, encoding='utf-8'))['trends']
+    if isinstance(trends, dict):
+        trends = next(iter(trends[patch].values()))
     boards = []
-    for t in json.load(open(path, encoding='utf-8'))['trends']:
+    for t in trends:
         units = [u['name'].lower() for u in t['units']]
         assert all(u in CHAMPION_TRAITS for u in units), (t['key'], units)
         items = {u: [SIM_ITEM[i.lower()] for i in raw['recommended']]
@@ -70,17 +89,19 @@ def load_trends(path=SRC):
         traits = {SIM_TRAIT[k.lower()]: n for k, n in t['traits'].items()}
         counts = Counter(tr for u in units for tr in CHAMPION_TRAITS[u])
         gaps = {tr: n - counts[tr] for tr, n in traits.items() if n != counts[tr]}
-        # 선택받은 자는 하나뿐이다. 특성이 둘 이상 남거나 모자라면 유닛 목록이 보드와 다른 것이다.
-        assert len(gaps) == 1 and list(gaps.values())[0] in (1, 2), (t['key'], gaps)
-        (trait, gap), = gaps.items()
+        # 선택받은 자는 하나뿐이고 상징 아이템은 많아야 하나다. 모자란 수의 합이 1이면 선택받은 자, 2면 상징이 하나 더 있다.
+        # 같은 특성(결투가 8, 총사령관 9)이거나 다른 특성(10.22의 9사교도-2선봉대)이다. 다른 특성이면 인원이 많은 쪽이 선택받은 자다.
+        assert gaps and sum(gaps.values()) in (1, 2) and all(g in (1, 2) for g in gaps.values()), (t['key'], gaps)
+        trait = max(gaps, key=lambda tr: traits[tr])
+        emblem_trait = trait if gaps[trait] == 2 else next((tr for tr in gaps if tr != trait), None)
 
         order = {u: i for i, u in enumerate(units)}
         pool = [u for u in units if trait in CHAMPION_TRAITS[u] and cost_of(u) < 5]
         chosen = min(pool, key=lambda u: (-len(items.get(u, [])), -cost_of(u), order[u]))
         emblem = None
-        if gap == 2:
-            emblem = next(u for u in units if trait not in CHAMPION_TRAITS[u] and len(items.get(u, [])) < 3)
-            items.setdefault(emblem, []).append(trait_items[trait])
+        if emblem_trait:
+            emblem = next(u for u in units if emblem_trait not in CHAMPION_TRAITS[u] and len(items.get(u, [])) < 3)
+            items.setdefault(emblem, []).append(trait_items[emblem_trait])
 
         boards.append({'key': t['key'], 'traits': traits, 'units': units, 'items': items, 'chosen': [chosen, trait],
                        'emblem': emblem, 'pick_rate': t['pick_rate'], 'games_score': t['games_score'],
@@ -134,47 +155,53 @@ def main():
     ap.add_argument('--n', type=int, default=60, help='매치업당 판 수')
     ap.add_argument('--jobs', type=int, default=max(1, os.cpu_count() - 1))
     ap.add_argument('--out', default=None, help='결과 JSON 저장 경로')
+    ap.add_argument('--src', default=SRC, help='트렌드 JSON(기본 10.24, 10.22는 meta/lolchess_set4_more.json)')
+    ap.add_argument('--patch', default=None, help='시뮬레이터 패치(예: 10.22). 주면 그 패치 값으로 붙이고 비교용 지금 값 조건을 둔다')
     args = ap.parse_args()
 
-    boards = load_trends()
+    boards = load_trends(args.src, args.patch)
+    variants = PATCH_VARIANTS if args.patch else VARIANTS
+    inits = {'prehotfix': prehotfix, 'patch': partial(apply_sim_patch, args.patch), None: None}
     print('보드 만들기 (선택받은 자, 상징 아이템을 든 유닛)')
     for b in boards:
         print(f'  {b["key"][:58]:58} {len(b["units"])}명  {b["chosen"][0]}({b["chosen"][1]})'
               + (f'  상징 {b["emblem"]}' if b['emblem'] else ''))
 
     matrices = {}
-    for name, five, pre, place in VARIANTS:
-        matrices[name] = round_robin({b['key']: spec(b, five) for b in boards}, args.n, place, args.jobs,
-                                     init=prehotfix if pre else None)
+    for name, five, init, place in variants:
+        matrices[name] = round_robin({b['key']: spec(b, five) for b in boards}, args.n, place, args.jobs, init=inits[init])
         print(f'{LABEL[name]} 완료', flush=True)
     avg = {name: average(m) for name, m in matrices.items()}
 
     # 상대 26개 x N판이라 평균 승률의 표준오차는 N=60에서 1.3%p 안팎이다.
     print(f'\n보드별 (실제 평균 등수 순, 시뮬레이터는 상대 {len(boards) - 1}개 평균 승률, 매치업당 N={args.n})')
-    print(f'{"조합":58} {"유닛":>4} {"고른 비율":>8} {"평균 등수":>8}' + ''.join(f' {LABEL[v]:>8}' for v, *_ in VARIANTS))
+    print(f'{"조합":58} {"유닛":>4} {"고른 비율":>8} {"평균 등수":>8}' + ''.join(f' {LABEL[v]:>8}' for v, *_ in variants))
     for b in sorted(boards, key=lambda b: b['place']):
         print(f'{b["key"][:58]:58} {len(b["units"]):4d} {b["pick_rate"] * 100:7.1f}% {b["place"]:8.2f}'
-              + ''.join(f' {avg[v][b["key"]] * 100:7.1f}%' for v, *_ in VARIANTS))
+              + ''.join(f' {avg[v][b["key"]] * 100:7.1f}%' for v, *_ in variants))
 
     # 실제는 등수가 낮을수록 좋으니 부호를 뒤집는다. 상관이 양수면 시뮬레이터가 실제와 같은 쪽으로 줄 세운 것이다.
     summary = {}
     print('\n실제 평균 등수와의 순위 상관 (괄호는 섞어서 이만큼 나올 확률)')
     for label, group in groups(boards):
+        if len(group) < 3:  # 10.22 트렌드에는 닌자 보드가 거의 없다
+            continue
         real = [-b['place'] for b in group]
-        cols = {v: spearman(real, [avg[v][b['key']] for b in group]) for v, *_ in VARIANTS}
+        cols = {v: spearman(real, [avg[v][b['key']] for b in group]) for v, *_ in variants}
         p = perm_p(real, [avg['main'][b['key']] for b in group])
         # 비교 기준: 전투 없이 유닛 수나 코스트 합만으로 줄 세웠을 때. 유닛 수가 다 같은 묶음에서는 못 잰다.
         sizes = [len(b['units']) for b in group]
         base_units = spearman(real, sizes) if len(set(sizes)) > 1 else None
         base_cost = spearman(real, [sum(cost_of(u) for u in b['units']) for b in group])
         summary[label] = {'n': len(group), **cols, 'main_p': p, 'units': base_units, 'cost': base_cost}
-        print(f'  {label:12} ({len(group):2d}개)  ' + '  '.join(f'{LABEL[v]} {cols[v]:+.2f}' for v, *_ in VARIANTS)
+        print(f'  {label:12} ({len(group):2d}개)  ' + '  '.join(f'{LABEL[v]} {cols[v]:+.2f}' for v, *_ in variants)
               + f'  (2성 p={p:.3f})  기준: 유닛 수 ' + (f'{base_units:+.2f}' if base_units is not None else '  - ')
               + f', 코스트 합 {base_cost:+.2f}')
 
     if args.out:
         with open(args.out, 'w', encoding='utf-8') as f:
-            json.dump({'n': args.n, 'place': {v: place for v, _, _, place in VARIANTS}, 'boards': boards,
+            json.dump({'n': args.n, 'patch': args.patch, 'src': os.path.basename(args.src),
+                       'place': {v: place for v, _, _, place in variants}, 'boards': boards,
                        'average': avg, 'summary': summary, **matrices},
                       f, ensure_ascii=False, indent=1)
         print(f'\n저장: {args.out}')
