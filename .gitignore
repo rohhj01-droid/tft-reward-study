@@ -11,3 +11,4 @@ states.json
 labels.json
 *.log
 checkpoints/
+meta/inversion/*.json
