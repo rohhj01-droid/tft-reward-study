@@ -221,6 +221,50 @@ def ricochet_no_count_keeps_fourth_shot_every_four_attacks_test():
         assert workers.apply(_fourth_shot_attacks) == [4, 8]
 
 
+def _ricochet_hits(n=12):
+    """명사수 2명인 진(치명타 없음)이 첫째 적(세주아니)을 n번 칠 때 튕김을 맞은 적 이름별 횟수와, 매번 튕김이 하나뿐이고 그 피해가
+    첫째가 맞은 피해의 튕김 배율만큼이었는지. 적은 넷: 첫째, 첫째 바로 옆 가렌, 먼 구석의 바이·누누."""
+    from collections import Counter
+    import Simulator.champion as cm
+    from Simulator import active, field, origin_class, origin_class_stats
+    field.coordinates = [[None] * 7 for _ in range(8)]
+    jhin = cm.champion('jhin', 'blue', 0, 3, stars=2)
+    first, near = cm.champion('sejuani', 'red', 4, 3, stars=2), cm.champion('garen', 'red', 4, 4, stars=2)
+    foes = [first, near, cm.champion('vi', 'red', 7, 0, stars=2), cm.champion('nunu', 'red', 7, 6, stars=2)]
+    cm.blue[:], cm.red[:] = [jhin], foes
+    cm.que.clear()
+    active.jhin_shots.clear()
+    origin_class.amounts['sharpshooter']['blue'] = 2
+    jhin.crit_chance = 0
+    for f in foes:
+        f.armor, f.dodge = 0, 0
+        f.health = f.max_health = 100000
+    mult = origin_class_stats.damage['sharpshooter'][1]
+    hits, exact = Counter(), True
+    for _ in range(n):
+        jhin.idle = True
+        before = {f.name: f.health for f in foes}
+        jhin.attack(0, first)
+        lost = {f.name: before[f.name] - f.health for f in foes}
+        bounced = [name for name, d in lost.items() if name != 'sejuani' and d > 0]
+        hits.update(bounced)
+        exact = exact and len(bounced) == 1 and abs(lost[bounced[0]] - lost['sejuani'] * mult) < 1
+    return dict(hits), exact
+
+
+def ricochet_nearest_bounces_to_the_closest_enemy_test():
+    """튕김 가까운 적 조건: 명사수 튕김이 바로 앞 대상에서 가장 가까운 적에게 간다(위키 명사수 「가까운 적에게 튕긴다」). 기본은
+    무작위라 먼 적도 맞는다. 튕김 피해는 두 쪽 모두 그 공격 피해의 튕김 배율만큼이다."""
+    from functools import partial
+    from meta.isolate import VARIANTS, setup
+    assert 'ricochet_nearest' in VARIANTS  # 없으면 일꾼 초기화가 실패해 윈도우에서 일꾼이 끝없이 다시 뜬다
+    with Pool(1, initializer=partial(setup, 'ricochet_nearest')) as workers:
+        assert workers.apply(_ricochet_hits) == ({'garen': 12}, True)
+    with Pool(1, initializer=prehotfix) as workers:
+        hits, exact = workers.apply(_ricochet_hits)
+        assert exact and set(hits) - {'garen'}, hits
+
+
 if __name__ == '__main__':
     for name, test in list(globals().items()):
         if name.endswith('_test'):

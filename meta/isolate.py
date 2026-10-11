@@ -25,6 +25,8 @@
                        c0d15b4가 다시 넣으면서 튕김이 네 번째 사격 피해도 옮기게 됐다. 그 뒤로는 기준과 같아서 예전 결과를 다시
                        낼 때만 뜻이 있다). 코드는 그대로 두고 일꾼에서 튕김 동안 두 패시브를 멈춘다. 명사수 2명 이상에 진·베인이
                        있는 보드만 다시 붙인다.
+  ricochet_nearest     명사수 튕김 대상을 무작위 대신 바로 앞 대상에서 가장 가까운 적으로 고른다(위키 「가까운 적에게 튕긴다」).
+                       명사수 특성이 켜진 보드만 다시 붙인다.
   --base 결과 파일      기본 결과(real_boards --out)를 고른다. 그 파일에 적힌 자료(src)와 패치(patch)로 보드를 만들고 일꾼을 초기화한다
                        (10.22 결과면 10.22 패치 값, 적힌 게 없으면 10.24 자료와 핫픽스 전 값).
 
@@ -152,6 +154,33 @@ def _ricochet_no_count():
         setattr(active, name, patched)
 
 
+def _ricochet_nearest():
+    # 명사수 튕김 대상을 무작위 대신 바로 앞 대상에서 가장 가까운 적으로 고른다(위키 명사수 「가까운 적에게 튕긴다」, audit/README
+    # 4절의 근사). 같은 거리면 무작위다. june 45e77c5의 origin_class.sharpshooter에서 대상 고르기만 바꾼 복사본이다.
+    import random
+    from Simulator import field, origin_class, origin_class_stats
+
+    def sharpshooter(champion, target, damage, true_damage, spell):
+        tier = origin_class.get_origin_class_tier(champion.team, 'sharpshooter')
+        if tier > 0 and origin_class.is_trait(champion, 'sharpshooter'):
+            last_target = target
+            multiplier = origin_class_stats.damage['sharpshooter'][tier]
+            for _ in range(origin_class_stats.targets['sharpshooter'][tier]):
+                candidates = [e for e in champion.enemy_team() if e is not last_target]
+                if not candidates:
+                    continue
+                random.shuffle(candidates)  # 같은 거리끼리는 무작위
+                here = {'y': last_target.y, 'x': last_target.x}
+                last_target = min(candidates, key=lambda e: field.distance(here, {'y': e.y, 'x': e.x}, False))
+                damage *= multiplier
+                true_damage *= multiplier
+                if spell:
+                    champion.spell(last_target, damage, true_damage, False, False, 'sharpshooter')
+                else:
+                    champion.attack(0, last_target, False, 'sharpshooter', damage, set_true=true_damage)
+    origin_class.sharpshooter = sharpshooter
+
+
 def _dusk_off():
     # 황혼 특성의 주문력을 없앤다(origin_class.dusk가 읽는 두 표). 패치 값을 넣은 뒤에 불러야 한다(setup의 순서).
     from Simulator import origin_class_stats
@@ -174,6 +203,7 @@ VARIANTS = {
     'dusk_off': (_dusk_off, lambda b: 'dusk' in b['traits'], None),
     'ricochet_no_count': (_ricochet_no_count,
                           lambda b: 'sharpshooter' in b['traits'] and any(u in ('jhin', 'vayne') for u in b['units']), None),
+    'ricochet_nearest': (_ricochet_nearest, lambda b: 'sharpshooter' in b['traits'], None),
 }
 
 
