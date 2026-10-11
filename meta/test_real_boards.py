@@ -209,15 +209,16 @@ def _fourth_shot_attacks(n=8):
 
 
 def ricochet_no_count_keeps_fourth_shot_every_four_attacks_test():
-    """튕김 안 세기 조건: 명사수 2명인 진의 네 번째 사격은 공격 4번마다 첫 대상에 떨어진다. 기본 규칙(튕김도 센다)에서는
-    공격 2번마다 튕김 대상에 떨어져 첫 대상은 한 번도 안 맞는다."""
+    """튕김 안 세기 조건: 명사수 2명인 진의 네 번째 사격은 공격 4번마다 첫 대상에 떨어진다. june c0d15b4부터는 기본 규칙도
+    같아서(튕김은 횟수에 안 들고 네 번째 사격 피해를 옮긴다) 조건과 기본이 같다. 그 전 기본 규칙(튕김도 센다)에서는 공격
+    2번마다 튕김 대상에 떨어져 첫 대상은 한 번도 안 맞았다."""
     from functools import partial
     from meta.isolate import VARIANTS, setup
     assert 'ricochet_no_count' in VARIANTS
     with Pool(1, initializer=partial(setup, 'ricochet_no_count')) as workers:
         assert workers.apply(_fourth_shot_attacks) == [4, 8]
     with Pool(1, initializer=prehotfix) as workers:
-        assert workers.apply(_fourth_shot_attacks) == []
+        assert workers.apply(_fourth_shot_attacks) == [4, 8]
 
 
 if __name__ == '__main__':
