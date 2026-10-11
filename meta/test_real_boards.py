@@ -144,6 +144,43 @@ def isolate_variants_reach_battles_test():
         assert workers.apply(_spots) == {'ashe': (3, 0), 'jinx': (2, 0), 'garen': (3, 3)}
 
 
+def isolate_context_follows_the_base_result_file_test():
+    """떼어 재기는 기본 결과 파일(--base)에 적힌 자료와 패치를 따른다. 10.22 결과면 30조합을 10.22 값으로 붙이고,
+    적힌 게 없으면(10.24 결과) 27조합을 핫픽스 전 값으로 붙인다. 패치는 일꾼마다 들어가야 한다."""
+    from functools import partial
+    from meta.isolate import context, setup
+    boards, patch = context({'src': 'lolchess_set4_more.json', 'patch': '10.22'})
+    assert len(boards) == 30 and patch == '10.22'
+    with Pool(1, initializer=partial(setup, 'corner', patch)) as workers:
+        assert workers.apply(_current_patch) == '10.22'
+    boards, patch = context({})
+    assert len(boards) == 27 and patch is None
+    with Pool(1, initializer=partial(setup, 'corner', patch)) as workers:
+        assert workers.apply(_current_patch) is None and workers.apply(_zed_attack_speed) == 0.8
+
+
+def high_cost_1star_keeps_only_the_chosen_at_two_stars_test():
+    """4·5코스트 1성 조건: 선택받은 자는 살 때부터 2성이라 두고, 다른 4·5코스트는 1성, 1~3코스트는 2성 그대로다."""
+    from meta.isolate import _high_cost_1star_spec
+    from meta.real_boards import MORE
+    board = next(b for b in load_trends(MORE, '10.22') if b['key'].startswith('6dusk-3cultist-2mystic'))
+    assert {u['name']: u['stars'] for u in _high_cost_1star_spec(board)} == {
+        'riven': 2, 'jhin': 1, 'cassiopeia': 1, 'aatrox': 1, 'lillia': 1, 'zilean': 1, 'vayne': 2, 'thresh': 2}
+
+
+def _dusk_tables():
+    from Simulator import origin_class_stats, patch_manager
+    return origin_class_stats.SP['dusk'], origin_class_stats.SP_secondary['dusk'], patch_manager.get_current_patch()
+
+
+def dusk_off_zeroes_the_trait_tables_after_the_patch_test():
+    """황혼 끄기 조건은 패치 값을 넣은 뒤 황혼 주문력 표(황혼 유닛 몫, 아군 전체 몫)를 0으로 둔다. 전투의 origin_class.dusk가 읽는 표다."""
+    from functools import partial
+    from meta.isolate import setup
+    with Pool(1, initializer=partial(setup, 'dusk_off', '10.22')) as workers:
+        assert workers.apply(_dusk_tables) == ([0, 0, 0, 0], [0, 0, 0, 0], '10.22')
+
+
 if __name__ == '__main__':
     for name, test in list(globals().items()):
         if name.endswith('_test'):

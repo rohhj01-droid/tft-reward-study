@@ -17,8 +17,15 @@
   reroll3              1~2코스트인데 추천 아이템 3개를 든 캐리(닌자의 제드, 결투가의 야스오)를 3성으로 둔다.
   corner               원거리를 뒷줄 구석부터 아이템이 많은 순으로 놓는다(가운데 배치 기본 결과에서만 뜻이 있다).
   drop --board 이름    그 보드에서 유닛을 하나씩 빼 본다(조건이 아니라 보드를 바꾼다).
+  high_cost_1star      모든 보드의 4·5코스트를 1성으로 둔다(선택받은 자는 살 때부터 2성이라 그대로). 비싼 조합일수록 실제로는 다 2성이
+                       못 됐을 것이라는 가정을 시험한다. 보드 전부를 다시 붙인다.
+  dusk_off             황혼 특성의 주문력(아군 전체 몫, 황혼 유닛 몫)을 0으로 둔다. 황혼 보드의 힘이 특성에서 오는지 유닛·아이템에서
+                       오는지 가른다.
+  --base 결과 파일      기본 결과(real_boards --out)를 고른다. 그 파일에 적힌 자료(src)와 패치(patch)로 보드를 만들고 일꾼을 초기화한다
+                       (10.22 결과면 10.22 패치 값, 적힌 게 없으면 10.24 자료와 핫픽스 전 값).
 
 실행: python -m meta.isolate warlord5 --n 60 --jobs 7 --out results/isolate_1024.json
+      python -m meta.isolate dusk_off --base results/real_boards_1022.json --n 60 --jobs 7 --out results/isolate_1022.json
 """
 import argparse
 import inspect
@@ -31,7 +38,7 @@ from functools import partial
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from set4 import cost_of
 from meta.pit import average, round_robin
-from meta.real_boards import groups, load_trends, prehotfix, spearman, spec
+from meta.real_boards import SRC, apply_sim_patch, groups, load_trends, prehotfix, spearman, spec
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MAIN = os.path.join(ROOT, 'results', 'real_boards_1024.json')
@@ -108,6 +115,22 @@ def _corner():
     ab.range_positions = ab.corner_positions
 
 
+def _high_cost_1star_spec(board):
+    """4·5코스트를 1성으로 둔다. 선택받은 자는 살 때부터 2성이라 그대로 둔다."""
+    out = spec(board, 1)
+    for unit in out:
+        if cost_of(unit['name']) == 4 and 'chosen' not in unit:
+            unit['stars'] = 1
+    return out
+
+
+def _dusk_off():
+    # 황혼 특성의 주문력을 없앤다(origin_class.dusk가 읽는 두 표). 패치 값을 넣은 뒤에 불러야 한다(setup의 순서).
+    from Simulator import origin_class_stats
+    origin_class_stats.SP['dusk'] = [0, 0, 0, 0]
+    origin_class_stats.SP_secondary['dusk'] = [0, 0, 0, 0]
+
+
 # 조건 이름 -> (일꾼에서 부를 함수, 그 조건에 걸리는 보드인가, 보드 만들기(None이면 기본 2성))
 VARIANTS = {
     'warlord2': (partial(_warlord, 2), lambda b: 'warlord' in b['traits'], None),
@@ -119,15 +142,28 @@ VARIANTS = {
     'cast_time_half': (partial(_cast_time, 0.5), lambda b: True, None),
     'reroll3': (lambda: None, lambda b: any(_rerolled(u, i) for u, i in b['items'].items()), _reroll_spec),
     'corner': (_corner, lambda b: True, None),
+    'high_cost_1star': (lambda: None, lambda b: True, _high_cost_1star_spec),
+    'dusk_off': (_dusk_off, lambda b: 'dusk' in b['traits'], None),
 }
 
 
-def setup(name):
-    prehotfix()
+def base_init(patch):
+    """일꾼 초기화: 기본 결과에 패치가 적혀 있으면 그 패치 값, 없으면 핫픽스 전 값."""
+    return partial(apply_sim_patch, patch) if patch else prehotfix
+
+
+def setup(name, patch=None):
+    base_init(patch)()
     VARIANTS[name][0]()
 
 
-def drop_units(board, boards, n, jobs, place):
+def context(base):
+    """기본 결과 파일에 적힌 자료(src)와 패치로 보드를 만든다. 적힌 게 없으면 10.24 자료다. (보드 목록, 패치 이름)을 돌려준다."""
+    src = os.path.join(os.path.dirname(os.path.abspath(__file__)), base['src']) if 'src' in base else SRC
+    return load_trends(src, base.get('patch')), base.get('patch')
+
+
+def drop_units(board, boards, n, jobs, place, init):
     """board에서 유닛을 하나씩 뺀 보드를 나머지 26개와 붙여 평균 승률을 낸다. 빼서 많이 떨어지는 유닛이 시뮬레이터에서
     그 보드의 힘이다. 유닛을 빼면 그 유닛의 특성 몫과 아이템, 선택받은 자·상징도 같이 빠진다."""
     others = {b['key']: spec(b, 2) for b in boards if b is not board}
@@ -136,7 +172,7 @@ def drop_units(board, boards, n, jobs, place):
     for unit in board['units']:
         key = f'{board["key"]} -{unit}'
         m = round_robin({**others, key: [u for u in full if u['name'] != unit]}, n, place, jobs,
-                        init=prehotfix, only={key})
+                        init=init, only={key})
         out[unit] = sum(m[key].values()) / len(m[key])
         print(f'  -{unit:12} {out[unit] * 100:5.1f}%', flush=True)
     return out
@@ -157,16 +193,17 @@ def main():
     ap.add_argument('--n', type=int, default=60, help='매치업당 판 수(기본 결과와 같아야 한다)')
     ap.add_argument('--jobs', type=int, default=max(1, os.cpu_count() - 1))
     ap.add_argument('--out', default=None, help='결과를 더해 둘 JSON. 있으면 다른 조건은 두고 이 조건만 바꾼다')
+    ap.add_argument('--base', default=MAIN, help='기본 결과 JSON(real_boards --out). 거기 적힌 자료와 패치를 따른다')
     args = ap.parse_args()
 
-    base = json.load(open(MAIN, encoding='utf-8'))
+    base = json.load(open(args.base, encoding='utf-8'))
     assert base['n'] == args.n, f'기본 결과의 판 수({base["n"]})와 같아야 섞을 수 있다'
-    boards = load_trends()
+    boards, patch = context(base)
     place = base.get('place', {}).get('main', 'range')  # 기본 결과와 같은 배치로 다시 붙인다
     if args.variant == 'drop':
         board, = [b for b in boards if b['key'].startswith(args.board)]
         print(f'{board["key"]}: 실제 {board["place"]:.2f}, 다 있을 때 {base["average"]["main"][board["key"]] * 100:.1f}%')
-        out = drop_units(board, boards, args.n, args.jobs, place)
+        out = drop_units(board, boards, args.n, args.jobs, place, base_init(patch))
         if args.out:
             save(args.out, f'drop:{board["key"]}', {'n': args.n, 'full': base['average']['main'][board['key']],
                                                     'without': out})
@@ -174,7 +211,7 @@ def main():
     _, affected, make = VARIANTS[args.variant]
     hit = {b['key'] for b in boards if affected(b)}
     part = round_robin({b['key']: make(b) if make else spec(b, 2) for b in boards}, args.n, place, args.jobs,
-                       init=partial(setup, args.variant), only=hit)
+                       init=partial(setup, args.variant, patch), only=hit)
     matrix = {a: {**row, **part[a]} for a, row in base['main'].items()}
     before, after = base['average']['main'], average(matrix)
 
