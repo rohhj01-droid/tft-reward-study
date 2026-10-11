@@ -1885,5 +1885,85 @@ python -m meta.isolate ricochet_no_count --base results/real_boards_1022.json --
    갖춘 판)와, 10.22에서 가장 많이 한 깨달은 자 계열이 시뮬레이터에서 약한 것이다(실제 2위 보드가 13위이고, 그 보드도 탈론
    하나가 45%p를 진다). 깨달은 자 계열은 이 절의 범위 밖이라 재지 않았다.
 6. 다음에 할 것: ① 공식 게임 데이터에서 진·베인의 튕김 스킬 내용을 확인하고, 「튕김은 횟수에 들지 않되 네 번째 사격 피해를
-   튕긴다」가 맞으면 june에 넣고 10.22·10.24 대전을 다시 돌린다. ② 깨달은 자 계열(탈론·모르가나·잔나)이 왜 약한지 따로
-   떼어 재기.
+   튕긴다」가 맞으면 june에 넣고 10.22·10.24 대전을 다시 돌린다 → 같은 날 저녁에 했다(다음 절). ② 깨달은 자 계열(탈론·
+   모르가나·잔나)이 왜 약한지 따로 떼어 재기.
+
+## 튕김 규칙을 공식대로 둔 뒤 실제 보드 대전 (2026-10-11)
+
+```bash
+python -m meta.real_boards --src meta/lolchess_set4_more.json --patch 10.22 --n 60 --jobs 7 --out results/real_boards_1022.json   # june c0d15b4, 54분
+python -m meta.real_boards --n 60 --jobs 7 --out results/real_boards_1024.json                                                      # june c0d15b4, 2절
+```
+
+-> [real_boards_1022.json](real_boards_1022.json) (전 결과는 커밋 `a84460a`의 같은 파일),
+[real_boards_1024.json](real_boards_1024.json) (전 결과는 커밋 `bef28c0`까지의 같은 파일).
+
+왜 했나: 「황혼 과대평가 떼어 재기」에서 튕김 세기 규칙이 황혼·명사수 보드를 가르는 자리였고, 어느 쪽으로 두어도 두 보드
+종류를 함께 못 맞췄다. 공식 자료를 다시 봤다.
+
+- 10.24 게임 데이터(Community Dragon `game/data/characters/tft4_jhin/tft4_jhin.bin.json`, `tft4_vayne`): 튕김은 챔피언마다
+  따로 있는 스킬이다(`TFT4_JhinSharpshooterBounce`, 별명 JhinBasicAttack, 탄속 2600; `TFT4_VayneSharpshooterBounce`). 진의
+  네 번째 사격은 `TFT4_JhinPassiveAttack`(공격력의 444/500/1234%, 주문력 계수 있음), 베인 은화살은 `TFT4_VayneW`(참 피해
+  50/90/140, 주문력 계수 있음)다. 10.22 파일과 10.24 파일이 같다. 튕김 스킬 기록에는 피해 계산이 없다(스크립트에 있다).
+- 위키 명사수(Set 4): 「기본 공격과 스킬이 줄어든 피해로 튕긴다. 2명 1번 55% 감소, 4명 2번 50%, 6명 3번 45%, 튕길 때마다
+  거듭(6명: 55%, 30.25%, 16.6%)」, 「루난의 허리케인 화살은 튕기지 않는다」. 10.22 노트: 감소율 65/50/35 → 55/50/45.
+- 읽은 것: 튕김은 진·베인의 기본 공격이 아니라 횟수(네 번째 사격, 같은 대상 3번)에 들지 않고, 그 공격의 피해(네 번째 사격·
+  은화살 포함)에 배율을 곱한 만큼을 옮긴다. 예전 시뮬레이터는 튕김을 횟수에 넣고(1f84313) 튕김 피해는 기본 공격력 몫만 옮겼다.
+  june `c0d15b4`로 고쳤다(audit/README 5번 베인 항목, 특성 표 명사수 행). 튕긴 공격은 제 치명타와 대상 방어력을 따로 적용하고,
+  회피·면역이면 안 튕긴다. 검사: 명사수 2명 진 2성의 네 번째 사격이 공격 4번째에 첫 대상 900·튕김 405(예전에는 2·4번째에
+  튕김 대상에 801), 베인 튕김 셋으로는 은화살이 안 터진다.
+
+### 1. 10.22 (30조합, 시뮬레이터 10.22 값, 모두 2성)
+
+| 조합 (실제 평균 등수 순) | 실제 순위 | 전 (1f84313) | 후 (c0d15b4) |
+|---|---|---|---|
+| 9elderwood-4brawler-2hunter-1theboss | 1 | 79.0% (5) | 83.8% (2) |
+| 4dazzler-4enlightened-3adept-2assassin-2divine-2mystic-1exile-1ninja | 2 | 55.8% (13) | 60.4% (12) |
+| 9cultist-2keeper-1emperor | 3 | 75.0% (6) | 77.0% (4) |
+| 6enlightened-3adept-2assassin-2dazzler-2divine-2mystic-1exile-1ninja | 4 | 46.0% (17) | 48.6% (16) |
+| 9cultist-2shade-1tormented | 5 | 83.4% (2) | 85.2% (1) |
+| 6sharpshooter-4keeper-3warlord-2dusk-1emperor-1ninja | 6 | 85.3% (1) | 41.7% (20) |
+| 8brawler-3elderwood-3hunter-1theboss | 7 | 21.0% (26) | 23.7% (26) |
+| 6duelist-2adept-2divine-2enlightened-2exile-2mystic-1ninja | 8 | 47.0% (16) | 48.2% (17) |
+| 6dusk-3cultist-2keeper-2mystic-2sharpshooter-2vanguard-1emperor | 9 | 79.6% (4) | 61.7% (10) |
+| 4dazzler-4enlightened-3adept-2divine-2mystic-1exile-1ninja | 10 | 45.2% (18) | 48.6% (15) |
+| 4ninja-4shade-3cultist-2assassin-2mystic-1tormented | 11 | 72.6% (7) | 77.7% (3) |
+| 8duelist-2adept-2divine-2exile-1ninja | 12 | 68.0% (8) | 72.4% (5) |
+| 4enlightened-3adept-2assassin-2dazzler-2divine-2mystic-1emperor-1exile-1ninja | 13 | 38.8% (20) | 41.9% (19) |
+| 4enlightened-3adept-3mystic-2assassin-2dazzler-2divine-1exile-1ninja | 14 | 52.9% (14) | 55.3% (13) |
+| 6duelist-2adept-2divine-2exile-2mystic-1ninja | 15 | 48.7% (15) | 50.1% (14) |
+| 4mystic-4vanguard-2dusk-2spirit-1ninja | 16 | 64.0% (10) | 66.2% (8) |
+| 5hunter-3adept-2divine-2mystic-2spirit-1exile-1ninja | 17 | 57.4% (12) | 62.2% (9) |
+| 6elderwood-4brawler-2dazzler-2divine-2hunter-1theboss | 18 | 36.0% (22) | 38.4% (22) |
+| 4adept-4enlightened-2assassin-2dazzler-2divine-2mystic-1exile-1ninja | 19 | 34.4% (23) | 36.5% (23) |
+| 6brawler-4hunter-3elderwood-1theboss | 20 | 14.5% (29) | 13.9% (29) |
+| 5enlightened-3adept-2assassin-2dazzler-2divine-2mystic-1exile-1ninja | 21 | 36.4% (21) | 39.6% (21) |
+| 9warlord-2assassin-2keeper-1emperor | 22 | 7.9% (30) | 10.5% (30) |
+| 6enlightened-3adept-2dazzler-2divine-2mystic-1exile-1ninja | 23 | 28.3% (25) | 32.0% (25) |
+| 9cultist-2vanguard | 24 | 67.1% (9) | 66.8% (7) |
+| 4enlightened-4mystic-2adept-2assassin-2dazzler-2divine-1ninja | 25 | 33.7% (24) | 34.2% (24) |
+| 4dazzler-4enlightened-2adept-2assassin-2divine-2mystic-1ninja | 26 | 45.1% (19) | 48.1% (18) |
+| 4mystic-4vanguard-2dusk-2spirit | 27 | 57.9% (11) | 61.5% (11) |
+| 4assassin-4enlightened-2adept-2dazzler-2divine-2mystic-1ninja | 28 | 19.7% (27) | 22.4% (27) |
+| 4enlightened-3adept-3dazzler-2assassin-2divine-2mystic-1exile-1ninja | 29 | 16.4% (28) | 19.9% (28) |
+| 6dusk-3cultist-2mystic-2sharpshooter-2vanguard | 30 | 82.8% (3) | 71.5% (6) |
+
+| 순위 상관 | 2성 (전체) | 5코 1성 | 10.24 값 | 2성 8명 | 2성 9명 |
+|---|---|---|---|---|---|
+| 전 | +0.46 (p=0.006) | +0.41 | +0.49 | +0.36 | +0.07 |
+| 후 | +0.43 (p=0.011) | +0.46 | +0.47 | +0.37 | +0.61 |
+
+읽은 것:
+
+1. 황혼 황제 보드는 4위 → 10위(62%)로 실제(9위)에 맞아 들어갔다. 황혼 릴리아 보드는 3위 → 6위(71%)로 내려왔지만
+   실제(30위)와는 멀다(5코 1성 조건에서는 51%, 15위). 「황혼 과대평가 떼어 재기」의 나머지 후보(별 등급 상한 30%p, 트렌드
+   자료의 한계, 깨달은 자 계열이 약함)가 남는다.
+2. 명사수 6명 보드는 1위(85%) → 20위(42%)로 떨어졌다(실제 6위). 튕김을 횟수에서 빼기만 한 조건(19%)보다는 네 번째
+   사격이 튕기는 몫으로 올랐지만 실제 자리까지는 못 간다. 이 보드가 시뮬레이터에서 약한 다른 까닭이 있다.
+3. 다른 보드는 거의 다 0~5%p 올랐다(위 셋에게 덜 진다). 전체 상관은 +0.46 → +0.43로 거의 같고(둘 다 우연이 아니다),
+   9명 보드끼리는 +0.07 → +0.61로 올랐다.
+4. 이 규칙은 이제 공식 자료에 기대고 있어서 대전 결과를 보고 다시 바꾸지 않는다. 남은 어긋남은 다른 자리에서 찾는다.
+
+### 2. 10.24 (27조합)
+
+(돌리는 중. 컴퓨터가 꺼져 다시 시작했다.)
