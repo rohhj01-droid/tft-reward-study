@@ -1,0 +1,229 @@
+{
+ "ricochet_nearest": {
+  "n": 60,
+  "boards": [
+   "6dusk-3cultist-2keeper-2mystic-2sharpshooter-2vanguard-1emperor",
+   "6sharpshooter-4keeper-3warlord-2dusk-1emperor-1ninja"
+  ],
+  "average": {
+   "9cultist-2shade-1tormented": 0.534,
+   "4ninja-4shade-3cultist-2assassin-2mystic-1tormented": 0.5147307692307692,
+   "4ninja-4shade-3cultist-2assassin-2keeper-1tormented": 0.30765384615384617,
+   "6sharpshooter-4keeper-3warlord-2dusk-1emperor-1ninja": 0.2455,
+   "4ninja-4shade-3cultist-2adept-2assassin-2mystic-1exile-1tormented": 0.8833076923076925,
+   "4ninja-4shade-3cultist-2assassin-2keeper-2mystic-1emperor-1tormented": 0.7474615384615385,
+   "6dusk-3cultist-2keeper-2mystic-2sharpshooter-2vanguard-1emperor": 0.8045769230769231,
+   "9cultist-2keeper-1emperor": 0.3808846153846154,
+   "9warlord-2brawler-2keeper-1emperor-1theboss": 0.11219230769230769,
+   "8duelist-2adept-2divine-2enlightened-2exile-2mystic-1ninja": 0.7615384615384616,
+   "5hunter-3adept-2divine-2mystic-2spirit-1exile-1ninja": 0.48076923076923084,
+   "6duelist-3adept-3divine-2exile-2mystic-1ninja": 0.7481153846153846,
+   "6divine-3adept-2dazzler-2duelist-2enlightened-1exile-1ninja": 0.7659615384615385,
+   "6duelist-2adept-2divine-2enlightened-2exile-2mystic-1ninja": 0.45450000000000007,
+   "4ninja-3cultist-3shade-2adept-2assassin-2mystic-1exile": 0.766,
+   "4ninja-3cultist-3shade-2assassin-2keeper-2mystic-1emperor": 0.5089615384615385,
+   "9warlord-2assassin-2keeper-1emperor": 0.12953846153846155,
+   "4ninja-3cultist-3shade-2adept-2assassin-2keeper-1exile": 0.3941538461538462,
+   "4ninja-4shade-3cultist-2keeper-2mystic-1tormented": 0.44030769230769234,
+   "6duelist-2adept-2divine-2exile-2mystic-1ninja": 0.45388461538461533,
+   "4ninja-4shade-2keeper-2mystic-1emperor-1tormented": 0.5095384615384615,
+   "4ninja-4shade-2adept-2mystic-1exile-1tormented": 0.7333461538461539,
+   "8duelist-3divine-2adept-2enlightened-2exile": 0.5396923076923077,
+   "8duelist-2adept-2divine-2exile-1ninja": 0.35196153846153844,
+   "6keeper-3cultist-3warlord-2assassin-1emperor-1ninja": 0.0371923076923077,
+   "4ninja-4shade-2assassin-2keeper-1emperor-1tormented": 0.38657692307692315,
+   "4ninja-4shade-2adept-2assassin-1exile-1tormented": 0.5076538461538461
+  },
+  "rho": {
+   "전체": [
+    0.5630534613625534,
+    0.5526717814892742
+   ],
+   "유닛 8명 보드만": [
+    0.4589732780588875,
+    0.4765248374492847
+   ],
+   "유닛 9명 보드만": [
+    0.7380952380952381,
+    0.6904761904761905
+   ],
+   "닌자 그림자 빼고": [
+    0.4392857142857143,
+    0.3964285714285714
+   ]
+  },
+  "matrix": {
+   "9cultist-2shade-1tormented": {
+    "6sharpshooter-4keeper-3warlord-2dusk-1emperor-1ninja": 1.0,
+    "6dusk-3cultist-2keeper-2mystic-2sharpshooter-2vanguard-1emperor": 0.233
+   },
+   "4ninja-4shade-3cultist-2assassin-2mystic-1tormented": {
+    "6sharpshooter-4keeper-3warlord-2dusk-1emperor-1ninja": 0.983,
+    "6dusk-3cultist-2keeper-2mystic-2sharpshooter-2vanguard-1emperor": 0.15
+   },
+   "4ninja-4shade-3cultist-2assassin-2keeper-1tormented": {
+    "6sharpshooter-4keeper-3warlord-2dusk-1emperor-1ninja": 0.783,
+    "6dusk-3cultist-2keeper-2mystic-2sharpshooter-2vanguard-1emperor": 0.033
+   },
+   "6sharpshooter-4keeper-3warlord-2dusk-1emperor-1ninja": {
+    "9cultist-2shade-1tormented": 0.0,
+    "4ninja-4shade-3cultist-2assassin-2mystic-1tormented": 0.017,
+    "4ninja-4shade-3cultist-2assassin-2keeper-1tormented": 0.217,
+    "4ninja-4shade-3cultist-2adept-2assassin-2mystic-1exile-1tormented": 0.033,
+    "4ninja-4shade-3cultist-2assassin-2keeper-2mystic-1emperor-1tormented": 0.017,
+    "6dusk-3cultist-2keeper-2mystic-2sharpshooter-2vanguard-1emperor": 0.017,
+    "9cultist-2keeper-1emperor": 0.333,
+    "9warlord-2brawler-2keeper-1emperor-1theboss": 0.533,
+    "8duelist-2adept-2divine-2enlightened-2exile-2mystic-1ninja": 0.183,
+    "5hunter-3adept-2divine-2mystic-2spirit-1exile-1ninja": 0.233,
+    "6duelist-3adept-3divine-2exile-2mystic-1ninja": 0.183,
+    "6divine-3adept-2dazzler-2duelist-2enlightened-1exile-1ninja": 0.067,
+    "6duelist-2adept-2divine-2enlightened-2exile-2mystic-1ninja": 0.717,
+    "4ninja-3cultist-3shade-2adept-2assassin-2mystic-1exile": 0.083,
+    "4ninja-3cultist-3shade-2assassin-2keeper-2mystic-1emperor": 0.067,
+    "9warlord-2assassin-2keeper-1emperor": 0.333,
+    "4ninja-3cultist-3shade-2adept-2assassin-2keeper-1exile": 0.233,
+    "4ninja-4shade-3cultist-2keeper-2mystic-1tormented": 0.083,
+    "6duelist-2adept-2divine-2exile-2mystic-1ninja": 0.267,
+    "4ninja-4shade-2keeper-2mystic-1emperor-1tormented": 0.067,
+    "4ninja-4shade-2adept-2mystic-1exile-1tormented": 0.05,
+    "8duelist-3divine-2adept-2enlightened-2exile": 0.45,
+    "8duelist-2adept-2divine-2exile-1ninja": 0.817,
+    "6keeper-3cultist-3warlord-2assassin-1emperor-1ninja": 0.85,
+    "4ninja-4shade-2assassin-2keeper-1emperor-1tormented": 0.183,
+    "4ninja-4shade-2adept-2assassin-1exile-1tormented": 0.35
+   },
+   "4ninja-4shade-3cultist-2adept-2assassin-2mystic-1exile-1tormented": {
+    "6sharpshooter-4keeper-3warlord-2dusk-1emperor-1ninja": 0.967,
+    "6dusk-3cultist-2keeper-2mystic-2sharpshooter-2vanguard-1emperor": 0.583
+   },
+   "4ninja-4shade-3cultist-2assassin-2keeper-2mystic-1emperor-1tormented": {
+    "6sharpshooter-4keeper-3warlord-2dusk-1emperor-1ninja": 0.983,
+    "6dusk-3cultist-2keeper-2mystic-2sharpshooter-2vanguard-1emperor": 0.283
+   },
+   "6dusk-3cultist-2keeper-2mystic-2sharpshooter-2vanguard-1emperor": {
+    "9cultist-2shade-1tormented": 0.767,
+    "4ninja-4shade-3cultist-2assassin-2mystic-1tormented": 0.85,
+    "4ninja-4shade-3cultist-2assassin-2keeper-1tormented": 0.967,
+    "6sharpshooter-4keeper-3warlord-2dusk-1emperor-1ninja": 0.983,
+    "4ninja-4shade-3cultist-2adept-2assassin-2mystic-1exile-1tormented": 0.417,
+    "4ninja-4shade-3cultist-2assassin-2keeper-2mystic-1emperor-1tormented": 0.717,
+    "9cultist-2keeper-1emperor": 0.917,
+    "9warlord-2brawler-2keeper-1emperor-1theboss": 0.967,
+    "8duelist-2adept-2divine-2enlightened-2exile-2mystic-1ninja": 0.7,
+    "5hunter-3adept-2divine-2mystic-2spirit-1exile-1ninja": 0.767,
+    "6duelist-3adept-3divine-2exile-2mystic-1ninja": 0.483,
+    "6divine-3adept-2dazzler-2duelist-2enlightened-1exile-1ninja": 0.4,
+    "6duelist-2adept-2divine-2enlightened-2exile-2mystic-1ninja": 1.0,
+    "4ninja-3cultist-3shade-2adept-2assassin-2mystic-1exile": 0.417,
+    "4ninja-3cultist-3shade-2assassin-2keeper-2mystic-1emperor": 0.883,
+    "9warlord-2assassin-2keeper-1emperor": 1.0,
+    "4ninja-3cultist-3shade-2adept-2assassin-2keeper-1exile": 0.933,
+    "4ninja-4shade-3cultist-2keeper-2mystic-1tormented": 0.767,
+    "6duelist-2adept-2divine-2exile-2mystic-1ninja": 0.967,
+    "4ninja-4shade-2keeper-2mystic-1emperor-1tormented": 0.867,
+    "4ninja-4shade-2adept-2mystic-1exile-1tormented": 0.617,
+    "8duelist-3divine-2adept-2enlightened-2exile": 0.933,
+    "8duelist-2adept-2divine-2exile-1ninja": 0.983,
+    "6keeper-3cultist-3warlord-2assassin-1emperor-1ninja": 1.0,
+    "4ninja-4shade-2assassin-2keeper-1emperor-1tormented": 0.817,
+    "4ninja-4shade-2adept-2assassin-1exile-1tormented": 0.8
+   },
+   "9cultist-2keeper-1emperor": {
+    "6sharpshooter-4keeper-3warlord-2dusk-1emperor-1ninja": 0.667,
+    "6dusk-3cultist-2keeper-2mystic-2sharpshooter-2vanguard-1emperor": 0.083
+   },
+   "9warlord-2brawler-2keeper-1emperor-1theboss": {
+    "6sharpshooter-4keeper-3warlord-2dusk-1emperor-1ninja": 0.467,
+    "6dusk-3cultist-2keeper-2mystic-2sharpshooter-2vanguard-1emperor": 0.033
+   },
+   "8duelist-2adept-2divine-2enlightened-2exile-2mystic-1ninja": {
+    "6sharpshooter-4keeper-3warlord-2dusk-1emperor-1ninja": 0.817,
+    "6dusk-3cultist-2keeper-2mystic-2sharpshooter-2vanguard-1emperor": 0.3
+   },
+   "5hunter-3adept-2divine-2mystic-2spirit-1exile-1ninja": {
+    "6sharpshooter-4keeper-3warlord-2dusk-1emperor-1ninja": 0.767,
+    "6dusk-3cultist-2keeper-2mystic-2sharpshooter-2vanguard-1emperor": 0.233
+   },
+   "6duelist-3adept-3divine-2exile-2mystic-1ninja": {
+    "6sharpshooter-4keeper-3warlord-2dusk-1emperor-1ninja": 0.817,
+    "6dusk-3cultist-2keeper-2mystic-2sharpshooter-2vanguard-1emperor": 0.517
+   },
+   "6divine-3adept-2dazzler-2duelist-2enlightened-1exile-1ninja": {
+    "6sharpshooter-4keeper-3warlord-2dusk-1emperor-1ninja": 0.933,
+    "6dusk-3cultist-2keeper-2mystic-2sharpshooter-2vanguard-1emperor": 0.6
+   },
+   "6duelist-2adept-2divine-2enlightened-2exile-2mystic-1ninja": {
+    "6sharpshooter-4keeper-3warlord-2dusk-1emperor-1ninja": 0.283,
+    "6dusk-3cultist-2keeper-2mystic-2sharpshooter-2vanguard-1emperor": 0.0
+   },
+   "4ninja-3cultist-3shade-2adept-2assassin-2mystic-1exile": {
+    "6sharpshooter-4keeper-3warlord-2dusk-1emperor-1ninja": 0.917,
+    "6dusk-3cultist-2keeper-2mystic-2sharpshooter-2vanguard-1emperor": 0.583
+   },
+   "4ninja-3cultist-3shade-2assassin-2keeper-2mystic-1emperor": {
+    "6sharpshooter-4keeper-3warlord-2dusk-1emperor-1ninja": 0.933,
+    "6dusk-3cultist-2keeper-2mystic-2sharpshooter-2vanguard-1emperor": 0.117
+   },
+   "9warlord-2assassin-2keeper-1emperor": {
+    "6sharpshooter-4keeper-3warlord-2dusk-1emperor-1ninja": 0.667,
+    "6dusk-3cultist-2keeper-2mystic-2sharpshooter-2vanguard-1emperor": 0.0
+   },
+   "4ninja-3cultist-3shade-2adept-2assassin-2keeper-1exile": {
+    "6sharpshooter-4keeper-3warlord-2dusk-1emperor-1ninja": 0.767,
+    "6dusk-3cultist-2keeper-2mystic-2sharpshooter-2vanguard-1emperor": 0.067
+   },
+   "4ninja-4shade-3cultist-2keeper-2mystic-1tormented": {
+    "6sharpshooter-4keeper-3warlord-2dusk-1emperor-1ninja": 0.917,
+    "6dusk-3cultist-2keeper-2mystic-2sharpshooter-2vanguard-1emperor": 0.233
+   },
+   "6duelist-2adept-2divine-2exile-2mystic-1ninja": {
+    "6sharpshooter-4keeper-3warlord-2dusk-1emperor-1ninja": 0.733,
+    "6dusk-3cultist-2keeper-2mystic-2sharpshooter-2vanguard-1emperor": 0.033
+   },
+   "4ninja-4shade-2keeper-2mystic-1emperor-1tormented": {
+    "6sharpshooter-4keeper-3warlord-2dusk-1emperor-1ninja": 0.933,
+    "6dusk-3cultist-2keeper-2mystic-2sharpshooter-2vanguard-1emperor": 0.133
+   },
+   "4ninja-4shade-2adept-2mystic-1exile-1tormented": {
+    "6sharpshooter-4keeper-3warlord-2dusk-1emperor-1ninja": 0.95,
+    "6dusk-3cultist-2keeper-2mystic-2sharpshooter-2vanguard-1emperor": 0.383
+   },
+   "8duelist-3divine-2adept-2enlightened-2exile": {
+    "6sharpshooter-4keeper-3warlord-2dusk-1emperor-1ninja": 0.55,
+    "6dusk-3cultist-2keeper-2mystic-2sharpshooter-2vanguard-1emperor": 0.067
+   },
+   "8duelist-2adept-2divine-2exile-1ninja": {
+    "6sharpshooter-4keeper-3warlord-2dusk-1emperor-1ninja": 0.183,
+    "6dusk-3cultist-2keeper-2mystic-2sharpshooter-2vanguard-1emperor": 0.017
+   },
+   "6keeper-3cultist-3warlord-2assassin-1emperor-1ninja": {
+    "6sharpshooter-4keeper-3warlord-2dusk-1emperor-1ninja": 0.15,
+    "6dusk-3cultist-2keeper-2mystic-2sharpshooter-2vanguard-1emperor": 0.0
+   },
+   "4ninja-4shade-2assassin-2keeper-1emperor-1tormented": {
+    "6sharpshooter-4keeper-3warlord-2dusk-1emperor-1ninja": 0.817,
+    "6dusk-3cultist-2keeper-2mystic-2sharpshooter-2vanguard-1emperor": 0.183
+   },
+   "4ninja-4shade-2adept-2assassin-1exile-1tormented": {
+    "6sharpshooter-4keeper-3warlord-2dusk-1emperor-1ninja": 0.65,
+    "6dusk-3cultist-2keeper-2mystic-2sharpshooter-2vanguard-1emperor": 0.2
+   }
+  }
+ },
+ "drop:6sharpshooter-4keeper-3warlord-2dusk-1emperor-1ninja": {
+  "n": 60,
+  "full": 0.25957692307692304,
+  "without": {
+   "jinx": 0.09157692307692307,
+   "jhin": 0.0,
+   "riven": 0.05834615384615384,
+   "vayne": 0.07692307692307693,
+   "azir": 0.0371923076923077,
+   "teemo": 0.09619230769230769,
+   "kennen": 0.13207692307692304,
+   "nidalee": 0.0571153846153846,
+   "jarvaniv": 0.1103076923076923
+  }
+ }
+}
