@@ -21,6 +21,9 @@
                        못 됐을 것이라는 가정을 시험한다. 보드 전부를 다시 붙인다.
   dusk_off             황혼 특성의 주문력(아군 전체 몫, 황혼 유닛 몫)을 0으로 둔다. 황혼 보드의 힘이 특성에서 오는지 유닛·아이템에서
                        오는지 가른다.
+  ricochet_no_count    명사수 튕김을 베인 은화살·진 네 번째 사격 횟수에 넣지 않는다(june dd18cfa의 규칙. 1f84313이 되돌려 지금은
+                       넣는다). 코드는 그대로 두고 일꾼에서 튕김 동안 두 패시브를 멈춘다. 명사수 2명 이상에 진·베인이 있는 보드만
+                       다시 붙인다.
   --base 결과 파일      기본 결과(real_boards --out)를 고른다. 그 파일에 적힌 자료(src)와 패치(patch)로 보드를 만들고 일꾼을 초기화한다
                        (10.22 결과면 10.22 패치 값, 적힌 게 없으면 10.24 자료와 핫픽스 전 값).
 
@@ -124,6 +127,30 @@ def _high_cost_1star_spec(board):
     return out
 
 
+def _ricochet_no_count():
+    # 명사수 튕김(origin_class.sharpshooter가 부르는 공격) 동안 진·베인의 공격 패시브가 횟수를 세지도, 터지지도 않게 한다.
+    from Simulator import active, origin_class
+    state = {'ricochet': False}
+    ricochet = origin_class.sharpshooter
+
+    def patched_ricochet(*args, **kwargs):
+        state['ricochet'] = True
+        try:
+            return ricochet(*args, **kwargs)
+        finally:
+            state['ricochet'] = False
+    origin_class.sharpshooter = patched_ricochet
+
+    for name in ('jhin', 'vayne'):
+        passive = getattr(active, name)
+
+        def patched(champion, target, passive=passive, true=(name == 'vayne')):
+            if state['ricochet']:
+                return {'damage': 0, 'true_damage': true, 'crit_random': None, 'dodge_random': None}
+            return passive(champion, target)
+        setattr(active, name, patched)
+
+
 def _dusk_off():
     # 황혼 특성의 주문력을 없앤다(origin_class.dusk가 읽는 두 표). 패치 값을 넣은 뒤에 불러야 한다(setup의 순서).
     from Simulator import origin_class_stats
@@ -144,6 +171,8 @@ VARIANTS = {
     'corner': (_corner, lambda b: True, None),
     'high_cost_1star': (lambda: None, lambda b: True, _high_cost_1star_spec),
     'dusk_off': (_dusk_off, lambda b: 'dusk' in b['traits'], None),
+    'ricochet_no_count': (_ricochet_no_count,
+                          lambda b: 'sharpshooter' in b['traits'] and any(u in ('jhin', 'vayne') for u in b['units']), None),
 }
 
 

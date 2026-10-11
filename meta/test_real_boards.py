@@ -181,6 +181,45 @@ def dusk_off_zeroes_the_trait_tables_after_the_patch_test():
         assert workers.apply(_dusk_tables) == ([0, 0, 0, 0], [0, 0, 0, 0], '10.22')
 
 
+def _fourth_shot_attacks(n=8):
+    """명사수 2명인 팀의 진(2성, 치명타 없음)이 세주아니 둘 중 첫째를 n번 공격할 때, 첫째가 네 번째 사격(첫 공격 피해의
+    3배 넘는 피해)을 맞은 공격 번호. 튕김도 횟수에 들면(기본 규칙) 네 번째 사격은 늘 튕김 대상인 둘째에 떨어진다."""
+    import Simulator.champion as cm
+    from Simulator import champion_functions, field, origin_class
+    field.coordinates = [[None] * 7 for _ in range(8)]
+    jhin = cm.champion('jhin', 'blue', 0, 0, stars=2)
+    foes = [cm.champion('sejuani', 'red', 3, 3, stars=2), cm.champion('sejuani', 'red', 4, 3, stars=2)]
+    cm.blue[:], cm.red[:] = [jhin], foes
+    cm.que.clear()
+    origin_class.amounts['sharpshooter']['blue'] = 2
+    jhin.crit_chance = 0
+    for f in foes:
+        f.health = f.max_health = 100000
+        f.dodge = 0
+    hits, first = [], None
+    for i in range(1, n + 1):
+        jhin.idle = True
+        before = foes[0].health
+        champion_functions.attack(jhin, foes[0])
+        dealt = before - foes[0].health
+        first = first or dealt
+        if dealt > 3 * first:
+            hits.append(i)
+    return hits
+
+
+def ricochet_no_count_keeps_fourth_shot_every_four_attacks_test():
+    """튕김 안 세기 조건: 명사수 2명인 진의 네 번째 사격은 공격 4번마다 첫 대상에 떨어진다. 기본 규칙(튕김도 센다)에서는
+    공격 2번마다 튕김 대상에 떨어져 첫 대상은 한 번도 안 맞는다."""
+    from functools import partial
+    from meta.isolate import VARIANTS, setup
+    assert 'ricochet_no_count' in VARIANTS
+    with Pool(1, initializer=partial(setup, 'ricochet_no_count')) as workers:
+        assert workers.apply(_fourth_shot_attacks) == [4, 8]
+    with Pool(1, initializer=prehotfix) as workers:
+        assert workers.apply(_fourth_shot_attacks) == []
+
+
 if __name__ == '__main__':
     for name, test in list(globals().items()):
         if name.endswith('_test'):
