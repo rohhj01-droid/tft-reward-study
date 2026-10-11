@@ -1222,7 +1222,8 @@ python -m meta.lobby --games 400 --jobs 7 --out results/lobby_1024.json   # june
 ```
 
 결과 파일 셋은 이번 결과로 바뀌었다. 예전 결과는 이 저장소 커밋 `987f135`(실제 보드 대전), `7b8040c`(봇 셋),
-`289997c`(덱 시험)의 같은 파일에 있다.
+`289997c`(덱 시험)의 같은 파일에 있다. 실제 보드 대전 결과는 2026-10-11에 다시 바뀌었다(「튕김 규칙을 공식대로 둔 뒤 실제
+보드 대전」). 이 절의 결과는 커밋 `fbc0a67`의 같은 파일에 있다.
 
 고친 것(출처와 검사는 [audit/README.md](../audit/README.md) 경제 6번, 스테이지 피해 2번, 5번 피오라, 전투 공통 규칙 표):
 
@@ -1726,7 +1727,8 @@ Ninja Shades는 느린 덱이라 캐리 제드(2코스트)가 3성이 될 때까
 python -m meta.real_boards --src meta/lolchess_set4_more.json --patch 10.22 --n 60 --jobs 7 --out results/real_boards_1022.json   # june afe5ed9, 이 저장소 107bb7d, 31분
 ```
 
--> [real_boards_1022.json](real_boards_1022.json).
+-> [real_boards_1022.json](real_boards_1022.json). 이 절의 수치는 june `afe5ed9`(튕김 세기 규칙 1f84313) 기준이다. 파일은
+「튕김 규칙을 공식대로 둔 뒤 실제 보드 대전」 결과로 바뀌었고, 이 절의 결과는 커밋 `a84460a`의 같은 파일에 있다.
 
 왜 했나: 10.24 황혼은 실제 최강(메타 트렌드 2.15)이고 시뮬레이터 대전에서도 1위였다. 10.22 황혼은 실제 평균 아래였다
 (가중 평균 3.54, 트렌드 두 보드 2.96·3.73). 시뮬레이터를 10.22 값으로 두고 10.22 메타 트렌드 30조합(11-02 보관본, 지난
@@ -1820,7 +1822,8 @@ python -m meta.isolate ricochet_no_count --base results/real_boards_1022.json --
 ```
 
 -> [isolate_1022.json](isolate_1022.json). 도구는 이 저장소 `159ff07`(기본 결과 파일 따라가기, 4·5코 1성, 황혼 끄기)과
-`0a22e18`(튕김 안 세기). 시뮬레이터는 june `afe5ed9`, 10.22 값.
+`0a22e18`(튕김 안 세기). 시뮬레이터는 june `afe5ed9`, 10.22 값. 기본 결과는 그때의 real_boards_1022.json(커밋
+`a84460a`, 튕김 세기 규칙 1f84313)이다.
 
 왜 했나: 바로 위 절에서 10.22 황혼 두 보드가 실제 9위·30위인데 시뮬레이터는 4위·3위였다. 후보 (a) 별 등급(비싼 보드가
 실제로는 덜 갖춰졌다)과 (b) 시뮬레이터가 황혼 유닛·특성을 세게 본다를 떼어 쟀다. 조건은 하나씩만 바꾸고, 그 조건에 걸리는
@@ -1891,12 +1894,12 @@ python -m meta.isolate ricochet_no_count --base results/real_boards_1022.json --
 ## 튕김 규칙을 공식대로 둔 뒤 실제 보드 대전 (2026-10-11)
 
 ```bash
-python -m meta.real_boards --src meta/lolchess_set4_more.json --patch 10.22 --n 60 --jobs 7 --out results/real_boards_1022.json   # june c0d15b4, 54분
-python -m meta.real_boards --n 60 --jobs 7 --out results/real_boards_1024.json                                                      # june c0d15b4, 2절
+python -m meta.real_boards --src meta/lolchess_set4_more.json --patch 10.22 --n 60 --jobs 7 --out results/real_boards_1022.json   # june 45e77c5
+python -m meta.real_boards --n 60 --jobs 7 --out results/real_boards_1024.json                                                      # june 45e77c5, 35분
 ```
 
--> [real_boards_1022.json](real_boards_1022.json) (전 결과는 커밋 `a84460a`의 같은 파일),
-[real_boards_1024.json](real_boards_1024.json) (전 결과는 커밋 `bef28c0`까지의 같은 파일).
+-> [real_boards_1022.json](real_boards_1022.json) (전 결과는 커밋 `a84460a`, 중간 결과는 `7b26f60`의 같은 파일),
+[real_boards_1024.json](real_boards_1024.json) (전 결과는 커밋 `fbc0a67`의 같은 파일).
 
 왜 했나: 「황혼 과대평가 떼어 재기」에서 튕김 세기 규칙이 황혼·명사수 보드를 가르는 자리였고, 어느 쪽으로 두어도 두 보드
 종류를 함께 못 맞췄다. 공식 자료를 다시 봤다.
@@ -1913,57 +1916,104 @@ python -m meta.real_boards --n 60 --jobs 7 --out results/real_boards_1024.json  
   회피·면역이면 안 튕긴다. 검사: 명사수 2명 진 2성의 네 번째 사격이 공격 4번째에 첫 대상 900·튕김 405(예전에는 2·4번째에
   튕김 대상에 801), 베인 튕김 셋으로는 은화살이 안 터진다.
 
+10.24를 다시 돌리다 가운데 배치 조건에서 시뮬레이터가 멈췄다(리 신, ValueError). 죽는 아지르가 먼저 죽은 모래 병사의 옛 칸까지
+비워, 그 칸에 들어와 있던 유닛이 판 지도에서 지워지고 다른 유닛이 겹쳐 들어온 것이었다. june `45e77c5`로 고쳤다(audit/README
+「죽는 소환자가 먼저 죽은 소환물의 옛 칸을 지움」). 두 패치 모두 이 고침 뒤에 다시 돌린 결과다.
+
 ### 1. 10.22 (30조합, 시뮬레이터 10.22 값, 모두 2성)
 
-| 조합 (실제 평균 등수 순) | 실제 순위 | 전 (1f84313) | 후 (c0d15b4) |
+| 조합 (실제 평균 등수 순) | 실제 순위 | 전 (june afe5ed9, 튕김 세기) | 후 (june 45e77c5) |
 |---|---|---|---|
-| 9elderwood-4brawler-2hunter-1theboss | 1 | 79.0% (5) | 83.8% (2) |
-| 4dazzler-4enlightened-3adept-2assassin-2divine-2mystic-1exile-1ninja | 2 | 55.8% (13) | 60.4% (12) |
-| 9cultist-2keeper-1emperor | 3 | 75.0% (6) | 77.0% (4) |
-| 6enlightened-3adept-2assassin-2dazzler-2divine-2mystic-1exile-1ninja | 4 | 46.0% (17) | 48.6% (16) |
-| 9cultist-2shade-1tormented | 5 | 83.4% (2) | 85.2% (1) |
-| 6sharpshooter-4keeper-3warlord-2dusk-1emperor-1ninja | 6 | 85.3% (1) | 41.7% (20) |
-| 8brawler-3elderwood-3hunter-1theboss | 7 | 21.0% (26) | 23.7% (26) |
-| 6duelist-2adept-2divine-2enlightened-2exile-2mystic-1ninja | 8 | 47.0% (16) | 48.2% (17) |
-| 6dusk-3cultist-2keeper-2mystic-2sharpshooter-2vanguard-1emperor | 9 | 79.6% (4) | 61.7% (10) |
-| 4dazzler-4enlightened-3adept-2divine-2mystic-1exile-1ninja | 10 | 45.2% (18) | 48.6% (15) |
-| 4ninja-4shade-3cultist-2assassin-2mystic-1tormented | 11 | 72.6% (7) | 77.7% (3) |
-| 8duelist-2adept-2divine-2exile-1ninja | 12 | 68.0% (8) | 72.4% (5) |
-| 4enlightened-3adept-2assassin-2dazzler-2divine-2mystic-1emperor-1exile-1ninja | 13 | 38.8% (20) | 41.9% (19) |
-| 4enlightened-3adept-3mystic-2assassin-2dazzler-2divine-1exile-1ninja | 14 | 52.9% (14) | 55.3% (13) |
-| 6duelist-2adept-2divine-2exile-2mystic-1ninja | 15 | 48.7% (15) | 50.1% (14) |
-| 4mystic-4vanguard-2dusk-2spirit-1ninja | 16 | 64.0% (10) | 66.2% (8) |
-| 5hunter-3adept-2divine-2mystic-2spirit-1exile-1ninja | 17 | 57.4% (12) | 62.2% (9) |
-| 6elderwood-4brawler-2dazzler-2divine-2hunter-1theboss | 18 | 36.0% (22) | 38.4% (22) |
-| 4adept-4enlightened-2assassin-2dazzler-2divine-2mystic-1exile-1ninja | 19 | 34.4% (23) | 36.5% (23) |
-| 6brawler-4hunter-3elderwood-1theboss | 20 | 14.5% (29) | 13.9% (29) |
-| 5enlightened-3adept-2assassin-2dazzler-2divine-2mystic-1exile-1ninja | 21 | 36.4% (21) | 39.6% (21) |
-| 9warlord-2assassin-2keeper-1emperor | 22 | 7.9% (30) | 10.5% (30) |
-| 6enlightened-3adept-2dazzler-2divine-2mystic-1exile-1ninja | 23 | 28.3% (25) | 32.0% (25) |
-| 9cultist-2vanguard | 24 | 67.1% (9) | 66.8% (7) |
-| 4enlightened-4mystic-2adept-2assassin-2dazzler-2divine-1ninja | 25 | 33.7% (24) | 34.2% (24) |
-| 4dazzler-4enlightened-2adept-2assassin-2divine-2mystic-1ninja | 26 | 45.1% (19) | 48.1% (18) |
-| 4mystic-4vanguard-2dusk-2spirit | 27 | 57.9% (11) | 61.5% (11) |
-| 4assassin-4enlightened-2adept-2dazzler-2divine-2mystic-1ninja | 28 | 19.7% (27) | 22.4% (27) |
-| 4enlightened-3adept-3dazzler-2assassin-2divine-2mystic-1exile-1ninja | 29 | 16.4% (28) | 19.9% (28) |
-| 6dusk-3cultist-2mystic-2sharpshooter-2vanguard | 30 | 82.8% (3) | 71.5% (6) |
+| 9elderwood-4brawler-2hunter-1theboss | 1 | 79.0% (5) | 83.3% (2) |
+| 4dazzler-4enlightened-3adept-2assassin-2divine-2mystic-1exile-1ninja | 2 | 55.8% (13) | 61.3% (11) |
+| 9cultist-2keeper-1emperor | 3 | 75.0% (6) | 76.8% (3) |
+| 6enlightened-3adept-2assassin-2dazzler-2divine-2mystic-1exile-1ninja | 4 | 46.0% (17) | 46.6% (18) |
+| 9cultist-2shade-1tormented | 5 | 83.4% (2) | 86.1% (1) |
+| 6sharpshooter-4keeper-3warlord-2dusk-1emperor-1ninja | 6 | 85.3% (1) | 41.4% (20) |
+| 8brawler-3elderwood-3hunter-1theboss | 7 | 21.0% (26) | 21.5% (27) |
+| 6duelist-2adept-2divine-2enlightened-2exile-2mystic-1ninja | 8 | 47.0% (16) | 47.2% (17) |
+| 6dusk-3cultist-2keeper-2mystic-2sharpshooter-2vanguard-1emperor | 9 | 79.6% (4) | 61.4% (10) |
+| 4dazzler-4enlightened-3adept-2divine-2mystic-1exile-1ninja | 10 | 45.2% (18) | 47.9% (16) |
+| 4ninja-4shade-3cultist-2assassin-2mystic-1tormented | 11 | 72.6% (7) | 76.0% (4) |
+| 8duelist-2adept-2divine-2exile-1ninja | 12 | 68.0% (8) | 72.1% (6) |
+| 4enlightened-3adept-2assassin-2dazzler-2divine-2mystic-1emperor-1exile-1ninja | 13 | 38.8% (20) | 41.5% (19) |
+| 4enlightened-3adept-3mystic-2assassin-2dazzler-2divine-1exile-1ninja | 14 | 52.9% (14) | 56.4% (13) |
+| 6duelist-2adept-2divine-2exile-2mystic-1ninja | 15 | 48.7% (15) | 52.2% (14) |
+| 4mystic-4vanguard-2dusk-2spirit-1ninja | 16 | 64.0% (10) | 68.3% (8) |
+| 5hunter-3adept-2divine-2mystic-2spirit-1exile-1ninja | 17 | 57.4% (12) | 60.8% (12) |
+| 6elderwood-4brawler-2dazzler-2divine-2hunter-1theboss | 18 | 36.0% (22) | 38.5% (21) |
+| 4adept-4enlightened-2assassin-2dazzler-2divine-2mystic-1exile-1ninja | 19 | 34.4% (23) | 36.7% (23) |
+| 6brawler-4hunter-3elderwood-1theboss | 20 | 14.5% (29) | 15.7% (29) |
+| 5enlightened-3adept-2assassin-2dazzler-2divine-2mystic-1exile-1ninja | 21 | 36.4% (21) | 37.5% (22) |
+| 9warlord-2assassin-2keeper-1emperor | 22 | 7.9% (30) | 9.6% (30) |
+| 6enlightened-3adept-2dazzler-2divine-2mystic-1exile-1ninja | 23 | 28.3% (25) | 31.0% (25) |
+| 9cultist-2vanguard | 24 | 67.1% (9) | 68.7% (7) |
+| 4enlightened-4mystic-2adept-2assassin-2dazzler-2divine-1ninja | 25 | 33.7% (24) | 35.8% (24) |
+| 4dazzler-4enlightened-2adept-2assassin-2divine-2mystic-1ninja | 26 | 45.1% (19) | 48.6% (15) |
+| 4mystic-4vanguard-2dusk-2spirit | 27 | 57.9% (11) | 61.6% (9) |
+| 4assassin-4enlightened-2adept-2dazzler-2divine-2mystic-1ninja | 28 | 19.7% (27) | 22.9% (26) |
+| 4enlightened-3adept-3dazzler-2assassin-2divine-2mystic-1exile-1ninja | 29 | 16.4% (28) | 20.2% (28) |
+| 6dusk-3cultist-2mystic-2sharpshooter-2vanguard | 30 | 82.8% (3) | 72.5% (5) |
 
-| 순위 상관 | 2성 (전체) | 5코 1성 | 10.24 값 | 2성 8명 | 2성 9명 |
-|---|---|---|---|---|---|
-| 전 | +0.46 (p=0.006) | +0.41 | +0.49 | +0.36 | +0.07 |
-| 후 | +0.43 (p=0.011) | +0.46 | +0.47 | +0.37 | +0.61 |
+| 순위 상관 | 2성 (전체) | 5코 1성 | 10.24 값 | 2성 8명 | 2성 9명 | 2성 명사수 6명 보드 빼고 |
+|---|---|---|---|---|---|---|
+| 전 | +0.46 (p=0.006) | +0.41 | +0.49 | +0.36 | +0.07 | +0.42 |
+| 후 | +0.39 (p=0.020) | +0.42 | +0.45 | +0.30 | +0.61 | +0.41 |
 
-읽은 것:
+### 2. 10.24 (27조합, 핫픽스 전 값, 모두 2성)
 
-1. 황혼 황제 보드는 4위 → 10위(62%)로 실제(9위)에 맞아 들어갔다. 황혼 릴리아 보드는 3위 → 6위(71%)로 내려왔지만
-   실제(30위)와는 멀다(5코 1성 조건에서는 51%, 15위). 「황혼 과대평가 떼어 재기」의 나머지 후보(별 등급 상한 30%p, 트렌드
-   자료의 한계, 깨달은 자 계열이 약함)가 남는다.
-2. 명사수 6명 보드는 1위(85%) → 20위(42%)로 떨어졌다(실제 6위). 튕김을 횟수에서 빼기만 한 조건(19%)보다는 네 번째
-   사격이 튕기는 몫으로 올랐지만 실제 자리까지는 못 간다. 이 보드가 시뮬레이터에서 약한 다른 까닭이 있다.
-3. 다른 보드는 거의 다 0~5%p 올랐다(위 셋에게 덜 진다). 전체 상관은 +0.46 → +0.43로 거의 같고(둘 다 우연이 아니다),
-   9명 보드끼리는 +0.07 → +0.61로 올랐다.
-4. 이 규칙은 이제 공식 자료에 기대고 있어서 대전 결과를 보고 다시 바꾸지 않는다. 남은 어긋남은 다른 자리에서 찾는다.
+| 조합 (실제 평균 등수 순) | 실제 순위 | 전 (june a90610f, 튕김 세기) | 후 (june 45e77c5) |
+|---|---|---|---|
+| 4ninja-4shade-3cultist-2adept-2assassin-2mystic-1exile-1tormented | 1 | 86.3% (2) | 88.5% (1) |
+| 4ninja-4shade-3cultist-2assassin-2keeper-2mystic-1emperor-1tormented | 2 | 71.9% (6) | 75.4% (6) |
+| 8duelist-2adept-2divine-2enlightened-2exile-2mystic-1ninja | 3 | 73.5% (5) | 76.9% (3) |
+| 6duelist-3adept-3divine-2exile-2mystic-1ninja | 4 | 70.5% (8) | 74.7% (7) |
+| 6dusk-3cultist-2keeper-2mystic-2sharpshooter-2vanguard-1emperor | 5 | 87.4% (1) | 76.9% (2) |
+| 6sharpshooter-4keeper-3warlord-2dusk-1emperor-1ninja | 6 | 66.1% (9) | 26.0% (24) |
+| 9cultist-2keeper-1emperor | 7 | 38.6% (20) | 38.2% (21) |
+| 9cultist-2shade-1tormented | 8 | 51.5% (10) | 54.0% (10) |
+| 4ninja-3cultist-3shade-2adept-2assassin-2mystic-1exile | 9 | 74.9% (3) | 76.6% (4) |
+| 4ninja-3cultist-3shade-2assassin-2keeper-2mystic-1emperor | 10 | 48.3% (15) | 51.6% (11) |
+| 4ninja-4shade-2keeper-2mystic-1emperor-1tormented | 11 | 48.3% (14) | 51.2% (14) |
+| 4ninja-4shade-2adept-2mystic-1exile-1tormented | 12 | 71.4% (7) | 74.0% (8) |
+| 4ninja-4shade-3cultist-2assassin-2mystic-1tormented | 13 | 49.5% (13) | 51.5% (12) |
+| 6duelist-2adept-2divine-2exile-2mystic-1ninja | 14 | 45.0% (16) | 43.5% (17) |
+| 6duelist-2adept-2divine-2enlightened-2exile-2mystic-1ninja | 15 | 44.9% (17) | 44.9% (16) |
+| 4ninja-4shade-3cultist-2keeper-2mystic-1tormented | 16 | 42.6% (19) | 43.5% (18) |
+| 8duelist-2adept-2divine-2exile-1ninja | 17 | 33.5% (23) | 36.0% (22) |
+| 8duelist-3divine-2adept-2enlightened-2exile | 18 | 51.0% (11) | 54.3% (9) |
+| 9warlord-2brawler-2keeper-1emperor-1theboss | 19 | 11.0% (26) | 11.8% (26) |
+| 6keeper-3cultist-3warlord-2assassin-1emperor-1ninja | 20 | 3.7% (27) | 4.8% (27) |
+| 4ninja-4shade-2assassin-2keeper-1emperor-1tormented | 21 | 36.0% (21) | 38.3% (20) |
+| 6divine-3adept-2dazzler-2duelist-2enlightened-1exile-1ninja | 22 | 74.9% (4) | 76.1% (5) |
+| 4ninja-3cultist-3shade-2adept-2assassin-2keeper-1exile | 23 | 34.7% (22) | 39.0% (19) |
+| 4ninja-4shade-3cultist-2assassin-2keeper-1tormented | 24 | 28.7% (24) | 31.1% (23) |
+| 4ninja-4shade-2adept-2assassin-1exile-1tormented | 25 | 50.9% (12) | 51.3% (13) |
+| 9warlord-2assassin-2keeper-1emperor | 26 | 11.2% (25) | 13.3% (25) |
+| 5hunter-3adept-2divine-2mystic-2spirit-1exile-1ninja | 27 | 44.0% (18) | 46.8% (15) |
 
-### 2. 10.24 (27조합)
+| 순위 상관 | 2성 (전체) | 5코 1성 | 핫픽스 뒤 | 가운데 배치 | 2성 8명 | 2성 9명 | 2성 명사수 6명 보드 빼고 |
+|---|---|---|---|---|---|---|---|
+| 전 | +0.66 (p=0.000) | +0.60 | +0.73 | +0.52 | +0.45 | +0.71 | +0.64 |
+| 후 | +0.56 (p=0.002) | +0.51 | +0.64 | +0.46 | +0.46 | +0.74 | +0.64 |
 
-(돌리는 중. 컴퓨터가 꺼져 다시 시작했다.)
+### 읽은 것
+
+1. **황혼은 실제 쪽으로 왔다.** 10.22 황혼 황제 보드는 4위 → 10위(61%, 실제 9위), 황혼 릴리아 보드는
+   3위 → 5위(72%, 실제 30위; 5코 1성 조건 52%), 10.24 황혼 9명 보드는 1위 → 2위(77%, 실제 5위)다.
+   릴리아 보드는 여전히 실제와 멀다. 「황혼 과대평가 떼어 재기」의 나머지 후보(별 등급, 트렌드 자료의 한계, 깨달은 자 계열이
+   약함)가 남는다.
+2. **명사수 6명 보드는 두 패치 모두 크게 약해졌다.** 10.22는 1위 → 20위(41%), 10.24는 9위 → 24위(26%)이고, 실제는
+   둘 다 6위다. 이 보드를 빼고 재면 상관은 10.22 +0.42 → +0.41, 10.24 +0.64 → +0.64다. 전체 상관이
+   떨어진 몫(10.22 +0.46 → +0.39, 10.24 +0.66 → +0.56)은 거의 이 보드 하나다. 공식 규칙에서 명사수 6명 진(선택받은 진,
+   거인 학살자·무한의 대검·수호천사)이 약하게 나오는 까닭이 따로 있다. 예전 규칙은 튕김이 거의 매 공격 네 번째 사격을 터뜨려
+   그 몫을 덮고 있었다. 후보: 튕김 대상(시뮬레이터는 무작위, 실제는 가까운 적, audit/README 명사수 항목), 튕김의 치명타
+   (시뮬레이터는 튕김마다 따로 굴린다), 징크스 스킬. 재지 않았다.
+3. 9명 보드끼리는 10.22 +0.07 → +0.61(7개라 흔들림이 크다), 10.24 +0.71 → +0.74다.
+4. 흔들림: 대전에는 고정 난수가 없다. 같은 튕김 규칙으로 두 번 돌린 10.22(`7b26f60` 결과와 이번, 그 사이에는 드문 소환물 칸
+   고침만 있다)는 보드 승률이 평균 1.0%p, 가장 크게 2.2%p 다르고, 전체 상관은 각각 +0.43, +0.39다.
+5. 10.24 전·후 사이에는 튕김 말고도 june 고침이 들어 있다(fe92c2b 벤치 선택받은 자는 고정 보드에 벤치가 없어 상관없고,
+   afe5ed9 이온 충격기는 리븐이 든 보드에 걸린다). 명사수 보드 변화가 튕김 몫이라는 근거는 10.22 떼어 재기(튕김만 바꾼 조건에서
+   85→19%)와 10.22 전·후(튕김과 드문 소환물 칸만 다르다)다.
+6. 이 규칙은 공식 자료에 기대고 있어서 대전 결과를 보고 다시 바꾸지 않는다. 남은 어긋남(명사수 6명 보드, 황혼 릴리아 보드,
+   싸움꾼, 깨달은 자 계열, 총사령관)은 다른 자리에서 찾는다.
