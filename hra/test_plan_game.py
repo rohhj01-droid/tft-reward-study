@@ -86,6 +86,17 @@ def safe_play_returns_the_error_instead_of_raising_test():
     assert out is None and 'RuntimeError: boom' in err
 
 
+def one_recorded_game_stacks_into_arrays_test():
+    """기록 판 하나를 모으면 KEYS별 배열이 같은 길이로 쌓이고 끝 표시는 자리 수(8)만큼이다. 판 번호 열이 붙는다."""
+    from hra.collect import one_game, stack
+    ts, err = one_game(901)
+    assert err is None and ts
+    data = stack(ts, games=[0] * len(ts))
+    n = len(ts)
+    assert data['s'].shape == (n, 153) and data['m'].shape == (n, 37) and data['a'].shape == (n, 3)
+    assert data['r'].shape == (n, 5) and data['d'].sum() == 8 and (data['game'] == 0).all()
+
+
 if __name__ == '__main__':
     import sys
     for name in sys.argv[1:] or [n for n in list(globals()) if n.endswith('_test')]:
