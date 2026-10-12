@@ -175,6 +175,64 @@ def plan_net_save_load_and_flip_rate_test():
     assert 0.0 <= flip_rate(net, states, ms, weights('both', 5.0)) <= 1.0
 
 
+def _bandit_transition(d, s, m):
+    """판단 한 번에 끝나는 판의 경험: 덱 3번이면 등수 +1, 아니면 -1."""
+    return (s, m, np.array([d, 0, 0]), np.array([1.0 if d == 3 else -1.0, 0, 0, 0, 0], np.float32),
+            np.zeros(153, np.float32), True, np.ones(37, bool))
+
+
+def replay_wraps_around_test():
+    from hra.plan_learn import Replay
+    r = Replay(3)
+    s, m = np.zeros(153, np.float32), np.ones(37, bool)
+    for d in range(5):
+        r.add(_bandit_transition(d, s, m))
+    assert len(r) == 3 and sorted(r.a[:, 0].tolist()) == [2, 3, 4]
+    back = Replay.from_arrays(r.arrays())
+    assert len(back) == 3 and np.array_equal(back.a, r.a)
+
+
+def td_loss_learns_a_one_round_bandit_test():
+    """무작위로 고른 경험 600개로 배우면 가중합 선택이 등수 +1을 주는 덱 3번이다."""
+    import torch
+    from hra.plan_learn import Replay, learn_step
+    from hra.plan_net import PlanNet, choose, weights
+    torch.manual_seed(0)
+    rng = np.random.default_rng(0)
+    s, m = np.full(153, 0.5, np.float32), np.ones(37, bool)
+    m[0] = False
+    replay = Replay(1000)
+    for _ in range(600):
+        replay.add(_bandit_transition(int(rng.integers(1, 28)), s, m))
+    net, target, w = PlanNet(), PlanNet(), weights('none', 0.1)
+    target.load_state_dict(net.state_dict())
+    opt = torch.optim.Adam(net.parameters(), lr=1e-3)
+    for _ in range(400):
+        learn_step(net, target, opt, w, batch=replay.sample(64, rng))
+    assert choose(net, s, m, w)[0] == 3
+
+
+def margin_loss_makes_demo_choices_win_test():
+    """여백 손실로 상태 다섯 개의 정답 계획을 외운다(보상은 모두 0)."""
+    import torch
+    from hra.plan_learn import Replay, learn_step
+    from hra.plan_net import PlanNet, choose, weights
+    torch.manual_seed(2)
+    rng = np.random.default_rng(2)
+    states = rng.random((5, 153)).astype(np.float32)
+    labels = [(4, 1, 2), (9, 0, 5), (17, 2, 0), (1, 1, 1), (26, 0, 3)]
+    demos = Replay(10)
+    for s, a in zip(states, labels):
+        demos.add((s, np.ones(37, bool), np.array(a), np.zeros(5, np.float32), np.zeros(153, np.float32), True,
+                   np.ones(37, bool)))
+    net, target, w = PlanNet(), PlanNet(), weights('none', 0.1)
+    target.load_state_dict(net.state_dict())
+    opt = torch.optim.Adam(net.parameters(), lr=1e-3)
+    for _ in range(300):
+        learn_step(net, target, opt, w, demo=demos.sample(5, rng))
+    assert [choose(net, s, np.ones(37, bool), w) for s in states] == labels
+
+
 if __name__ == '__main__':
     import sys
     for name in sys.argv[1:] or [n for n in list(globals()) if n.endswith('_test')]:
