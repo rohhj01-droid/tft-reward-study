@@ -36,12 +36,14 @@ _cache = {}
 
 
 def greedy_planner(path):
-    """저장한 신경망 -> 탐험 없는 계획기. 일꾼마다 마지막 하나만 붙들어 둔다(긴 학습에서 기억이 쌓이지 않게)."""
-    if path not in _cache:
+    """저장한 신경망 -> 탐험 없는 계획기. 일꾼마다 마지막 하나만 붙들어 둔다(긴 학습에서 기억이 쌓이지 않게). 파일 시각도
+    열쇠에 넣어, 자기 대전이 같은 경로(latest)에 새로 저장하면 다시 읽는다."""
+    key = (path, os.path.getmtime(path))
+    if key not in _cache:
         _cache.clear()
         net, w, _ = load(path)
-        _cache[path] = lambda s, m: choose(net, s, m, w)
-    return _cache[path]
+        _cache[key] = lambda s, m: choose(net, s, m, w)
+    return _cache[key]
 
 
 def ab_game(job):

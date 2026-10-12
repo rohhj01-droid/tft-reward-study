@@ -281,6 +281,27 @@ def best_checkpoint_only_moves_up_test():
     assert not is_better(0.1, 0.2) and not is_better(float('nan'), 0.2) and not is_better(float('nan'), None)
 
 
+def greedy_planner_reloads_a_rewritten_file_test():
+    """같은 경로에 신경망을 새로 저장하면(자기 대전 중간 점검의 latest처럼) 평가 계획기도 새 신경망을 쓴다. 예전에는 경로만으로
+    기억해서 첫 점검 뒤의 점검이 모두 첫 점검 때의 신경망을 다시 쟀다."""
+    import os
+    import tempfile
+    import torch
+    from hra.evaluate import greedy_planner
+    from hra.plan_net import PlanNet, save, weights
+    path = os.path.join(tempfile.mkdtemp(), 'latest.pt')
+    s, m = np.zeros(153, np.float32), np.ones(37, bool)
+    for deck in (1, 2):
+        net = PlanNet()
+        with torch.no_grad():
+            net.out.weight.zero_()
+            net.out.bias.zero_()
+            net.out.bias[deck] = 10.0  # 등수 갈래의 덱 칸 하나만 크게
+        save(net, path, weights('none', 0.1))
+        os.utime(path, (deck * 1000, deck * 1000))  # 두 저장이 같은 시각 눈금에 겹치지 않게
+        assert greedy_planner(path)(s, m)[0] == deck
+
+
 if __name__ == '__main__':
     import sys
     for name in sys.argv[1:] or [n for n in list(globals()) if n.endswith('_test')]:
