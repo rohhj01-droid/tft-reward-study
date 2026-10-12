@@ -22,6 +22,46 @@ def rho_skips_constant_lists_test():
     assert rho([1, 2, 3], [10, 20, 30]) == 1.0
 
 
+def plan_sizes_and_slices_test():
+    from hra.plan_state import HEADS, MASK_SIZE, PLAN_SIZES, SLICES
+    assert HEADS == ('place', 'hp', 'econ', 'synergy', 'units')
+    assert PLAN_SIZES == (28, 3, 6) and MASK_SIZE == 37
+    assert SLICES == ((0, 28), (28, 31), (31, 37))
+
+
+def masks_hide_impossible_plans_test():
+    """덱이 없으면(2-1) 「그대로」를 가리고, 덱이 있으면 지금 덱을 다시 고르는 칸을 가린다. 레벨은 9를 넘는 목표를 가린다."""
+    from hra.plan_state import masks
+    from meta.lobby import BOARDS
+    m = masks(3, None)
+    assert not m[0] and m[1:28].all() and m[28:31].all() and m[31:].all()
+    m = masks(8, BOARDS[4])
+    assert m[0] and not m[5] and m[28] and m[29] and not m[30]
+    assert list(masks(9, BOARDS[0])[28:31]) == [True, False, False]
+
+
+def decode_turns_numbers_into_a_plan_test():
+    from hra.plan_state import decode
+    from meta.lobby import BOARDS
+    assert decode((0, 1, 3), 5, BOARDS[2]) == (BOARDS[2], 6, 20)
+    assert decode((5, 0, 0), 4, None) == (BOARDS[4], 4, None)
+
+
+def floor_index_picks_nearest_floor_test():
+    from hra.plan_state import floor_index
+    assert [floor_index(f) for f in (None, 50, 20, 10, 0, 35, 45, 60)] == [0, 1, 3, 4, 5, 2, 1, 1]
+
+
+def rule_label_maps_one_round_of_rule_play_test():
+    """규칙의 한 라운드 -> 계획 번호. 레벨은 올릴 단계 수(0~2, 9를 넘지 않게), 남길 골드는 가장 가까운 칸."""
+    from hra.plan_state import rule_label
+    from meta.lobby import BOARDS
+    assert rule_label(None, BOARDS[3], 3, 4, None) == (4, 1, 0)      # 2-1 첫 덱, 레벨 4 목표, 리롤 없음
+    assert rule_label(BOARDS[3], BOARDS[3], 6, 7, 20) == (0, 1, 3)   # 4-1: 그대로, 7로, 20 남기고
+    assert rule_label(BOARDS[3], BOARDS[7], 5, 9, 0) == (8, 2, 5)    # 갈아타기, 두 단계로 자름, 다 쓰기
+    assert rule_label(BOARDS[3], BOARDS[3], 8, 9, 50) == (0, 1, 1)   # 레벨 8은 한 단계까지만
+
+
 if __name__ == '__main__':
     import sys
     for name in sys.argv[1:] or [n for n in list(globals()) if n.endswith('_test')]:
