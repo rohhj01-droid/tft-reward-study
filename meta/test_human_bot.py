@@ -314,6 +314,19 @@ def macro_knobs_for_gold_after_stage_five_test():
     assert [act(9, 30), act(9, 30, floor_9=20)] == ['0', '2']
 
 
+def macro_plan_gives_the_numbers_behind_macro_test():
+    """레벨·리롤 판단을 「숫자 정하기」와 「행동 고르기」로 나눴다(계획 AI 따라 하기 기록이 숫자를 쓴다, hra/plan_bot).
+    5단계(칸 21) 레벨 8, 60골드: 목표 8, 남길 골드 50, 경험치 우선 켜짐. macro는 그 숫자로 고른 행동이다."""
+    from meta.human_bot import HumanPolicy
+    from meta.human_macro import action
+    p = item_player([Unit(name='garen', stars=2, items=[])], [])
+    p.level, p.gold, p.health = 8, 60, 50
+    policy = HumanPolicy(None, SHARPSHOOTERS, [], random.Random(0))
+    policy.mode = 'win'
+    plan = policy.macro_plan(p, 21)
+    assert plan == (8, 50, True) and policy.macro(p, 21) == action(60, 8, *plan) == '1'
+
+
 def plain(names):
     """1성, 아이템 없음, 선택받은 자 아닌 유닛 목록."""
     return [Unit(name=n, stars=1, items=[], chosen=False) for n in names]

@@ -100,6 +100,18 @@ def state_counts_what_a_player_can_see_test():
     assert np.allclose(x[150:], [3 / 7, 6 / 9, 0.1]), x[150:]                 # 나보다 체력 많은 3명, 평균 레벨 6, 이력 2
 
 
+def finish_without_a_decision_does_nothing_test():
+    """판단 없이 끝난 자리(2-1 전 탈락)는 경험이 없고, finish를 두 번 불러도 한 번만 닫는다."""
+    from hra.plan_bot import Recorder
+    r = Recorder()
+    r.start_recording()
+    r.current_plan = lambda player: None
+    me = _player([{'name': 'garen', 'stars': 1, 'items': []}])
+    r.finish(me, 8)
+    r.finish(me, 8)
+    assert r.transitions == [] and r.finished
+
+
 if __name__ == '__main__':
     import sys
     for name in sys.argv[1:] or [n for n in list(globals()) if n.endswith('_test')]:

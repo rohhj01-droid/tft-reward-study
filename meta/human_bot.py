@@ -215,7 +215,8 @@ class HumanPolicy(DeckPolicy):
                     return f'5_{x_y_to_1d_coord(x, y)}_{x_y_to_1d_coord(tx, ty)}'
         return None
 
-    def macro(self, player, game_round):
+    def macro_plan(self, player, game_round):
+        """(목표 레벨, 남길 골드, 5단계 레벨 8의 경험치 우선). 계획 AI의 따라 하기 기록(hra/plan_bot)도 이 숫자를 쓴다."""
         board = self.board
         stay = stay_level(board)
         done3 = stay is not None and carry3(player, board)
@@ -226,7 +227,10 @@ class HumanPolicy(DeckPolicy):
             floor = min(floor, self.knobs['floor_9'])
         # 5단계 레벨 8이면 안정 여부와 상관없이 50 넘는 몫으로 9로 간다(유저 결정 2026-10-09). 9가 되면 넘는 몫은 리롤
         exp_first = bool(self.knobs['xp_to_9']) and round_stage(game_round) >= 5 and player.level == 8
-        return action(player.gold, player.level, target, floor, exp_first)
+        return target, floor, exp_first
+
+    def macro(self, player, game_round):
+        return action(player.gold, player.level, *self.macro_plan(player, game_round))
 
 
 def attach_human(player, others, rng, knobs=None, board=None):
