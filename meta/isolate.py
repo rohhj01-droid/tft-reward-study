@@ -27,6 +27,8 @@
                        있는 보드만 다시 붙인다.
   ricochet_nearest     명사수 튕김 대상을 무작위 대신 바로 앞 대상에서 가장 가까운 적으로 고른다(위키 「가까운 적에게 튕긴다」).
                        명사수 특성이 켜진 보드만 다시 붙인다.
+  five_cost_mixed      판마다 5코스트를 그 패치 실제 1등 보드의 1성 비율(10.24 31%, 10.22 39%)만큼 1성으로 둔다. 나머지는 2성이다.
+                       5코스트가 있는 보드가 낀 매치업을 다시 붙인다(거의 전부).
   --base 결과 파일      기본 결과(real_boards --out)를 고른다. 그 파일에 적힌 자료(src)와 패치(patch)로 보드를 만들고 일꾼을 초기화한다
                        (10.22 결과면 10.22 패치 값, 적힌 게 없으면 10.24 자료와 핫픽스 전 값).
 
@@ -181,6 +183,25 @@ def _ricochet_nearest():
     origin_class.sharpshooter = sharpshooter
 
 
+# 실제 1등 보드의 5코스트 중 1성 비율. 10.24는 25개 보드(meta/play_stats.real_winners), 10.22는 88개 보드
+# (meta/lolchess_set4_more.json의 winners_1022). 키 None은 10.24 기본 결과(핫픽스 전 값, 패치 이름 없음)다.
+FIVE_COST_ONE_STAR = {None: 25 / 81, '10.22': 66 / 171}
+
+
+def _five_cost_mixed():
+    # 판마다 5코스트를 그 패치 비율만큼 1성으로, 나머지는 2성으로 둔다. 대전은 판마다 to_units로 유닛을 새로 만들어서 그 자리에서
+    # 굴린다. 1등 보드는 잘 풀린 판이라 실제 전체보다 2성이 많다. 그래서 이 비율은 1성의 아래쪽 값이다.
+    import random
+    import analysis.battle as ab
+    from Simulator import patch_manager
+    share = FIVE_COST_ONE_STAR[patch_manager.get_current_patch()]
+    to_units = ab.to_units
+
+    def mixed(spec):
+        return to_units([dict(u, stars=1) if cost_of(u['name']) == 5 and random.random() < share else u for u in spec])
+    ab.to_units = mixed
+
+
 def _dusk_off():
     # 황혼 특성의 주문력을 없앤다(origin_class.dusk가 읽는 두 표). 패치 값을 넣은 뒤에 불러야 한다(setup의 순서).
     from Simulator import origin_class_stats
@@ -204,6 +225,7 @@ VARIANTS = {
     'ricochet_no_count': (_ricochet_no_count,
                           lambda b: 'sharpshooter' in b['traits'] and any(u in ('jhin', 'vayne') for u in b['units']), None),
     'ricochet_nearest': (_ricochet_nearest, lambda b: 'sharpshooter' in b['traits'], None),
+    'five_cost_mixed': (_five_cost_mixed, lambda b: any(cost_of(u) == 5 for u in b['units']), None),
 }
 
 

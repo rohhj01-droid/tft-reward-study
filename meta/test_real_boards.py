@@ -265,6 +265,36 @@ def ricochet_nearest_bounces_to_the_closest_enemy_test():
         assert exact and set(hits) - {'garen'}, hits
 
 
+def _five_cost_stars(n=400):
+    """아지르(5코스트)와 선택받은 진(4코스트)으로 된 보드를 n번 유닛으로 만들 때 아지르가 1성인 비율과 진의 별 집합."""
+    import random
+    import analysis.battle as ab
+    random.seed(1)
+    azir, jhin = [], set()
+    for _ in range(n):
+        units = ab.to_units([{'name': 'azir', 'stars': 2, 'items': []},
+                             {'name': 'jhin', 'stars': 2, 'items': [], 'chosen': 'sharpshooter'}])
+        azir.append(units[0].stars)
+        jhin.add(units[1].stars)
+    return azir.count(1) / n, jhin
+
+
+def five_cost_mixed_rolls_one_star_per_game_test():
+    """5코스트 별 섞기 조건: 판마다 5코스트를 그 패치 실제 1등 보드의 1성 비율(10.24 25/81, 10.22 66/171)만큼 1성으로 둔다.
+    4코스트 이하는 그대로다. 기본 대전은 늘 2성이다."""
+    from functools import partial
+    from meta.isolate import VARIANTS, setup
+    assert 'five_cost_mixed' in VARIANTS  # 없으면 일꾼 초기화가 실패해 윈도우에서 일꾼이 끝없이 다시 뜬다
+    with Pool(1, initializer=partial(setup, 'five_cost_mixed')) as workers:
+        share, jhin = workers.apply(_five_cost_stars)
+        assert abs(share - 25 / 81) < 0.06 and jhin == {2}, (share, jhin)
+    with Pool(1, initializer=partial(setup, 'five_cost_mixed', '10.22')) as workers:
+        share, jhin = workers.apply(_five_cost_stars)
+        assert abs(share - 66 / 171) < 0.06 and jhin == {2}, (share, jhin)
+    with Pool(1, initializer=prehotfix) as workers:
+        assert workers.apply(_five_cost_stars) == (0.0, {2})
+
+
 if __name__ == '__main__':
     for name, test in list(globals().items()):
         if name.endswith('_test'):
