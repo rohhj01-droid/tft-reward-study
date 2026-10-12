@@ -97,6 +97,27 @@ def one_recorded_game_stacks_into_arrays_test():
     assert data['r'].shape == (n, 5) and data['d'].sum() == 8 and (data['game'] == 0).all()
 
 
+def ab_rule_against_rule_runs_test():
+    """배관 검사 판짜기: 규칙 대 규칙 두 판. 판마다 등수 차는 -4~4이고 결과에 판정이 있다."""
+    from hra.evaluate import ab
+    res = ab(None, games=2, jobs=1)
+    assert res['games'] == 2 and all(-4 <= d <= 4 for d in res['per_game']) and 'pass' in res
+
+
+def agree_and_meta_run_with_a_fresh_net_test():
+    """학습 안 한 신경망으로도 행동 일치율과 AI 메타가 끝까지 나온다(덱을 엉뚱하게 갈아타도 판이 돈다)."""
+    import os
+    import tempfile
+    from hra.evaluate import agree, meta
+    from hra.plan_net import PlanNet, save, weights
+    path = os.path.join(tempfile.mkdtemp(), 'net.pt')
+    save(PlanNet(), path, weights('both', 0.1), config='both', seed=0, games=0)
+    a = agree(path, games=1, jobs=1)
+    assert a['decisions'] > 0 and 0 <= a['all'] <= 1
+    m = meta(path, games=1, jobs=1)
+    assert m['families'] and abs(sum(share for _, share, _ in m['families']) - 1) < 1e-9
+
+
 if __name__ == '__main__':
     import sys
     for name in sys.argv[1:] or [n for n in list(globals()) if n.endswith('_test')]:
