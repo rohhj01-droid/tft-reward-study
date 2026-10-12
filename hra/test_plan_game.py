@@ -118,6 +118,23 @@ def agree_and_meta_run_with_a_fresh_net_test():
     assert m['families'] and abs(sum(share for _, share, _ in m['families']) - 1) < 1e-9
 
 
+def selfplay_runs_saves_and_resumes_test():
+    """아주 작은 자기 대전: 2판 학습, 2판마다 저장과 점검(점검 1판). 같은 설정으로 3판까지 다시 부르면 이어서 1판만 더 돌고
+    곡선이 한 줄 는다(컴퓨터가 꺼진 뒤 같은 명령으로 이어 가기)."""
+    import json
+    import os
+    import tempfile
+    from hra.selfplay import train
+    root = tempfile.mkdtemp()
+    first = train('both', 0.1, seed=5, games=2, jobs=1, save_every=2, eval_games=1, root=root)
+    log = json.load(open(os.path.join(root, 'results', 'plan_both_s5.json'), encoding='utf-8'))
+    assert first['games'] == 2 and [c['games'] for c in log['curve']] == [2]
+    second = train('both', 0.1, seed=5, games=3, jobs=1, save_every=2, eval_games=1, root=root)
+    log = json.load(open(os.path.join(root, 'results', 'plan_both_s5.json'), encoding='utf-8'))
+    assert second['games'] == 3 and [c['games'] for c in log['curve']] == [2, 3]
+    assert os.path.exists(os.path.join(root, 'checkpoints', 'plan_both_s5_best.pt'))
+
+
 if __name__ == '__main__':
     import sys
     for name in sys.argv[1:] or [n for n in list(globals()) if n.endswith('_test')]:

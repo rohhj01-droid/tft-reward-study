@@ -266,6 +266,21 @@ def pretrain_learns_a_simple_rule_test():
     assert agreement(net, data, w)['all'] > 0.9
 
 
+def eps_shrinks_per_branch_test():
+    """탐험 몫은 덱 3%→1%, 레벨·남길 골드 15%→5%로 학습 판 수에 따라 곧게 준다."""
+    from hra.selfplay import eps_at
+    assert np.allclose(eps_at(0, 100), (0.03, 0.15, 0.15))
+    assert np.allclose(eps_at(50, 100), (0.02, 0.10, 0.10))
+    assert np.allclose(eps_at(200, 100), (0.01, 0.05, 0.05))
+
+
+def best_checkpoint_only_moves_up_test():
+    """최고 저장본은 처음이거나 더 나은 점검 결과로만 바뀐다. 점검이 모두 실패해 값이 없으면(nan) 안 바뀐다."""
+    from hra.selfplay import is_better
+    assert is_better(0.1, None) and is_better(0.3, 0.2)
+    assert not is_better(0.1, 0.2) and not is_better(float('nan'), 0.2) and not is_better(float('nan'), None)
+
+
 if __name__ == '__main__':
     import sys
     for name in sys.argv[1:] or [n for n in list(globals()) if n.endswith('_test')]:
