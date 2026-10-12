@@ -97,6 +97,22 @@ def one_recorded_game_stacks_into_arrays_test():
     assert data['r'].shape == (n, 5) and data['d'].sum() == 8 and (data['game'] == 0).all()
 
 
+def collect_saves_as_it_goes_and_resumes_test():
+    """1판마다 저장하며 2판을 모은 뒤 같은 파일로 3판까지 부르면 3번째 판만 더 돌고 뒤에 이어 붙는다(모으다 꺼져도 다시
+    부르면 이어 간다)."""
+    import os
+    import tempfile
+    from hra.collect import collect
+    out = os.path.join(tempfile.mkdtemp(), 'demos.npz')
+    collect(2, jobs=1, out=out, save_every=1)
+    first = dict(np.load(out))
+    assert int(first['seeds_done']) == 2 and sorted(set(first['game'].tolist())) == [0, 1]
+    collect(3, jobs=1, out=out, save_every=1)
+    second = dict(np.load(out))
+    assert int(second['seeds_done']) == 3 and sorted(set(second['game'].tolist())) == [0, 1, 2]
+    assert np.array_equal(second['s'][:len(first['s'])], first['s']) and int(second['n_games']) == 3
+
+
 def ab_rule_against_rule_runs_test():
     """배관 검사 판짜기: 규칙 대 규칙 두 판. 판마다 등수 차는 -4~4이고 결과에 판정이 있다."""
     from hra.evaluate import ab

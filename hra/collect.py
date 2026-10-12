@@ -1,6 +1,7 @@
 """
 따라 하기 자료 모으기(hra/plan_ai_design.md 5절): 규칙 사람 봇 8명이 모두 기록하는 판을 돌려 경험을 npz로 저장한다.
 시뮬레이터가 판 중간에 멈춘 판은 건너뛰고 수를 적는다. 판 번호 열(game)은 데우기에서 판 단위로 떼어 내는 데 쓴다.
+100판마다 저장하고, 같은 명령을 다시 돌리면 저장된 판 다음부터 이어 간다.
 
 실행: python -m hra.collect --games 2000 --jobs 7 --out checkpoints/plan_demos.npz
 """
@@ -35,29 +36,43 @@ def stack(transitions, games=None):
     return data
 
 
+def collect(games, jobs, out, save_every=100):
+    """games판까지 모아 out에 쌓는다. save_every판마다 지금까지를 저장하고, out이 이미 있으면 저장된 판 다음부터 이어 간다
+    (모으다 꺼져도 같은 명령을 다시 돌리면 된다). 저장 파일에는 KEYS·game 열과 seeds_done(돌린 판), errors(멈춘 판),
+    n_games(경험을 낸 판)가 있다."""
+    data = dict(np.load(out)) if os.path.exists(out) else {}
+    done, errors = int(data.get('seeds_done', 0)), int(data.get('errors', 0))
+    transitions, owners = [], []
+    os.makedirs(os.path.dirname(out) or '.', exist_ok=True)
+    with Pool(jobs) as workers:
+        for k, (ts, err) in enumerate(workers.imap(one_game, range(SEED_BASE + done, SEED_BASE + games)), done):
+            transitions += ts
+            owners += [k] * len(ts)
+            if err:
+                errors += 1
+                print(f'멈춘 판 {k}: {err}', flush=True)
+            if (k + 1) % save_every == 0 or k + 1 == games:
+                if transitions:
+                    new = stack(transitions, owners)
+                    data.update({key: np.concatenate([data[key], new[key]]) if key in data else new[key] for key in new})
+                    transitions, owners = [], []
+                data.update(seeds_done=np.array(k + 1), errors=np.array(errors), n_games=np.array(k + 1 - errors))
+                tmp = out + '.tmp.npz'
+                np.savez_compressed(tmp, **data)
+                os.replace(tmp, out)
+                print(f'{k + 1}판, 경험 {len(data.get("s", []))}개, 멈춘 판 {errors}', flush=True)
+    return data
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--games', type=int, default=2000)
     ap.add_argument('--jobs', type=int, default=max(1, os.cpu_count() - 1))
     ap.add_argument('--out', default=os.path.join('checkpoints', 'plan_demos.npz'))
+    ap.add_argument('--save-every', type=int, default=100)
     args = ap.parse_args()
-    transitions, games, errors = [], [], []
-    with Pool(args.jobs) as workers:
-        seeds = range(SEED_BASE, SEED_BASE + args.games)
-        for k, (ts, err) in enumerate(workers.imap(one_game, seeds)):
-            transitions += ts
-            games += [k] * len(ts)
-            if err:
-                errors.append(err)
-            if (k + 1) % 100 == 0:
-                print(f'{k + 1}판, 경험 {len(transitions)}개, 멈춘 판 {len(errors)}', flush=True)
-    data = stack(transitions, games)
-    data['n_games'] = np.array(args.games - len(errors))
-    os.makedirs(os.path.dirname(args.out) or '.', exist_ok=True)
-    np.savez_compressed(args.out, **data)
-    print(f'저장: {args.out} (경험 {len(transitions)}개, 멈춘 판 {len(errors)}개)')
-    for e in errors[:5]:
-        print('  ', e)
+    data = collect(args.games, args.jobs, args.out, args.save_every)
+    print(f'저장: {args.out} (경험 {len(data.get("s", []))}개, 멈춘 판 {int(data.get("errors", 0))}개)')
 
 
 if __name__ == '__main__':
