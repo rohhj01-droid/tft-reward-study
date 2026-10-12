@@ -112,6 +112,69 @@ def finish_without_a_decision_does_nothing_test():
     assert r.transitions == [] and r.finished
 
 
+def plan_net_outputs_five_heads_by_37_cells_test():
+    import torch
+    from hra.plan_net import PlanNet
+    assert tuple(PlanNet()(torch.zeros(4, 153)).shape) == (4, 5, 37)
+
+
+def masked_choice_never_picks_a_hidden_cell_test():
+    """가중합으로 고르든 무작위로 고르든(탐험 몫 100%) 가린 칸은 고르지 않는다. 2-1에 「그대로」를 고르면 덱 없이 판이 돈다."""
+    import random
+    import torch
+    from hra.plan_net import PlanNet, choose, weights
+    from hra.plan_state import masks
+    from meta.lobby import BOARDS
+    torch.manual_seed(0)
+    net, w, rng = PlanNet(), weights('both', 0.1), random.Random(0)
+    for level, deck in ((3, None), (8, BOARDS[4]), (9, BOARDS[0])):
+        m = masks(level, deck)
+        for eps in ((0, 0, 0), (1, 1, 1)):
+            for _ in range(300):
+                d, lv, fl = choose(net, np.zeros(153, np.float32), m, w, eps, rng)
+                assert m[d] and m[28 + lv] and m[31 + fl], (level, eps, d, lv, fl)
+
+
+def exploration_rate_is_per_branch_test():
+    """덱 갈래만 탐험 몫 100%, 나머지 0%면 레벨·남길 골드는 늘 가중합 선택과 같고 덱은 여러 칸이 나온다."""
+    import random
+    import torch
+    from hra.plan_net import PlanNet, choose, weights
+    from hra.plan_state import masks
+    torch.manual_seed(1)
+    net, w, rng, m = PlanNet(), weights('none', 0.1), random.Random(1), masks(5, None)
+    s = np.full(153, 0.3, np.float32)
+    greedy = choose(net, s, m, w)
+    picks = [choose(net, s, m, w, (1, 0, 0), rng) for _ in range(200)]
+    assert all(p[1:] == greedy[1:] for p in picks) and len({p[0] for p in picks}) > 10
+
+
+def weights_follow_config_test():
+    from hra.plan_net import weights
+    assert weights('none', 0.1) == {'place': 1.0, 'hp': 1.0, 'econ': 0.3, 'synergy': 0.0, 'units': 0.0}
+    assert weights('both', 0.3)['synergy'] == weights('both', 0.3)['units'] == 0.3
+    assert weights('units', 0.1)['synergy'] == 0.0 and weights('synergy', 0.1)['units'] == 0.0
+
+
+def plan_net_save_load_and_flip_rate_test():
+    """저장했다 불러온 신경망은 같은 값과 같은 선택을 낸다. 보조 갈래 가중치가 0이면 보조 갈래가 뒤집는 판단은 없다."""
+    import os
+    import tempfile
+    import torch
+    from hra.plan_net import PlanNet, flip_rate, load, save, weights
+    from hra.plan_state import masks
+    net, w = PlanNet(), weights('both', 0.1)
+    path = os.path.join(tempfile.mkdtemp(), 'net.pt')
+    save(net, path, w, config='both', seed=1, games=0)
+    net2, w2, meta = load(path)
+    x = torch.rand(16, 153)
+    assert torch.equal(net(x), net2(x)) and w2 == w and meta == {'config': 'both', 'seed': 1, 'games': 0}
+    states = np.random.default_rng(0).random((50, 153)).astype(np.float32)
+    ms = np.stack([masks(5, None)] * 50)
+    assert flip_rate(net, states, ms, weights('none', 0.3)) == 0.0
+    assert 0.0 <= flip_rate(net, states, ms, weights('both', 5.0)) <= 1.0
+
+
 if __name__ == '__main__':
     import sys
     for name in sys.argv[1:] or [n for n in list(globals()) if n.endswith('_test')]:
