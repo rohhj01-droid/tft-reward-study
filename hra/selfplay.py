@@ -70,7 +70,7 @@ def train(config, aux_w, seed, games, jobs, save_every=500, eval_games=100, warm
     latest, best_path = os.path.join(ck_dir, f'{name}_latest.pt'), os.path.join(ck_dir, f'{name}_best.pt')
     w = weights(config, aux_w)
     torch.manual_seed(seed)
-    torch.set_num_threads(2)
+    torch.set_num_threads(1)  # 일꾼이 CPU를 다 쓸 때 스레드 둘은 서로 기다리느라 학습 한 걸음이 14배 느려졌다
     rng = np.random.default_rng(seed)
     net, target = PlanNet(), PlanNet()
     opt = torch.optim.Adam(net.parameters(), lr=LR)

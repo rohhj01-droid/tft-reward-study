@@ -149,6 +149,10 @@ def selfplay_runs_saves_and_resumes_test():
     log = json.load(open(os.path.join(root, 'results', 'plan_both_s5.json'), encoding='utf-8'))
     assert second['games'] == 3 and [c['games'] for c in log['curve']] == [2, 3]
     assert os.path.exists(os.path.join(root, 'checkpoints', 'plan_both_s5_best.pt'))
+    # 본체는 스레드 하나로 배운다. 일꾼 6개가 CPU를 다 쓸 때 스레드 둘이면 학습 한 걸음이 35ms에서 480ms로 늘어
+    # 자기 대전이 1분에 9판으로 막혔다(2026-10-13 측정)
+    import torch
+    assert torch.get_num_threads() == 1
 
 
 if __name__ == '__main__':
