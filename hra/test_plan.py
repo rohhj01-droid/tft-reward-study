@@ -62,6 +62,44 @@ def rule_label_maps_one_round_of_rule_play_test():
     assert rule_label(BOARDS[3], BOARDS[3], 8, 9, 50) == (0, 1, 1)   # 레벨 8은 한 단계까지만
 
 
+def _player(units, bench=(), index=0, **attrs):
+    """시뮬레이터 플레이어. units는 보드(구석 배치), bench는 벤치, attrs는 골드·체력·레벨 같은 값."""
+    from analysis.battle import build_player, to_units
+    from Simulator.pool import pool
+    p = build_player(pool(), index, to_units(list(units)), 'corner')
+    for u in to_units(list(bench)):
+        p.add_to_bench(u)
+    for k, v in attrs.items():
+        setattr(p, k, v)
+    return p
+
+
+def state_counts_what_a_player_can_see_test():
+    """2성 야스오(선택받은 결투가, 무한의 대검)·1성 피오라·3성 잭스가 보드에, 1성 칼리스타가 벤치에 있다. 살아 있는 상대
+    다섯(체력 80·70·50·90·64, 레벨 6·6·5·7·6, 첫째가 2성 야스오를 든다), 죽은 상대 둘(2성 리 신을 든 쪽은 정찰에서 빠진다).
+    목표 덱은 Chosen Duelists(4번), 고른 뒤 2라운드, 3-1(칸 9)."""
+    from hra.plan_state import STATE_SIZE, state
+    from meta.lobby import BOARDS
+    me = _player([{'name': 'yasuo', 'stars': 2, 'items': ['infinity_edge'], 'chosen': 'duelist'},
+                  {'name': 'fiora', 'stars': 1, 'items': []}, {'name': 'jax', 'stars': 3, 'items': []}],
+                 bench=[{'name': 'kalista', 'stars': 1, 'items': []}],
+                 gold=35, health=64, level=5, exp=10, win_streak=0, loss_streak=3)
+    others = [_player([{'name': 'yasuo', 'stars': 2, 'items': []}], index=1, health=80, level=6)]
+    others += [_player([{'name': 'garen', 'stars': 1, 'items': []}], index=i, health=h, level=lv)
+               for i, h, lv in ((2, 70, 6), (3, 50, 5), (4, 90, 7), (5, 64, 6))]
+    others += [_player([{'name': 'leesin', 'stars': 2, 'items': []}], index=6, health=0, level=9),
+               _player([{'name': 'garen', 'stars': 1, 'items': []}], index=7, health=0, level=9)]
+    x = state(me, others, BOARDS[4], 2, 9)
+    assert x.shape == (STATE_SIZE,) == (153,) and x.dtype == np.float32
+    # 내 상태: 칸/40, 체력/100, 골드/60, 레벨/9, 경험치 10/20, 연승/5, 연패/5, 살아 있는 상대/7
+    # 내 보드: 보드 값 3+1+17=21 /120, 2성 1/9, 3성 1/9, 특성 단계(결투가 4 → 2, 추방자 1 → 1) 3/11, 유닛 3/9, 완성 1/10, 조각 0
+    assert np.allclose(x[:15], [9 / 40, 0.64, 35 / 60, 5 / 9, 0.5, 0.0, 0.6, 5 / 7,
+                                21 / 120, 1 / 9, 1 / 9, 3 / 11, 3 / 9, 0.1, 0.0]), x[:15]
+    assert np.allclose(x[15:20], [0.0, 0.0, 0.0, 0.125, 0.0]), x[15:20]       # 0번 Chosen Dusks: 무한의 대검 하나 만들 수 있음
+    assert np.allclose(x[35:40], [25 / 40, 0.3, 1.0, 0.0, 1.0]), x[35:40]     # 4번 Chosen Duelists: 몫 25, 남의 야스오 3장
+    assert np.allclose(x[150:], [3 / 7, 6 / 9, 0.1]), x[150:]                 # 나보다 체력 많은 3명, 평균 레벨 6, 이력 2
+
+
 if __name__ == '__main__':
     import sys
     for name in sys.argv[1:] or [n for n in list(globals()) if n.endswith('_test')]:
