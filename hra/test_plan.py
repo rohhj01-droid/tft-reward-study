@@ -233,6 +233,39 @@ def margin_loss_makes_demo_choices_win_test():
     assert [choose(net, s, np.ones(37, bool), w) for s in states] == labels
 
 
+def _fake_demos(n, seed=0):
+    """정답이 상태 첫 칸으로 정해지는 가짜 따라 하기 자료(덱 = 1 + 첫 칸을 27칸으로 나눈 번호, 레벨 0, 남길 골드 1)."""
+    rng = np.random.default_rng(seed)
+    s = rng.random((n, 153)).astype(np.float32)
+    deck = 1 + (s[:, 0] * 27).astype(int).clip(0, 26)
+    return {'s': s, 'm': np.ones((n, 37), bool), 'a': np.stack([deck, np.zeros(n, int), np.ones(n, int)], 1),
+            'r': np.zeros((n, 5), np.float32), 's2': np.zeros((n, 153), np.float32), 'd': np.ones(n, bool),
+            'm2': np.ones((n, 37), bool), 'game': np.arange(n) // 10}
+
+
+def split_by_game_keeps_games_whole_test():
+    """같은 판의 경험은 학습과 점검 중 한쪽에만 간다. 20판(판마다 10개) 중 10%인 2판을 떼어 둔다.
+    상태 첫 칸은 경험마다 다른 무작위 값이라 그 값으로 경험의 판을 찾는다."""
+    from hra.pretrain import split_by_game
+    data = _fake_demos(200)
+    game_of = {float(v): int(g) for v, g in zip(data['s'][:, 0], data['game'])}
+    train, test = split_by_game(data, held=0.1, seed=0)
+    test_games = {game_of[float(v)] for v in test['s'][:, 0]}
+    train_games = {game_of[float(v)] for v in train['s'][:, 0]}
+    assert len(test['s']) == 20 and len(train['s']) == 180
+    assert len(test_games) == 2 and not test_games & train_games
+
+
+def pretrain_learns_a_simple_rule_test():
+    """가짜 자료 300개를 데우면 셋 다 맞는 비율이 0.9를 넘는다."""
+    from hra.plan_net import weights
+    from hra.pretrain import agreement, pretrain
+    data = _fake_demos(300)
+    w = weights('none', 0.1)
+    net, _, _ = pretrain(data, w, steps=1500, seed=0)
+    assert agreement(net, data, w)['all'] > 0.9
+
+
 if __name__ == '__main__':
     import sys
     for name in sys.argv[1:] or [n for n in list(globals()) if n.endswith('_test')]:
