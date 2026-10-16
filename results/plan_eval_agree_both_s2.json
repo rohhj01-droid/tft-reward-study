@@ -1,0 +1,63 @@
+{
+ "kind": "agree",
+ "net": "plan_both_s2_best.pt",
+ "games": 50,
+ "deck": 0.9378483541907666,
+ "level": 0.985171942370386,
+ "floor": 0.9734987906194131,
+ "all": 0.8978862130613103,
+ "decisions": 9509,
+ "deck_disagreements": [
+  [
+   "Ninja Shades",
+   "Chosen Brawlers",
+   38
+  ],
+  [
+   "Chosen Dusks",
+   "Chosen Brawlers",
+   31
+  ],
+  [
+   "Chosen Divines",
+   "Chosen Brawlers",
+   29
+  ],
+  [
+   "Dusk Cultists",
+   "Chosen Brawlers",
+   27
+  ],
+  [
+   "Chosen Warlords",
+   "Chosen Brawlers",
+   24
+  ],
+  [
+   "Chosen Divines",
+   "keep",
+   21
+  ],
+  [
+   "Chosen Cultists",
+   "keep",
+   21
+  ],
+  [
+   "Chosen Warlords",
+   "keep",
+   17
+  ],
+  [
+   "Chosen Cultists",
+   "Chosen Brawlers",
+   17
+  ],
+  [
+   "Dusk Cultists",
+   "keep",
+   16
+  ]
+ ],
+ "errors": []
+}
