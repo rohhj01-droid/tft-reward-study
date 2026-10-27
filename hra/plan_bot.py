@@ -245,8 +245,12 @@ def play(seed, seats, trace=False):
 
 def safe_play(seed, seats, trace=False):
     """play()와 같지만 시뮬레이터나 계획기가 판 중간에 예외를 내면 그 판을 버리고 (None, 오류 문자열)을 돌려준다
-    (설계 8절). 정상이면 (결과, None)."""
+    (설계 8절). 걸음 상한에 걸린 판도 버린다(살아남은 자리의 등수가 자리 순서라 쓸 수 없다, (None, 'capped')).
+    정상이면 (결과, None)."""
     try:
-        return play(seed, seats, trace), None
+        out = play(seed, seats, trace)
     except Exception as e:  # 어느 예외든 그 판만 버리고 부른 쪽이 센다
         return None, f'{type(e).__name__}: {e}'
+    if out['capped']:
+        return None, 'capped'
+    return out, None

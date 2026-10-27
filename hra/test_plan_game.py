@@ -157,6 +157,30 @@ def selfplay_runs_saves_and_resumes_test():
     assert torch.get_num_threads() == 1
 
 
+def capped_games_count_as_stopped_test():
+    """걸음 상한에 걸린 판은 살아남은 자리의 등수가 자리 순서라 쓸 수 없다. 모으기·평가·자기 대전 모두 그 판을 버리고
+    멈춘 판으로 센다(상한을 40걸음으로 낮춰 일부러 걸리게 한다)."""
+    import os
+    import tempfile
+    import hra.plan_bot as pb
+    from hra.collect import one_game
+    from hra.evaluate import ab_game, agree_game, meta_game
+    from hra.plan_net import PlanNet, save, weights
+    from hra.selfplay import selfplay_game
+    path = os.path.join(tempfile.mkdtemp(), 'net.pt')
+    save(PlanNet(), path, weights('none', 0.3))
+    old = pb.MAX_STEPS
+    pb.MAX_STEPS = 40
+    try:
+        assert one_game(31) == ([], 'capped')
+        assert ab_game((32, None))[1:] == (None, 'capped')
+        assert agree_game((33, path)) == ([], 'capped')
+        assert meta_game((34, path)) == ([], 'capped')
+        assert selfplay_game((35, path, (0.0, 0.0, 0.0)))[1:] == (None, 'capped')
+    finally:
+        pb.MAX_STEPS = old
+
+
 if __name__ == '__main__':
     import sys
     for name in sys.argv[1:] or [n for n in list(globals()) if n.endswith('_test')]:
