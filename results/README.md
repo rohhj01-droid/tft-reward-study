@@ -2392,8 +2392,9 @@ python -m hra.evaluate agree --net checkpoints/plan_none_s1_best.pt --games 50 -
 python -m hra.evaluate meta --games 400 --out results/plan_eval_meta_rule.json      # 규칙 사람 봇 8명(비교 기준)
 ```
 
--> 학습 곡선 plan_none_s{1,2,3}.json, plan_both_s{1,2,3}.json, 평가 plan_eval_{ab,meta,agree}_<설정>_s<시드>.json과
-plan_eval_ab_<설정>_s<시드>_latest.json, [plan_eval_meta_rule.json](plan_eval_meta_rule.json). 학습 코드는 이 저장소 `83de9ef`,
+-> 학습 곡선 plan_none_s{1,2,3}.json, plan_both_s{1,2}.json, 평가 plan_eval_{ab,meta,agree}_<설정>_s<시드>.json과
+plan_eval_ab_<설정>_s<시드>_latest.json, [plan_eval_meta_rule.json](plan_eval_meta_rule.json). 둘 다 끔 시드 3은 A/B만 있고
+나머지 평가와 둘 다 켬 시드 3(곡선·평가)은 진행 중이라 아직 없다. 학습 코드는 이 저장소 `83de9ef`,
 평가는 `273668d`, 시뮬레이터는 june `45e77c5`다. 신경망(checkpoints/)은 올리지 않는다.
 
 왜 했나: 계획 AI 설계(hra/plan_ai_design.md) 1절의 성공 기준 2(규칙 사람 봇을 따라잡는가), 3(같은 상황에서 같은 선택을 하는가),
@@ -2484,7 +2485,9 @@ plan_eval_ab_<설정>_s<시드>_latest.json, [plan_eval_meta_rule.json](plan_eva
 1. **성공 기준 2는 다섯 실행 중 둘만 넘었다.** 최고 저장본으로 둘 다 끔 시드 2(+0.22)와 둘 다 켬 시드 1(+0.37)은 규칙 봇을
    표준오차 두 배 넘게 앞섰고, 나머지 셋(+0.01, +0.04, +0.11)은 비겼다. 데우기만 한 AI가 −0.88이었으니 자기 대전이 규칙 봇
    수준까지는 끌어올렸다. 그러나 마지막 신경망은 넷 중 셋이 규칙보다 못했다(−0.31 ~ −0.85). 학습이 불안정해서 「언제 멈추느냐」에
-   따라 1등 가까이 갈린다. 최고 저장본은 100판 점검으로 고른 것이라 그중 얼마가 운인지는 점검 하나의 흔들림(±0.17)만큼 모른다.
+   따라 1등 가까이 갈린다. 최고 저장본은 100판 점검 스무 번 중 가장 좋았던 것이라 점검 값은 운이 보태진 값이다. 새 판으로
+   다시 잰 A/B가 그만큼 내려온다(점검 − A/B: 둘 다 끔 +0.15·+0.10·+0.15, 둘 다 켬 +0.07·+0.06). 위 표의 A/B 값은 그 운을
+   뺀 값이다.
 2. **보조 갈래를 켜면 낫다고 말할 수 없다.** 최고 저장본 평균은 둘 다 켬 +0.24, 둘 다 끔 +0.09로 차이 0.15인데, 시드 간
    표준편차가 0.11~0.18이고 둘 다 켬은 시드가 둘뿐이다. 학습 곡선도 두 설정이 갈리지 않는다. 메타는 달라진다. 둘 다 켬은
    엘더우드를 22% 골라(규칙 5%) 평균 3.8등을 내고, 신성을 거의 안 고른다(3%). 보조 갈래는 덱 선택을 바꾸지만 성적은 바꾸지 못했다.
