@@ -1,0 +1,63 @@
+{
+ "kind": "agree",
+ "net": "plan_none_s3_best.pt",
+ "games": 50,
+ "deck": 0.9359176384073957,
+ "level": 0.9808803445740099,
+ "floor": 0.9684840844626537,
+ "all": 0.8893791364639143,
+ "decisions": 9519,
+ "deck_disagreements": [
+  [
+   "Chosen Divines",
+   "keep",
+   29
+  ],
+  [
+   "Chosen Cultists",
+   "keep",
+   28
+  ],
+  [
+   "Chosen Warlords",
+   "keep",
+   27
+  ],
+  [
+   "Chosen Dusks",
+   "Chosen Duelists",
+   23
+  ],
+  [
+   "Chosen Dusks",
+   "keep",
+   22
+  ],
+  [
+   "Ninja Shades",
+   "Chosen Duelists",
+   18
+  ],
+  [
+   "Chosen Dusks",
+   "Ninja Shades",
+   17
+  ],
+  [
+   "Dusk Cultists",
+   "Chosen Duelists",
+   17
+  ],
+  [
+   "Chosen Divines",
+   "Chosen Duelists",
+   16
+  ],
+  [
+   "Chosen Cultists",
+   "Chosen Duelists",
+   16
+  ]
+ ],
+ "errors": []
+}
