@@ -53,14 +53,19 @@ def pretrain(train, w, steps, seed=0, log_every=2000, test=None):
     return net, target, opt
 
 
-def main():
+def parser():
     ap = argparse.ArgumentParser()
     ap.add_argument('--demos', default=os.path.join('checkpoints', 'plan_demos.npz'))
     ap.add_argument('--config', default='both')
-    ap.add_argument('--aux-w', type=float, default=0.1)
+    ap.add_argument('--aux-w', type=float, default=0.3, help='보조 갈래 가중치. 사전 시험에서 0.3을 골랐다(설계 4절)')
     ap.add_argument('--steps', type=int, default=20000)
     ap.add_argument('--seed', type=int, default=0)
     ap.add_argument('--out', default=None)
+    return ap
+
+
+def main():
+    ap = parser()
     args = ap.parse_args()
     data = dict(np.load(args.demos))
     train, test = split_by_game(data, seed=args.seed)

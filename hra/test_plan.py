@@ -336,6 +336,14 @@ def pinned_pool_gives_workers_the_same_hash_seed_test():
     assert hashes[0] == hashes[1]
 
 
+def cli_defaults_follow_the_chosen_weight_test():
+    """명령줄 기본 보조 가중치는 사전 시험에서 고른 0.3이다(--aux-w 없이 둘 다 켬을 돌려도 같은 실험이 되게)."""
+    from hra.pretrain import parser as pretrain_parser
+    from hra.selfplay import parser as selfplay_parser
+    assert selfplay_parser().parse_args(['--config', 'both']).aux_w == 0.3
+    assert pretrain_parser().parse_args(['--config', 'both']).aux_w == 0.3
+
+
 if __name__ == '__main__':
     import sys
     for name in sys.argv[1:] or [n for n in list(globals()) if n.endswith('_test')]:

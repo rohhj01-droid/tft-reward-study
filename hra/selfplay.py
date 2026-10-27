@@ -157,10 +157,10 @@ def train(config, aux_w, seed, games, jobs, save_every=500, eval_games=100, warm
     return {'games': done, 'best': best}
 
 
-def main():
+def parser():
     ap = argparse.ArgumentParser()
     ap.add_argument('--config', default='both', choices=['none', 'synergy', 'units', 'both'])
-    ap.add_argument('--aux-w', type=float, default=0.1)
+    ap.add_argument('--aux-w', type=float, default=0.3, help='보조 갈래 가중치. 사전 시험에서 0.3을 골랐다(설계 4절)')
     ap.add_argument('--seed', type=int, default=1)
     ap.add_argument('--games', type=int, default=10000)
     ap.add_argument('--jobs', type=int, default=6)
@@ -169,6 +169,11 @@ def main():
     ap.add_argument('--warm', default=None, help='없으면 checkpoints/plan_warm_<설정>.pt가 있을 때 그것')
     ap.add_argument('--demos', default=os.path.join('checkpoints', 'plan_demos.npz'))
     ap.add_argument('--tag', default=None)
+    return ap
+
+
+def main():
+    ap = parser()
     args = ap.parse_args()
     warm = args.warm or os.path.join('checkpoints', f'plan_warm_{args.config}.pt')
     result = train(args.config, args.aux_w, args.seed, args.games, args.jobs, args.save_every, args.eval_games,
