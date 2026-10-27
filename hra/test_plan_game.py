@@ -181,6 +181,24 @@ def capped_games_count_as_stopped_test():
         pb.MAX_STEPS = old
 
 
+def switching_decks_acts_in_that_round_test():
+    """덱을 갈아타는 라운드에 실행기가 실제로 리롤·사기·바꾸기를 하고, 그 뒤 벤치가 차면 옛 덱 유닛을 판다(설계 7절).
+    0번 자리는 2-1에 Chosen Duelists로 가서 골드를 모으다(남길 골드 50) 3-2(칸 10)에 Chosen Warlords로 갈아타며 골드를 다
+    쓴다(남길 골드 0)."""
+    WARLORDS = next(i for i, b in enumerate(BOARDS) if b['name'] == 'Chosen Warlords') + 1
+
+    def planner(s, m):
+        if not m[0]:
+            return DUELISTS, 0, 1
+        return (WARLORDS, 0, 5) if round(float(s[0]) * 40) == 10 else (0, 0, 1)
+    out = play(16, [planner] + ['rule'] * 7, trace=True)
+    seat = out['seats'][0]
+    assert seat['switches'] == 1 and seat['deck'] == 'Chosen Warlords'
+    kinds = lambda lo, hi: {t[0] for r, t in seat['tokens'] if lo <= r <= hi}
+    assert {'2', '3', '5'} <= kinds(10, 10), sorted(kinds(10, 10))   # 갈아탄 라운드: 리롤·사기·바꾸기
+    assert '4' in kinds(10, 14)                                        # 그 뒤 벤치가 차면 팔기
+
+
 if __name__ == '__main__':
     import sys
     for name in sys.argv[1:] or [n for n in list(globals()) if n.endswith('_test')]:
