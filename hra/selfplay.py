@@ -166,19 +166,43 @@ def parser():
     ap.add_argument('--jobs', type=int, default=6)
     ap.add_argument('--save-every', type=int, default=500)
     ap.add_argument('--eval-games', type=int, default=100)
-    ap.add_argument('--warm', default=None, help='없으면 checkpoints/plan_warm_<설정>.pt가 있을 때 그것')
-    ap.add_argument('--demos', default=os.path.join('checkpoints', 'plan_demos.npz'))
+    ap.add_argument('--warm', default=None, help='데우기 신경망. 없으면 checkpoints/plan_warm_<설정>.pt가 있을 때 그것')
+    ap.add_argument('--demos', default=None, help='따라 하기 자료. 없으면 checkpoints/plan_demos.npz가 있을 때 그것')
     ap.add_argument('--tag', default=None)
     return ap
+
+
+def inputs(config, warm, demos, root='.'):
+    """자기 대전에 넣을 (데우기 신경망 경로, 따라 하기 자료 경로, 경고 목록). 직접 준 파일이 없으면 FileNotFoundError,
+    기본 경로(checkpoints/plan_warm_<설정>.pt, checkpoints/plan_demos.npz)에 없으면 None과 경고를 돌려준다
+    (데우기 없음은 무작위 초기값에서 시작, 자료 없음은 여백 손실 없이 학습)."""
+    out, warnings = [], []
+    for label, given, default, effect in (
+            ('데우기 신경망', warm, os.path.join(root, 'checkpoints', f'plan_warm_{config}.pt'), '무작위 초기값에서 시작한다'),
+            ('따라 하기 자료', demos, os.path.join(root, 'checkpoints', 'plan_demos.npz'), '여백 손실 없이 배운다')):
+        if given is not None:
+            if not os.path.exists(given):
+                raise FileNotFoundError(f'{label} {given}이 없다')
+            out.append(given)
+        elif os.path.exists(default):
+            out.append(default)
+        else:
+            out.append(None)
+            warnings.append(f'{label}이 {default}에 없어 {effect}')
+    return out[0], out[1], warnings
 
 
 def main():
     ap = parser()
     args = ap.parse_args()
-    warm = args.warm or os.path.join('checkpoints', f'plan_warm_{args.config}.pt')
+    try:
+        warm, demos, warnings = inputs(args.config, args.warm, args.demos)
+    except FileNotFoundError as e:
+        ap.error(str(e))
+    for line in warnings:
+        print('경고:', line, flush=True)
     result = train(args.config, args.aux_w, args.seed, args.games, args.jobs, args.save_every, args.eval_games,
-                   warm if os.path.exists(warm) else None, args.demos if os.path.exists(args.demos) else None,
-                   tag=args.tag)
+                   warm, demos, tag=args.tag)
     print(result)
 
 

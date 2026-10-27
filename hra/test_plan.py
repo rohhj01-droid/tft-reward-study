@@ -344,6 +344,26 @@ def cli_defaults_follow_the_chosen_weight_test():
     assert pretrain_parser().parse_args(['--config', 'both']).aux_w == 0.3
 
 
+def missing_inputs_are_reported_test():
+    """자기 대전의 데우기 신경망(--warm)과 따라 하기 자료(--demos): 직접 준 파일이 없으면 오류이고, 기본 경로에 없으면
+    경고를 내고 없이 간다(데우기 없음은 무작위 초기값, 자료 없음은 여백 손실 없음). 둘 다 말없이 넘어가지 않는다."""
+    import os
+    import tempfile
+    from hra.selfplay import inputs
+    root = tempfile.mkdtemp()
+    try:
+        inputs('none', os.path.join(root, 'no.pt'), None, root)
+        assert False, '없는 파일을 직접 줬는데 넘어갔다'
+    except FileNotFoundError:
+        pass
+    warm, demos, warnings = inputs('none', None, None, root)
+    assert warm is None and demos is None and len(warnings) == 2
+    os.makedirs(os.path.join(root, 'checkpoints'))
+    open(os.path.join(root, 'checkpoints', 'plan_warm_none.pt'), 'wb').close()
+    warm, demos, warnings = inputs('none', None, None, root)
+    assert warm == os.path.join(root, 'checkpoints', 'plan_warm_none.pt') and demos is None and len(warnings) == 1
+
+
 if __name__ == '__main__':
     import sys
     for name in sys.argv[1:] or [n for n in list(globals()) if n.endswith('_test')]:
