@@ -14,14 +14,13 @@ import statistics
 import sys
 import time
 from collections import deque
-from multiprocessing import Pool
 
 import numpy as np
 import torch
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from hra.evaluate import ab
-from hra.plan_bot import safe_play
+from hra.plan_bot import pinned_pool, safe_play
 from hra.plan_learn import KEYS, Replay, learn_step
 from hra.plan_net import PlanNet, choose, flip_rate, load, save, weights
 from meta.lobby import N_PLAYERS
@@ -74,8 +73,9 @@ def train(config, aux_w, seed, games, jobs, save_every=500, eval_games=100, warm
     rng = np.random.default_rng(seed)
     net, target = PlanNet(), PlanNet()
     opt = torch.optim.Adam(net.parameters(), lr=LR)
-    done, best, updates, curve = 0, None, 0, []
-    if os.path.exists(ck_path):  # 이어 하기
+    done, best, updates, curve, resumed = 0, None, 0, [], False
+    if os.path.exists(ck_path):  # 이어 하기(경험 더미는 저장하지 않으니 빈 더미에서 다시 배운다. 곡선에 표시한다)
+        resumed = True
         ck = torch.load(ck_path, map_location='cpu', weights_only=True)
         net.load_state_dict(ck['net'])
         target.load_state_dict(ck['target'])
@@ -103,7 +103,7 @@ def train(config, aux_w, seed, games, jobs, save_every=500, eval_games=100, warm
         return path
 
     policy = publish()
-    with Pool(jobs) as pool:
+    with pinned_pool(jobs) as pool:
         while done < games:
             chunk, start, losses, switches, errors = min(save_every, games - done), time.time(), [], [], 0
             submitted, finished, inflight = 0, 0, deque()
@@ -143,7 +143,8 @@ def train(config, aux_w, seed, games, jobs, save_every=500, eval_games=100, warm
             curve.append({'games': done, 'diff': check['diff'], 'se': check['se'], 'check_errors': len(check['errors']),
                           'flip': flips, 'switches': statistics.mean(switches) if switches else None,
                           'loss': statistics.mean(losses) if losses else None, 'errors': errors,
-                          'minutes': (time.time() - start) / 60})
+                          'minutes': (time.time() - start) / 60, 'resumed': resumed})
+            resumed = False
             tmp = ck_path + '.tmp'
             torch.save({'net': net.state_dict(), 'target': target.state_dict(), 'opt': opt.state_dict(),
                         'games': done, 'best': best, 'updates': updates}, tmp)

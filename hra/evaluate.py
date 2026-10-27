@@ -16,12 +16,11 @@ import random
 import statistics
 import sys
 from collections import Counter, defaultdict
-from multiprocessing import Pool
 
 import numpy as np
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from hra.plan_bot import safe_play
+from hra.plan_bot import pinned_pool, safe_play
 from hra.plan_net import choose, load
 from hra.score_rank import ROOT
 from meta.decks_1024 import trait_counts
@@ -65,7 +64,7 @@ def ab(path, games, jobs=None, pool=None, seed0=SEED_AB):
     if pool is not None:
         rows = list(pool.imap_unordered(ab_game, jobs_list))
     else:
-        with Pool(jobs) as p:
+        with pinned_pool(jobs) as p:
             rows = list(p.imap_unordered(ab_game, jobs_list))
     diffs = [d for _, d, _ in rows if d is not None]
     errors = [e for _, _, e in rows if e]
@@ -87,7 +86,7 @@ def agree_game(job):
 
 
 def agree(path, games, jobs=None):
-    with Pool(jobs) as p:
+    with pinned_pool(jobs) as p:
         results = p.map(agree_game, [(SEED_AGREE + k, path) for k in range(games)])
     pairs = [row for rows, _ in results for row in rows]
     same = np.array([[x == y for x, y in zip(rule, ai)] for rule, ai in pairs])
@@ -124,7 +123,7 @@ def sim_order():
 
 
 def meta(path, games, jobs=None):
-    with Pool(jobs) as p:
+    with pinned_pool(jobs) as p:
         results = p.map(meta_game, [(SEED_META + k, path) for k in range(games)])
     players = [row for rows, _ in results for row in rows]
     table = family_table(players)  # (계열, 몫, 평균 등수)

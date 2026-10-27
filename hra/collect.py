@@ -8,12 +8,11 @@
 import argparse
 import os
 import sys
-from multiprocessing import Pool
 
 import numpy as np
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from hra.plan_bot import safe_play
+from hra.plan_bot import pinned_pool, safe_play
 from hra.plan_learn import KEYS
 from meta.lobby import N_PLAYERS
 
@@ -44,7 +43,7 @@ def collect(games, jobs, out, save_every=100):
     done, errors = int(data.get('seeds_done', 0)), int(data.get('errors', 0))
     transitions, owners = [], []
     os.makedirs(os.path.dirname(out) or '.', exist_ok=True)
-    with Pool(jobs) as workers:
+    with pinned_pool(jobs) as workers:
         for k, (ts, err) in enumerate(workers.imap(one_game, range(SEED_BASE + done, SEED_BASE + games)), done):
             transitions += ts
             owners += [k] * len(ts)

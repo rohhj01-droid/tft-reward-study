@@ -8,8 +8,10 @@ RuleRecorder: 규칙 사람 봇을 그대로 두고, 라운드마다 규칙이 �
 둘 다 라운드마다 경험 (상태, 가림, 계획, 보상 5갈래, 다음 상태, 끝, 다음 가림)을 쌓는다(Recorder).
 play()      : 자리 8개에 정책을 붙여 한 판을 돌린다(meta/lobby.play와 같은 틀).
 """
+import os
 import random
 from math import floor
+from multiprocessing import Pool
 
 import numpy as np
 
@@ -42,6 +44,13 @@ def _gold_income_recording(self, t_round):
 
 
 Player.gold_income = _gold_income_recording
+
+
+def pinned_pool(jobs, **kw):
+    """일꾼 풀. 시뮬레이터가 집합·사전을 도는 순서가 문자열 해시에 따라 프로세스마다 달라서(meta/lobby와 같은 까닭), 일꾼의
+    해시 시드를 고정한다. 일꾼은 이 환경 변수를 물려받고 새로 시작한다. 값은 늘 0이라 이어 하기 때도 같다."""
+    os.environ['PYTHONHASHSEED'] = '0'
+    return Pool(jobs, **kw)
 
 
 def legal(plan, mask):

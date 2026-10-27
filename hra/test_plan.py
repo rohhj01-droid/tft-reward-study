@@ -302,6 +302,40 @@ def greedy_planner_reloads_a_rewritten_file_test():
         assert greedy_planner(path)(s, m)[0] == deck
 
 
+def round_rewards_match_hand_counted_values_test():
+    """라운드 보상 다섯 갈래를 손으로 센 값과 맞춘다(설계 7절). 라운드 시작 체력 70이 55가 되면 -15/20 = -0.75, 골드 35로
+    라운드 시작 수입을 받으면 이자 3이라 3/5 = 0.6, 보드가 야스오·피오라·가렌이면 켜진 특성 단계는 결투가 2명과 추방자 1명으로
+    2단계라 2/11, 유닛 3명은 3/9다. 등수 보상은 판 중에는 0이고 끝 표시는 없다. 3등으로 탈락하면 마지막 경험에 1 - 2·2/7이
+    붙고 끝 표시가 서며 이자는 0이다."""
+    from hra.plan_bot import Recorder
+    me = _player([{'name': 'yasuo', 'stars': 2, 'items': []}, {'name': 'fiora', 'stars': 1, 'items': []},
+                  {'name': 'garen', 'stars': 1, 'items': []}], gold=35, health=55)
+    me.gold_income(5)  # 라운드 시작 수입: 감싼 함수가 그때의 이자(35 -> 3)를 적어 둔다
+    assert me.last_interest == 3 and me.gold == 35 + 5 + 3
+    r = Recorder()
+    r.start_recording()
+    r.current_plan = lambda player: (4, 1, 2)
+    s, m = np.zeros(153, np.float32), np.ones(37, bool)
+    r.pending = (s, m, (4, 1, 2), 70, 9)
+    r.close(me, (4, 1, 2), s, m, False)
+    assert np.allclose(r.transitions[-1][3], [0.0, -0.75, 0.6, 2 / 11, 3 / 9]) and not r.transitions[-1][5]
+    r.pending = (s, m, (4, 1, 2), 55, 10)
+    r.finish(me, 3)
+    assert np.allclose(r.transitions[-1][3], [1 - 2 * 2 / 7, 0.0, 0.0, 2 / 11, 3 / 9]) and r.transitions[-1][5]
+
+
+def pinned_pool_gives_workers_the_same_hash_seed_test():
+    """일꾼 풀은 해시 시드를 고정한다(meta/lobby와 같은 까닭: 시뮬레이터가 집합·사전을 도는 순서가 문자열 해시에 따라
+    프로세스마다 달라진다). 따로 띄운 두 풀의 일꾼이 같은 문자열에 같은 해시를 낸다. 고정하지 않으면 프로세스마다 다른
+    무작위 시드를 받아 거의 늘 다르다."""
+    from hra.plan_bot import pinned_pool
+    hashes = []
+    for _ in range(2):
+        with pinned_pool(1) as p:
+            hashes.append(p.apply(hash, ('plan',)))
+    assert hashes[0] == hashes[1]
+
+
 if __name__ == '__main__':
     import sys
     for name in sys.argv[1:] or [n for n in list(globals()) if n.endswith('_test')]:
