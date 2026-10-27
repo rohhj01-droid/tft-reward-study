@@ -364,6 +364,56 @@ def missing_inputs_are_reported_test():
     assert warm == os.path.join(root, 'checkpoints', 'plan_warm_none.pt') and demos is None and len(warnings) == 1
 
 
+def greedy_planner_pins_one_torch_thread_test():
+    """평가 계획기는 일꾼 안에서 torch 스레드를 하나로 둔다(일꾼 7개가 저마다 스레드 여덟을 돌리면 서로 기다리느라 느려진다.
+    자기 대전 일꾼과 같다)."""
+    import os
+    import tempfile
+    import torch
+    from hra.evaluate import greedy_planner
+    from hra.plan_net import PlanNet, save, weights
+    torch.set_num_threads(2)
+    path = os.path.join(tempfile.mkdtemp(), 'net.pt')
+    save(PlanNet(), path, weights('none', 0.3))
+    greedy_planner(path)
+    assert torch.get_num_threads() == 1
+
+
+def pruning_policy_files_survives_an_open_file_test():
+    """일꾼이 아직 읽고 있는 정책 파일은 지우지 못해도(Windows PermissionError) 본체가 죽지 않고 나머지를 지운다."""
+    import os
+    import tempfile
+    from hra.selfplay import prune_policies
+    d = tempfile.mkdtemp()
+    paths = []
+    for i in range(7):
+        p = os.path.join(d, f'x_policy_v0_{i}.pt')
+        open(p, 'wb').write(b'x')
+        os.utime(p, (1000 + i, 1000 + i))
+        paths.append(p)
+    with open(paths[0], 'rb'):
+        prune_policies(d, 'x', 5)
+    remaining = os.listdir(d)
+    assert os.path.basename(paths[1]) not in remaining and all(os.path.basename(p) in remaining for p in paths[2:])
+
+
+def finished_run_is_not_restarted_test():
+    """끝난 실행(저장된 판 수가 목표와 같음)에 같은 명령을 다시 내리면 바로 돌려주고 정책 파일을 새로 쓰지 않는다."""
+    import os
+    import tempfile
+    import torch
+    from hra.plan_net import PlanNet
+    from hra.selfplay import train
+    root = tempfile.mkdtemp()
+    os.makedirs(os.path.join(root, 'checkpoints'))
+    net = PlanNet()
+    opt = torch.optim.Adam(net.parameters())
+    torch.save({'net': net.state_dict(), 'target': net.state_dict(), 'opt': opt.state_dict(), 'games': 5, 'best': 0.1,
+                'updates': 40}, os.path.join(root, 'checkpoints', 'plan_none_s9.pt'))
+    assert train('none', 0.3, seed=9, games=5, jobs=1, root=root) == {'games': 5, 'best': 0.1}
+    assert not [f for f in os.listdir(os.path.join(root, 'checkpoints')) if 'policy' in f]
+
+
 if __name__ == '__main__':
     import sys
     for name in sys.argv[1:] or [n for n in list(globals()) if n.endswith('_test')]:

@@ -43,6 +43,15 @@ def is_better(new, best):
     return new == new and (best is None or new > best)
 
 
+def prune_policies(ck_dir, name, keep=KEEP_POLICIES):
+    """일꾼용 정책 파일을 마지막 keep개만 남기고 지운다. 일꾼이 아직 읽는 파일은(Windows에선 지우지 못한다) 다음에 지운다."""
+    for old in sorted(glob.glob(os.path.join(ck_dir, f'{name}_policy_v*.pt')), key=os.path.getmtime)[:-keep]:
+        try:
+            os.remove(old)
+        except OSError:
+            pass
+
+
 def selfplay_game(job):
     """(시드, 일꾼용 신경망 경로, 탐험 몫) -> (경험 목록, 판 요약, 오류). 일꾼은 경로가 바뀔 때만 신경망을 다시 읽는다."""
     seed, path, eps = job
@@ -87,6 +96,8 @@ def train(config, aux_w, seed, games, jobs, save_every=500, eval_games=100, warm
         if warm:
             net.load_state_dict(load(warm)[0].state_dict())
         target.load_state_dict(net.state_dict())
+    if done >= games:  # 이미 끝난 실행: 일꾼을 띄우거나 정책 파일을 쓰지 않는다
+        return {'games': done, 'best': best}
     demo_replay = None
     if demos:
         arrays = np.load(demos)
@@ -98,8 +109,7 @@ def train(config, aux_w, seed, games, jobs, save_every=500, eval_games=100, warm
         version += 1
         path = os.path.join(ck_dir, f'{name}_policy_v{done}_{version}.pt')
         save(net, path, w, config=config, aux_w=aux_w, seed=seed, games=done)
-        for old in sorted(glob.glob(os.path.join(ck_dir, f'{name}_policy_v*.pt')), key=os.path.getmtime)[:-KEEP_POLICIES]:
-            os.remove(old)
+        prune_policies(ck_dir, name)
         return path
 
     policy = publish()

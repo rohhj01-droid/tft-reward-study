@@ -18,6 +18,7 @@ import sys
 from collections import Counter, defaultdict
 
 import numpy as np
+import torch
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from hra.plan_bot import pinned_pool, safe_play
@@ -40,6 +41,7 @@ def greedy_planner(path):
     key = (path, os.path.getmtime(path))
     if key not in _cache:
         _cache.clear()
+        torch.set_num_threads(1)  # 일꾼마다 스레드 하나(자기 대전 일꾼과 같다. 여럿이면 서로 기다리느라 느려진다)
         net, w, _ = load(path)
         _cache[key] = lambda s, m: choose(net, s, m, w)
     return _cache[key]
