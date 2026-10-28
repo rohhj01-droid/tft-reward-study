@@ -61,7 +61,8 @@ if __name__ == '__main__':
     n = int(sys.argv[1])
     rng = random.Random(0)
     games = [(g, rng.sample(range(len(lobby.BOARDS)), lobby.N_PLAYERS)) for g in range(n)]
-    with Pool(7) as pool:
+    jobs = int(sys.argv[2]) if len(sys.argv) > 2 else 7
+    with Pool(jobs) as pool:
         rows = [r for out in pool.map(run, games, chunksize=1) for r in out]
     fam_of = {b['name']: deck_family(b) for b in lobby.BOARDS}
     print('목표 덱 몫(마지막):', [(d, f'{c / len(rows):.1%}') for d, c in Counter(r['deck'] for r in rows).most_common(10)])

@@ -176,11 +176,13 @@ def variant_reaches_workers_test():
         assert workers.apply(_deck_rules) == (18, 20, None, 15)
 
 
-def carriers_are_units_with_most_recommended_items_test():
-    """덱의 캐리는 추천 아이템을 가장 많이 드는 유닛들이다(설계 4절)."""
+def carriers_are_units_with_two_or_more_recommended_items_test():
+    """덱의 캐리는 추천 아이템을 2개 이상 드는 유닛들이다(앞줄은 1개). 2개 든 유닛이 없으면 가장 많이 드는 유닛들(설계 4절).
+    2026-10-28: 「가장 많이 드는 유닛만」이던 때는 황혼의 진(2개)이 캐리가 아니라 아이템을 못 받고 5코스트와 바뀌었다."""
     from meta.lobby import carriers
     assert carriers({'items': {'jhin': ['a', 'b', 'c'], 'riven': ['d', 'e', 'f'], 'aatrox': ['g']}}) == ['jhin', 'riven']
-    assert carriers({'items': {'riven': ['a', 'b', 'c'], 'jhin': ['d', 'e']}}) == ['riven']
+    assert carriers({'items': {'riven': ['a', 'b', 'c'], 'jhin': ['d', 'e'], 'aatrox': ['g']}}) == ['riven', 'jhin']
+    assert carriers({'items': {'jhin': ['a'], 'garen': ['b']}}) == ['jhin', 'garen']
 
 
 def finish_order_puts_survivor_on_top_and_ranks_by_health_before_round_test():

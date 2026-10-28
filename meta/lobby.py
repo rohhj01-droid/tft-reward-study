@@ -91,9 +91,10 @@ def completion(player, board):
 
 
 def carriers(board):
-    """덱의 캐리: 추천 아이템을 가장 많이 드는 유닛들(보드마다 1~2명)."""
-    most = max(len(held) for held in board['items'].values())
-    return [u for u, held in board['items'].items() if len(held) == most]
+    """덱의 캐리: 추천 아이템을 2개 이상 드는 유닛들(앞줄은 1개). 2개 든 유닛이 없으면 가장 많이 드는 유닛들(보드마다 1~2명)."""
+    held = board['items']
+    cut = min(2, max(len(h) for h in held.values()))
+    return [u for u, h in held.items() if len(h) >= cut]
 
 
 def board_record(player):
