@@ -130,7 +130,9 @@ def run(game):
                         pve=[(r, v) for r, k, v in mine if k == 'pve'],
                         held=dict(holdings(p)),
                         board_done=sum(1 for row in p.board for u in row if u and u.name in COST
-                                       for it in u.items if it in item_builds)))
+                                       for it in u.items if it in item_builds),
+                        units=[(u.name, COST[u.name], u.stars, [it for it in u.items if it in item_builds])
+                               for row in p.board for u in row if u and u.name in COST]))
     return out
 
 
