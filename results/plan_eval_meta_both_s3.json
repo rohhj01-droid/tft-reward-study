@@ -1,0 +1,70 @@
+{
+ "kind": "meta",
+ "net": "plan_both_s3_best.pt",
+ "games": 400,
+ "families": [
+  [
+   "warlord",
+   0.618125,
+   4.483822042467138
+  ],
+  [
+   "other",
+   0.2190625,
+   4.727532097004279
+  ],
+  [
+   "divine",
+   0.058125,
+   4.166666666666667
+  ],
+  [
+   "ninja",
+   0.0403125,
+   5.069767441860465
+  ],
+  [
+   "cultist",
+   0.0378125,
+   4.041322314049586
+  ],
+  [
+   "sharpshooter",
+   0.011875,
+   4.605263157894737
+  ],
+  [
+   "duelist",
+   0.0075,
+   1.375
+  ],
+  [
+   "mystic",
+   0.0053125,
+   4.411764705882353
+  ],
+  [
+   "elderwood",
+   0.0015625,
+   2.2
+  ],
+  [
+   "hunter",
+   0.0003125,
+   5
+  ]
+ ],
+ "rho_real": -0.1,
+ "rho_sim": 0.2,
+ "families_compared": [
+  "warlord",
+  "cultist",
+  "divine",
+  "ninja",
+  "sharpshooter"
+ ],
+ "switches": 0.14125,
+ "winner_level9": 0.505,
+ "winner_five_two_star": 0.2945417095777549,
+ "errors": []
+}
