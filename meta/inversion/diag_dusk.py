@@ -6,7 +6,7 @@ os.environ.setdefault('PYTHONHASHSEED', '0')
 from meta import lobby
 from meta.play_stats import family
 from meta.human_five import deck_family
-from Simulator.item_stats import item_builds
+from Simulator.item_stats import basic_items, item_builds
 from Simulator.stats import COST
 import meta.human_bot as hb
 
@@ -32,7 +32,11 @@ def run(game):
         out.append(dict(deck=decks[i], place=rec['place'], level=p.level, fam=family(rec['board']['traits'])[0],
                         traits=rec['board']['traits'], contest=decks.count(decks[i]) - 1,
                         units=[(u.name, COST[u.name], u.stars, [it for it in u.items if it in item_builds]) for u in units],
-                        chosen=chosen, bench_chosen=bench_chosen, switches=pol.switches, gold=p.gold))
+                        chosen=chosen, bench_chosen=bench_chosen, switches=pol.switches, gold=p.gold,
+                        # 아이템 진단(2026-10-28): 보드 유닛의 조각, 아이템 칸 내용, 벤치 유닛의 아이템
+                        parts_on_board=[it for u in units for it in u.items if it in basic_items],
+                        item_bench=[it for it in p.item_bench if it], item_slots=len(p.item_bench),
+                        bench_units=[(u.name, u.stars, list(u.items)) for u in p.bench if u]))
     return out
 
 def summary(label, rows):

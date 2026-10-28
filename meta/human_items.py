@@ -2,6 +2,8 @@
 사람 봇의 아이템 판단(meta/human_bot_design.md 5절). item_action은 행동 하나("6_유닛칸_아이템칸") 또는 None을 돌려준다.
 
 위에서부터 처음 맞는 것 하나를 한다.
+복제기(한 유닛의 사본을 만드는 소모품)가 아이템 칸에 있고 벤치에 자리가 있으면: 1성인 덱 캐리(사본이 둘인 쪽, 비싼 쪽 먼저), 없으면
+   1성인 덱 유닛 중 비싼 쪽에게 쓴다(2026-10-28: 진단 200판에서 1등 보드 60%가 복제기를 안 쓴 채 끝났다).
 0. 만들다 만 아이템 마저 만들기: 보드 유닛의 마지막 아이템이 조각이고, 합쳐질 조각이 아이템 칸에 있으면 올린다.
    회전초밥 유닛이 조각을 들고 온 경우도 여기서 마무리한다. 덱 아이템, 방어 아이템이 되는 짝을 먼저 고른다.
 1. 아이템 칸의 완성 아이템 주기(맡겨 둔 유닛을 팔아 돌아온 것 등): 덱 캐리 아이템이면 캐리, 방어 아이템이면 앞줄,
@@ -17,8 +19,9 @@ from collections import Counter
 
 from Simulator.default_agent_stats import FRONT_LINE_UNITS
 from Simulator.item_stats import basic_items, item_builds, trait_items
-from Simulator.stats import BASE_CHAMPION_LIST, round_stage
+from Simulator.stats import BASE_CHAMPION_LIST, COST, round_stage
 from Simulator.utils import x_y_to_1d_coord
+from meta.human_deck import copies, units_of
 from meta.lobby import carriers
 
 DEFENSIVE = ['sunfire_cape', 'gargoyle_stoneplate', 'bramble_vest', 'dragons_claw', 'warmogs_armor']
@@ -101,6 +104,17 @@ def item_action(player, board, mode, game_round, mask):
     ok = lambda idx, coord: coord is not None and bool(mask[37 + idx][coord])
     comps = [(i, it) for i, it in enumerate(player.item_bench) if it in basic_items and it not in SKIP]
     deck_items = {it for held in board['items'].values() for it in held} if board else set()
+
+    dup = next((i for i, it in enumerate(player.item_bench) if it == 'champion_duplicator'), None)
+    if dup is not None and board and any(slot is None for slot in player.bench):  # 복제기: 1성 덱 유닛의 사본 만들기
+        held = copies(units_of(player))
+        spots = _board(player) + [(28 + i, u) for i, u in enumerate(player.bench) if u]
+        cands = [(c, u) for c, u in spots if u.name in board['units'] and held[u.name] < 3]
+        if cands:
+            names = carriers(board)
+            coord = max(cands, key=lambda cu: (cu[1].name in names, held[cu[1].name] == 2, COST[cu[1].name]))[0]
+            if ok(dup, coord):
+                return f'6_{coord}_{dup}'
 
     for coord, u in _board(player):  # 0. 만들다 만 아이템 마저 만들기
         if u.items and u.items[-1] in basic_items and len(u.items) <= 3:

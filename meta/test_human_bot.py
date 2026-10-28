@@ -67,6 +67,23 @@ def builds_carry_item_on_carrier_test():
     assert item_action(p, SHARPSHOOTERS, 'win', 12, FULL) == '6_0_1'
 
 
+def uses_champion_duplicator_on_one_star_carry_test():
+    """아이템 칸의 복제기는 1성인 덱 캐리에게 쓴다(사본이 둘이면 그쪽 먼저, 같으면 비싼 쪽). 1성 캐리가 없으면 1성인 덱 유닛 중 비싼
+    쪽(5코스트)에게 쓰고, 그것도 없거나 벤치가 꽉 찼으면 들고 있는다. 2026-10-28 진단(200판): 1등 보드 60%가 복제기를 안 쓴 채
+    끝났고, 황혼 자리의 88%는 1성 4코스트를 들고 있었다."""
+    from meta.human_items import item_action
+    from meta.lobby import BOARDS
+    dusks = next(b for b in BOARDS if b['name'] == 'Chosen Dusks')  # 캐리 진(4코스트)·리븐(4코스트)
+    one = lambda name: Unit(name=name, stars=1, items=[], chosen=False)
+    p = item_player([one('jhin'), one('riven')], ['champion_duplicator'], bench_units=[one('riven')])
+    assert item_action(p, dusks, 'win', 20, FULL) == '6_4_0'  # 리븐은 사본이 둘이라 복제기 하나로 2성
+    p = item_player([one('jhin'), Unit(name='riven', stars=2, items=[], chosen=False)], ['champion_duplicator'])
+    assert item_action(p, dusks, 'win', 20, FULL) == '6_0_0'  # 1성 캐리는 진뿐
+    p = item_player([Unit(name='jhin', stars=2, items=[], chosen=False), one('zilean')], ['champion_duplicator'])
+    assert item_action(p, dusks, 'win', 20, FULL) == '6_4_0'  # 1성 캐리가 없으면 1성 5코스트
+    p = item_player([one('jhin')], ['champion_duplicator'], bench_units=plain(['garen'] * 9))
+    assert item_action(p, dusks, 'win', 20, FULL) is None  # 벤치가 꽉 차면 사본을 못 만든다
+
 def finishes_started_item_test():
     """조각 하나를 든 유닛이 있고 합칠 조각이 아이템 칸에 있으면 마저 올린다."""
     from meta.human_items import item_action
