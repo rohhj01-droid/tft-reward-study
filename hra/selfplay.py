@@ -38,6 +38,14 @@ def eps_at(done, total):
     return tuple(a + (b - a) * t for a, b in zip(EPS_START, EPS_END))
 
 
+def margin_weight(done, until):
+    """여백 손실 가중치. until(판 수)이 없으면 늘 1(설계 5절, 여섯 실행). 있으면 0판에서 1로 시작해 until판에서 0이 되고 그 뒤로 0
+    (여백 떼기 시험: 규칙의 선택에 묶인 레벨·남길 골드를 자기 대전이 바꿀 수 있는지 본다)."""
+    if until is None:
+        return 1.0
+    return max(0.0, 1.0 - done / until)
+
+
 def is_better(new, best):
     """중간 점검 등수 차가 지금까지의 최고보다 나은가. 처음이면 그렇다. 값이 없으면(nan) 아니다."""
     return new == new and (best is None or new > best)
@@ -68,7 +76,8 @@ def selfplay_game(job):
     return [t for s in out['seats'] for t in s['transitions']], summary, None
 
 
-def train(config, aux_w, seed, games, jobs, save_every=500, eval_games=100, warm=None, demos=None, root='.', tag=None):
+def train(config, aux_w, seed, games, jobs, save_every=500, eval_games=100, warm=None, demos=None, root='.', tag=None,
+          margin_until=None):
     """자기 대전 학습. games는 이 이름으로 끝낼 총 판 수다(이어 하기면 남은 만큼만 돈다)."""
     name = tag or f'plan_{config}_s{seed}'
     ck_dir, res_dir = os.path.join(root, 'checkpoints'), os.path.join(root, 'results')
@@ -134,9 +143,10 @@ def train(config, aux_w, seed, games, jobs, save_every=500, eval_games=100, warm
                 for t in transitions:
                     replay.add(t)
                 if len(replay) >= BATCH:
+                    lam = margin_weight(done + finished, margin_until)
                     for _ in range(UPDATES_PER_GAME):
                         demo = demo_replay.sample(DEMO_BATCH, rng) if demo_replay is not None else None
-                        losses.append(learn_step(net, target, opt, w, batch=replay.sample(BATCH, rng), demo=demo))
+                        losses.append(learn_step(net, target, opt, w, batch=replay.sample(BATCH, rng), demo=demo, lam=lam))
                         updates += 1
                         if updates % SYNC == 0:
                             target.load_state_dict(net.state_dict())
@@ -153,16 +163,18 @@ def train(config, aux_w, seed, games, jobs, save_every=500, eval_games=100, warm
             curve.append({'games': done, 'diff': check['diff'], 'se': check['se'], 'check_errors': len(check['errors']),
                           'flip': flips, 'switches': statistics.mean(switches) if switches else None,
                           'loss': statistics.mean(losses) if losses else None, 'errors': errors,
-                          'minutes': (time.time() - start) / 60, 'resumed': resumed})
+                          'minutes': (time.time() - start) / 60, 'resumed': resumed,
+                          'margin': margin_weight(done, margin_until)})
             resumed = False
             tmp = ck_path + '.tmp'
             torch.save({'net': net.state_dict(), 'target': target.state_dict(), 'opt': opt.state_dict(),
                         'games': done, 'best': best, 'updates': updates}, tmp)
             os.replace(tmp, ck_path)
             with open(log_path, 'w', encoding='utf-8') as f:
-                json.dump({'config': config, 'aux_w': aux_w, 'seed': seed, 'curve': curve}, f, ensure_ascii=False, indent=1)
+                json.dump({'config': config, 'aux_w': aux_w, 'seed': seed, 'margin_until': margin_until, 'curve': curve}, f,
+                          ensure_ascii=False, indent=1)
             print(f'{done}판: 점검 등수 차 {check["diff"]:+.2f}±{check["se"]:.2f}, 뒤집는 비율 {flips:.2f}, '
-                  f'갈아타기 {curve[-1]["switches"]}, 멈춘 판 {errors}', flush=True)
+                  f'갈아타기 {curve[-1]["switches"]}, 멈춘 판 {errors}, 여백 가중치 {curve[-1]["margin"]:.2f}', flush=True)
             policy = publish()
     return {'games': done, 'best': best}
 
@@ -179,6 +191,8 @@ def parser():
     ap.add_argument('--warm', default=None, help='데우기 신경망. 없으면 checkpoints/plan_warm_<설정>.pt가 있을 때 그것')
     ap.add_argument('--demos', default=None, help='따라 하기 자료. 없으면 checkpoints/plan_demos.npz가 있을 때 그것')
     ap.add_argument('--tag', default=None)
+    ap.add_argument('--margin-until', type=int, default=None,
+                    help='여백 손실 가중치를 이 판 수까지 1→0으로 줄여 끈다(여백 떼기 시험). 없으면 끝까지 1(설계 5절)')
     return ap
 
 
@@ -212,7 +226,7 @@ def main():
     for line in warnings:
         print('경고:', line, flush=True)
     result = train(args.config, args.aux_w, args.seed, args.games, args.jobs, args.save_every, args.eval_games,
-                   warm, demos, tag=args.tag)
+                   warm, demos, tag=args.tag, margin_until=args.margin_until)
     print(result)
 
 

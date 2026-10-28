@@ -414,6 +414,34 @@ def finished_run_is_not_restarted_test():
     assert not [f for f in os.listdir(os.path.join(root, 'checkpoints')) if 'policy' in f]
 
 
+def margin_weight_fades_to_zero_by_margin_until_test():
+    """여백 손실 가중치(여백 떼기 시험): 줄이는 판 수 N을 주면 0판에서 1, N/2판에서 0.5, N판부터 0. 주지 않으면 늘 1
+    (여섯 실행과 같은 학습 규칙)."""
+    from hra.selfplay import margin_weight
+    assert margin_weight(0, 1000) == 1.0
+    assert margin_weight(500, 1000) == 0.5
+    assert margin_weight(1000, 1000) == 0.0
+    assert margin_weight(1500, 1000) == 0.0
+    assert margin_weight(7000, None) == 1.0
+
+
+def cli_margin_until_reaches_train_test():
+    """--margin-until은 기본이 없음(여백 손실을 끝까지 건다)이고, 주면 그 판 수가 그대로 train까지 간다."""
+    import sys
+    import hra.selfplay as sp
+    got, real = {}, sp.train
+    sp.train = lambda *a, **k: got.update(k) or {'games': 0, 'best': None}
+    try:
+        sys.argv = ['selfplay', '--config', 'none', '--games', '0', '--jobs', '1']
+        sp.main()
+        assert got['margin_until'] is None
+        sys.argv += ['--margin-until', '1000']
+        sp.main()
+        assert got['margin_until'] == 1000
+    finally:
+        sp.train = real
+
+
 if __name__ == '__main__':
     import sys
     for name in sys.argv[1:] or [n for n in list(globals()) if n.endswith('_test')]:

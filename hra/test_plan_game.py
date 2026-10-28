@@ -136,16 +136,25 @@ def agree_and_meta_run_with_a_fresh_net_test():
 
 def selfplay_runs_saves_and_resumes_test():
     """아주 작은 자기 대전: 2판 학습, 2판마다 저장과 점검(점검 1판). 같은 설정으로 3판까지 다시 부르면 이어서 1판만 더 돌고
-    곡선이 한 줄 는다(컴퓨터가 꺼진 뒤 같은 명령으로 이어 가기)."""
+    곡선이 한 줄 는다(컴퓨터가 꺼진 뒤 같은 명령으로 이어 가기). 여백 손실을 2판까지 1→0으로 줄이게 하면 학습 걸음마다
+    그 가중치가 실제로 들어가고(1판 뒤 0.5, 2판 뒤 0), 곡선과 결과 파일에 남는다."""
     import json
     import os
     import tempfile
+    import hra.selfplay as sp
     from hra.selfplay import train
     root = tempfile.mkdtemp()
-    first = train('both', 0.1, seed=5, games=2, jobs=1, save_every=2, eval_games=1, root=root)
+    seen, real = [], sp.learn_step
+    sp.learn_step = lambda *a, **k: seen.append(k.get('lam')) or real(*a, **k)
+    try:
+        first = train('both', 0.1, seed=5, games=2, jobs=1, save_every=2, eval_games=1, root=root, margin_until=2)
+    finally:
+        sp.learn_step = real
+    assert seen and set(seen) <= {0.5, 0.0} and seen[-1] == 0.0
     log = json.load(open(os.path.join(root, 'results', 'plan_both_s5.json'), encoding='utf-8'))
     assert first['games'] == 2 and [c['games'] for c in log['curve']] == [2]
-    second = train('both', 0.1, seed=5, games=3, jobs=1, save_every=2, eval_games=1, root=root)
+    assert log['margin_until'] == 2 and log['curve'][0]['margin'] == 0.0
+    second = train('both', 0.1, seed=5, games=3, jobs=1, save_every=2, eval_games=1, root=root, margin_until=2)
     log = json.load(open(os.path.join(root, 'results', 'plan_both_s5.json'), encoding='utf-8'))
     assert second['games'] == 3 and [c['games'] for c in log['curve']] == [2, 3]
     assert os.path.exists(os.path.join(root, 'checkpoints', 'plan_both_s5_best.pt'))
