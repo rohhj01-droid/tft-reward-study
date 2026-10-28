@@ -1,0 +1,63 @@
+{
+ "kind": "agree",
+ "net": "plan_margin0_s1_g1500.pt",
+ "games": 50,
+ "deck": 0.27652597059134665,
+ "level": 0.901301174230403,
+ "floor": 0.32814979371628056,
+ "all": 0.12197186078493599,
+ "decisions": 9453,
+ "deck_disagreements": [
+  [
+   "keep",
+   "Chosen Duelists",
+   1744
+  ],
+  [
+   "keep",
+   "Chosen Warlords",
+   1549
+  ],
+  [
+   "keep",
+   "Chosen Adepts",
+   876
+  ],
+  [
+   "keep",
+   "Warlords Fortune",
+   512
+  ],
+  [
+   "keep",
+   "Chosen Brawlers",
+   414
+  ],
+  [
+   "keep",
+   "Ninja Shades",
+   243
+  ],
+  [
+   "keep",
+   "Chosen Sharpshooters",
+   221
+  ],
+  [
+   "keep",
+   "Chosen Cultists",
+   191
+  ],
+  [
+   "keep",
+   "Spirit Shades",
+   178
+  ],
+  [
+   "keep",
+   "Cultist Shades",
+   101
+  ]
+ ],
+ "errors": []
+}

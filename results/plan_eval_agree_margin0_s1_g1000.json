@@ -1,0 +1,63 @@
+{
+ "kind": "agree",
+ "net": "plan_margin0_s1_g1000.pt",
+ "games": 50,
+ "deck": 0.9209774674706442,
+ "level": 0.9711202792764202,
+ "floor": 0.8952713424309743,
+ "all": 0.8119115624669417,
+ "decisions": 9453,
+ "deck_disagreements": [
+  [
+   "Chosen Dusks",
+   "Chosen Duelists",
+   66
+  ],
+  [
+   "keep",
+   "Chosen Duelists",
+   65
+  ],
+  [
+   "Ninja Shades",
+   "Chosen Duelists",
+   60
+  ],
+  [
+   "Chosen Cultists",
+   "Chosen Duelists",
+   50
+  ],
+  [
+   "Chosen Divines",
+   "Chosen Duelists",
+   49
+  ],
+  [
+   "Chosen Warlords",
+   "Chosen Duelists",
+   35
+  ],
+  [
+   "Dusk Cultists",
+   "Chosen Duelists",
+   32
+  ],
+  [
+   "Chosen Hunters",
+   "Chosen Duelists",
+   22
+  ],
+  [
+   "Chosen Divines",
+   "keep",
+   22
+  ],
+  [
+   "Chosen Sharpshooters",
+   "Chosen Duelists",
+   22
+  ]
+ ],
+ "errors": []
+}

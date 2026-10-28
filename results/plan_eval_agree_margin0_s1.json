@@ -1,0 +1,63 @@
+{
+ "kind": "agree",
+ "net": "plan_margin0_s1_best.pt",
+ "games": 50,
+ "deck": 0.9295461758172009,
+ "level": 0.9700624140484502,
+ "floor": 0.9571564582672167,
+ "all": 0.8613138686131386,
+ "decisions": 9453,
+ "deck_disagreements": [
+  [
+   "Chosen Divines",
+   "keep",
+   32
+  ],
+  [
+   "Chosen Cultists",
+   "keep",
+   29
+  ],
+  [
+   "Ninja Shades",
+   "keep",
+   24
+  ],
+  [
+   "Chosen Dusks",
+   "keep",
+   19
+  ],
+  [
+   "Chosen Warlords",
+   "keep",
+   19
+  ],
+  [
+   "Chosen Dusks",
+   "Chosen Warlords",
+   18
+  ],
+  [
+   "Chosen Sharpshooters",
+   "keep",
+   18
+  ],
+  [
+   "Chosen Divines",
+   "Chosen Elderwood",
+   16
+  ],
+  [
+   "Ninja Shades",
+   "Chosen Warlords",
+   14
+  ],
+  [
+   "keep",
+   "Chosen Warlords",
+   13
+  ]
+ ],
+ "errors": []
+}

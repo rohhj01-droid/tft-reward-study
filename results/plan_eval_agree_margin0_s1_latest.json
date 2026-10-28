@@ -1,0 +1,63 @@
+{
+ "kind": "agree",
+ "net": "plan_margin0_s1_latest.pt",
+ "games": 50,
+ "deck": 0.268274621813181,
+ "level": 0.7877922352692267,
+ "floor": 0.3779752459536655,
+ "all": 0.13329101872421453,
+ "decisions": 9453,
+ "deck_disagreements": [
+  [
+   "keep",
+   "Chosen Duelists",
+   2859
+  ],
+  [
+   "keep",
+   "Chosen Hunters",
+   961
+  ],
+  [
+   "keep",
+   "Chosen Sharpshooters",
+   625
+  ],
+  [
+   "keep",
+   "Dazzler Assassins",
+   451
+  ],
+  [
+   "keep",
+   "Vanguard Mystics",
+   338
+  ],
+  [
+   "keep",
+   "Chosen Divines",
+   282
+  ],
+  [
+   "keep",
+   "Warlords Fortune",
+   169
+  ],
+  [
+   "keep",
+   "Spirit Shades",
+   114
+  ],
+  [
+   "keep",
+   "Dusk Cultists",
+   107
+  ],
+  [
+   "keep",
+   "Chosen Adepts",
+   95
+  ]
+ ],
+ "errors": []
+}

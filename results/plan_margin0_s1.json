@@ -1,0 +1,86 @@
+{
+ "config": "none",
+ "aux_w": 0.3,
+ "seed": 1,
+ "margin_until": 1000,
+ "curve": [
+  {
+   "games": 500,
+   "diff": 0.4875,
+   "se": 0.12141530848982098,
+   "check_errors": 0,
+   "flip": 0.0,
+   "switches": 0.951,
+   "loss": 0.3452577999007248,
+   "errors": 0,
+   "minutes": 106.10252516667047,
+   "resumed": false,
+   "margin": 0.5
+  },
+  {
+   "games": 1000,
+   "diff": 0.095,
+   "se": 0.11427013309077273,
+   "check_errors": 0,
+   "flip": 0.0,
+   "switches": 0.8445,
+   "loss": 0.3257353936806321,
+   "errors": 0,
+   "minutes": 113.53177805741628,
+   "resumed": false,
+   "margin": 0.0
+  },
+  {
+   "games": 1500,
+   "diff": -1.585,
+   "se": 0.1030995762021616,
+   "check_errors": 0,
+   "flip": 0.0,
+   "switches": 9.37075,
+   "loss": 0.33211685954406855,
+   "errors": 0,
+   "minutes": 118.43192389806111,
+   "resumed": false,
+   "margin": 0.0
+  },
+  {
+   "games": 2000,
+   "diff": -1.115,
+   "se": 0.10951641073878164,
+   "check_errors": 0,
+   "flip": 0.0,
+   "switches": 8.75775,
+   "loss": 0.3227775294430748,
+   "errors": 0,
+   "minutes": 54.51036658287048,
+   "resumed": true,
+   "margin": 0.0
+  },
+  {
+   "games": 2500,
+   "diff": -0.4725,
+   "se": 0.12243332202349384,
+   "check_errors": 0,
+   "flip": 0.0,
+   "switches": 7.1265,
+   "loss": 0.32353978403657674,
+   "errors": 0,
+   "minutes": 25.32058922449748,
+   "resumed": false,
+   "margin": 0.0
+  },
+  {
+   "games": 3000,
+   "diff": -0.73,
+   "se": 0.1188216855831633,
+   "check_errors": 0,
+   "flip": 0.0,
+   "switches": 5.7195,
+   "loss": 0.3269741897769272,
+   "errors": 0,
+   "minutes": 24.249918246269225,
+   "resumed": false,
+   "margin": 0.0
+  }
+ ]
+}
