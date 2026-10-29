@@ -3,7 +3,7 @@
 
 ab   : AI 4자리 대 규칙 사람 봇 4자리(자리는 판마다 섞음). --net이 없으면 규칙 대 규칙(배관 검사). 등수 차는 규칙 자리 평균
        등수 - AI 자리 평균 등수라 양수면 AI가 낫다. 판정(신청서): 차 >= 0 이고 차 > 표준오차의 2배.
-agree: 규칙 기록기 8명 판의 상태에서 AI가 고른 계획과 규칙의 계획이 같은 비율(갈래별, 셋 다). 어긋난 덱 짝을 센다.
+agree: 규칙 기록기 8명 판의 상태에서 AI가 고른 계획과 규칙의 계획이 같은 비율(갈래별, 셋 다). 어긋난 짝(규칙 → AI)을 갈래마다 센다.
 meta : AI 8명 판의 계열별 몫·평균 등수. 롤체지지 10.24(실제)와, 사람 봇 덱 27개 고정 보드 대전(시뮬레이터 순서)과 순위
        상관을 여섯 큰 계열로 낸다. --net이 없으면 규칙 사람 봇 8명(비교 기준).
 
@@ -23,6 +23,7 @@ import torch
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from hra.plan_bot import pinned_pool, safe_play
 from hra.plan_net import choose, load
+from hra.plan_state import FLOORS
 from hra.score_rank import ROOT
 from meta.decks_1024 import trait_counts
 from meta.lobby import BOARDS, N_PLAYERS
@@ -87,17 +88,27 @@ def agree_game(job):
     return [(tuple(int(i) for i in a), planner(s, m)) for seat in out['seats'] for s, m, a, *_ in seat['transitions']], None
 
 
+def agree_summary(pairs, errors=()):
+    """(규칙 계획, AI 계획) 짝들 -> 갈래별 일치율과 갈래마다 가장 많이 어긋난 짝(규칙 → AI, 횟수) 열 개.
+    레벨은 올릴 단계 수(+0~+2), 남길 골드는 FLOORS 값(「안 함」은 리롤 안 함)으로 적는다."""
+    same = np.array([[x == y for x, y in zip(rule, ai)] for rule, ai in pairs])
+    names = (lambda d: 'keep' if d == 0 else BOARDS[d - 1]['name'], lambda v: f'+{v}',
+             lambda f: '안 함' if FLOORS[f] is None else str(FLOORS[f]))
+
+    def wrong(i):
+        c = Counter((rule[i], ai[i]) for rule, ai in pairs if rule[i] != ai[i])
+        return [[names[i](a), names[i](b), n] for (a, b), n in c.most_common(10)]
+
+    return {'deck': float(same[:, 0].mean()), 'level': float(same[:, 1].mean()), 'floor': float(same[:, 2].mean()),
+            'all': float(same.all(1).mean()), 'decisions': len(pairs),
+            'deck_disagreements': wrong(0), 'level_disagreements': wrong(1), 'floor_disagreements': wrong(2),
+            'errors': list(errors)}
+
+
 def agree(path, games, jobs=None):
     with pinned_pool(jobs) as p:
         results = p.map(agree_game, [(SEED_AGREE + k, path) for k in range(games)])
-    pairs = [row for rows, _ in results for row in rows]
-    same = np.array([[x == y for x, y in zip(rule, ai)] for rule, ai in pairs])
-    name = lambda d: 'keep' if d == 0 else BOARDS[d - 1]['name']
-    wrong = Counter((rule[0], ai[0]) for rule, ai in pairs if rule[0] != ai[0])
-    return {'deck': float(same[:, 0].mean()), 'level': float(same[:, 1].mean()), 'floor': float(same[:, 2].mean()),
-            'all': float(same.all(1).mean()), 'decisions': len(pairs),
-            'deck_disagreements': [[name(a), name(b), n] for (a, b), n in wrong.most_common(10)],
-            'errors': [e for _, e in results if e]}
+    return agree_summary([row for rows, _ in results for row in rows], [e for _, e in results if e])
 
 
 def meta_game(job):

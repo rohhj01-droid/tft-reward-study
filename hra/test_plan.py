@@ -489,6 +489,20 @@ def cli_margin_keep_deck_reaches_train_test():
         sp.train = real
 
 
+def agree_summary_counts_branch_disagreements_test():
+    """일치율 요약은 갈래별 일치율과 함께 레벨·남길 골드 갈래의 어긋난 짝(규칙 → AI, 횟수)도 센다
+    (여백 떼기 시험 2차: 여백을 뗀 레벨·골드 갈래가 어느 쪽으로 달라졌는지 보려고)."""
+    from hra.evaluate import agree_summary
+    from meta.lobby import BOARDS
+    pairs = [((0, 0, 0), (0, 0, 0)), ((0, 1, 2), (0, 2, 2)), ((3, 0, 1), (0, 0, 5)), ((0, 1, 2), (0, 2, 5))]
+    s = agree_summary(pairs)
+    assert (s['deck'], s['level'], s['floor'], s['all'], s['decisions']) == (0.75, 0.5, 0.5, 0.25, 4)
+    assert s['deck_disagreements'] == [[BOARDS[2]['name'], 'keep', 1]]
+    assert s['level_disagreements'] == [['+1', '+2', 2]]
+    assert s['floor_disagreements'] == [['50', '0', 1], ['30', '0', 1]]
+    assert s['errors'] == []
+
+
 if __name__ == '__main__':
     import sys
     for name in sys.argv[1:] or [n for n in list(globals()) if n.endswith('_test')]:
