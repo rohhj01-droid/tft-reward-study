@@ -23,5 +23,6 @@ export PYTHONIOENCODING=utf-8 PYTHONPATH="<june 경로>;<stubs 경로>;meta/inve
 | `diag_iso6.py` | 로비 구성: 봇마다 덱을 판 내내 고정해 `real`(실제 메타 트렌드 계열 몫) 또는 `bot`(봇이 스스로 고른 몫, diag_dusk 결과)대로 나눈다 | `DIAG_VARIANT=real python meta/inversion/diag_iso6.py 300` |
 | `diag_iso7.py` | 느린 덱 대비책: 4-5까지 캐리 3성을 못 맞추면 보통 덱처럼 8로. `LOBBY=real`(diag_iso6의 실제 몫 로비)·`self`(봇이 덱을 고름), `FALLBACK=0`이면 대비책 없이 기준만 | `LOBBY=self FALLBACK=1 python meta/inversion/diag_iso7.py 200` |
 | `find_crash.py` | diag_iso7(self) 판을 판마다 따로 돌려 오류 난 판 번호를 찾는다(바이 크래시를 찾을 때 썼다) | `python meta/inversion/find_crash.py 200` |
+| `diag_flex.py` | 후반 덱의 초반 운영(2026-10-29): 자리마다 라운드별 곡선(레벨·골드·체력·보드 값·2성 수·덱 유닛 수)과 끝 상태(덱·등수·레벨·끝 칸·4코스트 별·캐리 2성)를 모아 후반 덱·덱별·계열별로 요약한다. 결과 JSON 경로를 인자로 준다(`diag_flex_rows_before.json`·`_after.json`, git에 안 올림). `DIAG_VARIANT=noswitch`(4-1 전 갈아타기 금지만), `until18`(규칙을 4-5까지) 떼어 재기 조건 | `python meta/inversion/diag_flex.py 200 4 meta/inversion/diag_flex_rows_after.json`, 요약만 `python meta/inversion/diag_flex.py summary <json>` |
 
 판 목록은 모두 `meta.play_stats`와 같은 시드 0의 앞 N판이다(diag_iso6은 판마다 덱을 그 몫으로 다시 뽑는다).

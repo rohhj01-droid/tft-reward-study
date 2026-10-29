@@ -5,7 +5,8 @@
 → 캐리 아이템 옮기기 → 아이템 → 자리 맞추기 → 레벨·리롤. 라운드의 첫 행동 때 초반 전략을 정하거나 바꾸고, 2-1부터
 목표 덱을 고르거나 갈아탄다. 아이템은 meta/human_items.py, 레벨·리롤은 meta/human_macro.py, 덱 고르기는
 meta/human_deck.py, 레벨 8부터의 덱 밖 5코스트와 계열 먼저 규칙은 meta/human_five.py에 있고, 자리 맞추기는 구석 배치
-(analysis.battle.corner_positions)다.
+(analysis.battle.corner_positions)다. 후반 덱(4코스트 이상이 절반 넘는 덱)은 4-1 전에 덱 유닛을 고집하지 않고 가진 것 중
+가장 센 보드를 쓴다(flex, 설계 10절).
 """
 from collections import defaultdict
 
@@ -24,7 +25,19 @@ KNOBS = {'win_threshold': 2, 'lose_hp': 50, 'keep': 50, 'floor_41': 20, 'floor_4
          # 떼어 재기용: 5단계 레벨 8에서 50 넘는 몫을 경험치(9로)에 쓰는가(0이면 리롤), 레벨 9에서 남길 골드(None이면 50)
          'xp_to_9': 1, 'floor_9': None,
          # 설계 9절: 5코스트 시작 레벨, 같은 5코스트 사본 상한(1성으로 쳐서), 바꿀 덱 유닛 비용 상한, 큰 특성 기준 인원
-         'five_level': 8, 'five_cap': 3, 'swap_cost_max': 4, 'big_trait': 4}
+         'five_level': 8, 'five_cap': 3, 'swap_cost_max': 4, 'big_trait': 4,
+         # 설계 10절: 후반 덱(4코스트 이상 유닛 몫이 이 값을 넘는 덱)은 이 칸(15 = 4-1) 전에는 가진 것 중 가장 센 보드를 쓴다
+         'late_share': 0.5, 'flex_until': 15}
+
+
+def late_deck(board, k):
+    """후반 덱: 느린 리롤 덱이 아니고 4코스트 이상 유닛이 절반을 넘는 덱(황혼 둘, 신성, 신비술사 둘). 설계 10절."""
+    return bool(board) and not board['slow'] and sum(COST[u] >= 4 for u in board['units']) > k['late_share'] * len(board['units'])
+
+
+def worth(unit):
+    """유닛 값: 비용 × 3^(별 - 1). 사본 수(human_deck.copies)와 같은 잣대다."""
+    return COST[unit.name] * 3 ** (unit.stars - 1)
 
 
 class HumanPolicy(DeckPolicy):
@@ -55,6 +68,10 @@ class HumanPolicy(DeckPolicy):
             return units
         return units | set(FIVE_COSTS)
 
+    def flex(self):
+        """지금이 후반 덱의 초반(4-1 전)인가. 이때는 덱 유닛을 고집하지 않고 가진 것 중 가장 센 보드를 쓴다(설계 10절)."""
+        return self.last_round is not None and self.last_round < self.knobs['flex_until'] and late_deck(self.board, self.knobs)
+
     def __call__(self, player, shop, game_round, mask):
         self.agent.current_round = game_round
         if game_round != self.last_round:
@@ -63,12 +80,16 @@ class HumanPolicy(DeckPolicy):
             if self.choose_decks and game_round >= 3:
                 self.pick_deck(player, game_round)
         return (self.fill(player, shop, mask) or self.sell(player) or self.sell_chosen(player)
-                or self.buy(player, shop, mask) or self.swap(player) or transfer_action(player, self.board)
+                or self.buy(player, shop, mask) or self.swap(player)
+                or (None if self.flex() else transfer_action(player, self.board))  # 후반 덱은 4-1 전에 옮기기를 미룬다
                 or item_action(player, self.board, self.mode or 'win', game_round, mask)
                 or self.reposition(player, game_round) or self.macro(player, game_round))
 
     def pick_deck(self, player, game_round):
-        """라운드 첫 행동 때 후보 27개의 점수를 매겨 목표 덱을 고르거나 갈아탄다(설계 2절)."""
+        """라운드 첫 행동 때 후보 27개의 점수를 매겨 목표 덱을 고르거나 갈아탄다(설계 2절). 후반 덱은 4-1 전에 갈아타지 않는다
+        (그동안 보드가 덱을 안 따르니 점수가 덱을 말해 주지 않는다, 설계 10절)."""
+        if self.board and self.flex():
+            return
         completed, components = held_items(player)
         mine, others = copies(units_of(player)), scout(self.others)
         scores = [score(b, mine, player.chosen or None, completed, components, others, self.knobs) for b in BOARDS]
@@ -82,12 +103,18 @@ class HumanPolicy(DeckPolicy):
     def sell(self, player):
         """5코스트와 바꿔 내린 유닛은 바로 판다. 그 밖에는 덱 봇 규칙(벤치가 차면 원하지 않는 유닛부터, 다 원하면 기본 봇
         규칙)인데, 기본 봇 규칙이 원하는 5코스트를 고르면 5코스트가 아닌 유닛을 대신 판다(1성 먼저, 없으면 가장 싼 것.
-        설계 9절)."""
+        설계 9절). 4-1 전 후반 덱은 사본 없는 덱 밖 유닛부터, 그다음 값이 작은 것을 판다(짝을 깨지 않는다, 설계 10절)."""
         for i, u in enumerate(player.bench):
             if u and u.name in self.dropped:
                 return f'4_{28 + i}'
         if self.board is None:  # 목표 덱이 없으면 기본 봇 규칙(짝 아닌 1성부터)
             return self.agent.sell_bench_full(player) if player.bench_full() else None
+        if self.flex() and player.bench_full():
+            held = copies(units_of(player))
+            spare = [(held[u.name] > 3 ** (u.stars - 1), worth(u), i) for i, u in enumerate(player.bench)
+                     if u and u.name not in self.units]
+            if spare:
+                return f'4_{28 + min(spare)[2]}'
         act = super().sell(player)
         unit = act and player.bench[int(act[2:]) - 28]
         if unit and unit.name in FIVE_COSTS and unit.name in self.wanted(player):
@@ -114,7 +141,8 @@ class HumanPolicy(DeckPolicy):
 
     def buy(self, player, shop, mask):
         """목표 덱이 없으면 짝·두루 들어가는 유닛·처음 본 선택받은 자를, 있으면 덱 유닛·덱 유닛의 선택받은 자(특성
-        상관없이), 레벨 8부터는 덱 밖 5코스트(human_five.pick_five)를 사고 4-1 전까지는 보드 유닛의 짝도 산다.
+        상관없이), 레벨 8부터는 덱 밖 5코스트(human_five.pick_five)를 사고 4-1 전까지는 보드 유닛의 짝도 산다(후반 덱은
+        벤치 유닛의 짝도, 설계 10절).
         덱의 계열이 모자라면 아직 없는 계열 유닛을 맨 먼저 사고, 덱 밖 5코스트는 사지 않는다(설계 9절)."""
         if self.board is None:
             owned = {u.name for u in units_of(player)}
@@ -140,9 +168,10 @@ class HumanPolicy(DeckPolicy):
             return '3_' + str(i)
         if (self.last_round or 0) >= 15:
             return None
-        on_board = {u.name for row in player.board for u in row if u}
+        held = units_of(player) if self.flex() else [u for row in player.board for u in row if u]
+        owned = {u.name for u in held}
         for i, unit in enumerate(shop):
-            if mask[47 + i][0] and not unit.endswith('_c') and unit in on_board and COST[unit] <= player.gold:
+            if mask[47 + i][0] and not unit.endswith('_c') and unit in owned and COST[unit] <= player.gold:
                 return '3_' + str(i)
         return None
 
@@ -151,12 +180,15 @@ class HumanPolicy(DeckPolicy):
         (설계 1절 5번, 2026-10-10 유저 결정). 다음으로 덱의 계열이 모자라면 벤치의 계열 유닛을 올린다(human_five.family_in).
         그다음 덱 봇 교체, 그다음 레벨 8부터 빈자리가 없으면 벤치의 5코스트를 싼 덱 유닛과 바꾼다(human_five.swap_out).
         내린 유닛은 dropped에 넣고 덱 유닛에서 뺀다(다시 사지 않고, 벤치가 안 찼어도 판다). 같은 이름 사본이 보드에 남으면
-        빼지 않는다(남은 사본까지 일반 교체로 내려가 계열이 깨졌다)."""
+        빼지 않는다(남은 사본까지 일반 교체로 내려가 계열이 깨졌다). 4-1 전 후반 덱은 선택받은 자 올리기 다음에 strongest(가진 것 중
+        가장 센 보드)만 한다(설계 10절)."""
         for i, u in enumerate(player.bench):
             if u and u.chosen:
                 for x, y, b in board_units(player):
                     if b.name == u.name and not b.chosen and b.stars <= u.stars:
                         return f'5_{x_y_to_1d_coord(x, y)}_{28 + i}'
+        if self.flex():
+            return self.strongest(player)
         short = self.board and family_short(player, self.board)
         spot = family_in(player, self.board, self.units, short) if short else None
         if spot:
@@ -178,6 +210,17 @@ class HumanPolicy(DeckPolicy):
                         self.units.discard(name)
                     return f'5_{x_y_to_1d_coord(x, y)}_{28 + i}'
         return None
+
+    def strongest(self, player):
+        """4-1 전 후반 덱의 보드(설계 10절): 벤치에서 값이 가장 큰 유닛이 보드에서 값이 가장 작은 유닛(선택받은 자는 빼고)보다
+        세면 바꾼다. 같은 값이면 덱 유닛이 덱 밖 유닛을 밀어낸다. 빈자리는 보드 채우기가 메운다."""
+        if player.num_units_in_play < player.max_units:
+            return None
+        weak = min(((worth(u), u.name in self.units, x, y) for x, y, u in board_units(player) if not u.chosen), default=None)
+        strong = max(((worth(u), u.name in self.units, -i) for i, u in enumerate(player.bench) if u), default=None)
+        if weak is None or strong is None or strong[:2] <= weak[:2]:
+            return None
+        return f'5_{x_y_to_1d_coord(weak[2], weak[3])}_{28 - strong[2]}'
 
     def update_mode(self, player, game_round):
         """2-3에 첫 대전 성적으로 초반 전략을 고르고, 연승형이 2~3단계에 두 번 연달아 지면 연패형으로 바꾼다.
