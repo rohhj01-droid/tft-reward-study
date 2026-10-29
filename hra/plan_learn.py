@@ -74,24 +74,27 @@ def td_loss(net, target, batch, w):
     return loss / len(SLICES)
 
 
-def margin_loss(net, batch, w):
-    """따라 하기 여백 손실(DQfD): 행동 갈래마다 정답 칸의 가중합 값이 가리지 않은 다른 칸보다 MARGIN 이상 높아야 한다."""
+def margin_loss(net, batch, w, lam=(1.0, 1.0, 1.0)):
+    """따라 하기 여백 손실(DQfD): 행동 갈래마다 정답 칸의 가중합 값이 가리지 않은 다른 칸보다 MARGIN 이상 높아야 한다.
+    lam은 갈래(덱, 레벨, 남길 골드)별 가중치다(여백 떼기 시험 2차: 덱 갈래만 여백을 남긴다)."""
     c = combined(net(batch['s']), w).masked_fill(~batch['m'], float('-inf'))
     loss = 0.0
     for i, (lo, hi) in enumerate(SLICES):
         v, a = c[:, lo:hi], batch['a'][:, i:i + 1]
         bonus = torch.full_like(v, MARGIN).scatter(1, a, 0.0)
-        loss = loss + ((v + bonus).max(1).values - v.gather(1, a).squeeze(1)).mean()
+        loss = loss + lam[i] * ((v + bonus).max(1).values - v.gather(1, a).squeeze(1)).mean()
     return loss / len(SLICES)
 
 
 def learn_step(net, target, opt, w, batch=None, demo=None, lam=1.0):
-    """한 걸음. batch는 자기 대전 경험(값 손실), demo는 따라 하기 경험(값 손실 + 여백 손실). 둘 중 하나는 있어야 한다."""
+    """한 걸음. batch는 자기 대전 경험(값 손실), demo는 따라 하기 경험(값 손실 + 여백 손실). 둘 중 하나는 있어야 한다.
+    lam은 여백 손실 가중치: 숫자 하나면 세 갈래 같이, 셋이면 갈래(덱, 레벨, 남길 골드)별."""
     loss = 0.0
     if batch is not None:
         loss = loss + td_loss(net, target, batch, w)
     if demo is not None:
-        loss = loss + td_loss(net, target, demo, w) + lam * margin_loss(net, demo, w)
+        lam = lam if isinstance(lam, tuple) else (lam,) * len(SLICES)
+        loss = loss + td_loss(net, target, demo, w) + margin_loss(net, demo, w, lam)
     opt.zero_grad()
     loss.backward()
     nn.utils.clip_grad_norm_(net.parameters(), 10.0)

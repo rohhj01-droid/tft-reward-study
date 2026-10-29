@@ -442,6 +442,53 @@ def cli_margin_until_reaches_train_test():
         sp.train = real
 
 
+def margin_loss_branch_weights_test():
+    """여백 손실의 갈래별 가중치(여백 떼기 시험 2차, 덱 갈래만 여백을 남기는 데 쓴다): 셋 다 0이면 0이고, 갈래 하나씩 켠
+    셋의 합이 셋 다 켠 값(기본)과 같다."""
+    import torch
+    from hra.plan_learn import Replay, margin_loss
+    from hra.plan_net import PlanNet, weights
+    torch.manual_seed(3)
+    rng = np.random.default_rng(3)
+    demos = Replay(10)
+    for s, a in zip(rng.random((5, 153)).astype(np.float32), [(4, 1, 2), (9, 0, 5), (17, 2, 0), (1, 1, 1), (26, 0, 3)]):
+        demos.add((s, np.ones(37, bool), np.array(a), np.zeros(5, np.float32), np.zeros(153, np.float32), True,
+                   np.ones(37, bool)))
+    net, w, batch = PlanNet(), weights('none', 0.1), demos.sample(5, rng)
+    full = margin_loss(net, batch, w).item()
+    assert margin_loss(net, batch, w, lam=(0.0, 0.0, 0.0)).item() == 0.0
+    parts = [margin_loss(net, batch, w, lam=tuple(float(i == j) for j in range(3))).item() for i in range(3)]
+    assert all(p > 0 for p in parts) and abs(sum(parts) - full) < 1e-5
+    assert margin_loss(net, batch, w, lam=(1.0, 1.0, 1.0)).item() == full
+
+
+def margin_weights_keep_deck_test():
+    """갈래(덱, 레벨, 남길 골드)별 여백 가중치: 기본은 셋이 margin_weight와 같고, 덱 갈래 유지면 덱은 늘 1이고 레벨·남길
+    골드만 줄어든다."""
+    from hra.selfplay import margin_weights
+    assert margin_weights(500, 1000) == (0.5, 0.5, 0.5)
+    assert margin_weights(500, 1000, keep_deck=True) == (1.0, 0.5, 0.5)
+    assert margin_weights(1500, 1000, keep_deck=True) == (1.0, 0.0, 0.0)
+    assert margin_weights(1500, None, keep_deck=True) == (1.0, 1.0, 1.0)
+
+
+def cli_margin_keep_deck_reaches_train_test():
+    """--margin-keep-deck은 기본이 꺼짐이고, 주면 그대로 train까지 간다."""
+    import sys
+    import hra.selfplay as sp
+    got, real = {}, sp.train
+    sp.train = lambda *a, **k: got.update(k) or {'games': 0, 'best': None}
+    try:
+        sys.argv = ['selfplay', '--config', 'none', '--games', '0', '--jobs', '1', '--margin-until', '1000']
+        sp.main()
+        assert got['margin_keep_deck'] is False
+        sys.argv += ['--margin-keep-deck']
+        sp.main()
+        assert got['margin_keep_deck'] is True
+    finally:
+        sp.train = real
+
+
 if __name__ == '__main__':
     import sys
     for name in sys.argv[1:] or [n for n in list(globals()) if n.endswith('_test')]:

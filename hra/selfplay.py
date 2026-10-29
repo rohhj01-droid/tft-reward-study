@@ -46,6 +46,13 @@ def margin_weight(done, until):
     return max(0.0, 1.0 - done / until)
 
 
+def margin_weights(done, until, keep_deck=False):
+    """갈래(덱, 레벨, 남길 골드)별 여백 손실 가중치. keep_deck이면 덱 갈래는 늘 1이고 레벨·남길 골드만 margin_weight대로 줄인다
+    (여백 떼기 시험 2차: 세 갈래를 다 떼자 덱 갈래가 500판 안에 무너졌다. results/README 「여백 떼기 시험」)."""
+    m = margin_weight(done, until)
+    return (1.0 if keep_deck else m, m, m)
+
+
 def is_better(new, best):
     """중간 점검 등수 차가 지금까지의 최고보다 나은가. 처음이면 그렇다. 값이 없으면(nan) 아니다."""
     return new == new and (best is None or new > best)
@@ -77,7 +84,7 @@ def selfplay_game(job):
 
 
 def train(config, aux_w, seed, games, jobs, save_every=500, eval_games=100, warm=None, demos=None, root='.', tag=None,
-          margin_until=None):
+          margin_until=None, margin_keep_deck=False):
     """자기 대전 학습. games는 이 이름으로 끝낼 총 판 수다(이어 하기면 남은 만큼만 돈다)."""
     name = tag or f'plan_{config}_s{seed}'
     ck_dir, res_dir = os.path.join(root, 'checkpoints'), os.path.join(root, 'results')
@@ -143,7 +150,7 @@ def train(config, aux_w, seed, games, jobs, save_every=500, eval_games=100, warm
                 for t in transitions:
                     replay.add(t)
                 if len(replay) >= BATCH:
-                    lam = margin_weight(done + finished, margin_until)
+                    lam = margin_weights(done + finished, margin_until, margin_keep_deck)
                     for _ in range(UPDATES_PER_GAME):
                         demo = demo_replay.sample(DEMO_BATCH, rng) if demo_replay is not None else None
                         losses.append(learn_step(net, target, opt, w, batch=replay.sample(BATCH, rng), demo=demo, lam=lam))
@@ -171,7 +178,8 @@ def train(config, aux_w, seed, games, jobs, save_every=500, eval_games=100, warm
                         'games': done, 'best': best, 'updates': updates}, tmp)
             os.replace(tmp, ck_path)
             with open(log_path, 'w', encoding='utf-8') as f:
-                json.dump({'config': config, 'aux_w': aux_w, 'seed': seed, 'margin_until': margin_until, 'curve': curve}, f,
+                json.dump({'config': config, 'aux_w': aux_w, 'seed': seed, 'margin_until': margin_until,
+                           'margin_keep_deck': margin_keep_deck, 'curve': curve}, f,
                           ensure_ascii=False, indent=1)
             print(f'{done}판: 점검 등수 차 {check["diff"]:+.2f}±{check["se"]:.2f}, 뒤집는 비율 {flips:.2f}, '
                   f'갈아타기 {curve[-1]["switches"]}, 멈춘 판 {errors}, 여백 가중치 {curve[-1]["margin"]:.2f}', flush=True)
@@ -193,6 +201,8 @@ def parser():
     ap.add_argument('--tag', default=None)
     ap.add_argument('--margin-until', type=int, default=None,
                     help='여백 손실 가중치를 이 판 수까지 1→0으로 줄여 끈다(여백 떼기 시험). 없으면 끝까지 1(설계 5절)')
+    ap.add_argument('--margin-keep-deck', action='store_true',
+                    help='덱 갈래는 여백 손실을 끝까지 1로 두고 레벨·남길 골드 갈래만 --margin-until대로 줄인다(여백 떼기 시험 2차)')
     return ap
 
 
@@ -226,7 +236,7 @@ def main():
     for line in warnings:
         print('경고:', line, flush=True)
     result = train(args.config, args.aux_w, args.seed, args.games, args.jobs, args.save_every, args.eval_games,
-                   warm, demos, tag=args.tag, margin_until=args.margin_until)
+                   warm, demos, tag=args.tag, margin_until=args.margin_until, margin_keep_deck=args.margin_keep_deck)
     print(result)
 
 
