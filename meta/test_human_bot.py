@@ -754,6 +754,97 @@ def buys_pairs_and_widely_used_units_before_choosing_test():
     assert SPREAD['shen'] >= 6 and policy.buy(p, [rare, 'shen', rare, rare, rare], OPEN) == '3_1'
 
 
+def late_deck_is_more_than_half_four_cost_test():
+    """후반 덱은 느린 리롤 덱이 아니면서 4코스트 이상 유닛이 절반을 넘는 덱이다(황혼 둘·신성·신비술사 둘, 설계 10절). 딱 절반인
+    Chosen Keepers는 아니다."""
+    from meta.human_bot import KNOBS, late_deck
+    from meta.lobby import BOARDS
+    by = {b['name']: b for b in BOARDS}
+    assert late_deck(by['Chosen Dusks'], KNOBS) and late_deck(by['Chosen Divines'], KNOBS)
+    assert not late_deck(by['Chosen Warlords'], KNOBS) and not late_deck(by['Chosen Keepers'], KNOBS)
+    assert not late_deck(None, KNOBS)
+    assert sum(late_deck(b, KNOBS) for b in BOARDS) == 5
+
+
+def late_deck_keeps_stronger_filler_before_4_1_test():
+    """후반 덱은 4-1 전에는 덱 유닛을 고집하지 않고 가진 것 중 값(비용 × 3^(별-1))이 큰 유닛으로 보드를 채운다(설계 10절):
+    벤치의 1성 리븐(값 4)은 보드의 2성 파이크(값 6)를 밀어내지 못하고, 1성 파이크(값 2)는 밀어낸다. 4-1부터는 덱 봇 규칙대로
+    덱 유닛을 올린다."""
+    from Simulator.utils import x_y_to_1d_coord
+    from meta.human_bot import HumanPolicy
+    from meta.lobby import BOARDS
+    dusks = next(b for b in BOARDS if b['name'] == 'Chosen Dusks')
+    p = deck_player(['pyke'], bench_units=['riven'])
+    p.board[0][0].stars = 2
+    policy = HumanPolicy(p.default_agent, dusks, [], random.Random(0))
+    policy.last_round = 10
+    assert policy.swap(p) is None
+    policy.last_round = 15
+    assert policy.swap(p) == f'5_{x_y_to_1d_coord(0, 0)}_28'
+    p.board[0][0].stars = 1
+    policy.last_round = 10
+    assert policy.swap(p) == f'5_{x_y_to_1d_coord(0, 0)}_28'
+
+
+def late_deck_buys_copies_of_bench_units_before_4_1_test():
+    """4-1 전 후반 덱은 벤치 유닛의 사본도 산다(보드 유닛의 사본은 모든 덱이 4-1 전까지 산다). 4-1부터는 안 산다."""
+    from meta.human_bot import HumanPolicy
+    from meta.lobby import BOARDS
+    dusks = next(b for b in BOARDS if b['name'] == 'Chosen Dusks')
+    p = deck_player(['vayne'], bench_units=['garen'])
+    policy = HumanPolicy(p.default_agent, dusks, [], random.Random(0))
+    policy.last_round = 10
+    assert policy.buy(p, ['jax', 'garen', 'jax', 'jax', 'jax'], OPEN) == '3_1'
+    policy.last_round = 15
+    assert policy.buy(p, ['jax', 'garen', 'jax', 'jax', 'jax'], OPEN) is None
+
+
+def late_deck_does_not_switch_deck_before_4_1_test():
+    """후반 덱은 4-1 전에는 갈아타지 않는다(그동안 보드가 덱을 안 따르니 점수가 덱을 말해 주지 않는다). 4-1부터는 문턱 규칙대로
+    갈아탄다. 총사령관 유닛 여섯을 든 황혼 봇은 3-2엔 그대로, 4-1엔 총사령관으로."""
+    from meta.human_bot import HumanPolicy
+    from meta.lobby import BOARDS
+    dusks = next(b for b in BOARDS if b['name'] == 'Chosen Dusks')
+    p = deck_player(['garen', 'nidalee', 'jarvaniv', 'pyke', 'vi', 'katarina'])
+    policy = HumanPolicy(p.default_agent, dusks, [], random.Random(0))
+    policy.choose_decks = True
+    policy.last_round = 10
+    policy.pick_deck(p, 10)
+    assert policy.board['name'] == 'Chosen Dusks' and policy.switches == 0
+    policy.last_round = 15
+    policy.pick_deck(p, 15)
+    assert policy.board['name'] == 'Chosen Warlords' and policy.switches == 1
+
+
+def late_deck_sells_single_before_pair_before_4_1_test():
+    """4-1 전 후반 덱은 벤치가 차면 덱 밖 유닛 중 사본이 없는 것부터, 그다음 값이 작은 것부터 판다(짝을 깨지 않는다). 4-1부터는
+    덱 봇 규칙대로 벤치 앞의 덱 밖 유닛을 판다."""
+    from meta.human_bot import HumanPolicy
+    from meta.lobby import BOARDS
+    dusks = next(b for b in BOARDS if b['name'] == 'Chosen Dusks')
+    p = deck_player(['vayne'], bench_units=['garen', 'garen', 'jax', 'nidalee', 'nidalee', 'pyke', 'pyke', 'vi', 'vi'])
+    policy = HumanPolicy(p.default_agent, dusks, [], random.Random(0))
+    policy.last_round = 10
+    assert p.bench_full() and policy.sell(p) == f'4_{28 + 2}'
+    policy.last_round = 15
+    assert policy.sell(p) == '4_28'
+
+
+def late_deck_delays_carry_item_transfer_before_4_1_test():
+    """4-1 전 후반 덱은 캐리 아이템 옮기기(아이템을 맡아 둔 덱 밖 유닛 팔기)를 미룬다. 2성 가렌이 진의 추천 아이템을 들고 있고
+    1성 진이 보드에 있을 때, 3-2에는 가렌을 팔지 않고 4-1에는 판다."""
+    from Simulator.utils import x_y_to_1d_coord
+    from meta.human_bot import HumanPolicy
+    from meta.lobby import BOARDS
+    dusks = next(b for b in BOARDS if b['name'] == 'Chosen Dusks')
+    p = deck_player(['jhin', 'garen'])
+    p.board[1][0].stars, p.board[1][0].items = 2, [dusks['items']['jhin'][0]]
+    policy = HumanPolicy(p.default_agent, dusks, [], random.Random(0))
+    sell = f'4_{x_y_to_1d_coord(1, 0)}'
+    assert policy(p, ['jax'] * 5, 10, OPEN) != sell
+    assert policy(p, ['jax'] * 5, 15, OPEN) == sell
+
+
 if __name__ == '__main__':
     for name, test in list(globals().items()):
         if name.endswith('_test'):
