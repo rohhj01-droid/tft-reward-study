@@ -1,0 +1,147 @@
+{
+ "kind": "agree",
+ "net": "plan_margin_deck_s1_g2000.pt",
+ "games": 50,
+ "deck": 0.9359637092520308,
+ "level": 0.8776242219643422,
+ "floor": 0.49572739740478955,
+ "all": 0.44202974997362593,
+ "decisions": 9479,
+ "deck_disagreements": [
+  [
+   "Chosen Cultists",
+   "Chosen Dusks",
+   37
+  ],
+  [
+   "Ninja Shades",
+   "Chosen Dusks",
+   31
+  ],
+  [
+   "keep",
+   "Chosen Warlords",
+   31
+  ],
+  [
+   "keep",
+   "Chosen Cultists",
+   30
+  ],
+  [
+   "Dusk Cultists",
+   "Chosen Dusks",
+   26
+  ],
+  [
+   "Chosen Warlords",
+   "Chosen Dusks",
+   22
+  ],
+  [
+   "Chosen Divines",
+   "Chosen Dusks",
+   22
+  ],
+  [
+   "Chosen Divines",
+   "keep",
+   19
+  ],
+  [
+   "Chosen Cultists",
+   "keep",
+   19
+  ],
+  [
+   "Ninja Shades",
+   "keep",
+   17
+  ]
+ ],
+ "level_disagreements": [
+  [
+   "+1",
+   "+0",
+   700
+  ],
+  [
+   "+0",
+   "+1",
+   298
+  ],
+  [
+   "+0",
+   "+2",
+   94
+  ],
+  [
+   "+1",
+   "+2",
+   35
+  ],
+  [
+   "+2",
+   "+0",
+   19
+  ],
+  [
+   "+2",
+   "+1",
+   14
+  ]
+ ],
+ "floor_disagreements": [
+  [
+   "50",
+   "안 함",
+   1212
+  ],
+  [
+   "50",
+   "30",
+   539
+  ],
+  [
+   "50",
+   "20",
+   527
+  ],
+  [
+   "0",
+   "안 함",
+   401
+  ],
+  [
+   "10",
+   "안 함",
+   388
+  ],
+  [
+   "10",
+   "20",
+   202
+  ],
+  [
+   "10",
+   "50",
+   201
+  ],
+  [
+   "0",
+   "20",
+   177
+  ],
+  [
+   "0",
+   "50",
+   169
+  ],
+  [
+   "50",
+   "10",
+   139
+  ]
+ ],
+ "errors": []
+}
