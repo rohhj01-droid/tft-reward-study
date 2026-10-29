@@ -4,6 +4,8 @@
 
 실행(저장소 맨 위에서, PYTHONPATH에 june·stubs·. 를 넣고):
     python meta/inversion/diag_flex.py 200 4 <결과.json>     요약만: python meta/inversion/diag_flex.py summary <결과.json>
+    DIAG_VARIANT=noswitch 를 주면 후반 덱 규칙 중 「4-1 전 갈아타기 금지」만 켠 떼어 재기 조건으로, DIAG_VARIANT=until18 처럼 주면
+    후반 덱 규칙을 그 칸(18 = 4-5) 전까지 두는 조건으로 돈다.
 """
 import json
 import os
@@ -50,6 +52,26 @@ def call(self, player, shop, game_round, mask):
 
 
 hb.HumanPolicy.__call__ = call
+
+VARIANT = os.environ.get('DIAG_VARIANT', 'base')
+if VARIANT == 'noswitch':
+    # 떼어 재기: 후반 덱 규칙(설계 10절) 중 「4-1 전 갈아타기 금지」만 두고, 보드·사기·팔기·옮기기 규칙은 끈다(덱 고르기 안에서만
+    # flex가 참). 갈아타기 금지로 달라진 덱 인구와 보드 규칙의 효과를 가르는 데 쓴다
+    _flex, _pick = hb.HumanPolicy.flex, hb.HumanPolicy.pick_deck
+
+    def flex(self):
+        return getattr(self, '_picking', False) and _flex(self)
+
+    def pick_deck(self, player, game_round):
+        self._picking = True
+        try:
+            return _pick(self, player, game_round)
+        finally:
+            self._picking = False
+
+    hb.HumanPolicy.flex, hb.HumanPolicy.pick_deck = flex, pick_deck
+elif VARIANT.startswith('until'):
+    hb.KNOBS['flex_until'] = int(VARIANT[5:])  # 떼어 재기: 후반 덱 규칙을 이 칸 전까지 둔다(예: until18 = 4-5 전까지)
 
 
 def run(game):
@@ -152,6 +174,7 @@ if __name__ == '__main__':
         summary(json.load(open(sys.argv[2], encoding='utf-8')))
         sys.exit()
     n, jobs, out = int(sys.argv[1]), int(sys.argv[2]), sys.argv[3]
+    print('변형:', VARIANT)
     rng = random.Random(0)
     games = [(g, rng.sample(range(len(BOARDS)), lobby.N_PLAYERS)) for g in range(n)]
     with Pool(jobs) as pool:
