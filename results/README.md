@@ -3178,7 +3178,7 @@ python -m hra.evaluate agree --net checkpoints/plan_margin_deck_s1_g500.pt --gam
 python -m hra.evaluate ab --net checkpoints/plan_margin_deck_s1_best.pt --games 400 --out results/plan_eval_ab_margin_deck_s1.json             # 최고 저장본 = 500판 신경망
 python -m hra.evaluate ab --net checkpoints/plan_margin_deck_s1_latest.pt --games 400 --out results/plan_eval_ab_margin_deck_s1_latest.json
 python -m hra.evaluate meta --net checkpoints/plan_margin_deck_s1_best.pt --games 400 --out results/plan_eval_meta_margin_deck_s1.json
-python -m hra.evaluate meta --games 400 --out results/plan_eval_meta_rule_920e0be.json   # 규칙 사람 봇 8명(비교 기준, 지금 실행기로 다시 잼)
+python -m hra.evaluate meta --games 400 --out results/plan_eval_meta_rule_920e0be.json   # 규칙 사람 봇 8명(비교 기준, `920e0be` 실행기로 다시 잼)
 ```
 
 -> 학습 곡선 [plan_margin_deck_s1.json](plan_margin_deck_s1.json)(500판마다 한 줄, 점검 200판), 일치율
@@ -3218,7 +3218,7 @@ hra/test_plan_game.py의 `selfplay_runs_saves_and_resumes_test`(갈래별 가중
 | 3000 | 0 | −0.79 ± 0.12 | 0.69 | 0.325 |
 
 위 절(세 갈래 모두 떼기)의 같은 자리는 +0.49 → +0.10 → −1.58 → −1.11 → −0.47 → −0.73, 바꾼 횟수 0.95 → 0.84 → 9.37 → 8.76 → 7.13 → 5.72였다.
-지금 실행기의 규칙 사람 봇은 한 판에 0.56번 바꾼다(규칙 메타 400판). 손실(TD + 여백)은 여백을 떼어도 거의 그대로다.
+`920e0be` 실행기의 규칙 사람 봇은 한 판에 0.56번 바꾼다(규칙 메타 400판). 손실(TD + 여백)은 여백을 떼어도 거의 그대로다.
 
 ### 일치율 (규칙 기록 판 50개, 판단 9,479개)
 
@@ -3253,7 +3253,7 @@ hra/test_plan_game.py의 `selfplay_runs_saves_and_resumes_test`(갈래별 가중
 | 500판 (최고 저장본) | +0.40 ± 0.09 | 넘음 |
 | 3000판 (마지막 신경망) | −0.99 ± 0.08 | 못 넘음 |
 
-| 계열 | 규칙 사람 봇 몫, 평균 등수 (지금 실행기) | 500판 신경망 몫, 평균 등수 |
+| 계열 | 규칙 사람 봇 몫, 평균 등수 (`920e0be` 실행기) | 500판 신경망 몫, 평균 등수 |
 |---|---|---|
 | 총사령관 | 14%, 3.18 | 29%, 4.08 |
 | 사교도 | 18%, 4.07 | 5%, 4.36 |
@@ -3312,7 +3312,7 @@ hra/test_plan_game.py의 `selfplay_runs_saves_and_resumes_test`(갈래별 가중
 7. **환경 주의.** 이 절의 모든 수치는 실행기 `920e0be`(후반 덱의 초반 운영까지)와 june `65a6fc9`(새 전리품 표)로 쟀고, 위 절과 여섯
    실행(옛 실행기·옛 표)의 숫자와 나란히 놓을 수 없다. 특히 A/B의 상대인 규칙 봇의 덱 몫이 바뀌었고(후반 덱 자리 29 → 47%, 바로 위
    절) 규칙 봇이 한 판에 덱을 바꾼 횟수도 0.83 → 0.56이다. 데우기 신경망과 따라 하기 자료는 10월 13일의 옛 실행기·옛 표 것이라 여백
-   손실은 옛 규칙의 선택에 붙들고, 일치율은 지금 실행기의 규칙 기록 판 50개로 잰다. 그래도 500판 신경망의 덱 일치율 0.936은 여섯 실행
+   손실은 옛 규칙의 선택에 붙들고, 일치율은 `920e0be` 실행기의 규칙 기록 판 50개로 잰다. 그래도 500판 신경망의 덱 일치율 0.936은 여섯 실행
    (0.93~0.94)과 같은 수준이어서 실행기 변경이 덱 판단에 미친 차이는 작다. 자기 대전의 500판 점검은 학습 일꾼 풀을 그대로 쓰므로 모두
-   지금 실행기다. 이번은 다시 띄우지 않았고(경험 더미 그대로) 내내 일꾼 2였다(500판에 66~79분, 마지막 500판은 147분 — 다른 작업과
+   `920e0be` 실행기다. 이번은 다시 띄우지 않았고(경험 더미 그대로) 내내 일꾼 2였다(500판에 66~79분, 마지막 500판은 147분 — 다른 작업과
    겹침). 일치율 6개는 b2225ea 코드로 다시 재어 처음 값과 똑같았다(같은 시드).
