@@ -845,6 +845,54 @@ def late_deck_delays_carry_item_transfer_before_4_1_test():
     assert policy(p, ['jax'] * 5, 15, OPEN) == sell
 
 
+def flex_board_prefers_synergy_over_raw_value_test():
+    """4-1 전 후반 덱의 보드 점수는 유닛 값의 합 + 켜진 특성에 든 인원 × syn_point(2)다(설계 10절 시너지, 2026-10-29). 엘리스·파이크·
+    2성 가렌 보드에 벤치 칼리스타가 오면, 값만 보면 엘리스(1)를 내리지만 사교도 3을 켜려면 가렌(3)을 내려야 한다(점수 6 → 12)."""
+    from Simulator.utils import x_y_to_1d_coord
+    from meta.human_bot import HumanPolicy
+    from meta.lobby import BOARDS
+    dusks = next(b for b in BOARDS if b['name'] == 'Chosen Dusks')
+    p = deck_player(['elise', 'pyke', 'garen'], bench_units=['kalista'])
+    p.board[2][0].stars = 2
+    policy = HumanPolicy(p.default_agent, dusks, [], random.Random(0))
+    policy.last_round = 10
+    assert policy.swap(p) == f'5_{x_y_to_1d_coord(2, 0)}_28'
+    p = deck_player(['elise', 'pyke', 'garen'], bench_units=['nidalee'])  # 특성을 못 켜는 1코스트는 아무도 못 밀어낸다
+    p.board[2][0].stars = 2
+    policy.last_round = 10
+    assert policy.swap(p) is None
+
+
+def flex_buys_unit_that_turns_on_a_trait_test():
+    """4-1 전 후반 덱은 상점의 3코스트 이하 유닛 중 보드의 특성을 켜거나 늘리는 것(시너지 이득이 있는 것)을 산다. 엘리스·파이크 보드에
+    칼리스타(사교도 3)는 사고, 가렌(아무 특성도 안 켬)은 안 산다. 4-1부터는 안 산다."""
+    from meta.human_bot import HumanPolicy
+    from meta.lobby import BOARDS
+    dusks = next(b for b in BOARDS if b['name'] == 'Chosen Dusks')
+    p = deck_player(['elise', 'pyke'])
+    p.max_units = 3
+    policy = HumanPolicy(p.default_agent, dusks, [], random.Random(0))
+    policy.last_round = 10
+    assert policy.buy(p, ['garen', 'kalista', 'garen', 'garen', 'garen'], OPEN) == '3_1'
+    assert policy.buy(p, ['garen'] * 5, OPEN) is None
+    policy.last_round = 15
+    assert policy.buy(p, ['garen', 'kalista', 'garen', 'garen', 'garen'], OPEN) is None
+
+
+def flex_puts_bench_unit_on_board_before_selling_test():
+    """4-1 전 후반 덱은 벤치가 꽉 차도 보드를 좋게 하는 교체를 팔기보다 먼저 한다(방금 산 시너지 조각을 팔아 버리지 않게). 벤치에
+    칼리스타와 사본 없는 1코스트 여덟이 있으면, 파는 대신 칼리스타를 가렌 자리에 올린다."""
+    from Simulator.utils import x_y_to_1d_coord
+    from meta.human_bot import HumanPolicy
+    from meta.lobby import BOARDS
+    dusks = next(b for b in BOARDS if b['name'] == 'Chosen Dusks')
+    p = deck_player(['elise', 'pyke', 'garen'], bench_units=['kalista', 'nidalee', 'maokai', 'twistedfate', 'diana', 'lissandra',
+                                                            'fiora', 'yasuo', 'wukong'])
+    p.board[2][0].stars = 2
+    policy = HumanPolicy(p.default_agent, dusks, [], random.Random(0))
+    assert p.bench_full() and policy(p, ['jax'] * 5, 10, OPEN) == f'5_{x_y_to_1d_coord(2, 0)}_28'
+
+
 if __name__ == '__main__':
     for name, test in list(globals().items()):
         if name.endswith('_test'):

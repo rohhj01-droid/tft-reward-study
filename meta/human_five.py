@@ -79,6 +79,16 @@ def active_traits(player):
     return {t for t, n in counts.items() if t in tiers and n >= tiers[t][0]}
 
 
+def active_of(counts):
+    """특성 수 표에서 켜진 특성(첫 단계 이상)에 든 인원의 합."""
+    return sum(n for t, n in counts.items() if t in tiers and n >= tiers[t][0])
+
+
+def active_count(units):
+    """켜진 특성(첫 단계 이상)에 든 인원의 합. 사람 봇의 4-1 전 보드 점수에 쓴다(설계 10절 시너지, 2026-10-29)."""
+    return active_of(trait_table(units))
+
+
 def pick_five(player, shop, mask, k):
     """살 5코스트의 상점 칸 번호. 레벨이 five_level(8) 아래거나 골드가 5 미만이면 None. 켜진 특성에 보태는 수가 많은 쪽을
     고르고 같으면 앞 칸이다. 같은 이름은 1성으로 쳐서 five_cap(3)장까지만 산다. 선택받은 자 칸('_c')은 덱 규칙에 맡긴다."""
