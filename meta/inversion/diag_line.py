@@ -4,11 +4,13 @@
 
 DIAG_VARIANT=stab7 : 4-1~4-3(15~17번째 칸)에 레벨 7을 넘지 않고 10골드까지 리롤한다(7에서 안정). 4-5부터는 규칙대로.
 DIAG_VARIANT=fast8 : 4-1~4-3에 리롤하지 않고(50 지킴) 레벨 7까지만, 4-5(18)에 레벨 8로 올리고 10골드까지 리롤한다(빠른 8). 4-6부터는 규칙대로.
-자리 뽑기는 hra.evaluate ab와 같다(시드마다 4자리). 판 목록은 diag_flex와 같은 시드 0의 앞 N판.
+DIAG_VARIANT=stay7 : 4-1~4-3에 레벨 7로 10골드까지 리롤하고, 4-5~4-7에도 레벨 7에 머물며 50을 지킨다(7에서 버티기). 5-1부터는 규칙대로.
+자리 뽑기는 hra.evaluate ab와 같다(시드마다 4자리). 판 목록은 diag_flex와 같은 시드 0의 앞 N판(네 번째 인자 k를 주면 k번째부터 N판).
 
 실행(저장소 맨 위에서, PYTHONPATH에 june·stubs·. 를 넣고):
     DIAG_VARIANT=stab7 python meta/inversion/diag_line.py 200 2 meta/inversion/diag_line_rows_stab7.json
-    요약만: python meta/inversion/diag_line.py summary <json> [<json> ...]
+    DIAG_VARIANT=fast8 python meta/inversion/diag_line.py 400 2 meta/inversion/diag_line_rows_fast8_more.json 200   # 200번째 판부터 400판
+    요약만(같은 변형의 파일을 여럿 주면 합쳐 센다): python meta/inversion/diag_line.py summary <json> [<json> ...]
 """
 import json
 import os
@@ -52,6 +54,11 @@ def macro_plan(self, player, game_round):
             return min(target, 7), None, False
         if game_round == 18:
             return max(target, 8), 10, False
+    if VARIANT == 'stay7':
+        if 15 <= game_round <= 17:
+            return min(target, 7), 10, False
+        if 18 <= game_round <= 20:
+            return min(target, 7), None, False
     return target, floor, exp_first
 
 
@@ -98,9 +105,11 @@ def at(curve, slot):
 
 
 def summary(files):
-    for f in files:
+    merged = {}
+    for f in files:  # 같은 변형의 파일은 합친다(판 번호가 다른 조각들)
         d = json.load(open(f, encoding='utf-8'))
-        rows, var = d['rows'], d['variant']
+        merged.setdefault(d['variant'], []).extend(d['rows'])
+    for var, rows in merged.items():
         by = defaultdict(lambda: {'f': [], 'r': []})
         for r in rows:
             by[r['game']]['f' if r['forced'] else 'r'].append(r)
@@ -145,9 +154,10 @@ if __name__ == '__main__':
         summary(sys.argv[2:])
         sys.exit()
     n, jobs, out = int(sys.argv[1]), int(sys.argv[2]), sys.argv[3]
-    print('변형:', VARIANT)
+    skip = int(sys.argv[4]) if len(sys.argv) > 4 else 0
+    print('변형:', VARIANT, '판:', skip, '~', skip + n - 1)
     rng = random.Random(0)
-    games = [(g, rng.sample(range(len(BOARDS)), lobby.N_PLAYERS)) for g in range(n)]
+    games = [(g, rng.sample(range(len(BOARDS)), lobby.N_PLAYERS)) for g in range(skip + n)][skip:]
     with Pool(jobs) as pool:
         rows = [r for o in pool.map(run, games, chunksize=1) for r in o]
     json.dump({'variant': VARIANT, 'rows': rows}, open(out, 'w', encoding='utf-8'), ensure_ascii=False)
