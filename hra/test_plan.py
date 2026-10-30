@@ -503,6 +503,30 @@ def agree_summary_counts_branch_disagreements_test():
     assert s['errors'] == []
 
 
+def econ_weight_knob_test():
+    """이자 가중치는 기본 0.3이고, econ_w를 주면 그 값이다(이자 가설 대조: 이자 갈래를 끄고 다시 학습한다)."""
+    from hra.plan_net import weights
+    assert weights('none', 0.3)['econ'] == 0.3
+    assert weights('none', 0.3, econ_w=0.0) == {'place': 1.0, 'hp': 1.0, 'econ': 0.0, 'synergy': 0.0, 'units': 0.0}
+
+
+def cli_econ_w_reaches_train_test():
+    """--econ-w는 기본 0.3이고, 주면 그대로 train까지 간다."""
+    import sys
+    import hra.selfplay as sp
+    got, real = {}, sp.train
+    sp.train = lambda *a, **k: got.update(k) or {'games': 0, 'best': None}
+    try:
+        sys.argv = ['selfplay', '--config', 'none', '--games', '0', '--jobs', '1']
+        sp.main()
+        assert got['econ_w'] == 0.3
+        sys.argv += ['--econ-w', '0']
+        sp.main()
+        assert got['econ_w'] == 0.0
+    finally:
+        sp.train = real
+
+
 if __name__ == '__main__':
     import sys
     for name in sys.argv[1:] or [n for n in list(globals()) if n.endswith('_test')]:

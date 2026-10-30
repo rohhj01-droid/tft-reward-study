@@ -84,7 +84,7 @@ def selfplay_game(job):
 
 
 def train(config, aux_w, seed, games, jobs, save_every=500, eval_games=100, warm=None, demos=None, root='.', tag=None,
-          margin_until=None, margin_keep_deck=False):
+          margin_until=None, margin_keep_deck=False, econ_w=0.3):
     """자기 대전 학습. games는 이 이름으로 끝낼 총 판 수다(이어 하기면 남은 만큼만 돈다)."""
     name = tag or f'plan_{config}_s{seed}'
     ck_dir, res_dir = os.path.join(root, 'checkpoints'), os.path.join(root, 'results')
@@ -92,7 +92,7 @@ def train(config, aux_w, seed, games, jobs, save_every=500, eval_games=100, warm
     os.makedirs(res_dir, exist_ok=True)
     ck_path, log_path = os.path.join(ck_dir, f'{name}.pt'), os.path.join(res_dir, f'{name}.json')
     latest, best_path = os.path.join(ck_dir, f'{name}_latest.pt'), os.path.join(ck_dir, f'{name}_best.pt')
-    w = weights(config, aux_w)
+    w = weights(config, aux_w, econ_w)
     torch.manual_seed(seed)
     torch.set_num_threads(1)  # 일꾼이 CPU를 다 쓸 때 스레드 둘은 서로 기다리느라 학습 한 걸음이 14배 느려졌다
     rng = np.random.default_rng(seed)
@@ -179,7 +179,7 @@ def train(config, aux_w, seed, games, jobs, save_every=500, eval_games=100, warm
             os.replace(tmp, ck_path)
             with open(log_path, 'w', encoding='utf-8') as f:
                 json.dump({'config': config, 'aux_w': aux_w, 'seed': seed, 'margin_until': margin_until,
-                           'margin_keep_deck': margin_keep_deck, 'curve': curve}, f,
+                           'margin_keep_deck': margin_keep_deck, 'econ_w': econ_w, 'curve': curve}, f,
                           ensure_ascii=False, indent=1)
             print(f'{done}판: 점검 등수 차 {check["diff"]:+.2f}±{check["se"]:.2f}, 뒤집는 비율 {flips:.2f}, '
                   f'갈아타기 {curve[-1]["switches"]}, 멈춘 판 {errors}, 여백 가중치 {curve[-1]["margin"]:.2f}', flush=True)
@@ -203,6 +203,7 @@ def parser():
                     help='여백 손실 가중치를 이 판 수까지 1→0으로 줄여 끈다(여백 떼기 시험). 없으면 끝까지 1(설계 5절)')
     ap.add_argument('--margin-keep-deck', action='store_true',
                     help='덱 갈래는 여백 손실을 끝까지 1로 두고 레벨·남길 골드 갈래만 --margin-until대로 줄인다(여백 떼기 시험 2차)')
+    ap.add_argument('--econ-w', type=float, default=0.3, help='이자 갈래 가중치(설계 4절 0.3). 0이면 이자 갈래를 끈다(이자 가설 대조)')
     return ap
 
 
@@ -236,7 +237,8 @@ def main():
     for line in warnings:
         print('경고:', line, flush=True)
     result = train(args.config, args.aux_w, args.seed, args.games, args.jobs, args.save_every, args.eval_games,
-                   warm, demos, tag=args.tag, margin_until=args.margin_until, margin_keep_deck=args.margin_keep_deck)
+                   warm, demos, tag=args.tag, margin_until=args.margin_until, margin_keep_deck=args.margin_keep_deck,
+                   econ_w=args.econ_w)
     print(result)
 
 

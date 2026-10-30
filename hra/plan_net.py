@@ -16,10 +16,11 @@ from hra.plan_state import HEADS, MASK_SIZE, SLICES, STATE_SIZE
 CONFIGS = ('none', 'synergy', 'units', 'both')
 
 
-def weights(config, aux_w):
-    """설정 이름 -> 보상 가중치(설계 4절). 등수 1, 체력 1, 이자 0.3, 시너지·유닛 수는 켜면 aux_w."""
+def weights(config, aux_w, econ_w=0.3):
+    """설정 이름 -> 보상 가중치(설계 4절). 등수 1, 체력 1, 이자 0.3(econ_w. 이자 가설 대조에서는 0으로 끈다), 시너지·유닛 수는
+    켜면 aux_w."""
     assert config in CONFIGS, config
-    return {'place': 1.0, 'hp': 1.0, 'econ': 0.3,
+    return {'place': 1.0, 'hp': 1.0, 'econ': econ_w,
             'synergy': aux_w if config in ('synergy', 'both') else 0.0,
             'units': aux_w if config in ('units', 'both') else 0.0}
 
