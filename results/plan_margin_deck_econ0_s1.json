@@ -1,0 +1,88 @@
+{
+ "config": "none",
+ "aux_w": 0.3,
+ "seed": 1,
+ "margin_until": 1000,
+ "margin_keep_deck": true,
+ "econ_w": 0.0,
+ "curve": [
+  {
+   "games": 500,
+   "diff": 0.2175,
+   "se": 0.12260660933761415,
+   "check_errors": 0,
+   "flip": 0.0,
+   "switches": 0.97675,
+   "loss": 0.34233758150262084,
+   "errors": 0,
+   "minutes": 143.0572535912196,
+   "resumed": false,
+   "margin": 0.5
+  },
+  {
+   "games": 1000,
+   "diff": -1.1575,
+   "se": 0.1284120986723102,
+   "check_errors": 0,
+   "flip": 0.0,
+   "switches": 0.94975,
+   "loss": 0.3380089271739125,
+   "errors": 0,
+   "minutes": 153.20407630999884,
+   "resumed": false,
+   "margin": 0.0
+  },
+  {
+   "games": 1500,
+   "diff": -1.86,
+   "se": 0.10551143689943243,
+   "check_errors": 0,
+   "flip": 0.0,
+   "switches": 0.73575,
+   "loss": 0.35202109545469285,
+   "errors": 0,
+   "minutes": 118.39406047264735,
+   "resumed": false,
+   "margin": 0.0
+  },
+  {
+   "games": 2000,
+   "diff": -1.565,
+   "se": 0.11097500737241035,
+   "check_errors": 0,
+   "flip": 0.0,
+   "switches": 0.71375,
+   "loss": 0.33144010645896194,
+   "errors": 0,
+   "minutes": 211.09501722256343,
+   "resumed": false,
+   "margin": 0.0
+  },
+  {
+   "games": 2500,
+   "diff": -1.5625,
+   "se": 0.11512160382978387,
+   "check_errors": 0,
+   "flip": 0.0,
+   "switches": 0.67,
+   "loss": 0.33173852670565246,
+   "errors": 0,
+   "minutes": 116.47341344753902,
+   "resumed": false,
+   "margin": 0.0
+  },
+  {
+   "games": 3000,
+   "diff": -0.9825,
+   "se": 0.12331158699585854,
+   "check_errors": 0,
+   "flip": 0.0,
+   "switches": 0.61125,
+   "loss": 0.3337440438941121,
+   "errors": 0,
+   "minutes": 125.08832393884659,
+   "resumed": false,
+   "margin": 0.0
+  }
+ ]
+}

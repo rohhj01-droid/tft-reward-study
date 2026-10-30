@@ -1,0 +1,147 @@
+{
+ "kind": "agree",
+ "net": "plan_margin_deck_s1_g3000_econ0.pt",
+ "games": 50,
+ "deck": 0.9118083527665889,
+ "level": 0.6599533601865593,
+ "floor": 0.18973924104303583,
+ "all": 0.12539749841000636,
+ "decisions": 9434,
+ "deck_disagreements": [
+  [
+   "keep",
+   "Enlightened Adepts",
+   167
+  ],
+  [
+   "keep",
+   "Vanguard Mystics",
+   43
+  ],
+  [
+   "Chosen Cultists",
+   "Dusk Cultists",
+   32
+  ],
+  [
+   "Ninja Shades",
+   "Dusk Cultists",
+   29
+  ],
+  [
+   "Chosen Dusks",
+   "Dusk Cultists",
+   28
+  ],
+  [
+   "Ninja Shades",
+   "Chosen Dusks",
+   23
+  ],
+  [
+   "Chosen Warlords",
+   "Dusk Cultists",
+   21
+  ],
+  [
+   "Chosen Divines",
+   "keep",
+   21
+  ],
+  [
+   "Chosen Cultists",
+   "Chosen Dusks",
+   19
+  ],
+  [
+   "Chosen Warlords",
+   "Chosen Dusks",
+   18
+  ]
+ ],
+ "level_disagreements": [
+  [
+   "+0",
+   "+1",
+   903
+  ],
+  [
+   "+1",
+   "+0",
+   857
+  ],
+  [
+   "+0",
+   "+2",
+   856
+  ],
+  [
+   "+1",
+   "+2",
+   583
+  ],
+  [
+   "+2",
+   "+0",
+   6
+  ],
+  [
+   "+2",
+   "+1",
+   3
+  ]
+ ],
+ "floor_disagreements": [
+  [
+   "50",
+   "0",
+   1787
+  ],
+  [
+   "50",
+   "20",
+   1109
+  ],
+  [
+   "안 함",
+   "0",
+   1063
+  ],
+  [
+   "50",
+   "10",
+   822
+  ],
+  [
+   "50",
+   "30",
+   331
+  ],
+  [
+   "10",
+   "20",
+   303
+  ],
+  [
+   "50",
+   "안 함",
+   291
+  ],
+  [
+   "0",
+   "20",
+   264
+  ],
+  [
+   "10",
+   "0",
+   207
+  ],
+  [
+   "0",
+   "안 함",
+   196
+  ]
+ ],
+ "errors": []
+}

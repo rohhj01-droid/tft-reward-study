@@ -1,0 +1,71 @@
+{
+ "kind": "meta",
+ "net": "plan_margin_deck_econ0_s1_best.pt",
+ "games": 400,
+ "families": [
+  [
+   "warlord",
+   0.441875,
+   3.937057991513437
+  ],
+  [
+   "cultist",
+   0.28875,
+   4.640692640692641
+  ],
+  [
+   "divine",
+   0.11375,
+   3.760989010989011
+  ],
+  [
+   "other",
+   0.113125,
+   6.886740331491713
+  ],
+  [
+   "ninja",
+   0.02125,
+   4.882352941176471
+  ],
+  [
+   "dusk",
+   0.011875,
+   5.5
+  ],
+  [
+   "mystic",
+   0.006875,
+   4
+  ],
+  [
+   "sharpshooter",
+   0.001875,
+   6.833333333333333
+  ],
+  [
+   "elderwood",
+   0.0003125,
+   8
+  ],
+  [
+   "brawler",
+   0.0003125,
+   5
+  ]
+ ],
+ "rho_real": -0.8285714285714286,
+ "rho_sim": -0.6,
+ "families_compared": [
+  "warlord",
+  "cultist",
+  "divine",
+  "ninja",
+  "dusk",
+  "sharpshooter"
+ ],
+ "switches": 0.84125,
+ "winner_level9": 0.6425,
+ "winner_five_two_star": 0.24891774891774893,
+ "errors": []
+}

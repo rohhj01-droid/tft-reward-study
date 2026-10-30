@@ -1,0 +1,70 @@
+{
+ "kind": "meta",
+ "net": "plan_margin_deck_s1_best.pt",
+ "games": 400,
+ "families": [
+  [
+   "divine",
+   0.439375,
+   4.170697012802276
+  ],
+  [
+   "warlord",
+   0.26,
+   4.274038461538462
+  ],
+  [
+   "other",
+   0.2346875,
+   5.323568575233023
+  ],
+  [
+   "cultist",
+   0.0390625,
+   4.576
+  ],
+  [
+   "dusk",
+   0.0125,
+   4.95
+  ],
+  [
+   "ninja",
+   0.006875,
+   5.7727272727272725
+  ],
+  [
+   "duelist",
+   0.005,
+   2.5625
+  ],
+  [
+   "mystic",
+   0.001875,
+   5.666666666666667
+  ],
+  [
+   "hunter",
+   0.0003125,
+   5
+  ],
+  [
+   "fortune",
+   0.0003125,
+   5
+  ]
+ ],
+ "rho_real": -0.6,
+ "rho_sim": -0.1,
+ "families_compared": [
+  "warlord",
+  "cultist",
+  "divine",
+  "ninja",
+  "dusk"
+ ],
+ "switches": 0.453125,
+ "winner_level9": 0.4025,
+ "winner_five_two_star": 0.1929445644348452,
+ "errors": []
+}
