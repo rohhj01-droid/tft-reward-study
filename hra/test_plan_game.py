@@ -6,7 +6,7 @@
 import numpy as np
 
 from hra.plan_bot import play, safe_play
-from hra.plan_state import MASK_SIZE, SLICES, STATE_SIZE
+from hra.plan_state import MASK_SIZE, SLICES, STATE_SIZE, VALUE_INDEX
 from meta.lobby import BOARDS
 
 DUELISTS = next(i for i, b in enumerate(BOARDS) if b['name'] == 'Chosen Duelists') + 1
@@ -14,7 +14,8 @@ DUELISTS = next(i for i, b in enumerate(BOARDS) if b['name'] == 'Chosen Duelists
 
 def recorded_game_chains_round_experiences_test():
     """규칙 기록기 8명 한 판: 등수는 1~8이 하나씩 나가고, 자리마다 경험이 라운드마다 하나씩 이어진다(다음 상태 = 다음 경험의
-    상태). 끝 표시는 마지막 하나뿐이고 등수 보상은 마지막 경험에만 1 - 2(등수-1)/7로 붙는다. 정답은 가리지 않은 칸이다."""
+    상태). 끝 표시는 마지막 하나뿐이고 등수 보상은 마지막 경험에만 1 - 2(등수-1)/7로 붙는다. 정답은 가리지 않은 칸이다. 보드 세기
+    보상(여섯째 칸)은 판 중에는 다음 상태의 보드 값 칸과 같다(같은 때의 같은 보드)."""
     out = play(11, ['record'] * 8)
     assert not out['capped']
     assert sorted(s['place'] for s in out['seats']) == list(range(1, 9))
@@ -23,14 +24,15 @@ def recorded_game_chains_round_experiences_test():
         assert ts, seat['place']
         assert ts[0][2][0] != 0  # 2-1에 첫 덱을 고른다
         for k, (s, m, a, r, s2, d, m2) in enumerate(ts):
-            assert s.shape == (STATE_SIZE,) and m.shape == (MASK_SIZE,) and r.shape == (5,)
+            assert s.shape == (STATE_SIZE,) and m.shape == (MASK_SIZE,) and r.shape == (6,)
             assert all(m[lo + i] for (lo, _), i in zip(SLICES, a))
-            assert r[1] <= 0 and 0 <= r[2] <= 1 and r[3] >= 0 and r[4] >= 0
+            assert r[1] <= 0 and 0 <= r[2] <= 1 and r[3] >= 0 and r[4] >= 0 and r[5] >= 0
             last = k == len(ts) - 1
             assert d == last
             assert abs(r[0] - (1 - 2 * (seat['place'] - 1) / 7 if last else 0.0)) < 1e-6
             if not last:
                 assert np.array_equal(s2, ts[k + 1][0]) and np.array_equal(m2, ts[k + 1][1])
+                assert abs(r[5] - s2[VALUE_INDEX]) < 1e-6
 
 
 def plan_seat_rolls_buys_and_keeps_its_deck_test():
@@ -94,7 +96,7 @@ def one_recorded_game_stacks_into_arrays_test():
     data = stack(ts, games=[0] * len(ts))
     n = len(ts)
     assert data['s'].shape == (n, 153) and data['m'].shape == (n, 37) and data['a'].shape == (n, 3)
-    assert data['r'].shape == (n, 5) and data['d'].sum() == 8 and (data['game'] == 0).all()
+    assert data['r'].shape == (n, 6) and data['d'].sum() == 8 and (data['game'] == 0).all()
 
 
 def collect_saves_as_it_goes_and_resumes_test():

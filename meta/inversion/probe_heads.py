@@ -24,11 +24,10 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspa
 from Simulator.stats import COST
 from hra.plan_bot import pinned_pool, safe_play
 from hra.plan_net import choose, load
-from hra.plan_state import FLOORS
+from hra.plan_state import FLOORS, HEADS
 from meta.lobby import BOARDS, N_PLAYERS
 
 SEED_AB = 700000  # hra.evaluate와 같은 시드
-HEADS = ('place', 'hp', 'econ', 'synergy', 'units')
 LATE = {b['name'] for b in BOARDS if not b['slow'] and sum(COST[u] >= 4 for u in b['units']) > len(b['units']) / 2}
 _cache = {}
 
@@ -114,7 +113,7 @@ def summary(files):
     for f in files:
         d = json.load(open(f, encoding='utf-8'))
         data.append((d.get('label') or os.path.basename(f), d))
-    print('### 조건 | 가중치(등수·체력·이자·시너지·유닛) | 판 | AI 등수 ± 표준오차 | 규칙 등수 | 차(규칙−AI, 판마다 짝) | AI 4등 안 / 1등 / 8등 | 규칙 4등 안 / 1등 / 8등 | AI 등수 표준편차')
+    print('### 조건 | 가중치(등수·체력·이자·시너지·유닛·보드) | 판 | AI 등수 ± 표준오차 | 규칙 등수 | 차(규칙−AI, 판마다 짝) | AI 4등 안 / 1등 / 8등 | 규칙 4등 안 / 1등 / 8등 | AI 등수 표준편차')
     for label, d in data:
         rows = d['rows']
         ai = [r for r in rows if r['kind'] == 'ai']
@@ -125,7 +124,7 @@ def summary(files):
         diffs = [mean(v['rule']) - mean(v['ai']) for v in by.values() if v['ai'] and v['rule']]
         w = d['weights']
         rate = lambda rs, f: f'{sum(f(r["place"]) for r in rs) / len(rs):.0%}'
-        print(f'| {label} | {w["place"]:.1f}·{w["hp"]:.1f}·{w["econ"]:.1f}·{w["synergy"]:.1f}·{w["units"]:.1f} | {len(by)} | '
+        print(f'| {label} | {"·".join(f"{w.get(h, 0.0):.1f}" for h in HEADS)} | {len(by)} | '
               f'{mean([r["place"] for r in ai]):.2f} ± {se([r["place"] for r in ai]):.2f} | {mean([r["place"] for r in ru]):.2f} | '
               f'{mean(diffs):+.2f} ± {se(diffs):.2f} | {rate(ai, lambda p: p <= 4)} / {rate(ai, lambda p: p == 1)} / {rate(ai, lambda p: p == 8)} | '
               f'{rate(ru, lambda p: p <= 4)} / {rate(ru, lambda p: p == 1)} / {rate(ru, lambda p: p == 8)} | '

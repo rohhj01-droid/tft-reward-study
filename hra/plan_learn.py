@@ -7,7 +7,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from hra.plan_net import combined, masked_argmax
-from hra.plan_state import HEADS, MASK_SIZE, SLICES, STATE_SIZE
+from hra.plan_state import HEADS, MASK_SIZE, SLICES, STATE_SIZE, VALUE_INDEX
 
 GAMMA = 0.98
 MARGIN = 0.8
@@ -46,6 +46,7 @@ class Replay:
 
     @classmethod
     def from_arrays(cls, arrays):
+        arrays = with_value(arrays)
         n = len(arrays['s'])
         replay = cls(max(n, 1))
         for key in KEYS:
@@ -54,23 +55,38 @@ class Replay:
         return replay
 
 
+def with_value(arrays):
+    """보드 세기 갈래 전의 따라 하기 자료(보상 다섯 칸)에 여섯째 칸(그 라운드에 싸운 보드의 값)을 채운 사본. 판 중 경험은 다음
+    상태의 보드 값 칸이 곧 그 값이고(hra/plan_bot.Recorder.close와 같은 때), 끝 경험은 다음 상태가 0이라 그 상태(마지막 라운드
+    시작)의 보드 값 칸으로 근사한다. 이미 여섯 칸이면 그대로 돌려준다."""
+    r = np.asarray(arrays['r'])
+    if r.shape[1] == len(HEADS):
+        return arrays
+    assert r.shape[1] == len(HEADS) - 1, r.shape
+    done = np.asarray(arrays['d']).astype(bool)
+    value = np.where(done, arrays['s'][:, VALUE_INDEX], arrays['s2'][:, VALUE_INDEX])
+    return dict(arrays, r=np.concatenate([r, value[:, None]], 1).astype(np.float32))
+
+
 def _pick(q, a):
-    """(배치, 5, 칸) 값에서 배치마다 고른 칸 -> (배치, 5)."""
+    """(배치, 갈래 수, 칸) 값에서 배치마다 고른 칸 -> (배치, 갈래 수)."""
     return q.gather(2, a.view(-1, 1, 1).expand(-1, q.shape[1], 1)).squeeze(2)
 
 
 def td_loss(net, target, batch, w):
     """갈래별 Q 손실. 다음 행동은 지금 신경망의 가중합으로 고르고(가린 칸 빼고), 값은 갈래마다 목표 신경망의 자기 값으로
-    부트스트랩한다(1학기 hra/train.py와 같은 방식을 행동 갈래 셋으로)."""
+    부트스트랩한다(1학기 hra/train.py와 같은 방식을 행동 갈래 셋으로). 보드 세기 갈래는 가중치가 0이면 손실에서 뺀다(다른 설정이
+    그 갈래를 더하기 전과 똑같이 배우게. 다섯 갈래는 가중치가 0이어도 예전처럼 배운다)."""
     q = net(batch['s'])
+    heads = [i for i, h in enumerate(HEADS[:q.shape[1]]) if h != 'value' or w.get('value', 0.0)]
     with torch.no_grad():
         a2 = masked_argmax(combined(net(batch['s2']), w), batch['m2'])
         q2 = target(batch['s2'])
     keep = (1 - batch['d']).unsqueeze(1)
     loss = 0.0
     for i, (lo, hi) in enumerate(SLICES):
-        y = batch['r'] + GAMMA * keep * _pick(q2[:, :, lo:hi], a2[:, i])
-        loss = loss + F.smooth_l1_loss(_pick(q[:, :, lo:hi], batch['a'][:, i]), y)
+        y = batch['r'][:, :q.shape[1]] + GAMMA * keep * _pick(q2[:, :, lo:hi], a2[:, i])
+        loss = loss + F.smooth_l1_loss(_pick(q[:, :, lo:hi], batch['a'][:, i])[:, heads], y[:, heads])
     return loss / len(SLICES)
 
 

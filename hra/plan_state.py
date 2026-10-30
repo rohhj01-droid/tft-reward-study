@@ -14,7 +14,7 @@ from meta.human_five import trait_table
 from meta.lobby import BOARDS
 from meta.pit import chosen_of
 
-HEADS = ('place', 'hp', 'econ', 'synergy', 'units')  # 보상 갈래(설계 4절)
+HEADS = ('place', 'hp', 'econ', 'synergy', 'units', 'value')  # 보상 갈래(설계 4절. value는 2026-10-31 진행 보상 실험)
 FLOORS = (None, 50, 30, 20, 10, 0)
 PLAN_SIZES = (len(BOARDS) + 1, 3, len(FLOORS))  # (28, 3, 6)
 MASK_SIZE = sum(PLAN_SIZES)                      # 37
@@ -57,11 +57,17 @@ def rule_label(old_deck, new_deck, level_start, best_target, min_floor):
 
 
 STATE_SIZE = 8 + 7 + 5 * len(BOARDS) + 2 + 1  # 153
+VALUE_INDEX = 8  # 상태에서 보드 값(board_value) 칸
 
 
 def board_units(player):
     """보드에 선 챔피언(아지르 모래 병사 같은 소환물 빼고)."""
     return [u for row in player.board for u in row if u and u.name in BASE_CHAMPION_LIST]
+
+
+def board_value(units):
+    """보드 값: 유닛마다 비용·별 값 표(set4.COST_STAR_VALUE)의 합 ÷ 120. 상태의 VALUE_INDEX 칸이고 보드 세기 보상 갈래다."""
+    return sum(COST_STAR_VALUE[COST[u.name] - 1][u.stars - 1] for u in units) / 120
 
 
 def active_tiers(units):
@@ -81,7 +87,7 @@ def state(player, others, deck, deck_age, game_round):
     mine, theirs = copies(units_of(player)), scout(others)
     x = [game_round / 40, player.health / 100, player.gold / 60, player.level / 9,
          player.exp / need if need else 1.0, player.win_streak / 5, player.loss_streak / 5, len(alive) / 7,
-         sum(COST_STAR_VALUE[COST[u.name] - 1][u.stars - 1] for u in units) / 120,
+         board_value(units),
          stars.count(2) / 9, stars.count(3) / 9, active_tiers(units) / 11, len(units) / 9,
          len(completed) / 10, len(components) / 10]
     for b in BOARDS:
