@@ -21,7 +21,8 @@ from Simulator.observation.token.basic_observation import ObservationToken
 from Simulator.player import Player
 from Simulator.tft_simulator import TFTConfig, parallel_env
 from fullgame.board_stars import quiet
-from hra.plan_state import MASK_SIZE, SLICES, STATE_SIZE, active_tiers, board_units, decode, masks, rule_label, state
+from hra.plan_state import (MASK_SIZE, SLICES, STATE_SIZE, active_tiers, board_units, board_value, decode, masks, rule_label,
+                            state)
 from meta.human_bot import HumanPolicy
 from meta.human_macro import action
 from meta.lobby import N_PLAYERS, board_record, finish_order
@@ -80,7 +81,8 @@ class Recorder:
                       -min((hp0 - max(player.health, 0)) / 20, 1.0),
                       0.0 if done else getattr(player, 'last_interest', 0) / 5,
                       active_tiers(units) / 11,
-                      len(units) / 9], dtype=np.float32)
+                      len(units) / 9,
+                      board_value(units)], dtype=np.float32)
         self.transitions.append((s, m, np.array(plan, dtype=np.int64), r, next_state, done, next_mask))
         self.rounds.append(game_round)
 

@@ -22,7 +22,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from hra.evaluate import ab
 from hra.plan_bot import pinned_pool, safe_play
 from hra.plan_learn import KEYS, Replay, learn_step
-from hra.plan_net import PlanNet, choose, flip_rate, load, save, weights
+from hra.plan_net import CONFIGS, PlanNet, choose, flip_rate, load, save, weights, widen
+from hra.plan_state import HEADS
 from meta.lobby import N_PLAYERS
 
 BATCH, DEMO_BATCH, LR, SYNC, UPDATES_PER_GAME, CAPACITY = 256, 64, 2.5e-4, 1000, 8, 500_000
@@ -109,8 +110,8 @@ def train(config, aux_w, seed, games, jobs, save_every=500, eval_games=100, warm
         if os.path.exists(log_path):
             curve = json.load(open(log_path, encoding='utf-8'))['curve']
     else:
-        if warm:
-            net.load_state_dict(load(warm)[0].state_dict())
+        if warm:  # 다섯 갈래 데우기 신경망은 보드 세기 갈래(값 0)를 붙여 넓힌다
+            net.load_state_dict(widen(load(warm)[0], len(HEADS)).state_dict())
         target.load_state_dict(net.state_dict())
     if done >= games:  # 이미 끝난 실행: 일꾼을 띄우거나 정책 파일을 쓰지 않는다
         return {'games': done, 'best': best}
@@ -189,7 +190,7 @@ def train(config, aux_w, seed, games, jobs, save_every=500, eval_games=100, warm
 
 def parser():
     ap = argparse.ArgumentParser()
-    ap.add_argument('--config', default='both', choices=['none', 'synergy', 'units', 'both'])
+    ap.add_argument('--config', default='both', choices=list(CONFIGS))
     ap.add_argument('--aux-w', type=float, default=0.3, help='보조 갈래 가중치. 사전 시험에서 0.3을 골랐다(설계 4절)')
     ap.add_argument('--seed', type=int, default=1)
     ap.add_argument('--games', type=int, default=10000)

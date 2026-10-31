@@ -24,7 +24,7 @@ def rho_skips_constant_lists_test():
 
 def plan_sizes_and_slices_test():
     from hra.plan_state import HEADS, MASK_SIZE, PLAN_SIZES, SLICES
-    assert HEADS == ('place', 'hp', 'econ', 'synergy', 'units')
+    assert HEADS == ('place', 'hp', 'econ', 'synergy', 'units', 'value')
     assert PLAN_SIZES == (28, 3, 6) and MASK_SIZE == 37
     assert SLICES == ((0, 28), (28, 31), (31, 37))
 
@@ -112,10 +112,10 @@ def finish_without_a_decision_does_nothing_test():
     assert r.transitions == [] and r.finished
 
 
-def plan_net_outputs_five_heads_by_37_cells_test():
+def plan_net_outputs_six_heads_by_37_cells_test():
     import torch
     from hra.plan_net import PlanNet
-    assert tuple(PlanNet()(torch.zeros(4, 153)).shape) == (4, 5, 37)
+    assert tuple(PlanNet()(torch.zeros(4, 153)).shape) == (4, 6, 37)
 
 
 def masked_choice_never_picks_a_hidden_cell_test():
@@ -151,7 +151,7 @@ def exploration_rate_is_per_branch_test():
 
 def weights_follow_config_test():
     from hra.plan_net import weights
-    assert weights('none', 0.1) == {'place': 1.0, 'hp': 1.0, 'econ': 0.3, 'synergy': 0.0, 'units': 0.0}
+    assert weights('none', 0.1) == {'place': 1.0, 'hp': 1.0, 'econ': 0.3, 'synergy': 0.0, 'units': 0.0, 'value': 0.0}
     assert weights('both', 0.3)['synergy'] == weights('both', 0.3)['units'] == 0.3
     assert weights('units', 0.1)['synergy'] == 0.0 and weights('synergy', 0.1)['units'] == 0.0
 
@@ -177,7 +177,7 @@ def plan_net_save_load_and_flip_rate_test():
 
 def _bandit_transition(d, s, m):
     """판단 한 번에 끝나는 판의 경험: 덱 3번이면 등수 +1, 아니면 -1."""
-    return (s, m, np.array([d, 0, 0]), np.array([1.0 if d == 3 else -1.0, 0, 0, 0, 0], np.float32),
+    return (s, m, np.array([d, 0, 0]), np.array([1.0 if d == 3 else -1.0, 0, 0, 0, 0, 0], np.float32),
             np.zeros(153, np.float32), True, np.ones(37, bool))
 
 
@@ -223,7 +223,7 @@ def margin_loss_makes_demo_choices_win_test():
     labels = [(4, 1, 2), (9, 0, 5), (17, 2, 0), (1, 1, 1), (26, 0, 3)]
     demos = Replay(10)
     for s, a in zip(states, labels):
-        demos.add((s, np.ones(37, bool), np.array(a), np.zeros(5, np.float32), np.zeros(153, np.float32), True,
+        demos.add((s, np.ones(37, bool), np.array(a), np.zeros(6, np.float32), np.zeros(153, np.float32), True,
                    np.ones(37, bool)))
     net, target, w = PlanNet(), PlanNet(), weights('none', 0.1)
     target.load_state_dict(net.state_dict())
@@ -305,8 +305,8 @@ def greedy_planner_reloads_a_rewritten_file_test():
 def round_rewards_match_hand_counted_values_test():
     """라운드 보상 다섯 갈래를 손으로 센 값과 맞춘다(설계 7절). 라운드 시작 체력 70이 55가 되면 -15/20 = -0.75, 골드 35로
     라운드 시작 수입을 받으면 이자 3이라 3/5 = 0.6, 보드가 야스오·피오라·가렌이면 켜진 특성 단계는 결투가 2명과 추방자 1명으로
-    2단계라 2/11, 유닛 3명은 3/9다. 등수 보상은 판 중에는 0이고 끝 표시는 없다. 3등으로 탈락하면 마지막 경험에 1 - 2·2/7이
-    붙고 끝 표시가 서며 이자는 0이다."""
+    2단계라 2/11, 유닛 3명은 3/9, 보드 값은 1코스트 2성 3 + 1성 둘 2 = 5라 5/120이다. 등수 보상은 판 중에는 0이고 끝 표시는
+    없다. 3등으로 탈락하면 마지막 경험에 1 - 2·2/7이 붙고 끝 표시가 서며 이자는 0이다."""
     from hra.plan_bot import Recorder
     me = _player([{'name': 'yasuo', 'stars': 2, 'items': []}, {'name': 'fiora', 'stars': 1, 'items': []},
                   {'name': 'garen', 'stars': 1, 'items': []}], gold=35, health=55)
@@ -318,10 +318,10 @@ def round_rewards_match_hand_counted_values_test():
     s, m = np.zeros(153, np.float32), np.ones(37, bool)
     r.pending = (s, m, (4, 1, 2), 70, 9)
     r.close(me, (4, 1, 2), s, m, False)
-    assert np.allclose(r.transitions[-1][3], [0.0, -0.75, 0.6, 2 / 11, 3 / 9]) and not r.transitions[-1][5]
+    assert np.allclose(r.transitions[-1][3], [0.0, -0.75, 0.6, 2 / 11, 3 / 9, 5 / 120]) and not r.transitions[-1][5]
     r.pending = (s, m, (4, 1, 2), 55, 10)
     r.finish(me, 3)
-    assert np.allclose(r.transitions[-1][3], [1 - 2 * 2 / 7, 0.0, 0.0, 2 / 11, 3 / 9]) and r.transitions[-1][5]
+    assert np.allclose(r.transitions[-1][3], [1 - 2 * 2 / 7, 0.0, 0.0, 2 / 11, 3 / 9, 5 / 120]) and r.transitions[-1][5]
 
 
 def pinned_pool_gives_workers_the_same_hash_seed_test():
@@ -452,7 +452,7 @@ def margin_loss_branch_weights_test():
     rng = np.random.default_rng(3)
     demos = Replay(10)
     for s, a in zip(rng.random((5, 153)).astype(np.float32), [(4, 1, 2), (9, 0, 5), (17, 2, 0), (1, 1, 1), (26, 0, 3)]):
-        demos.add((s, np.ones(37, bool), np.array(a), np.zeros(5, np.float32), np.zeros(153, np.float32), True,
+        demos.add((s, np.ones(37, bool), np.array(a), np.zeros(6, np.float32), np.zeros(153, np.float32), True,
                    np.ones(37, bool)))
     net, w, batch = PlanNet(), weights('none', 0.1), demos.sample(5, rng)
     full = margin_loss(net, batch, w).item()
@@ -507,7 +507,8 @@ def econ_weight_knob_test():
     """이자 가중치는 기본 0.3이고, econ_w를 주면 그 값이다(이자 가설 대조: 이자 갈래를 끄고 다시 학습한다)."""
     from hra.plan_net import weights
     assert weights('none', 0.3)['econ'] == 0.3
-    assert weights('none', 0.3, econ_w=0.0) == {'place': 1.0, 'hp': 1.0, 'econ': 0.0, 'synergy': 0.0, 'units': 0.0}
+    assert weights('none', 0.3, econ_w=0.0) == {'place': 1.0, 'hp': 1.0, 'econ': 0.0, 'synergy': 0.0, 'units': 0.0,
+                                               'value': 0.0}
 
 
 def cli_econ_w_reaches_train_test():
@@ -525,6 +526,170 @@ def cli_econ_w_reaches_train_test():
         assert got['econ_w'] == 0.0
     finally:
         sp.train = real
+
+
+def board_value_head_and_value_config_test():
+    """보드 세기 갈래(설계 4절, 2026-10-31 진행 보상 실험): 보상 갈래 여섯째는 그 라운드에 싸운 보드의 값(비용·별 값 표의 합 ÷ 120,
+    상태의 9번째 칸과 같은 셈)이고, 'value' 설정에서만 aux_w를 받는다."""
+    from hra.plan_net import weights
+    from hra.plan_state import HEADS, VALUE_INDEX, board_value
+    assert HEADS[-1] == 'value' and VALUE_INDEX == 8
+    me = _player([{'name': 'yasuo', 'stars': 2, 'items': []}, {'name': 'fiora', 'stars': 1, 'items': []}])
+    from hra.plan_state import board_units
+    assert board_value(board_units(me)) == (3 + 1) / 120
+    assert weights('value', 0.3) == {'place': 1.0, 'hp': 1.0, 'econ': 0.3, 'synergy': 0.0, 'units': 0.0, 'value': 0.3}
+    assert all(weights(c, 0.3)['value'] == 0.0 for c in ('none', 'synergy', 'units', 'both'))
+
+
+def old_five_head_checkpoint_loads_and_chooses_the_same_test():
+    """보드 세기 갈래를 더하기 전의 다섯 갈래 저장본(가중치 사전에 'value'가 없다)도 그대로 불러 같은 선택을 낸다(평가·탐침이 옛
+    저장본을 다시 잴 수 있게)."""
+    import os
+    import tempfile
+    import torch
+    from hra.plan_net import PlanNet, choose, load, save
+    from hra.plan_state import masks
+    torch.manual_seed(3)
+    old = PlanNet(heads=5)
+    w5 = {'place': 1.0, 'hp': 1.0, 'econ': 0.3, 'synergy': 0.0, 'units': 0.0}
+    path = os.path.join(tempfile.mkdtemp(), 'old.pt')
+    torch.save({'args': {'hidden': 256}, 'state_dict': old.state_dict(), 'weights': w5, 'meta': {}}, path)  # 옛 저장 모양
+    net, w, _ = load(path)
+    m, rng = masks(6, None), np.random.default_rng(3)
+    for _ in range(20):
+        s = rng.random(153).astype(np.float32)
+        assert choose(net, s, m, w) == choose(old, s, m, w5)
+    assert tuple(net(torch.zeros(2, 153)).shape) == (2, 5, 37)
+
+
+def widen_keeps_old_heads_and_zeros_the_new_one_test():
+    """다섯 갈래 데우기 신경망을 여섯 갈래로 넓히면 앞 다섯 갈래 값은 그대로고 새 갈래 값은 0이라, 보드 세기 가중치를 줘도 처음
+    선택은 데우기 신경망과 같다."""
+    import torch
+    from hra.plan_net import PlanNet, choose, weights, widen
+    from hra.plan_state import masks
+    torch.manual_seed(4)
+    old = PlanNet(heads=5)
+    wide = widen(old, 6)
+    x = torch.rand(8, 153)
+    assert torch.allclose(wide(x)[:, :5], old(x), atol=1e-6) and torch.count_nonzero(wide(x)[:, 5]) == 0
+    m, s = masks(6, None), np.random.default_rng(4).random(153).astype(np.float32)
+    assert choose(wide, s, m, weights('value', 0.3)) == choose(old, s, m, weights('none', 0.3))
+    assert widen(wide, 6) is wide
+
+
+def demos_without_value_get_board_value_from_states_test():
+    """보드 세기 갈래 전의 따라 하기 자료(보상 다섯 칸)는 불러올 때 여섯째 칸을 채운다: 판 중 경험은 다음 상태의 보드 값 칸,
+    끝 경험(다음 상태가 0)은 그 상태의 보드 값 칸(끝 보드 대신 마지막 라운드 시작 보드로 근사)."""
+    from hra.plan_learn import Replay, with_value
+    n = 4
+    s, s2 = np.zeros((n, 153), np.float32), np.zeros((n, 153), np.float32)
+    s[:, 8], s2[:, 8] = [0.1, 0.2, 0.3, 0.4], [0.5, 0.6, 0.7, 0.0]
+    arrays = {'s': s, 'm': np.ones((n, 37), bool), 'a': np.zeros((n, 3), int), 'r': np.ones((n, 5), np.float32),
+              's2': s2, 'd': np.array([0, 0, 0, 1], np.float32), 'm2': np.ones((n, 37), bool), 'game': np.zeros(n)}
+    out = with_value(arrays)
+    assert out['r'].shape == (n, 6) and np.allclose(out['r'][:, :5], 1.0)
+    assert np.allclose(out['r'][:, 5], [0.5, 0.6, 0.7, 0.4]) and 'game' in out
+    assert with_value(out)['r'].shape == (n, 6)
+    replay = Replay.from_arrays(arrays)
+    assert np.allclose(replay.r[:, 5], [0.5, 0.6, 0.7, 0.4])
+
+
+def flip_rate_counts_the_value_head_test():
+    """보조 갈래가 뒤집는 비율은 보드 세기 갈래도 보조 갈래로 센다: 보드 세기 갈래만 값이 있는 신경망은 'value' 설정에서 모든
+    판단이 뒤집히고 'none'에서는 하나도 안 뒤집힌다."""
+    import torch
+    from hra.plan_net import PlanNet, flip_rate, weights
+    from hra.plan_state import masks
+    net = PlanNet()
+    with torch.no_grad():
+        net.out.weight.zero_()
+        net.out.bias.zero_()
+        net.out.bias[5 * 37 + 7] = 1.0  # 보드 세기 갈래의 덱 7번 칸
+    states = np.random.default_rng(5).random((10, 153)).astype(np.float32)
+    ms = np.stack([masks(5, None)] * 10)
+    assert flip_rate(net, states, ms, weights('value', 0.3)) == 1.0
+    assert flip_rate(net, states, ms, weights('none', 0.3)) == 0.0
+
+
+def cli_value_config_reaches_train_and_warm_start_widens_test():
+    """--config value는 명령줄에서 train까지 가고, train은 다섯 갈래 데우기 파일을 여섯 갈래로 넓혀 받는다(판 0개면 데우기만 하고
+    돌려준다)."""
+    import os
+    import sys
+    import tempfile
+    import torch
+    import hra.selfplay as sp
+    from hra.plan_net import PlanNet, save, weights
+    got, real = {}, sp.train
+    sp.train = lambda *a, **k: got.update(config=a[0]) or {'games': 0, 'best': None}
+    try:
+        sys.argv = ['selfplay', '--config', 'value', '--games', '0', '--jobs', '1', '--warm', 'x', '--demos', 'y']
+        try:
+            sp.main()
+        except SystemExit:  # 없는 파일이면 parser가 멈춘다. 설정 이름은 그 전에 통과해야 한다
+            pass
+        sys.argv = ['selfplay', '--config', 'value', '--games', '0', '--jobs', '1']
+        sp.main()
+        assert got['config'] == 'value'
+    finally:
+        sp.train = real
+    root = tempfile.mkdtemp()
+    warm = os.path.join(root, 'warm5.pt')
+    save(PlanNet(heads=5), warm, weights('none', 0.3))
+    assert sp.train('value', 0.3, seed=1, games=0, jobs=1, warm=warm, root=root) == {'games': 0, 'best': None}
+
+
+def value_head_learns_only_when_weighted_test():
+    """보드 세기 갈래는 가중치가 0이면 배우지 않는다(값 손실에서 빠진다): 그래야 'none'·'both' 같은 다른 설정이 보드 세기 갈래를
+    더하기 전과 똑같이 배운다(공유 층에 새 갈래의 기울기가 안 들어간다). 'value' 설정에서는 배운다."""
+    import torch
+    from hra.plan_learn import Replay, td_loss
+    from hra.plan_net import PlanNet, weights
+    torch.manual_seed(6)
+    rng = np.random.default_rng(6)
+    replay = Replay(64)
+    for _ in range(64):
+        replay.add((rng.random(153).astype(np.float32), np.ones(37, bool), np.array([1, 0, 0]),
+                    np.array([0, -0.1, 0.2, 0.1, 0.5, 0.3], np.float32), rng.random(153).astype(np.float32), False,
+                    np.ones(37, bool)))
+    batch = replay.sample(64, rng)
+    rows = slice(5 * 37, 6 * 37)
+    for config, learns in (('none', False), ('both', False), ('value', True)):
+        net, target = PlanNet(), PlanNet()
+        target.load_state_dict(net.state_dict())
+        td_loss(net, target, batch, weights(config, 0.3)).backward()
+        moved = bool(torch.count_nonzero(net.out.weight.grad[rows]))
+        assert moved == learns, config
+        assert torch.count_nonzero(net.out.weight.grad[:5 * 37]) > 0
+
+
+def none_config_learns_like_a_five_head_net_test():
+    """'none'·'both'처럼 보드 세기 가중치가 0인 설정에서는, 다섯 갈래 데우기 신경망을 넓힌 여섯 갈래 신경망이 다섯 갈래 신경망과 같은
+    걸음을 밟는다(앞 다섯 갈래와 공유 층이 같게 움직이고 새 갈래는 0 그대로): 진행 보상 실험의 B 조건을 보드 세기 갈래 전 실행과
+    나란히 놓을 수 있는 까닭."""
+    import torch
+    from hra.plan_learn import Replay, learn_step
+    from hra.plan_net import PlanNet, weights, widen
+    torch.manual_seed(7)
+    rng = np.random.default_rng(7)
+    replay = Replay(64)
+    for _ in range(64):
+        replay.add((rng.random(153).astype(np.float32), np.ones(37, bool), np.array([int(rng.integers(1, 28)), 1, 2]),
+                    rng.random(6).astype(np.float32), rng.random(153).astype(np.float32), bool(rng.random() < 0.1),
+                    np.ones(37, bool)))
+    old, old_t = PlanNet(heads=5), PlanNet(heads=5)
+    old_t.load_state_dict(old.state_dict())
+    wide, wide_t = widen(old, 6), widen(old_t, 6)
+    opt_o, opt_w = torch.optim.Adam(old.parameters(), lr=1e-3), torch.optim.Adam(wide.parameters(), lr=1e-3)
+    for config in ('none', 'both'):
+        w = weights(config, 0.3)
+        for k in range(5):
+            batch = replay.sample(32, np.random.default_rng(k))
+            learn_step(old, old_t, opt_o, w, batch=batch, demo=batch, lam=(1.0, 0.5, 0.5))
+            learn_step(wide, wide_t, opt_w, w, batch=batch, demo=batch, lam=(1.0, 0.5, 0.5))
+    x = torch.rand(8, 153)
+    assert torch.allclose(wide(x)[:, :5], old(x), atol=1e-5) and torch.count_nonzero(wide(x)[:, 5]) == 0
 
 
 if __name__ == '__main__':

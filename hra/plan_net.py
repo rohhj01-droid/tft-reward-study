@@ -13,33 +13,35 @@ import torch.nn as nn
 
 from hra.plan_state import HEADS, MASK_SIZE, SLICES, STATE_SIZE
 
-CONFIGS = ('none', 'synergy', 'units', 'both')
+CONFIGS = ('none', 'synergy', 'units', 'both', 'value')
 
 
 def weights(config, aux_w, econ_w=0.3):
     """설정 이름 -> 보상 가중치(설계 4절). 등수 1, 체력 1, 이자 0.3(econ_w. 이자 가설 대조에서는 0으로 끈다), 시너지·유닛 수는
-    켜면 aux_w."""
+    켜면 aux_w. 보드 세기는 'value' 설정에서만 aux_w(2026-10-31 진행 보상 실험)."""
     assert config in CONFIGS, config
     return {'place': 1.0, 'hp': 1.0, 'econ': econ_w,
             'synergy': aux_w if config in ('synergy', 'both') else 0.0,
-            'units': aux_w if config in ('units', 'both') else 0.0}
+            'units': aux_w if config in ('units', 'both') else 0.0,
+            'value': aux_w if config == 'value' else 0.0}
 
 
 class PlanNet(nn.Module):
-    def __init__(self, hidden=256):
+    def __init__(self, hidden=256, heads=len(HEADS)):
         super().__init__()
-        self.args = {'hidden': hidden}  # 불러올 때 같은 모양으로 다시 짓는다
+        self.heads = heads
+        self.args = {'hidden': hidden, 'heads': heads}  # 불러올 때 같은 모양으로 다시 짓는다
         self.trunk = nn.Sequential(nn.Linear(STATE_SIZE, hidden), nn.ReLU(), nn.Linear(hidden, hidden), nn.ReLU())
-        self.out = nn.Linear(hidden, len(HEADS) * MASK_SIZE)
+        self.out = nn.Linear(hidden, heads * MASK_SIZE)
 
     def forward(self, x):
-        """(배치, 153) -> (배치, 5, 37)."""
-        return self.out(self.trunk(x)).view(-1, len(HEADS), MASK_SIZE)
+        """(배치, 153) -> (배치, 갈래 수, 37)."""
+        return self.out(self.trunk(x)).view(-1, self.heads, MASK_SIZE)
 
 
 def combined(q, w):
-    """(배치, 5, 37) -> 보상 가중합 (배치, 37)."""
-    return sum(w[h] * q[:, i] for i, h in enumerate(HEADS))
+    """(배치, 갈래 수, 37) -> 보상 가중합 (배치, 37). 가중치에 없는 갈래는 0이라, 보드 세기 갈래 전의 다섯 갈래 저장본도 된다."""
+    return sum(w.get(h, 0.0) * q[:, i] for i, h in enumerate(HEADS[:q.shape[1]]))
 
 
 def masked_argmax(values, mask):
@@ -60,14 +62,14 @@ def choose(net, state, mask, w, eps=(0.0, 0.0, 0.0), rng=random):
 
 
 def flip_rate(net, states, masks_, w):
-    """보조 갈래(시너지·유닛 수)를 뺐을 때 계획이 바뀌는 판단의 몫(설계 4절 사전 시험, 5절 중간 점검)."""
+    """보조 갈래(시너지·유닛 수·보드 세기)를 뺐을 때 계획이 바뀌는 판단의 몫(설계 4절 사전 시험, 5절 중간 점검)."""
     if not len(states):
         return 0.0
     with torch.no_grad():
         q = net(torch.as_tensor(states, dtype=torch.float32))
     m = torch.as_tensor(masks_, dtype=torch.bool)
     a = masked_argmax(combined(q, w), m)
-    b = masked_argmax(combined(q, dict(w, synergy=0.0, units=0.0)), m)
+    b = masked_argmax(combined(q, dict(w, synergy=0.0, units=0.0, value=0.0)), m)
     return float((a != b).any(1).float().mean())
 
 
@@ -79,9 +81,27 @@ def save(net, path, w, **meta):
     os.replace(tmp, path)
 
 
+def widen(net, heads):
+    """갈래가 모자란 신경망(보드 세기 갈래 전의 다섯 갈래 데우기 신경망)을 heads 갈래로 넓힌다. 앞 갈래는 그대로 옮기고 새
+    갈래는 출력층을 0으로 두어 값이 0이다(처음 선택이 데우기 신경망과 같다). 이미 그만큼이면 그대로 돌려준다."""
+    if net.heads >= heads:
+        return net
+    wide = PlanNet(net.args['hidden'], heads)
+    wide.trunk.load_state_dict(net.trunk.state_dict())
+    n = net.heads * MASK_SIZE
+    with torch.no_grad():
+        wide.out.weight.zero_()
+        wide.out.bias.zero_()
+        wide.out.weight[:n] = net.out.weight
+        wide.out.bias[:n] = net.out.bias
+    return wide
+
+
 def load(path):
     ck = torch.load(path, map_location='cpu', weights_only=True)
-    net = PlanNet(**ck['args'])
+    args = dict(ck['args'])
+    args.setdefault('heads', ck['state_dict']['out.weight'].shape[0] // MASK_SIZE)  # 보드 세기 갈래 전 저장본엔 갈래 수가 없다
+    net = PlanNet(**args)
     net.load_state_dict(ck['state_dict'])
     net.eval()
     return net, ck['weights'], ck['meta']
