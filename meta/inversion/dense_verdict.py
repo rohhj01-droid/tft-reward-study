@@ -2,6 +2,7 @@
 
 A/B = 탐침 400판에서 판(시드)마다 낸 「규칙 평균 등수 − AI 평균 등수」의 평균, 표준오차 = 표본표준편차 ÷ √판 수.
 c = 3천 판 점검(200판)과 탐침을 표준오차 역제곱으로 무게 준 평균, S = (2000판 점검 + 2500판 점검 + c) ÷ 3.
+「AI 덱 + 규칙 레벨·골드」 탐침(probe_hybrid.py) 기록이 있으면, 본래 − 하이브리드(같은 시드끼리)를 계획 AI의 레벨·남길 골드 몫으로 센다.
 
 실행(저장소 맨 위에서): python meta/inversion/dense_verdict.py . results/plan_dense_verdict.json
 첫 인자는 meta/inversion(탐침 기록)과 results(일치율·곡선)가 있는 저장소 폴더, 둘째 인자는 판별 차와 판정을 적을 JSON이다.
@@ -119,6 +120,22 @@ six = {c: [json.load(open(os.path.join(RES, f'plan_eval_ab_{c}_s{s}_latest.json'
 dev = [v - statistics.mean(vs) for vs in six.values() for v in vs]
 record['seed_sd'] = (sum(e * e for e in dev) / (len(dev) - len(six))) ** 0.5
 print(f'본 학습 여섯 실행(옛 실행기, 여백 늘 1)의 마지막 A/B를 설정 안에서 묶은 표준편차 {record["seed_sd"]:.3f}')
+
+HYB = {'B': 'plan_dense_both_s1_latest', 'A': 'plan_dense_value_s1_latest', '2차(재탐침)': 'margin_deck_s1_latest'}
+hyb = {k: os.path.join(INV, f'probe_rows_hybrid_{v}.json') for k, v in HYB.items()}
+if all(os.path.exists(f) for f in hyb.values()):
+    print('\n## 「AI 덱 + 규칙 레벨·골드」 탐침: 하이브리드 A/B와, 본래 − 하이브리드 = 계획 AI의 레벨·남길 골드 몫(같은 시드 짝)')
+    share, record['hybrid'] = {}, {}
+    for k, f in hyb.items():
+        h, _ = per_seed(f)
+        share[k] = {s: seeds[k][s] - h[s] for s in h}
+        (mh, sh), (m, s) = mse(list(h.values())), mse(list(share[k].values()))
+        print(f'{k}: 하이브리드 {mh:+.4f} ± {sh:.4f}, 본래 − 하이브리드 {m:+.4f} ± {s:.4f} (z {m / s:+.2f})')
+        record['hybrid'][k] = {'mean': mh, 'se': sh, 'per_seed': [h[x] for x in sorted(h)], 'level_gold': m, 'level_gold_se': s}
+    for a in ('A', 'B'):
+        m, s = mse([share[a][x] - share['2차(재탐침)'][x] for x in share[a]])
+        print(f'레벨·골드 몫의 차 {a} − 2차: {m:+.4f} ± {s:.4f} (z {m / s:+.2f})')
+        record['hybrid'][f'level_gold {a} − 2차'] = {'mean': m, 'se': s}
 
 if OUT:
     json.dump(record, open(OUT, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
