@@ -1,0 +1,147 @@
+{
+ "kind": "agree",
+ "net": "plan_dense_both_s1_g1000.pt",
+ "games": 50,
+ "deck": 0.9329043148011393,
+ "level": 0.9620213102647959,
+ "floor": 0.7876358265639836,
+ "all": 0.7075640890389282,
+ "decisions": 9479,
+ "deck_disagreements": [
+  [
+   "keep",
+   "Chosen Warlords",
+   39
+  ],
+  [
+   "Ninja Shades",
+   "Moonlight Hunters",
+   23
+  ],
+  [
+   "Chosen Cultists",
+   "keep",
+   23
+  ],
+  [
+   "Chosen Cultists",
+   "Moonlight Hunters",
+   22
+  ],
+  [
+   "Chosen Divines",
+   "keep",
+   21
+  ],
+  [
+   "Chosen Warlords",
+   "Moonlight Hunters",
+   19
+  ],
+  [
+   "Chosen Divines",
+   "Moonlight Hunters",
+   18
+  ],
+  [
+   "keep",
+   "Chosen Cultists",
+   18
+  ],
+  [
+   "Chosen Dusks",
+   "Moonlight Hunters",
+   15
+  ],
+  [
+   "Chosen Cultists",
+   "Chosen Warlords",
+   15
+  ]
+ ],
+ "level_disagreements": [
+  [
+   "+1",
+   "+0",
+   229
+  ],
+  [
+   "+0",
+   "+1",
+   72
+  ],
+  [
+   "+2",
+   "+0",
+   28
+  ],
+  [
+   "+1",
+   "+2",
+   16
+  ],
+  [
+   "+0",
+   "+2",
+   10
+  ],
+  [
+   "+2",
+   "+1",
+   5
+  ]
+ ],
+ "floor_disagreements": [
+  [
+   "50",
+   "0",
+   412
+  ],
+  [
+   "50",
+   "30",
+   297
+  ],
+  [
+   "50",
+   "20",
+   247
+  ],
+  [
+   "10",
+   "20",
+   203
+  ],
+  [
+   "0",
+   "20",
+   150
+  ],
+  [
+   "10",
+   "0",
+   141
+  ],
+  [
+   "10",
+   "50",
+   92
+  ],
+  [
+   "10",
+   "30",
+   81
+  ],
+  [
+   "안 함",
+   "0",
+   78
+  ],
+  [
+   "50",
+   "10",
+   53
+  ]
+ ],
+ "errors": []
+}
