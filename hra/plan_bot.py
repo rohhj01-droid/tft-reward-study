@@ -185,11 +185,14 @@ class RuleRecorder(Recorder, HumanPolicy):
 
 
 def make_policy(seat, player, others, rng):
-    """seat: 'rule'(규칙 사람 봇), 'record'(규칙 + 기록), 또는 계획기(부를 수 있는 것)."""
+    """seat: 'rule'(규칙 사람 봇), 'record'(규칙 + 기록), 사람 봇 정책 클래스(규칙 변형, 예: hra.deck_baseline.topdecks),
+    또는 계획기(부를 수 있는 것)."""
     if seat == 'rule':
         policy = HumanPolicy(player.default_agent, None, others, rng)
     elif seat == 'record':
         policy = RuleRecorder(player.default_agent, others, rng)
+    elif isinstance(seat, type):
+        policy = seat(player.default_agent, None, others, rng)
     else:
         policy = PlanPolicy(player.default_agent, others, rng, seat)
     player.default_agent.policy = lambda p, shop, game_round, mask: policy(p, shop, game_round, mask)

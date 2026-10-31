@@ -61,14 +61,15 @@ def ab_game(job):
                   - statistics.mean(places[i] for i in ai)), None
 
 
-def ab(path, games, jobs=None, pool=None, seed0=SEED_AB):
-    """A/B 결과. pool을 주면 그 일꾼들을 쓴다(자기 대전의 중간 점검)."""
+def ab(path, games, jobs=None, pool=None, seed0=SEED_AB, game=ab_game):
+    """A/B 결과. pool을 주면 그 일꾼들을 쓴다(자기 대전의 중간 점검). game은 (시드, path) -> (시드, 등수 차, 오류)인 한 판
+    함수다(기본은 계획 AI 자리, hra.deck_baseline은 기준선 자리를 넘긴다)."""
     jobs_list = [(seed0 + k, path) for k in range(games)]
     if pool is not None:
-        rows = list(pool.imap_unordered(ab_game, jobs_list))
+        rows = list(pool.imap_unordered(game, jobs_list))
     else:
         with pinned_pool(jobs) as p:
-            rows = list(p.imap_unordered(ab_game, jobs_list))
+            rows = list(p.imap_unordered(game, jobs_list))
     diffs = [d for _, d, _ in rows if d is not None]
     errors = [e for _, _, e in rows if e]
     if not diffs:
