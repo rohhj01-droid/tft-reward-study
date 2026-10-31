@@ -4117,7 +4117,10 @@ python meta/inversion/dense_head_share.py checkpoints/plan_dense_value_s1_g3000.
 
 -> [plan_dense_verdict.json](plan_dense_verdict.json)(탐침 다섯의 판별 차 400개씩과 판정), 학습 곡선 [plan_dense_value_s1.json](plan_dense_value_s1.json)·[plan_dense_both_s1.json](plan_dense_both_s1.json),
 일치율 plan_eval_agree_plan_dense_{value,both}_s1_{g500,g1000,g1500,g2000,g2500,g3000}.json. probe_heads.py summary와 dense_head_share.py는 여섯 갈래
-저장본을 읽으므로 가지 dense-reward 코드로 돈다. 탐침의 자리별 기록과 신경망은 올리지 않는다.
+저장본을 읽는다. 학습 코드(가지 dense-reward cf18e52)는 10월 31일 curt-2에 합쳤다(a7b2b0c). 다만 이 절의 숫자는 실행기 파일 넷을
+920e0be로 되돌린 작업 폴더에서 냈다. curt-2의 실행기는 e707e5d(시너지 필러)라서, 같은 숫자를 다시 내려면
+`git checkout 920e0be -- meta/human_bot.py meta/human_five.py meta/test_human_bot.py meta/human_bot_design.md`로 되돌린 뒤 돌린다.
+탐침의 자리별 기록과 신경망은 올리지 않는다.
 
 **멈춤 조건.** 평가 사슬은 21:10에 끝났고 실패 줄이 없다. 두 학습 모두 다시 띄운 적이 없고(곡선의 resumed 모두 False), 마지막 저장본은 3천 판
 저장본과 바이트까지 같다. june(`65a6fc9`)·실행기 파일(`920e0be`)·2차 저장본은 학습과 평가 내내 그대로였다. 일치율 열두 개는 모두 오류 0·판단
