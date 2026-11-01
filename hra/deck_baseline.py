@@ -159,9 +159,32 @@ def topdecks_game(job):
                   - statistics.mean(places[i] for i in base)), None
 
 
-def risk(games, jobs=None, seed0=SEED_RISK):
-    with pinned_pool(jobs) as p:
-        rows = sorted(p.imap_unordered(risk_game, [seed0 + k for k in range(games)]), key=lambda r: r[0])
+def load_partial(path):
+    """판마다 적은 기록(JSON 줄 [시드, 자리들, 오류]) -> {시드: 그 줄}. 쓰다가 꺼져 깨진 줄은 건너뛴다(그 판은 다시 돌린다)."""
+    done = {}
+    if path and os.path.exists(path):
+        with open(path, encoding='utf-8') as f:
+            for line in f:
+                try:
+                    seed, rows, err = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+                done[seed] = (seed, rows, err)
+    return done
+
+
+def risk(games, jobs=None, seed0=SEED_RISK, partial=None):
+    """partial을 주면 판이 끝날 때마다 그 파일에 한 줄씩 덧붙이고, 다시 돌리면 이미 적힌 판은 건너뛴다. 판은 시드로 정해지므로
+    이어 돌려도 숫자는 같다(노트북이 꺼져도 처음부터 다시 하지 않으려고)."""
+    done = load_partial(partial)
+    todo = [seed0 + k for k in range(games) if seed0 + k not in done]
+    if todo:
+        with pinned_pool(jobs) as p, open(partial or os.devnull, 'a', encoding='utf-8') as f:
+            for row in p.imap_unordered(risk_game, todo):
+                done[row[0]] = row
+                f.write(json.dumps(row, ensure_ascii=False) + '\n')
+                f.flush()
+    rows = [done[seed0 + k] for k in range(games)]
     ok, errors = [r for _, r, e in rows if not e], [e for _, _, e in rows if e]
     first = deck_table(ok, 'first', boot=True)
     return {'games': len(ok), 'errors': errors, 'pair': pair_check(ok, *PAIR, 'first'),
@@ -176,9 +199,10 @@ def main():
     ap.add_argument('--games', type=int, default=400)
     ap.add_argument('--jobs', type=int, default=2)
     ap.add_argument('--out', default=None)
+    ap.add_argument('--partial', default=None, help='risk: 판마다 적는 기록 파일. 다시 돌리면 이어 간다')
     args = ap.parse_args()
     if args.kind == 'risk':
-        result = risk(args.games, args.jobs)
+        result = risk(args.games, args.jobs, partial=args.partial)
     else:
         if not args.risk:
             ap.error('baseline에는 --risk가 필요하다')

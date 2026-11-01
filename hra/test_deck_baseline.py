@@ -67,6 +67,24 @@ def top_deck_seats_only_go_to_allowed_decks_test():
     assert all(s['deck'] in allowed for s in out['seats'][:4]), [s['deck'] for s in out['seats'][:4]]
 
 
+def risk_resumes_from_partial_file_test():
+    """판마다 적는 파일에 시드 셋이 이미 있으면 그 판은 다시 돌리지 않는다. 끝의 깨진 줄(쓰다가 꺼진 줄)은 건너뛰어 그 판은
+    다시 돌릴 판으로 남는다. 셋 다 적혀 있으면 판을 하나도 돌리지 않고 그 기록으로 표를 낸다."""
+    import json
+    import os
+    import tempfile
+    from hra.deck_baseline import SEED_RISK, load_partial, risk
+    rows = [{'first': 'Chosen Warlords', 'final': 'Chosen Warlords', 'place': 1 + i} for i in range(8)]
+    path = os.path.join(tempfile.mkdtemp(), 'risk.jsonl')
+    with open(path, 'w', encoding='utf-8') as f:
+        for k in range(3):
+            f.write(json.dumps([SEED_RISK + k, rows, None]) + '\n')
+        f.write('[%d, [{"first"' % (SEED_RISK + 3))
+    assert sorted(load_partial(path)) == [SEED_RISK, SEED_RISK + 1, SEED_RISK + 2]
+    r = risk(3, partial=path)
+    assert r['games'] == 3 and r['first']['Chosen Warlords']['seats'] == 24
+
+
 if __name__ == '__main__':
     import sys
     for name in sys.argv[1:] or [n for n in list(globals()) if n.endswith('_test')]:
