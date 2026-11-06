@@ -2,6 +2,7 @@
 자기 대전 학습(hra/plan_ai_design.md 5절). 일꾼들이 8자리 모두 최신 신경망으로 판을 돌리고, 본체가 경험 더미에서 배운다.
 따라 하기 자료를 더미 옆에 두고 값 손실과 여백 손실을 계속 건다(데운 신경망이 자기 대전 초반에 무너지지 않게).
 save_every판마다 저장하고 AI 4 대 규칙 4 점검(중간 점검)을 한다. 같은 명령을 다시 돌리면 마지막 저장에서 이어 간다.
+저장 때 경험 더미와 난수 상태도 남겨서(<태그>_resume.npz, 크니 --resume-dir로 OneDrive 밖에 둘 수 있다) 끊김 없이 돈 것과 같게 이어 간다.
 
 실행: python -m hra.selfplay --config both --aux-w 0.1 --seed 1 --games 10000 --jobs 6
 """
@@ -85,7 +86,7 @@ def selfplay_game(job):
 
 
 def train(config, aux_w, seed, games, jobs, save_every=500, eval_games=100, warm=None, demos=None, root='.', tag=None,
-          margin_until=None, margin_keep_deck=False, econ_w=0.3):
+          margin_until=None, margin_keep_deck=False, econ_w=0.3, resume_dir=None):
     """자기 대전 학습. games는 이 이름으로 끝낼 총 판 수다(이어 하기면 남은 만큼만 돈다)."""
     name = tag or f'plan_{config}_s{seed}'
     ck_dir, res_dir = os.path.join(root, 'checkpoints'), os.path.join(root, 'results')
@@ -93,20 +94,24 @@ def train(config, aux_w, seed, games, jobs, save_every=500, eval_games=100, warm
     os.makedirs(res_dir, exist_ok=True)
     ck_path, log_path = os.path.join(ck_dir, f'{name}.pt'), os.path.join(res_dir, f'{name}.json')
     latest, best_path = os.path.join(ck_dir, f'{name}_latest.pt'), os.path.join(ck_dir, f'{name}_best.pt')
+    state_path = os.path.join(resume_dir or ck_dir, f'{name}_resume.npz')  # 경험 더미(최대 약 0.7GB)
     w = weights(config, aux_w, econ_w)
     torch.manual_seed(seed)
     torch.set_num_threads(1)  # 일꾼이 CPU를 다 쓸 때 스레드 둘은 서로 기다리느라 학습 한 걸음이 14배 느려졌다
     rng = np.random.default_rng(seed)
     net, target = PlanNet(), PlanNet()
     opt = torch.optim.Adam(net.parameters(), lr=LR)
-    done, best, updates, curve, resumed = 0, None, 0, [], False
-    if os.path.exists(ck_path):  # 이어 하기(경험 더미는 저장하지 않으니 빈 더미에서 다시 배운다. 곡선에 표시한다)
-        resumed = True
+    done, best, updates, curve, resumed, exact, ck = 0, None, 0, [], False, False, None
+    if os.path.exists(ck_path):  # 이어 하기. 같은 판 수의 경험 더미·난수 상태가 있으면 그대로(exact), 없으면 빈 더미에서 다시(resumed)
         ck = torch.load(ck_path, map_location='cpu', weights_only=True)
         net.load_state_dict(ck['net'])
         target.load_state_dict(ck['target'])
         opt.load_state_dict(ck['opt'])
         done, best, updates = ck['games'], ck['best'], ck['updates']
+        if 'rng' in ck and os.path.exists(state_path):
+            with np.load(state_path) as z:  # 열어 둔 채면 Windows에서 다음 저장의 os.replace가 막힌다
+                exact = int(z['games']) == done
+        resumed = not exact
         if os.path.exists(log_path):
             curve = json.load(open(log_path, encoding='utf-8'))['curve']
     else:
@@ -120,6 +125,13 @@ def train(config, aux_w, seed, games, jobs, save_every=500, eval_games=100, warm
         arrays = np.load(demos)
         demo_replay = Replay.from_arrays({k: arrays[k] for k in KEYS})
     replay, version = Replay(CAPACITY), 0
+    if exact:
+        with np.load(state_path) as z:
+            for key in KEYS:
+                getattr(replay, key)[:len(z[key])] = z[key]
+            replay.n, replay.i = int(z['n']), int(z['i'])
+        rng.bit_generator.state = ck['rng']
+        torch.set_rng_state(ck['torch_rng'])
 
     def publish():
         nonlocal version
@@ -171,12 +183,16 @@ def train(config, aux_w, seed, games, jobs, save_every=500, eval_games=100, warm
             curve.append({'games': done, 'diff': check['diff'], 'se': check['se'], 'check_errors': len(check['errors']),
                           'flip': flips, 'switches': statistics.mean(switches) if switches else None,
                           'loss': statistics.mean(losses) if losses else None, 'errors': errors,
-                          'minutes': (time.time() - start) / 60, 'resumed': resumed,
+                          'minutes': (time.time() - start) / 60, 'resumed': resumed, 'resumed_exact': exact,
                           'margin': margin_weight(done, margin_until)})
-            resumed = False
+            resumed = exact = False
+            tmp = state_path + '.tmp.npz'  # 더미를 먼저 쓴다. 저장본과 판 수가 다르면 이어 할 때 쓰지 않는다
+            np.savez(tmp, games=done, n=replay.n, i=replay.i, **replay.arrays())
+            os.replace(tmp, state_path)
             tmp = ck_path + '.tmp'
             torch.save({'net': net.state_dict(), 'target': target.state_dict(), 'opt': opt.state_dict(),
-                        'games': done, 'best': best, 'updates': updates}, tmp)
+                        'games': done, 'best': best, 'updates': updates, 'rng': rng.bit_generator.state,
+                        'torch_rng': torch.get_rng_state()}, tmp)
             os.replace(tmp, ck_path)
             with open(log_path, 'w', encoding='utf-8') as f:
                 json.dump({'config': config, 'aux_w': aux_w, 'seed': seed, 'margin_until': margin_until,
@@ -205,6 +221,7 @@ def parser():
     ap.add_argument('--margin-keep-deck', action='store_true',
                     help='덱 갈래는 여백 손실을 끝까지 1로 두고 레벨·남길 골드 갈래만 --margin-until대로 줄인다(여백 떼기 시험 2차)')
     ap.add_argument('--econ-w', type=float, default=0.3, help='이자 갈래 가중치(설계 4절 0.3). 0이면 이자 갈래를 끈다(이자 가설 대조)')
+    ap.add_argument('--resume-dir', default=None, help='경험 더미 저장 폴더(이어 하기용, 최대 약 0.7GB). 없으면 checkpoints 폴더')
     return ap
 
 
@@ -239,7 +256,7 @@ def main():
         print('경고:', line, flush=True)
     result = train(args.config, args.aux_w, args.seed, args.games, args.jobs, args.save_every, args.eval_games,
                    warm, demos, tag=args.tag, margin_until=args.margin_until, margin_keep_deck=args.margin_keep_deck,
-                   econ_w=args.econ_w)
+                   econ_w=args.econ_w, resume_dir=args.resume_dir)
     print(result)
 
 

@@ -162,8 +162,9 @@ def selfplay_runs_saves_and_resumes_test():
     log = json.load(open(os.path.join(root, 'results', 'plan_both_s5.json'), encoding='utf-8'))
     assert second['games'] == 3 and [c['games'] for c in log['curve']] == [2, 3]
     assert os.path.exists(os.path.join(root, 'checkpoints', 'plan_both_s5_best.pt'))
-    # 이어 간 뒤의 첫 점검 줄에는 이어 하기 표시가 붙는다(경험 더미는 저장하지 않아 그 구간은 빈 더미에서 다시 배운다)
-    assert [c.get('resumed', False) for c in log['curve']] == [False, True]
+    # 경험 더미와 난수 상태를 저장해 두었으니 이어 간 첫 점검 줄에는 「정확히 이어 감」이 붙고 「빈 더미에서 다시」는 안 붙는다
+    assert [c.get('resumed', False) for c in log['curve']] == [False, False]
+    assert [c.get('resumed_exact', False) for c in log['curve']] == [False, True]
     # 본체는 스레드 하나로 배운다. 일꾼 6개가 CPU를 다 쓸 때 스레드 둘이면 학습 한 걸음이 35ms에서 480ms로 늘어
     # 자기 대전이 1분에 9판으로 막혔다(2026-10-13 측정)
     import torch
@@ -210,6 +211,53 @@ def switching_decks_acts_in_that_round_test():
     kinds = lambda lo, hi: {t[0] for r, t in seat['tokens'] if lo <= r <= hi}
     assert {'2', '3', '5'} <= kinds(10, 10), sorted(kinds(10, 10))   # 갈아탄 라운드: 리롤·사기·바꾸기
     assert '4' in kinds(10, 14)                                        # 그 뒤 벤치가 차면 팔기
+
+
+
+def selfplay_resume_is_exact_test():
+    """끊긴 자기 대전을 같은 명령으로 다시 부르면 저장한 경험 더미·난수 상태에서 이어 가, 끊김 없이 돈 것과 같은 신경망과
+    곡선을 낸다(진행 보상 실험 시드 반복, 2026-11-06: 노트북이 꺼져도 처음부터 다시 돌리지 않으려고). 끊김은 두 번째 점검에서
+    예외로 흉내 낸다(그 구간의 학습은 저장되지 않는다). 저장한 더미가 없으면 예전처럼 빈 더미에서 다시 배우고 곡선에
+    resumed를 적는다."""
+    import json
+    import os
+    import shutil
+    import tempfile
+    import torch
+    import hra.selfplay as sp
+    from hra.collect import collect
+    from hra.plan_net import load
+    demos = os.path.join(tempfile.mkdtemp(), 'demos.npz')
+    collect(1, jobs=1, out=demos)
+    kw = dict(seed=7, games=4, jobs=1, save_every=2, eval_games=1, demos=demos, margin_until=2, margin_keep_deck=True)
+    whole, cut, lost = tempfile.mkdtemp(), tempfile.mkdtemp(), tempfile.mkdtemp()
+    sp.train('value', 0.3, root=whole, **kw)
+    calls, real = [], sp.ab
+
+    def ab_then_crash(*a, **k):
+        calls.append(1)
+        if len(calls) == 2:
+            raise RuntimeError('끊김')
+        return real(*a, **k)
+    sp.ab = ab_then_crash
+    try:
+        sp.train('value', 0.3, root=cut, **kw)
+        raise AssertionError('끊기지 않았다')
+    except RuntimeError:
+        pass
+    finally:
+        sp.ab = real
+    shutil.copytree(cut, lost, dirs_exist_ok=True)
+    os.remove(os.path.join(lost, 'checkpoints', 'plan_value_s7_resume.npz'))
+    sp.train('value', 0.3, root=cut, **kw)
+    sp.train('value', 0.3, root=lost, **kw)
+    net = lambda r: load(os.path.join(r, 'checkpoints', 'plan_value_s7_latest.pt'))[0].state_dict()
+    assert all(torch.equal(x, y) for x, y in zip(net(whole).values(), net(cut).values()))
+    curve = lambda r: json.load(open(os.path.join(r, 'results', 'plan_value_s7.json'), encoding='utf-8'))['curve']
+    same = lambda c: [(x['games'], x['diff'], x['flip'], x['loss']) for x in c]
+    assert same(curve(cut)) == same(curve(whole))
+    assert [x['resumed'] for x in curve(cut)] == [False, False] and [x['resumed_exact'] for x in curve(cut)] == [False, True]
+    assert [x['resumed'] for x in curve(lost)] == [False, True]
 
 
 if __name__ == '__main__':

@@ -438,6 +438,10 @@ def cli_margin_until_reaches_train_test():
         sys.argv += ['--margin-until', '1000']
         sp.main()
         assert got['margin_until'] == 1000
+        assert got['resume_dir'] is None  # 경험 더미 저장 폴더: 주지 않으면 checkpoints 폴더
+        sys.argv += ['--resume-dir', 'D:/resume']
+        sp.main()
+        assert got['resume_dir'] == 'D:/resume'
     finally:
         sp.train = real
 
