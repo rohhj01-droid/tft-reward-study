@@ -111,6 +111,7 @@ def run(cond, s):
             'level': ag['level'], 'floor': ag['floor'], 'end_deck_same': float(end_same), 'end_deck_tv': float(tv),
             'deck_path_changed': bool(end_same < 0.85 or tv > 0.05), 'jump': jump, 'jump_flag': bool(abs(jump) > 2 * jump_se),
             'curve_errors': sum(c['errors'] for c in curve), 'check_errors': sum(c['check_errors'] for c in curve),
+            'resumed_exact': sum(bool(c.get('resumed_exact')) for c in curve),  # 끊겼다가 저장한 더미로 그대로 이어 간 횟수
             'per_game_lg': [lg[x] for x in sorted(lg)]}
 
 
@@ -133,7 +134,8 @@ for (c, s), r in R.items():
           f'덱 맞춘 값 ' + (f'{a[0]:+.4f} ± {a[1]:.4f}' if a else '못 냄') + f' (느린 몫 AI {r["slow_share"]:.2f}·규칙 {r["rule_slow_share"]:.4f}), '
           f'끝 덱 같음 {r["end_deck_same"]:.3f}·차 {r["end_deck_tv"]:.3f}' + (' [덱 경로 바뀜]' if r['deck_path_changed'] else '')
           + f', 3천 판 점검 튐 {r["jump"]:+.2f}' + (' [튐]' if r['jump_flag'] else '') + f', 칸 「{cell(r["ab"], r["level"], r["floor"])}」'
-          + (f', 버린 판 {r["curve_errors"]}' if r['curve_errors'] else ''))
+          + (f', 버린 판 {r["curve_errors"]}' if r['curve_errors'] else '')
+          + (f', 그대로 이어 감 {r["resumed_exact"]}번' if r['resumed_exact'] else ''))
 
 
 def pooled(seeds, key):
