@@ -1,0 +1,244 @@
+{
+ "level_prefix": "probe_rows_level_",
+ "inputs": {
+  "probe_rows_plan_dense_both_s2_latest.json": "fda84a7fb9444869c93c9a5f5bedb55af8c94cbbcada9a943ae40bb7fd46c63f",
+  "probe_rows_level_plan_dense_both_s2_latest.json": "0a016eafdb0fa69030af90a31caafca3aabf7cb5681a02ac252c34f2cce263ca",
+  "probe_rows_frame_plan_dense_both_s2_latest.json": "03282495ccf55e09a3f1cd9151a3ebaa17b6be7dbb3102998a4fda2942e9a7b9",
+  "probe_rows_plan_dense_both_s3_latest.json": "11f2a6272eb9f03a7e5c8cfe05681836bd01198cb2b476c334dca3eb48a0e19b",
+  "probe_rows_level_plan_dense_both_s3_latest.json": "9a2c87f8de74888eb81e3c0771a2a863dab0b6a3020d55ee81e8e6d203c3b519",
+  "probe_rows_frame_plan_dense_both_s3_latest.json": "21a6b9575047be42e5d16eb469a37a2a2ef4f87684440ef6e5e22d8039aea3b8",
+  "probe_rows_plan_dense_both_s4_latest.json": "76d45285f0bf5f0aa72e174b3e5c80ae292421589ca3b2c6d4600c125f569f2d",
+  "probe_rows_level_plan_dense_both_s4_latest.json": "031a595c15ff11974864a531d645e79c7aff464939a5b175996415358331dd68",
+  "probe_rows_frame_plan_dense_both_s4_latest.json": "900dd7207c5e0e88f573752ff415e853cd1eabc270e34652678fb2d64cfdc116",
+  "probe_rows_plan_dense_both_s5_latest.json": "f650f9e7e2ef183e070be8f93a5e2400e8eea1620115b2713b07a5b259ca17d4",
+  "probe_rows_level_plan_dense_both_s5_latest.json": "545887a4000c38f1156e481ce586db9f7082b65cba2a37f36cba4cb905d53a11",
+  "probe_rows_frame_plan_dense_both_s5_latest.json": "aeee227f6a9cfbd6fb36d6ebbd29726460eb534d9d7ccd31714b945e06c21b45",
+  "probe_rows_plan_margin_deck_s2_latest.json": "768ccd601f3ca8cba68474f8b8f4bcd17abb20db5b2d3ae95d2c42b4d2720cbf",
+  "probe_rows_level_plan_margin_deck_s2_latest.json": "154ff47ba0dcd5e9ac0b6284372ed41bf62d37f89f65bb915436d17f839675f7",
+  "probe_rows_frame_plan_margin_deck_s2_latest.json": "96b928371dec59bee7b463f1e99f545dac5a5e45f18852ff46ce3ce81cb1166d",
+  "probe_rows_plan_margin_deck_s3_latest.json": "2b71cb4425270de3c984650001e063664577e47e4da4521b4b335d254aa84f8e",
+  "probe_rows_level_plan_margin_deck_s3_latest.json": "19283c465b3252ff76a332142542f1c2c8942c121a22ef942982268840a835bd",
+  "probe_rows_frame_plan_margin_deck_s3_latest.json": "687fdfaad8b9d07b1306d7402cc69853576d8e9bae7832d38c462dfece238d80",
+  "probe_rows_plan_margin_deck_s4_latest.json": "2295d901e479390962c06caf2f88709628eafb1df56b0a770b5208d69ed4aaa7",
+  "probe_rows_level_plan_margin_deck_s4_latest.json": "69ca948f2838b226ac49aa81627de6260065c0c3c7f27adcac2ce9c2ba79e8ce",
+  "probe_rows_frame_plan_margin_deck_s4_latest.json": "3881a4ddbc335325c5d8387499e72fabf0d513c54dad0cf1a5f6d0ca1b8017c9",
+  "probe_rows_plan_margin_deck_s5_latest.json": "da148b421e61c284aed6a3295f3cec17f30360bddb7e3820bf43af4f665960e8",
+  "probe_rows_level_plan_margin_deck_s5_latest.json": "a8d09eb6802d4f5ca7ad454c2095cfe28219f36a7261781dcdfdea0eab489f31",
+  "probe_rows_frame_plan_margin_deck_s5_latest.json": "1d0fb6f7fe185b0f7a36927024e8215f7274c4881a41757eb67aabc552f52677"
+ },
+ "runs": {
+  "B s2": {
+   "Llv": [
+    -0.29375,
+    0.10698459750828633
+   ],
+   "Lfl": [
+    -0.13625,
+    0.10407801365353378
+   ],
+   "L": [
+    -0.43,
+    0.10836099511889827
+   ],
+   "games": 400,
+   "dropped": [],
+   "level_5_1": [
+    7.007581501137225,
+    7.321533923303835,
+    7.654477611940298
+   ]
+  },
+  "B s3": {
+   "Llv": [
+    -0.32125,
+    0.09838830846119186
+   ],
+   "Lfl": [
+    -0.09,
+    0.09671159616137147
+   ],
+   "L": [
+    -0.41125,
+    0.10104712959678455
+   ],
+   "games": 400,
+   "dropped": [],
+   "level_5_1": [
+    7.010964912280702,
+    7.505747126436781,
+    7.6671408250355615
+   ]
+  },
+  "B s4": {
+   "Llv": [
+    -0.225,
+    0.09963121220840028
+   ],
+   "Lfl": [
+    -0.0575,
+    0.10392297308987844
+   ],
+   "L": [
+    -0.2825,
+    0.10595009642435833
+   ],
+   "games": 400,
+   "dropped": [],
+   "level_5_1": [
+    7.024078254326561,
+    7.143686502177069,
+    7.48150833937636
+   ]
+  },
+  "B s5": {
+   "Llv": [
+    -0.046365914786967416,
+    0.10243789184045657
+   ],
+   "Lfl": [
+    -0.22305764411027568,
+    0.10574271049402435
+   ],
+   "L": [
+    -0.2694235588972431,
+    0.10537401182500855
+   ],
+   "games": 399,
+   "dropped": [
+    700299
+   ],
+   "level_5_1": [
+    7.007380073800738,
+    7.307475317348378,
+    7.762041696621136
+   ]
+  },
+  "2차 s2": {
+   "Llv": [
+    -0.14875,
+    0.09301748073914733
+   ],
+   "Lfl": [
+    -0.50125,
+    0.0958653169359392
+   ],
+   "L": [
+    -0.65,
+    0.09834151021607787
+   ],
+   "games": 400,
+   "dropped": [],
+   "level_5_1": [
+    6.678947368421053,
+    7.619119878603946,
+    7.649379108838568
+   ]
+  },
+  "2차 s3": {
+   "Llv": [
+    -1.0025,
+    0.10141534427855503
+   ],
+   "Lfl": [
+    -0.145,
+    0.08843140156050275
+   ],
+   "L": [
+    -1.1475,
+    0.10105327201264269
+   ],
+   "games": 400,
+   "dropped": [],
+   "level_5_1": [
+    6.681475903614458,
+    7.699346405228758,
+    7.723207948899929
+   ]
+  },
+  "2차 s4": {
+   "Llv": [
+    -0.86625,
+    0.1060244916319552
+   ],
+   "Lfl": [
+    -0.2575,
+    0.10420295107400428
+   ],
+   "L": [
+    -1.12375,
+    0.1055515521874166
+   ],
+   "games": 400,
+   "dropped": [],
+   "level_5_1": [
+    6.464017991004498,
+    7.387843704775688,
+    7.567491166077739
+   ]
+  },
+  "2차 s5": {
+   "Llv": [
+    -0.06125,
+    0.0976140607488989
+   ],
+   "Lfl": [
+    -0.53125,
+    0.09917767703877227
+   ],
+   "L": [
+    -0.5925,
+    0.10161840446156042
+   ],
+   "games": 400,
+   "dropped": [],
+   "level_5_1": [
+    7.070110701107011,
+    7.6594473487677375,
+    7.635493372606775
+   ]
+  }
+ },
+ "means": {
+  "B Llv": [
+   -0.22159147869674184,
+   0.06181578097460087
+  ],
+  "B Lfl": [
+   -0.12670191102756892,
+   0.051306911674851005
+  ],
+  "B L": [
+   -0.3482933897243108,
+   0.05259152912063121
+  ],
+  "2차 Llv": [
+   -0.5196875,
+   0.2416907540079195
+  ],
+  "2차 Lfl": [
+   -0.35875,
+   0.09398719992637296
+  ],
+  "2차 L": [
+   -0.8784375,
+   0.14902930273243803
+  ]
+ },
+ "verdict": {
+  "psi": 0.6362207415769247,
+  "psi_90": [
+   0.34426297636148934,
+   0.92817850679236
+  ],
+  "cell_1": "B의 학습 몫은 레벨 고르기 몫과 남길 골드 고르기 몫이 둘 다 크다 (경계 걸침)",
+  "d_level": 0.29809602130325813,
+  "d_level_se": 0.24947066230404025,
+  "d_learning": 0.5301441102756892,
+  "chi": 0.5622924324260439,
+  "chi_90": [
+   -0.2117975395944657,
+   1.3363824044465535
+  ],
+  "cell_2": "B가 2차보다 덜 잃은 학습 몫은 레벨 고르기와 남길 골드 고르기 둘 다에서 왔다 (경계 걸침)"
+ }
+}
