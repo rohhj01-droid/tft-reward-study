@@ -1,0 +1,240 @@
+{
+ "frame_prefix": "probe_rows_frame_",
+ "inputs": {
+  "probe_rows_plan_dense_both_s2_latest.json": "fda84a7fb9444869c93c9a5f5bedb55af8c94cbbcada9a943ae40bb7fd46c63f",
+  "probe_rows_hybrid_plan_dense_both_s2_latest.json": "4f4aaa3ebeb5996e31a95ecadcfa364c5cbe9d0c5555bbd0246d1a9c5b4f3a5d",
+  "probe_rows_frame_plan_dense_both_s2_latest.json": "03282495ccf55e09a3f1cd9151a3ebaa17b6be7dbb3102998a4fda2942e9a7b9",
+  "probe_rows_plan_dense_both_s3_latest.json": "11f2a6272eb9f03a7e5c8cfe05681836bd01198cb2b476c334dca3eb48a0e19b",
+  "probe_rows_hybrid_plan_dense_both_s3_latest.json": "cf35b1b7521b8a19fb049da71e9e193fe702ae68bb5553c9f15e774415bf032c",
+  "probe_rows_frame_plan_dense_both_s3_latest.json": "21a6b9575047be42e5d16eb469a37a2a2ef4f87684440ef6e5e22d8039aea3b8",
+  "probe_rows_plan_dense_both_s4_latest.json": "76d45285f0bf5f0aa72e174b3e5c80ae292421589ca3b2c6d4600c125f569f2d",
+  "probe_rows_hybrid_plan_dense_both_s4_latest.json": "c745fcb171acece49b799839db4a3d59fb37503b8a657e792dab9e8c6e17df2a",
+  "probe_rows_frame_plan_dense_both_s4_latest.json": "900dd7207c5e0e88f573752ff415e853cd1eabc270e34652678fb2d64cfdc116",
+  "probe_rows_plan_dense_both_s5_latest.json": "f650f9e7e2ef183e070be8f93a5e2400e8eea1620115b2713b07a5b259ca17d4",
+  "probe_rows_hybrid_plan_dense_both_s5_latest.json": "05b03eeca933eba2f38de94715ea1f19f21bdda17640a6f4058e591f36ee0570",
+  "probe_rows_frame_plan_dense_both_s5_latest.json": "aeee227f6a9cfbd6fb36d6ebbd29726460eb534d9d7ccd31714b945e06c21b45",
+  "probe_rows_plan_margin_deck_s2_latest.json": "768ccd601f3ca8cba68474f8b8f4bcd17abb20db5b2d3ae95d2c42b4d2720cbf",
+  "probe_rows_hybrid_plan_margin_deck_s2_latest.json": "62e559e94659e98d0b4a175fbf68f7c6960632ed9d51db6aafd62a7721e27e4c",
+  "probe_rows_frame_plan_margin_deck_s2_latest.json": "96b928371dec59bee7b463f1e99f545dac5a5e45f18852ff46ce3ce81cb1166d",
+  "probe_rows_plan_margin_deck_s3_latest.json": "2b71cb4425270de3c984650001e063664577e47e4da4521b4b335d254aa84f8e",
+  "probe_rows_hybrid_plan_margin_deck_s3_latest.json": "c0a1b4694d14e8e0841ed83a8e02dcf7ef50c9cd8d044f01fb38dfd5b35011f8",
+  "probe_rows_frame_plan_margin_deck_s3_latest.json": "687fdfaad8b9d07b1306d7402cc69853576d8e9bae7832d38c462dfece238d80",
+  "probe_rows_plan_margin_deck_s4_latest.json": "2295d901e479390962c06caf2f88709628eafb1df56b0a770b5208d69ed4aaa7",
+  "probe_rows_hybrid_plan_margin_deck_s4_latest.json": "fada375ef1b9537202615b2bbd4c51dfbadcfb43b6ea4befaf806eea7e47e4bb",
+  "probe_rows_frame_plan_margin_deck_s4_latest.json": "3881a4ddbc335325c5d8387499e72fabf0d513c54dad0cf1a5f6d0ca1b8017c9",
+  "probe_rows_plan_margin_deck_s5_latest.json": "da148b421e61c284aed6a3295f3cec17f30360bddb7e3820bf43af4f665960e8",
+  "probe_rows_hybrid_plan_margin_deck_s5_latest.json": "a593f640e495c8f97501a48cdf79d87068b46c704e64a763c34d1fd65fb7e66a",
+  "probe_rows_frame_plan_margin_deck_s5_latest.json": "1d0fb6f7fe185b0f7a36927024e8215f7274c4881a41757eb67aabc552f52677"
+ },
+ "runs": {
+  "B s2": {
+   "F": [
+    -0.02,
+    0.059936265230028395
+   ],
+   "L": [
+    -0.43,
+    0.10836099511889827
+   ],
+   "LG": [
+    -0.45,
+    0.10646401488843737
+   ],
+   "games": 400,
+   "dropped": [],
+   "level_5_1": [
+    7.007581501137225,
+    7.649888971132494,
+    7.654477611940298
+   ]
+  },
+  "B s3": {
+   "F": [
+    -0.14375,
+    0.06074848384506139
+   ],
+   "L": [
+    -0.41125,
+    0.10104712959678455
+   ],
+   "LG": [
+    -0.555,
+    0.09895411711107872
+   ],
+   "games": 400,
+   "dropped": [],
+   "level_5_1": [
+    7.010964912280702,
+    7.6716417910447765,
+    7.6671408250355615
+   ]
+  },
+  "B s4": {
+   "F": [
+    -0.13,
+    0.061682752084856796
+   ],
+   "L": [
+    -0.2825,
+    0.10595009642435833
+   ],
+   "LG": [
+    -0.4125,
+    0.10493575728937557
+   ],
+   "games": 400,
+   "dropped": [],
+   "level_5_1": [
+    7.024078254326561,
+    7.481561822125814,
+    7.48150833937636
+   ]
+  },
+  "B s5": {
+   "F": [
+    -0.013784461152882205,
+    0.06757610936337705
+   ],
+   "L": [
+    -0.2694235588972431,
+    0.10537401182500855
+   ],
+   "LG": [
+    -0.2832080200501253,
+    0.10361768581731326
+   ],
+   "games": 399,
+   "dropped": [
+    700299
+   ],
+   "level_5_1": [
+    7.007380073800738,
+    7.768283852280955,
+    7.762041696621136
+   ]
+  },
+  "2차 s2": {
+   "F": [
+    -0.0625,
+    0.05954808402272018
+   ],
+   "L": [
+    -0.65,
+    0.09834151021607787
+   ],
+   "LG": [
+    -0.7125,
+    0.09747557691667229
+   ],
+   "games": 400,
+   "dropped": [],
+   "level_5_1": [
+    6.678947368421053,
+    7.649597659107535,
+    7.649379108838568
+   ]
+  },
+  "2차 s3": {
+   "F": [
+    -0.185,
+    0.06602811355361156
+   ],
+   "L": [
+    -1.1475,
+    0.10105327201264269
+   ],
+   "LG": [
+    -1.3325,
+    0.10557093554135862
+   ],
+   "games": 400,
+   "dropped": [],
+   "level_5_1": [
+    6.681475903614458,
+    7.718058529621699,
+    7.723207948899929
+   ]
+  },
+  "2차 s4": {
+   "F": [
+    -0.03,
+    0.0622842139572354
+   ],
+   "L": [
+    -1.12375,
+    0.1055515521874166
+   ],
+   "LG": [
+    -1.15375,
+    0.10947569210401978
+   ],
+   "games": 400,
+   "dropped": [],
+   "level_5_1": [
+    6.464017991004498,
+    7.563291139240507,
+    7.567491166077739
+   ]
+  },
+  "2차 s5": {
+   "F": [
+    -0.10125,
+    0.06167814912063565
+   ],
+   "L": [
+    -0.5925,
+    0.10161840446156042
+   ],
+   "LG": [
+    -0.69375,
+    0.10248278708090289
+   ],
+   "games": 400,
+   "dropped": [],
+   "level_5_1": [
+    7.070110701107011,
+    7.639705882352941,
+    7.635493372606775
+   ]
+  }
+ },
+ "means": {
+  "B F": [
+   -0.07688361528822055,
+   0.03477272958096008
+  ],
+  "B L": [
+   -0.3482933897243108,
+   0.05259152912063121
+  ],
+  "B LG": [
+   -0.4251770050125313,
+   0.056114533363327425
+  ],
+  "2차 F": [
+   -0.09468750000000001,
+   0.03344139385427388
+  ],
+  "2차 L": [
+   -0.8784375,
+   0.14902930273243803
+  ],
+  "2차 LG": [
+   -0.973125,
+   0.1601435716526476
+  ]
+ },
+ "verdict": {
+  "phi": 0.1808273128175277,
+  "phi_90": [
+   0.04629242620249679,
+   0.31536219943255867
+  ],
+  "cell_1": "B의 남은 손해는 대부분 학습 몫이다",
+  "dF": 0.01780388471177946,
+  "dF_se": 0.04824385500172269,
+  "dL": 0.5301441102756892,
+  "d": 0.5479479949874687,
+  "cell_2": "B가 2차보다 덜 잃은 몫은 학습 몫에 있다(틀 몫은 비슷하다)"
+ }
+}
