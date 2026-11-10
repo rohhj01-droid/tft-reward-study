@@ -696,6 +696,33 @@ def none_config_learns_like_a_five_head_net_test():
     assert torch.allclose(wide(x)[:, :5], old(x), atol=1e-5) and torch.count_nonzero(wide(x)[:, 5]) == 0
 
 
+def frame_probe_puts_rule_plan_in_plan_cells_and_holds_it_test():
+    """계획 틀 탐침(meta/inversion/probe_frame.py): 규칙의 (목표 레벨, 남길 골드, 경험치 우선)을 따라 하기 정답과 같은 식으로
+    계획 칸(레벨 그대로/+1/+2, 남길 골드 6칸)에 넣고, 라운드 안에서는 그 라운드 첫 판단을 지킨다(계획 AI처럼 라운드마다 한 번)."""
+    from types import SimpleNamespace
+    from hra.plan_bot import PlanPolicy
+    saved = PlanPolicy.macro
+    try:
+        from meta.inversion.probe_frame import frame_macro, frame_plan
+    finally:
+        PlanPolicy.macro = saved  # 탐침 모듈은 읽힐 때 PlanPolicy.macro를 바꾼다. 다른 검사에 번지지 않게 되돌린다
+    assert frame_plan(7, 30, 8, 20, False) == (8, 20)
+    assert frame_plan(7, 30, 8, 25, False) == (8, 30)    # 가장 가까운 칸, 같으면 앞 칸
+    assert frame_plan(7, 30, 10, None, False) == (9, None)  # 레벨은 +2까지, None은 리롤 안 함
+    assert frame_plan(7, 30, 5, 0, False) == (7, 0)      # 지금 레벨 아래 목표는 그대로
+    assert frame_plan(8, 60, 8, 50, True) == (9, 50)     # 경험치 우선은 목표 9(따라 하기 정답과 같음)
+    assert frame_plan(8, 40, 8, 50, True) == (8, 50)     # 골드 54 아래면 경험치 우선 없음
+    plans = iter([(8, 50, False), (9, 0, False)])
+    seat = SimpleNamespace(target=8, macro_plan=lambda player, game_round: next(plans))
+    p = SimpleNamespace(level=7, gold=60)
+    assert frame_macro(seat, p, 10) == '1'  # 목표 8까지 경험치
+    p.level = 8
+    assert frame_macro(seat, p, 10) == '2'  # 같은 라운드: 첫 계획(남길 골드 50)을 지켜 52 이상이면 리롤
+    p.gold = 51
+    assert frame_macro(seat, p, 10) == '0'  # 규칙을 다시 묻지 않는다(두 번째 답은 다음 라운드 몫)
+    assert frame_macro(seat, p, 11) == '1'  # 새 라운드: 규칙의 새 목표 9
+
+
 if __name__ == '__main__':
     import sys
     for name in sys.argv[1:] or [n for n in list(globals()) if n.endswith('_test')]:
