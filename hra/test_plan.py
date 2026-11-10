@@ -723,6 +723,30 @@ def frame_probe_puts_rule_plan_in_plan_cells_and_holds_it_test():
     assert frame_macro(seat, p, 11) == '1'  # 새 라운드: 규칙의 새 목표 9
 
 
+
+def level_probe_takes_rule_level_cell_and_net_floor_test():
+    """학습 몫 가르기 탐침(meta/inversion/probe_level.py): 레벨은 계획 틀 탐침과 같은 식으로 규칙의 목표를 계획 칸에 넣어 그
+    라운드 첫 판단을 지키고, 남길 골드는 계획기가 라운드 시작에 고른 값(self.floor)을 쓴다."""
+    from types import SimpleNamespace
+    from hra.plan_bot import PlanPolicy
+    saved = PlanPolicy.macro
+    try:
+        from meta.inversion.probe_level import level_macro
+    finally:
+        PlanPolicy.macro = saved  # 탐침 모듈은 읽힐 때 PlanPolicy.macro를 바꾼다. 다른 검사에 번지지 않게 되돌린다
+    plans = iter([(8, 0, False), (9, 0, False)])
+    seat = SimpleNamespace(target=7, floor=50, macro_plan=lambda player, game_round: next(plans))
+    p = SimpleNamespace(level=7, gold=60)
+    assert level_macro(seat, p, 10) == '1'  # 규칙 목표 8까지 경험치(계획기의 목표 7은 안 쓴다)
+    p.level = 8
+    assert level_macro(seat, p, 10) == '2'  # 남길 골드는 계획기의 50: 52 이상이면 리롤
+    p.gold = 51
+    assert level_macro(seat, p, 10) == '0'  # 규칙의 0이 아니라 계획기의 50을 지키고, 규칙을 다시 묻지 않는다
+    seat.floor = None
+    assert level_macro(seat, p, 11) == '1'  # 새 라운드: 규칙의 새 목표 9
+    p.level = 9
+    assert level_macro(seat, p, 11) == '0'  # 계획기가 리롤 안 함을 골랐으면 리롤하지 않는다
+
 if __name__ == '__main__':
     import sys
     for name in sys.argv[1:] or [n for n in list(globals()) if n.endswith('_test')]:
