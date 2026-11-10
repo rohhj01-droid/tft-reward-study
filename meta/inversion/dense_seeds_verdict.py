@@ -20,6 +20,9 @@ SEEDS = [int(x) for x in sys.argv[3].split(',')]
 INV, RES, CK = os.path.join(ROOT, 'meta', 'inversion'), os.path.join(ROOT, 'results'), os.path.join(ROOT, 'checkpoints')
 SLOW = {2, 5, 8, 13, 14, 19, 20, 21, 24, 25, 26, 27}  # 실행기 덱 표(1부터 번호)의 느린 리롤 덱 12개
 W_SLOW, MIN_SEATS, MARGIN = 0.28, 100, 0.30
+# 시뮬레이터가 멈춰 버린 탐침 판(그 실행의 두 탐침에서 같이 빼고 짝짓는다). 11/10 B 시드 5 본래 탐침 700299가 june 리 신 스킬
+# (ability.py leesin, 대상 칸이 목록에 없음)에서 멈췄고 혼자 다시 돌려도 같았다. 유저가 결과 전에 「그 한 판만 빼고 셈」을 골랐다.
+EXCLUDE = {('B', 5): {700299}}
 THR = {2: 2.353, 4: 2.262}  # 조건마다 새 시드 2개: t(자유도 3) 한쪽 5%; 4개(시드 4·5를 더한 2단계): t(자유도 9) 한쪽 2.5%
 CFG = {'A': 'value', 'B': 'both', '2차': 'none'}
 STEM = {'A': 'plan_dense_value', 'B': 'plan_dense_both', '2차': 'plan_margin_deck'}
@@ -41,15 +44,16 @@ def read(path):
     return raw
 
 
-def probe(path):
+def probe(path, exclude=frozenset()):
     d = json.loads(read(path))
-    assert not d['errors'] and d['games'] == 400, (path, d['errors'])
+    assert {e[0] for e in d['errors']} <= exclude and d['games'] == 400, (path, d['errors'])
+    d['rows'] = [r for r in d['rows'] if r['seed'] not in exclude]
     assert d['weights'] == d['saved_weights'], f'{path}: 가중치를 덮어쓴 탐침이다'
     rows = {(r['seed'], r['seat']): r for r in d['rows']}
     by = {}
     for r in d['rows']:
         by.setdefault(int(r['seed']), {'ai': [], 'rule': []})[r['kind']].append(r['place'])
-    assert sorted(by) == list(range(700000, 700400)), f'{path}: 시드가 빠졌다'
+    assert sorted(by) == sorted(set(range(700000, 700400)) - exclude), f'{path}: 시드가 빠졌다'
     assert all(len(v['ai']) == 4 and len(v['rule']) == 4 for v in by.values()), path
     return d, rows, {s: statistics.mean(v['rule']) - statistics.mean(v['ai']) for s, v in by.items()}
 
@@ -65,7 +69,8 @@ def run(cond, s):
     missing = [os.path.relpath(p, ROOT) for p in paths if not os.path.exists(p)]
     if missing:
         return {'missing': missing}
-    (dp, op, base), (dh, oh, hyb) = probe(paths[0]), probe(paths[1])
+    ex = EXCLUDE.get((cond, s), frozenset())
+    (dp, op, base), (dh, oh, hyb) = probe(paths[0], ex), probe(paths[1], ex)
     assert dp['net'] == dh['net'] and dp['net'].endswith(f'{tag}_latest.pt'), (dp['net'], dh['net'])
     cj = json.loads(read(paths[3]))
     assert (cj['config'], cj['seed'], cj['margin_until'], cj['margin_keep_deck'], cj.get('econ_w', 0.3)) == \
@@ -94,7 +99,9 @@ def run(cond, s):
         return W_SLOW * (w * seat_v * slow).sum() / (w * slow).sum() + (1 - W_SLOW) * (w * seat_v * ~slow).sum() / (w * ~slow).sum()
     if min(n_slow, n_fast) >= MIN_SEATS:
         rng = np.random.default_rng(0)
-        boots = [adj(np.bincount(rng.integers(0, 400, 400), minlength=400)[game].astype(float)) for _ in range(1000)]
+        present = np.unique(game)  # 판을 뺀 실행은 남은 판에서만 다시 뽑는다(400판이면 예전 셈과 같다)
+        boots = [adj(np.bincount(present[rng.integers(0, len(present), len(present))], minlength=400)[game].astype(float))
+                 for _ in range(1000)]
         adjusted = (float(adj(np.ones(len(ai)))), float(np.std(boots, ddof=1)))
     else:
         adjusted = None  # 층 하나가 100자리 미만: 이 실행의 맞춘 값은 못 낸다
@@ -112,7 +119,7 @@ def run(cond, s):
             'deck_path_changed': bool(end_same < 0.85 or tv > 0.05), 'jump': jump, 'jump_flag': bool(abs(jump) > 2 * jump_se),
             'curve_errors': sum(c['errors'] for c in curve), 'check_errors': sum(c['check_errors'] for c in curve),
             'resumed_exact': sum(bool(c.get('resumed_exact')) for c in curve),  # 끊겼다가 저장한 더미로 그대로 이어 간 횟수
-            'per_game_lg': [lg[x] for x in sorted(lg)]}
+            'per_game_lg': [lg[x] for x in sorted(lg)], 'excluded_games': sorted(ex)}
 
 
 def cell(ab, level, floor):  # 처음 판정 표(dense_verdict.py와 같음)
@@ -135,7 +142,8 @@ for (c, s), r in R.items():
           f'끝 덱 같음 {r["end_deck_same"]:.3f}·차 {r["end_deck_tv"]:.3f}' + (' [덱 경로 바뀜]' if r['deck_path_changed'] else '')
           + f', 3천 판 점검 튐 {r["jump"]:+.2f}' + (' [튐]' if r['jump_flag'] else '') + f', 칸 「{cell(r["ab"], r["level"], r["floor"])}」'
           + (f', 버린 판 {r["curve_errors"]}' if r['curve_errors'] else '')
-          + (f', 그대로 이어 감 {r["resumed_exact"]}번' if r['resumed_exact'] else ''))
+          + (f', 그대로 이어 감 {r["resumed_exact"]}번' if r['resumed_exact'] else '')
+          + (f', 뺀 탐침 판 {r["excluded_games"]}' if r['excluded_games'] else ''))
 
 
 def pooled(seeds, key):
