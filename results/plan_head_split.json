@@ -1,0 +1,552 @@
+{
+ "check": false,
+ "stems": {
+  "2차": "plan_margin_deck",
+  "B": "plan_dense_both",
+  "시너지만": "plan_dense_synergy",
+  "유닛 수만": "plan_dense_units"
+ },
+ "inputs": {
+  "probe_rows_plan_margin_deck_s2_latest.json": "768ccd601f3ca8cba68474f8b8f4bcd17abb20db5b2d3ae95d2c42b4d2720cbf",
+  "probe_rows_hybrid_plan_margin_deck_s2_latest.json": "62e559e94659e98d0b4a175fbf68f7c6960632ed9d51db6aafd62a7721e27e4c",
+  "probe_rows_frame_plan_margin_deck_s2_latest.json": "96b928371dec59bee7b463f1e99f545dac5a5e45f18852ff46ce3ce81cb1166d",
+  "probe_rows_plan_margin_deck_s3_latest.json": "2b71cb4425270de3c984650001e063664577e47e4da4521b4b335d254aa84f8e",
+  "probe_rows_hybrid_plan_margin_deck_s3_latest.json": "c0a1b4694d14e8e0841ed83a8e02dcf7ef50c9cd8d044f01fb38dfd5b35011f8",
+  "probe_rows_frame_plan_margin_deck_s3_latest.json": "687fdfaad8b9d07b1306d7402cc69853576d8e9bae7832d38c462dfece238d80",
+  "probe_rows_plan_margin_deck_s4_latest.json": "2295d901e479390962c06caf2f88709628eafb1df56b0a770b5208d69ed4aaa7",
+  "probe_rows_hybrid_plan_margin_deck_s4_latest.json": "fada375ef1b9537202615b2bbd4c51dfbadcfb43b6ea4befaf806eea7e47e4bb",
+  "probe_rows_frame_plan_margin_deck_s4_latest.json": "3881a4ddbc335325c5d8387499e72fabf0d513c54dad0cf1a5f6d0ca1b8017c9",
+  "probe_rows_plan_margin_deck_s5_latest.json": "da148b421e61c284aed6a3295f3cec17f30360bddb7e3820bf43af4f665960e8",
+  "probe_rows_hybrid_plan_margin_deck_s5_latest.json": "a593f640e495c8f97501a48cdf79d87068b46c704e64a763c34d1fd65fb7e66a",
+  "probe_rows_frame_plan_margin_deck_s5_latest.json": "1d0fb6f7fe185b0f7a36927024e8215f7274c4881a41757eb67aabc552f52677",
+  "probe_rows_plan_dense_both_s2_latest.json": "fda84a7fb9444869c93c9a5f5bedb55af8c94cbbcada9a943ae40bb7fd46c63f",
+  "probe_rows_hybrid_plan_dense_both_s2_latest.json": "4f4aaa3ebeb5996e31a95ecadcfa364c5cbe9d0c5555bbd0246d1a9c5b4f3a5d",
+  "probe_rows_frame_plan_dense_both_s2_latest.json": "03282495ccf55e09a3f1cd9151a3ebaa17b6be7dbb3102998a4fda2942e9a7b9",
+  "probe_rows_plan_dense_both_s3_latest.json": "11f2a6272eb9f03a7e5c8cfe05681836bd01198cb2b476c334dca3eb48a0e19b",
+  "probe_rows_hybrid_plan_dense_both_s3_latest.json": "cf35b1b7521b8a19fb049da71e9e193fe702ae68bb5553c9f15e774415bf032c",
+  "probe_rows_frame_plan_dense_both_s3_latest.json": "21a6b9575047be42e5d16eb469a37a2a2ef4f87684440ef6e5e22d8039aea3b8",
+  "probe_rows_plan_dense_both_s4_latest.json": "76d45285f0bf5f0aa72e174b3e5c80ae292421589ca3b2c6d4600c125f569f2d",
+  "probe_rows_hybrid_plan_dense_both_s4_latest.json": "c745fcb171acece49b799839db4a3d59fb37503b8a657e792dab9e8c6e17df2a",
+  "probe_rows_frame_plan_dense_both_s4_latest.json": "900dd7207c5e0e88f573752ff415e853cd1eabc270e34652678fb2d64cfdc116",
+  "probe_rows_plan_dense_both_s5_latest.json": "f650f9e7e2ef183e070be8f93a5e2400e8eea1620115b2713b07a5b259ca17d4",
+  "probe_rows_hybrid_plan_dense_both_s5_latest.json": "05b03eeca933eba2f38de94715ea1f19f21bdda17640a6f4058e591f36ee0570",
+  "probe_rows_frame_plan_dense_both_s5_latest.json": "aeee227f6a9cfbd6fb36d6ebbd29726460eb534d9d7ccd31714b945e06c21b45",
+  "probe_rows_plan_dense_synergy_s2_latest.json": "d064c55fd78980a5ed4f7e2b324b900353552d339f3636cda1226b77e3124052",
+  "probe_rows_hybrid_plan_dense_synergy_s2_latest.json": "f72f3820ec19d49b8dec3a173110dc154d494430503d669dc51f82adea286c2c",
+  "probe_rows_frame_plan_dense_synergy_s2_latest.json": "984f6b35ae0429f5ef7e9ef8441d475f54c69ff15faf4161170142bb4faac66b",
+  "probe_rows_plan_dense_synergy_s3_latest.json": "061d9669df91ccafc1abd424a3efb89f8d5ca641a5a9a36fc10378cb37bee3ef",
+  "probe_rows_hybrid_plan_dense_synergy_s3_latest.json": "9afd37304f4e5eddc029eab36c2d19f66363856fe91e1f7dfc464edb87b27462",
+  "probe_rows_frame_plan_dense_synergy_s3_latest.json": "7b9e92ee9c983befa63d1ecf4ce9c618a034ab859fad0ed250d026bf90974887",
+  "probe_rows_plan_dense_synergy_s4_latest.json": "230a3796991535d6f33bb9abe70c8af6b46bf038997e6819708bfa733741fab4",
+  "probe_rows_hybrid_plan_dense_synergy_s4_latest.json": "a7b67134ece0f97a302e03be29ed3290fdf06c17e5dd71d706c8c8713d1a131c",
+  "probe_rows_frame_plan_dense_synergy_s4_latest.json": "697ba76a0b3f11fbd63c2096a0223a50a9a92f927541147c486873df104c8939",
+  "probe_rows_plan_dense_synergy_s5_latest.json": "e88b1c470b32c5117920a12955d785ea1772d73222af2bbc7a5da8189cc7f3e5",
+  "probe_rows_hybrid_plan_dense_synergy_s5_latest.json": "a5966dfbfff32df8ae5d39f88fe12b6f815c1505ee6a48cc1f45ec878588813d",
+  "probe_rows_frame_plan_dense_synergy_s5_latest.json": "9b56412dfc99b36745e06100d5c22446e5756322c5b6972d5a0cfc16e821f484",
+  "probe_rows_plan_dense_units_s2_latest.json": "9cca5cf7fca0c2c96fde1f50d81b7f2b8f847fb6e783ed7d91bc5400a62f2199",
+  "probe_rows_hybrid_plan_dense_units_s2_latest.json": "f3f9f253f84386338223cb871aa1b0639bb9766971bac74d809a61e77a030ad3",
+  "probe_rows_frame_plan_dense_units_s2_latest.json": "df42e4a92bdd8c59443f503db806f4e90fe8dabf7ee0d6b14aa878f6140ba943",
+  "probe_rows_plan_dense_units_s3_latest.json": "ca3d301e7981ed50fb1d4181718c9c6d73430d424c698424666c186931d05cab",
+  "probe_rows_hybrid_plan_dense_units_s3_latest.json": "ded525c20a3151016a8d33bbb5f8ef4bbb9e5967c5ed64e431648e319616a372",
+  "probe_rows_frame_plan_dense_units_s3_latest.json": "3579086a083414935e6f6131663dc45408ac578a77f78c57ce614daf4826741f",
+  "probe_rows_plan_dense_units_s4_latest.json": "83619c236310fb0a6d755396713110f01350752a0d4813b09ece1d0e2b44d667",
+  "probe_rows_hybrid_plan_dense_units_s4_latest.json": "d84469b2d0656a5ac3c653629f94032a8726779c5e603e34e87bb44909aab35e",
+  "probe_rows_frame_plan_dense_units_s4_latest.json": "37f5aad9e32c22f11f510f4e0905225acd4b8449dc569f6638734d809908e716",
+  "probe_rows_plan_dense_units_s5_latest.json": "e5fd3cb1112dfc82447972943298837b1b37adc74ef6f030a9015d2fa1499c14",
+  "probe_rows_hybrid_plan_dense_units_s5_latest.json": "ed4bfd185cf0de07b7219dd73052e6e166065a1c6f865393ebd887e9dd08caa3",
+  "probe_rows_frame_plan_dense_units_s5_latest.json": "aa74bdbe0c96c0b2b6187955a52c7702b922470a4ca954a859465f9e7f574ed3"
+ },
+ "runs": {
+  "2차 s2": {
+   "F": [
+    -0.0625,
+    0.05954808402272018
+   ],
+   "L": [
+    -0.65,
+    0.09834151021607787
+   ],
+   "LG": [
+    -0.7125,
+    0.09747557691667229
+   ],
+   "AB": [
+    -0.5425,
+    0.08663066174216097
+   ],
+   "games": 400,
+   "dropped": [],
+   "level_5_1": [
+    6.678947368421053,
+    7.649597659107535,
+    7.649379108838568
+   ]
+  },
+  "2차 s3": {
+   "F": [
+    -0.185,
+    0.06602811355361156
+   ],
+   "L": [
+    -1.1475,
+    0.10105327201264269
+   ],
+   "LG": [
+    -1.3325,
+    0.10557093554135862
+   ],
+   "AB": [
+    -1.1725,
+    0.07760099329519567
+   ],
+   "games": 400,
+   "dropped": [],
+   "level_5_1": [
+    6.681475903614458,
+    7.718058529621699,
+    7.723207948899929
+   ]
+  },
+  "2차 s4": {
+   "F": [
+    -0.03,
+    0.0622842139572354
+   ],
+   "L": [
+    -1.12375,
+    0.1055515521874166
+   ],
+   "LG": [
+    -1.15375,
+    0.10947569210401978
+   ],
+   "AB": [
+    -0.94625,
+    0.08260689797306173
+   ],
+   "games": 400,
+   "dropped": [],
+   "level_5_1": [
+    6.464017991004498,
+    7.563291139240507,
+    7.567491166077739
+   ]
+  },
+  "2차 s5": {
+   "F": [
+    -0.10125,
+    0.06167814912063565
+   ],
+   "L": [
+    -0.5925,
+    0.10161840446156042
+   ],
+   "LG": [
+    -0.69375,
+    0.10248278708090289
+   ],
+   "AB": [
+    -0.54,
+    0.08085383947838216
+   ],
+   "games": 400,
+   "dropped": [],
+   "level_5_1": [
+    7.070110701107011,
+    7.639705882352941,
+    7.635493372606775
+   ]
+  },
+  "B s2": {
+   "F": [
+    -0.02,
+    0.059936265230028395
+   ],
+   "L": [
+    -0.43,
+    0.10836099511889827
+   ],
+   "LG": [
+    -0.45,
+    0.10646401488843737
+   ],
+   "AB": [
+    -0.5325,
+    0.08782663702104314
+   ],
+   "games": 400,
+   "dropped": [],
+   "level_5_1": [
+    7.007581501137225,
+    7.649888971132494,
+    7.654477611940298
+   ]
+  },
+  "B s3": {
+   "F": [
+    -0.14375,
+    0.06074848384506139
+   ],
+   "L": [
+    -0.41125,
+    0.10104712959678455
+   ],
+   "LG": [
+    -0.555,
+    0.09895411711107872
+   ],
+   "AB": [
+    -0.3875,
+    0.08865598730606429
+   ],
+   "games": 400,
+   "dropped": [],
+   "level_5_1": [
+    7.010964912280702,
+    7.6716417910447765,
+    7.6671408250355615
+   ]
+  },
+  "B s4": {
+   "F": [
+    -0.13,
+    0.061682752084856796
+   ],
+   "L": [
+    -0.2825,
+    0.10595009642435833
+   ],
+   "LG": [
+    -0.4125,
+    0.10493575728937557
+   ],
+   "AB": [
+    -0.46625,
+    0.08424790274268763
+   ],
+   "games": 400,
+   "dropped": [],
+   "level_5_1": [
+    7.024078254326561,
+    7.481561822125814,
+    7.48150833937636
+   ]
+  },
+  "B s5": {
+   "F": [
+    -0.013784461152882205,
+    0.06757610936337705
+   ],
+   "L": [
+    -0.2694235588972431,
+    0.10537401182500855
+   ],
+   "LG": [
+    -0.2832080200501253,
+    0.10361768581731326
+   ],
+   "AB": [
+    -0.09523809523809523,
+    0.08331781391165484
+   ],
+   "games": 399,
+   "dropped": [
+    700299
+   ],
+   "level_5_1": [
+    7.007380073800738,
+    7.768283852280955,
+    7.762041696621136
+   ]
+  },
+  "시너지만 s2": {
+   "F": [
+    -0.045,
+    0.0643158520277477
+   ],
+   "L": [
+    -1.10125,
+    0.10518063514151228
+   ],
+   "LG": [
+    -1.14625,
+    0.10278680685237414
+   ],
+   "AB": [
+    -0.99375,
+    0.08302830295434621
+   ],
+   "games": 400,
+   "dropped": [],
+   "level_5_1": [
+    6.7845303867403315,
+    7.367668097281832,
+    7.371119133574007
+   ]
+  },
+  "시너지만 s3": {
+   "F": [
+    -0.12625,
+    0.06437351721045785
+   ],
+   "L": [
+    -0.935,
+    0.10517052628468442
+   ],
+   "LG": [
+    -1.06125,
+    0.10819345244343151
+   ],
+   "AB": [
+    -0.83625,
+    0.08420066343597088
+   ],
+   "games": 400,
+   "dropped": [],
+   "level_5_1": [
+    6.725185185185185,
+    7.825806451612904,
+    7.827312138728324
+   ]
+  },
+  "시너지만 s4": {
+   "F": [
+    -0.01,
+    0.06339694734236678
+   ],
+   "L": [
+    -0.4175,
+    0.11017409042284512
+   ],
+   "LG": [
+    -0.4275,
+    0.11133720991104881
+   ],
+   "AB": [
+    -0.56875,
+    0.0862167583320855
+   ],
+   "games": 400,
+   "dropped": [],
+   "level_5_1": [
+    6.754545454545455,
+    7.189705882352941,
+    7.193500738552437
+   ]
+  },
+  "시너지만 s5": {
+   "F": [
+    0.0175,
+    0.05780972483686707
+   ],
+   "L": [
+    -0.475,
+    0.10322949346384494
+   ],
+   "LG": [
+    -0.4575,
+    0.0985889640608241
+   ],
+   "AB": [
+    -0.9175,
+    0.08379985330257944
+   ],
+   "games": 400,
+   "dropped": [],
+   "level_5_1": [
+    6.863325740318906,
+    7.205166051660517,
+    7.184287812041116
+   ]
+  },
+  "유닛 수만 s2": {
+   "F": [
+    -0.0425,
+    0.06096948063516948
+   ],
+   "L": [
+    -0.81625,
+    0.09139836703953597
+   ],
+   "LG": [
+    -0.85875,
+    0.09431753860747444
+   ],
+   "AB": [
+    -0.5775,
+    0.08477810857901696
+   ],
+   "games": 400,
+   "dropped": [],
+   "level_5_1": [
+    6.4700222057735015,
+    7.522561863173217,
+    7.511272727272727
+   ]
+  },
+  "유닛 수만 s3": {
+   "F": [
+    -0.05875,
+    0.06529139306809076
+   ],
+   "L": [
+    -0.73875,
+    0.09649072361169113
+   ],
+   "LG": [
+    -0.7975,
+    0.09981491330103551
+   ],
+   "AB": [
+    -0.99875,
+    0.08253689746020194
+   ],
+   "games": 400,
+   "dropped": [],
+   "level_5_1": [
+    6.506706408345752,
+    7.795118343195266,
+    7.792799412196914
+   ]
+  },
+  "유닛 수만 s4": {
+   "F": [
+    -0.10375,
+    0.0684570541610653
+   ],
+   "L": [
+    -0.46125,
+    0.10925669846351696
+   ],
+   "LG": [
+    -0.565,
+    0.10757086607474245
+   ],
+   "AB": [
+    -0.02625,
+    0.08583857230282589
+   ],
+   "games": 400,
+   "dropped": [],
+   "level_5_1": [
+    6.8319148936170215,
+    7.843423799582464,
+    7.840782122905028
+   ]
+  },
+  "유닛 수만 s5": {
+   "F": [
+    0.0775,
+    0.07187941988153679
+   ],
+   "L": [
+    -0.8975,
+    0.10681060639794974
+   ],
+   "LG": [
+    -0.82,
+    0.10609673082016627
+   ],
+   "AB": [
+    -0.745,
+    0.08687306731410721
+   ],
+   "games": 400,
+   "dropped": [],
+   "level_5_1": [
+    6.757267441860465,
+    7.7114707952146375,
+    7.708710801393728
+   ]
+  }
+ },
+ "means": {
+  "2차 L": [
+   -0.8784375,
+   0.14902930273243803
+  ],
+  "2차 F": [
+   -0.09468750000000001,
+   0.03344139385427388
+  ],
+  "2차 LG": [
+   -0.973125,
+   0.1601435716526476
+  ],
+  "2차 AB": [
+   -0.8003125,
+   0.15653837971218648
+  ],
+  "B L": [
+   -0.3482933897243108,
+   0.05259152912063121
+  ],
+  "B F": [
+   -0.07688361528822055,
+   0.03477272958096008
+  ],
+  "B LG": [
+   -0.4251770050125313,
+   0.056114533363327425
+  ],
+  "B AB": [
+   -0.37037202380952383,
+   0.09638037196508192
+  ],
+  "시너지만 L": [
+   -0.7321875,
+   0.16894616299159723
+  ],
+  "시너지만 F": [
+   -0.0409375,
+   0.031237005177179925
+  ],
+  "시너지만 LG": [
+   -0.7731250000000001,
+   0.19177114453170477
+  ],
+  "시너지만 AB": [
+   -0.8290625,
+   0.09253711952283437
+  ],
+  "유닛 수만 L": [
+   -0.7284375,
+   0.09477546793826272
+  ],
+  "유닛 수만 F": [
+   -0.031875,
+   0.03869115155088219
+  ],
+  "유닛 수만 LG": [
+   -0.7603125,
+   0.06632145321274256
+  ],
+  "유닛 수만 AB": [
+   -0.586875,
+   0.2059597073256482
+  ]
+ },
+ "verdict": {
+  "den": 0.5301441102756892,
+  "시너지만": {
+   "num": 0.14625,
+   "se": 0.22528324185899848,
+   "ratio": 0.27586838590726975,
+   "ratio_90": [
+    -0.42316971651611707,
+    0.9749064883306566
+   ],
+   "cell": "시너지 갈래 혼자로는 거의 못 줄인다 (경계 걸침)"
+  },
+  "유닛 수만": {
+   "num": 0.15000000000000002,
+   "se": 0.17661291684311578,
+   "ratio": 0.28294193426386643,
+   "ratio_90": [
+    -0.26507556244253466,
+    0.8309594309702676
+   ],
+   "cell": "유닛 수 갈래 혼자로는 거의 못 줄인다 (경계 걸침)"
+  }
+ }
+}
