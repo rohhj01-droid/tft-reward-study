@@ -7,7 +7,7 @@ import json
 import os
 import tempfile
 
-from hra.spend_lesson import lesson, lesson_game, lesson_plan, run, summary
+from hra.spend_lesson import lesson, lesson_game, lesson_plan, line, run, summary
 from hra.plan_bot import safe_play
 from meta.lobby import N_PLAYERS
 
@@ -95,6 +95,11 @@ def summary_reads_level_8_arrival_from_the_curve_test():
     late = summary([g])['groups']['late']
     assert late['lesson']['lv8_slot'] == 22 and late['lesson']['lv8_gold'] == 45
     assert late['rule']['lv8_slot'] == 19 and late['rule']['lv8_gold'] == 12
+
+
+def last_line_prints_without_a_standard_error_for_a_single_game_test():
+    assert line({'arm': 'roll', 'games': 1, 'errors': [], 'diff': 0.5, 'se': None}) == 'roll 판 1 오류 0 차 +0.500'
+    assert line({'arm': 'full', 'games': 400, 'errors': [[1, 'x']], 'diff': -0.25, 'se': 0.0871}) == 'full 판 400 오류 1 차 -0.250 ± 0.087'
 
 
 def tracked_rule_seats_play_the_same_game_as_plain_rule_seats_test():

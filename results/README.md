@@ -5511,7 +5511,7 @@ python -m hra.deck_baseline baseline --risk results/deck_risk_rule_920e0be.json 
 ```bash
 python meta/inversion/diag_spend.py meta/inversion/diag_flex_rows_syn.json   # 아래 「먼저 본 것」 1. 이미 있는 기록에서 센다(새 판 없음)
 python meta/inversion/diag_cap.py 8 <결과.json>                                # 「먼저 본 것」 2. 행동 상한(규칙 봇 8명 8판)
-python -m hra.test_spend_lesson                                               # 검사 13개
+python -m hra.test_spend_lesson                                               # 검사 14개
 python -m hra.spend_lesson --arm full --games 400 --jobs 2 --partial logs/spend_lesson_full.partial.jsonl --out results/spend_lesson_full.json
 python -m hra.spend_lesson --arm roll --games 400 --jobs 2 --partial logs/spend_lesson_roll.partial.jsonl --out results/spend_lesson_roll.json
 ```

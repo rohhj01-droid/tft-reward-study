@@ -188,6 +188,12 @@ def run(arm, games, jobs=None, seed0=SEED_SPEND, partial=None):
             **summary(good), 'rows': good}
 
 
+def line(res):
+    """끝에 찍는 한 줄. 판이 하나면 표준오차가 없다."""
+    se = '' if res['se'] is None else f" ± {res['se']:.3f}"
+    return f"{res['arm']} 판 {res['games']} 오류 {len(res['errors'])} 차 {res['diff']:+.3f}{se}"
+
+
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
     ap.add_argument('--arm', choices=('full', 'roll'), required=True)
@@ -199,5 +205,4 @@ if __name__ == '__main__':
     a = ap.parse_args()
     res = run(a.arm, a.games, a.jobs, a.seed0, a.partial)
     json.dump(res, open(a.out, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
-    print(a.arm, '판', res['games'], '오류', len(res['errors']), f"차 {res['diff']:+.3f} ± {res['se']:.3f}",
-          {n: (g['place_diff'], g['place_se']) for n, g in res['groups'].items()})
+    print(line(res), {n: (g['place_diff'], g['place_se']) for n, g in res['groups'].items()})
