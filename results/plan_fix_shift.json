@@ -1,0 +1,540 @@
+{
+ "check": false,
+ "inputs": {
+  "probe_rows_plan_dense_both_s2_latest.json": "fda84a7fb9444869c93c9a5f5bedb55af8c94cbbcada9a943ae40bb7fd46c63f",
+  "probe_rows_frame_plan_dense_both_s2_latest.json": "03282495ccf55e09a3f1cd9151a3ebaa17b6be7dbb3102998a4fda2942e9a7b9",
+  "probe_rows_deadfix_plan_dense_both_s2_latest.json": "b9eff879f6da9b94a2477a0bca37cf74f370255a323dba625656445a75f5b5ac",
+  "probe_rows_frame_deadfix_plan_dense_both_s2_latest.json": "3349dc3322616972cdfed78fa7bf85d55f5d777377715687d64173942f348ba2",
+  "probe_rows_plan_dense_both_s3_latest.json": "11f2a6272eb9f03a7e5c8cfe05681836bd01198cb2b476c334dca3eb48a0e19b",
+  "probe_rows_frame_plan_dense_both_s3_latest.json": "21a6b9575047be42e5d16eb469a37a2a2ef4f87684440ef6e5e22d8039aea3b8",
+  "probe_rows_deadfix_plan_dense_both_s3_latest.json": "819ab94c940bccfb253e16fdcfca29f2b2255a10ee6fa598d361bba9be099252",
+  "probe_rows_frame_deadfix_plan_dense_both_s3_latest.json": "75bc82900bfa0d79bd531f47cd5660eca303bf007bda1f023f14b9a04ae97625",
+  "probe_rows_plan_dense_both_s4_latest.json": "76d45285f0bf5f0aa72e174b3e5c80ae292421589ca3b2c6d4600c125f569f2d",
+  "probe_rows_frame_plan_dense_both_s4_latest.json": "900dd7207c5e0e88f573752ff415e853cd1eabc270e34652678fb2d64cfdc116",
+  "probe_rows_deadfix_plan_dense_both_s4_latest.json": "dcd50901dbed22827b33cc72a843ee81a1b5318d2d3d3cd0a94fccc8378c9203",
+  "probe_rows_frame_deadfix_plan_dense_both_s4_latest.json": "d7bbf02c884c24fb72e0242c3915e342489a0d40fa250985d0b31d22cf39ff3c",
+  "probe_rows_plan_dense_both_s5_latest.json": "f650f9e7e2ef183e070be8f93a5e2400e8eea1620115b2713b07a5b259ca17d4",
+  "probe_rows_frame_plan_dense_both_s5_latest.json": "aeee227f6a9cfbd6fb36d6ebbd29726460eb534d9d7ccd31714b945e06c21b45",
+  "probe_rows_deadfix_plan_dense_both_s5_latest.json": "17d337e47c64eef077371cb2db1fb5070284d19ab2bf6b3582aa93f77db1bd75",
+  "probe_rows_frame_deadfix_plan_dense_both_s5_latest.json": "fcb45d51755e88a44c411186e5bc8f4dfd0db23bccfce8528da0949d2e0a377c",
+  "probe_rows_plan_margin_deck_s2_latest.json": "768ccd601f3ca8cba68474f8b8f4bcd17abb20db5b2d3ae95d2c42b4d2720cbf",
+  "probe_rows_frame_plan_margin_deck_s2_latest.json": "96b928371dec59bee7b463f1e99f545dac5a5e45f18852ff46ce3ce81cb1166d",
+  "probe_rows_deadfix_plan_margin_deck_s2_latest.json": "a3e40464bf958296dabc827a0d1967ace85aed222991487203f0c2f806ad5901",
+  "probe_rows_frame_deadfix_plan_margin_deck_s2_latest.json": "b1cd5f26846e98ce60ed343c3ab6b76633771f20ff4489edabd52c07b83eb3aa",
+  "probe_rows_plan_margin_deck_s3_latest.json": "2b71cb4425270de3c984650001e063664577e47e4da4521b4b335d254aa84f8e",
+  "probe_rows_frame_plan_margin_deck_s3_latest.json": "687fdfaad8b9d07b1306d7402cc69853576d8e9bae7832d38c462dfece238d80",
+  "probe_rows_deadfix_plan_margin_deck_s3_latest.json": "0c06a73d7611ad7e0fb341974c14eef6714ba1bbab9d2b02ca357c93e958dd00",
+  "probe_rows_frame_deadfix_plan_margin_deck_s3_latest.json": "2f74d80ad879fcc221b90f3c9db30b2cdcc5bf7f4046bcba69f86fb3eca0c8f6",
+  "probe_rows_plan_margin_deck_s4_latest.json": "2295d901e479390962c06caf2f88709628eafb1df56b0a770b5208d69ed4aaa7",
+  "probe_rows_frame_plan_margin_deck_s4_latest.json": "3881a4ddbc335325c5d8387499e72fabf0d513c54dad0cf1a5f6d0ca1b8017c9",
+  "probe_rows_deadfix_plan_margin_deck_s4_latest.json": "863ff3d773aec5b90f0e67b0fde150d8799b84b38299b9c6a785e0263183730a",
+  "probe_rows_frame_deadfix_plan_margin_deck_s4_latest.json": "d2eafec36a87bfead1ace21e1f6d673f031a6b79d1057535496c3184c401aecf",
+  "probe_rows_plan_margin_deck_s5_latest.json": "da148b421e61c284aed6a3295f3cec17f30360bddb7e3820bf43af4f665960e8",
+  "probe_rows_frame_plan_margin_deck_s5_latest.json": "1d0fb6f7fe185b0f7a36927024e8215f7274c4881a41757eb67aabc552f52677",
+  "probe_rows_deadfix_plan_margin_deck_s5_latest.json": "29f3a108f889d47a9c502eafa0fa9e2c61a4d2bb49584a150e332eab40f4a8e0",
+  "probe_rows_frame_deadfix_plan_margin_deck_s5_latest.json": "7fe8d70a28545ff1836a607a54850428abc39c26f26edb6df2b82b8cb09f6ff3"
+ },
+ "runs": {
+  "B s2": {
+   "dAB": [
+    0.12375,
+    0.09864763419911654
+   ],
+   "dL": [
+    0.11875,
+    0.13772018995249527
+   ],
+   "dF": [
+    0.005,
+    0.10079539562623197
+   ],
+   "AB": [
+    [
+     -0.5325,
+     0.08782663702104314
+    ],
+    [
+     -0.40875,
+     0.08414092542918815
+    ]
+   ],
+   "L": [
+    [
+     -0.43,
+     0.10836099511889827
+    ],
+    [
+     -0.31125,
+     0.10735774451346089
+    ]
+   ],
+   "games": 400,
+   "errors": {
+    "old_base": [],
+    "old_frame": [],
+    "new_base": [],
+    "new_frame": []
+   },
+   "level_5_1": {
+    "old": [
+     7.007581501137225,
+     7.654477611940298
+    ],
+    "new": [
+     6.9846390168970816,
+     7.627551020408164
+    ]
+   },
+   "same_2_1_deck": 0.94125
+  },
+  "B s3": {
+   "dAB": [
+    -0.22375,
+    0.10157667989502432
+   ],
+   "dL": [
+    -0.2375,
+    0.14003977012993526
+   ],
+   "dF": [
+    0.01375,
+    0.10455402289251006
+   ],
+   "AB": [
+    [
+     -0.3875,
+     0.08865598730606429
+    ],
+    [
+     -0.61125,
+     0.08448945059535398
+    ]
+   ],
+   "L": [
+    [
+     -0.41125,
+     0.10104712959678455
+    ],
+    [
+     -0.64875,
+     0.1039296614546357
+    ]
+   ],
+   "games": 400,
+   "errors": {
+    "old_base": [],
+    "old_frame": [],
+    "new_base": [],
+    "new_frame": []
+   },
+   "level_5_1": {
+    "old": [
+     7.010964912280702,
+     7.6671408250355615
+    ],
+    "new": [
+     7.020756115641216,
+     7.659528907922912
+    ]
+   },
+   "same_2_1_deck": 0.903125
+  },
+  "B s4": {
+   "dAB": [
+    0.00125,
+    0.10007044432958616
+   ],
+   "dL": [
+    0.03125,
+    0.1363312569545481
+   ],
+   "dF": [
+    -0.03,
+    0.09836189636562323
+   ],
+   "AB": [
+    [
+     -0.46625,
+     0.08424790274268763
+    ],
+    [
+     -0.465,
+     0.08390194479779435
+    ]
+   ],
+   "L": [
+    [
+     -0.2825,
+     0.10595009642435833
+    ],
+    [
+     -0.25125,
+     0.10136905497743157
+    ]
+   ],
+   "games": 400,
+   "errors": {
+    "old_base": [],
+    "old_frame": [],
+    "new_base": [],
+    "new_frame": []
+   },
+   "level_5_1": {
+    "old": [
+     7.024078254326561,
+     7.48150833937636
+    ],
+    "new": [
+     7.000751879699248,
+     7.446559297218156
+    ]
+   },
+   "same_2_1_deck": 0.91625
+  },
+  "B s5": {
+   "dAB": [
+    -0.11027568922305764,
+    0.10269132719815253
+   ],
+   "dL": [
+    -0.018796992481203006,
+    0.14032773888222236
+   ],
+   "dF": [
+    -0.09147869674185463,
+    0.09869716631169038
+   ],
+   "AB": [
+    [
+     -0.09523809523809523,
+     0.08331781391165484
+    ],
+    [
+     -0.20551378446115287,
+     0.08983723485897914
+    ]
+   ],
+   "L": [
+    [
+     -0.2694235588972431,
+     0.10537401182500855
+    ],
+    [
+     -0.2882205513784461,
+     0.11006725694578919
+    ]
+   ],
+   "games": 399,
+   "errors": {
+    "old_base": [
+     700299
+    ],
+    "old_frame": [],
+    "new_base": [],
+    "new_frame": []
+   },
+   "level_5_1": {
+    "old": [
+     7.007380073800738,
+     7.762041696621136
+    ],
+    "new": [
+     7.013939838591343,
+     7.755043227665706
+    ]
+   },
+   "same_2_1_deck": 0.9417293233082706
+  },
+  "2차 s2": {
+   "dAB": [
+    -0.02375,
+    0.10050076294302608
+   ],
+   "dL": [
+    0.08375,
+    0.13802319860128703
+   ],
+   "dF": [
+    -0.1075,
+    0.09856036088023473
+   ],
+   "AB": [
+    [
+     -0.5425,
+     0.08663066174216097
+    ],
+    [
+     -0.56625,
+     0.08444104789837367
+    ]
+   ],
+   "L": [
+    [
+     -0.65,
+     0.09834151021607787
+    ],
+    [
+     -0.56625,
+     0.1007333503037029
+    ]
+   ],
+   "games": 400,
+   "errors": {
+    "old_base": [],
+    "old_frame": [],
+    "new_base": [],
+    "new_frame": []
+   },
+   "level_5_1": {
+    "old": [
+     6.678947368421053,
+     7.649379108838568
+    ],
+    "new": [
+     6.671461014383043,
+     7.655797101449275
+    ]
+   },
+   "same_2_1_deck": 0.905
+  },
+  "2차 s3": {
+   "dAB": [
+    -0.035,
+    0.09974937264644021
+   ],
+   "dL": [
+    -0.09125,
+    0.13383956315459766
+   ],
+   "dF": [
+    0.05625,
+    0.1053691557868244
+   ],
+   "AB": [
+    [
+     -1.1725,
+     0.07760099329519567
+    ],
+    [
+     -1.2075,
+     0.0765719762306005
+    ]
+   ],
+   "L": [
+    [
+     -1.1475,
+     0.10105327201264269
+    ],
+    [
+     -1.23875,
+     0.09927523621257547
+    ]
+   ],
+   "games": 400,
+   "errors": {
+    "old_base": [],
+    "old_frame": [],
+    "new_base": [],
+    "new_frame": []
+   },
+   "level_5_1": {
+    "old": [
+     6.681475903614458,
+     7.723207948899929
+    ],
+    "new": [
+     6.710706150341686,
+     7.700564971751413
+    ]
+   },
+   "same_2_1_deck": 0.89375
+  },
+  "2차 s4": {
+   "dAB": [
+    -0.07,
+    0.0994829993914528
+   ],
+   "dL": [
+    -0.03125,
+    0.13652644347587184
+   ],
+   "dF": [
+    -0.03875,
+    0.10185157314017206
+   ],
+   "AB": [
+    [
+     -0.94625,
+     0.08260689797306173
+    ],
+    [
+     -1.01625,
+     0.08140543258829362
+    ]
+   ],
+   "L": [
+    [
+     -1.12375,
+     0.1055515521874166
+    ],
+    [
+     -1.155,
+     0.09884641639982564
+    ]
+   ],
+   "games": 400,
+   "errors": {
+    "old_base": [],
+    "old_frame": [],
+    "new_base": [],
+    "new_frame": []
+   },
+   "level_5_1": {
+    "old": [
+     6.464017991004498,
+     7.567491166077739
+    ],
+    "new": [
+     6.459584295612009,
+     7.540751240255138
+    ]
+   },
+   "same_2_1_deck": 0.89125
+  },
+  "2차 s5": {
+   "dAB": [
+    0.02375,
+    0.09885067518084675
+   ],
+   "dL": [
+    0.26375,
+    0.1379546340155557
+   ],
+   "dF": [
+    -0.24,
+    0.10397669393765852
+   ],
+   "AB": [
+    [
+     -0.54,
+     0.08085383947838216
+    ],
+    [
+     -0.51625,
+     0.08680648453972413
+    ]
+   ],
+   "L": [
+    [
+     -0.5925,
+     0.10161840446156042
+    ],
+    [
+     -0.32875,
+     0.098533080809363
+    ]
+   ],
+   "games": 400,
+   "errors": {
+    "old_base": [],
+    "old_frame": [],
+    "new_base": [],
+    "new_frame": []
+   },
+   "level_5_1": {
+    "old": [
+     7.070110701107011,
+     7.635493372606775
+    ],
+    "new": [
+     7.054322876817139,
+     7.629221732745962
+    ]
+   },
+   "same_2_1_deck": 0.89375
+  }
+ },
+ "means": {
+  "B dAB": [
+   -0.05225642230576441,
+   0.07450809824264452
+  ],
+  "2차 dAB": [
+   -0.026250000000000002,
+   0.04982297627022073
+  ],
+  "all dAB": [
+   -0.03925321115288221,
+   0.03597296193152731
+  ],
+  "B dL": [
+   -0.02657424812030075,
+   0.07583586402757227
+  ],
+  "2차 dL": [
+   0.056249999999999994,
+   0.07811583279549245
+  ],
+  "all dL": [
+   0.014837875939849624,
+   0.052772701856148976
+  ],
+  "B dF": [
+   -0.025682174185463657,
+   0.05030106014950696
+  ],
+  "2차 dF": [
+   -0.08249999999999999,
+   0.06231430747963638
+  ],
+  "all dF": [
+   -0.054091087092731825,
+   0.035893017086918284
+  ],
+  "B L_old": [
+   -0.3482933897243108,
+   0.05259152912063121
+  ],
+  "B L_new": [
+   -0.3748676378446115,
+   0.092126629394953
+  ],
+  "2차 L_old": [
+   -0.8784375,
+   0.14902930273243803
+  ],
+  "2차 L_new": [
+   -0.8221875000000001,
+   0.22234977079573676
+  ]
+ },
+ "verdict": [
+  {
+   "mean": -0.03925321115288221,
+   "se": 0.03597296193152731,
+   "ci90": [
+    -0.09842873353024464,
+    0.019922311224480217
+   ],
+   "cell": "고치면 본래 A/B가 거의 안 바뀐다"
+  },
+  {
+   "mean": 0.014837875939849624,
+   "se": 0.052772701856148976,
+   "ci90": [
+    -0.07197321861351544,
+    0.1016489704932147
+   ],
+   "cell": "고치면 학습 몫이 거의 안 바뀐다"
+  },
+  {
+   "mean": -0.08282424812030074,
+   "se": 0.10887222605486563,
+   "ci90": [
+    -0.2619190599805547,
+    0.09627056373995323
+   ],
+   "cell": "고치면 학습 몫의 B − 2차 차가 거의 안 바뀐다 (경계 걸침)"
+  }
+ ]
+}
