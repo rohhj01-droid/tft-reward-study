@@ -10,6 +10,7 @@
                      4-5 라운드에만 10골드까지 리롤하고 그 밖에는 50을 지킨다.
 팔 'full' (수업 전체): 위에 더해, 레벨 8은 올린 뒤에도 30골드가 남을 때 올린다. 5-1(21번째 칸)에는 돈과 상관없이 올린다.
                      기다리는 동안은 레벨 7에서 리롤하지 않는다. 교과서는 4-5부터 돈과 상관없이 올린다.
+팔 'none' (대조): 양쪽 모두 교과서다. 같은 시드에서 자리 뽑기만으로 생기는 차를 잰다(판정에는 쓰지 않는다).
 
 자리 뽑기는 hra.evaluate.ab_game과 같고, 두 팔은 같은 시드를 쓴다. 덱 묶음은 4-5 라운드를 시작할 때 든 덱으로 나눈다
 (규칙이 바뀌기 전이라 두 쪽이 같은 기준이다. 그 전에 탈락한 자리는 끝 덱).
@@ -194,15 +195,22 @@ def line(res):
     return f"{res['arm']} 판 {res['games']} 오류 {len(res['errors'])} 차 {res['diff']:+.3f}{se}"
 
 
-if __name__ == '__main__':
+def parse(argv=None):
+    """명령줄 인자. --arm none은 양쪽 모두 교과서인 대조 실행이다(자리 뽑기 흔들림을 잰다)."""
     ap = argparse.ArgumentParser()
-    ap.add_argument('--arm', choices=('full', 'roll'), required=True)
+    ap.add_argument('--arm', choices=('full', 'roll', 'none'), required=True)
     ap.add_argument('--games', type=int, default=400)
     ap.add_argument('--jobs', type=int, default=2)
     ap.add_argument('--seed0', type=int, default=SEED_SPEND)
     ap.add_argument('--partial')
     ap.add_argument('--out', required=True)
-    a = ap.parse_args()
+    a = ap.parse_args(argv)
+    a.arm = None if a.arm == 'none' else a.arm
+    return a
+
+
+if __name__ == '__main__':
+    a = parse()
     res = run(a.arm, a.games, a.jobs, a.seed0, a.partial)
-    json.dump(res, open(a.out, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
+    json.dump(res, open(a.out, 'w', encoding='utf-8'), ensure_ascii=False)  # 자리별 곡선이 들어 있어 줄바꿈 없이 적는다
     print(line(res), {n: (g['place_diff'], g['place_se']) for n, g in res['groups'].items()})
