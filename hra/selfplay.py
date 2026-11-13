@@ -55,6 +55,17 @@ def margin_weights(done, until, keep_deck=False):
     return (1.0 if keep_deck else m, m, m)
 
 
+def demo_margin_weights(done, until, keep_deck, demo_s, keep_before=None):
+    """따라 하기 판단마다의 여백 가중치(덱, 레벨, 남길 골드). keep_before(라운드)가 있으면 그 라운드 전 판단(상태 첫 칸 = 라운드 ÷
+    40)은 레벨·남길 골드 여백이 늘 1이고, 그 밖은 margin_weights대로다(2·3단계 기초 가르치기: B의 레벨 손해는 4-1 전에 났다,
+    results/README 「학습 몫 가르기 반대 순서와 레벨 손해 단계 가르기: 결과」). 없으면 margin_weights와 같다."""
+    lam = margin_weights(done, until, keep_deck)
+    if keep_before is None:
+        return lam
+    early = demo_s[:, 0] * 40 < keep_before - 0.5
+    return (lam[0],) + tuple(torch.where(early, 1.0, x) for x in lam[1:])
+
+
 def is_better(new, best):
     """중간 점검 등수 차가 지금까지의 최고보다 나은가. 처음이면 그렇다. 값이 없으면(nan) 아니다."""
     return new == new and (best is None or new > best)
@@ -86,7 +97,7 @@ def selfplay_game(job):
 
 
 def train(config, aux_w, seed, games, jobs, save_every=500, eval_games=100, warm=None, demos=None, root='.', tag=None,
-          margin_until=None, margin_keep_deck=False, econ_w=0.3, resume_dir=None):
+          margin_until=None, margin_keep_deck=False, econ_w=0.3, resume_dir=None, margin_keep_before=None):
     """자기 대전 학습. games는 이 이름으로 끝낼 총 판 수다(이어 하기면 남은 만큼만 돈다)."""
     name = tag or f'plan_{config}_s{seed}'
     ck_dir, res_dir = os.path.join(root, 'checkpoints'), os.path.join(root, 'results')
@@ -166,6 +177,8 @@ def train(config, aux_w, seed, games, jobs, save_every=500, eval_games=100, warm
                     lam = margin_weights(done + finished, margin_until, margin_keep_deck)
                     for _ in range(UPDATES_PER_GAME):
                         demo = demo_replay.sample(DEMO_BATCH, rng) if demo_replay is not None else None
+                        if demo is not None and margin_keep_before is not None:
+                            lam = demo_margin_weights(done + finished, margin_until, margin_keep_deck, demo['s'], margin_keep_before)
                         losses.append(learn_step(net, target, opt, w, batch=replay.sample(BATCH, rng), demo=demo, lam=lam))
                         updates += 1
                         if updates % SYNC == 0:
@@ -196,7 +209,8 @@ def train(config, aux_w, seed, games, jobs, save_every=500, eval_games=100, warm
             os.replace(tmp, ck_path)
             with open(log_path, 'w', encoding='utf-8') as f:
                 json.dump({'config': config, 'aux_w': aux_w, 'seed': seed, 'margin_until': margin_until,
-                           'margin_keep_deck': margin_keep_deck, 'econ_w': econ_w, 'curve': curve}, f,
+                           'margin_keep_deck': margin_keep_deck, 'econ_w': econ_w, 'margin_keep_before': margin_keep_before,
+                           'curve': curve}, f,
                           ensure_ascii=False, indent=1)
             print(f'{done}판: 점검 등수 차 {check["diff"]:+.2f}±{check["se"]:.2f}, 뒤집는 비율 {flips:.2f}, '
                   f'갈아타기 {curve[-1]["switches"]}, 멈춘 판 {errors}, 여백 가중치 {curve[-1]["margin"]:.2f}', flush=True)
@@ -222,6 +236,8 @@ def parser():
                     help='덱 갈래는 여백 손실을 끝까지 1로 두고 레벨·남길 골드 갈래만 --margin-until대로 줄인다(여백 떼기 시험 2차)')
     ap.add_argument('--econ-w', type=float, default=0.3, help='이자 갈래 가중치(설계 4절 0.3). 0이면 이자 갈래를 끈다(이자 가설 대조)')
     ap.add_argument('--resume-dir', default=None, help='경험 더미 저장 폴더(이어 하기용, 최대 약 0.7GB). 없으면 checkpoints 폴더')
+    ap.add_argument('--margin-keep-before', type=int, default=None,
+                    help='이 라운드 전 따라 하기 판단은 레벨·남길 골드 여백을 끝까지 1로 둔다(2·3단계 기초 가르치기, 4-1이면 15). 없으면 B와 같다')
     return ap
 
 
@@ -256,7 +272,7 @@ def main():
         print('경고:', line, flush=True)
     result = train(args.config, args.aux_w, args.seed, args.games, args.jobs, args.save_every, args.eval_games,
                    warm, demos, tag=args.tag, margin_until=args.margin_until, margin_keep_deck=args.margin_keep_deck,
-                   econ_w=args.econ_w, resume_dir=args.resume_dir)
+                   econ_w=args.econ_w, resume_dir=args.resume_dir, margin_keep_before=args.margin_keep_before)
     print(result)
 
 

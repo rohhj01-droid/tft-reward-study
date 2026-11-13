@@ -92,13 +92,15 @@ def td_loss(net, target, batch, w):
 
 def margin_loss(net, batch, w, lam=(1.0, 1.0, 1.0)):
     """따라 하기 여백 손실(DQfD): 행동 갈래마다 정답 칸의 가중합 값이 가리지 않은 다른 칸보다 MARGIN 이상 높아야 한다.
-    lam은 갈래(덱, 레벨, 남길 골드)별 가중치다(여백 떼기 시험 2차: 덱 갈래만 여백을 남긴다)."""
+    lam은 갈래(덱, 레벨, 남길 골드)별 가중치다(여백 떼기 시험 2차: 덱 갈래만 여백을 남긴다). 갈래 가중치는 판단마다의 텐서여도
+    된다(2·3단계 기초 가르치기: 4-1 전 판단만 여백을 남긴다)."""
     c = combined(net(batch['s']), w).masked_fill(~batch['m'], float('-inf'))
     loss = 0.0
     for i, (lo, hi) in enumerate(SLICES):
         v, a = c[:, lo:hi], batch['a'][:, i:i + 1]
         bonus = torch.full_like(v, MARGIN).scatter(1, a, 0.0)
-        loss = loss + lam[i] * ((v + bonus).max(1).values - v.gather(1, a).squeeze(1)).mean()
+        per = (v + bonus).max(1).values - v.gather(1, a).squeeze(1)
+        loss = loss + ((lam[i] * per).mean() if torch.is_tensor(lam[i]) else lam[i] * per.mean())
     return loss / len(SLICES)
 
 

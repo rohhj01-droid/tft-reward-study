@@ -476,6 +476,60 @@ def margin_weights_keep_deck_test():
     assert margin_weights(1500, None, keep_deck=True) == (1.0, 1.0, 1.0)
 
 
+
+def margin_loss_takes_per_sample_branch_weights_test():
+    """여백 손실의 갈래 가중치는 판단마다 줄 수도 있다(2·3단계 기초 가르치기: 4-1 전 따라 하기 판단만 레벨·남길 골드 여백을
+    남긴다). 모두 같은 값이면 숫자 하나를 준 것과 같고, 판단 하나의 가중치를 0으로 하면 그 판단이 빠진다."""
+    import torch
+    from hra.plan_learn import Replay, margin_loss
+    from hra.plan_net import PlanNet, weights
+    torch.manual_seed(5)
+    rng = np.random.default_rng(5)
+    demos = Replay(10)
+    for s, a in zip(rng.random((4, 153)).astype(np.float32), [(4, 1, 2), (9, 0, 5), (17, 2, 0), (1, 1, 1)]):
+        demos.add((s, np.ones(37, bool), np.array(a), np.zeros(6, np.float32), np.zeros(153, np.float32), True,
+                   np.ones(37, bool)))
+    net, w = PlanNet(), weights('none', 0.1)
+    batch = {k: torch.as_tensor(getattr(demos, k)[:4]) for k in ('s', 'm', 'a')}
+    same = margin_loss(net, batch, w, lam=(1.0, torch.full((4,), 0.5), torch.full((4,), 0.5))).item()
+    assert abs(same - margin_loss(net, batch, w, lam=(1.0, 0.5, 0.5)).item()) < 1e-6
+    keep = torch.tensor([1.0, 1.0, 1.0, 0.0])
+    part = margin_loss(net, batch, w, lam=(0.0, keep, 0.0)).item()
+    first3 = {k: v[:3] for k, v in batch.items()}
+    assert abs(part - margin_loss(net, first3, w, lam=(0.0, 1.0, 0.0)).item() * 3 / 4) < 1e-6
+
+
+def demo_margin_weights_keep_basics_before_round_test():
+    """--margin-keep-before R: 따라 하기 판단 가운데 라운드 R 전(상태 첫 칸 = 라운드 ÷ 40)인 것은 레벨·남길 골드 여백이 늘 1이고,
+    R부터는 margin_weights대로 줄어든다. 덱 갈래는 margin_weights 그대로다. R이 없으면 margin_weights와 같다."""
+    import torch
+    from hra.selfplay import demo_margin_weights
+    s = torch.zeros((3, 153))
+    s[:, 0] = torch.tensor([10, 14, 15]) / 40  # 3-2, 3-6(4-1 전), 4-1
+    deck, level, floor_ = demo_margin_weights(1500, 1000, True, s, 15)
+    assert deck == 1.0
+    assert level.tolist() == [1.0, 1.0, 0.0] and floor_.tolist() == [1.0, 1.0, 0.0]
+    deck, level, floor_ = demo_margin_weights(500, 1000, True, s, 15)
+    assert level.tolist() == [1.0, 1.0, 0.5] and floor_.tolist() == [1.0, 1.0, 0.5]
+    assert demo_margin_weights(1500, 1000, True, s, None) == (1.0, 0.0, 0.0)
+
+
+def cli_margin_keep_before_reaches_train_test():
+    """--margin-keep-before는 기본이 없음(B와 같다)이고, 주면 그 라운드가 그대로 train까지 간다."""
+    import sys
+    import hra.selfplay as sp
+    got, real = {}, sp.train
+    sp.train = lambda *a, **k: got.update(k) or {'games': 0, 'best': None}
+    try:
+        sys.argv = ['selfplay', '--config', 'none', '--games', '0', '--jobs', '1', '--margin-until', '1000']
+        sp.main()
+        assert got['margin_keep_before'] is None
+        sys.argv += ['--margin-keep-before', '15']
+        sp.main()
+        assert got['margin_keep_before'] == 15
+    finally:
+        sp.train = real
+
 def cli_margin_keep_deck_reaches_train_test():
     """--margin-keep-deck은 기본이 꺼짐이고, 주면 그대로 train까지 간다."""
     import sys
