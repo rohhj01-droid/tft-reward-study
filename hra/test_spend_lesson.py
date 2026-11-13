@@ -7,7 +7,7 @@ import json
 import os
 import tempfile
 
-from hra.spend_lesson import lesson, lesson_game, lesson_plan, line, parse, run, summary
+from hra.spend_lesson import adjusted, cap_effect, gap_stats, lesson, lesson_game, lesson_plan, line, parse, run, summary
 from hra.plan_bot import safe_play
 from meta.lobby import N_PLAYERS
 
@@ -65,6 +65,42 @@ def stable_level_8_board_follows_the_textbook_test():
     assert plan((9, 50, False), slot=27, level=9) == (9, 50, False)
 
 
+BASE41 = (7, 20, False)  # 교과서: 4-1에 레벨 7이면 20골드까지 리롤
+
+
+def era_arm_rolls_only_down_to_30_at_4_1_test():
+    assert plan(BASE41, arm='era', slot=15, level=7, hp=70) == (7, 30, False)
+    assert plan(BASE41, arm='deep', slot=15, level=7, hp=45) == (7, 30, False)
+    # 체력 40 미만, 느린 리롤 덱, 이미 50을 지키는 계획은 그대로다
+    assert plan(BASE41, arm='era', slot=15, level=7, hp=39) == BASE41
+    assert plan(BASE41, arm='era', slot=15, level=7, slow=True) == BASE41
+    assert plan(BASE7, arm='era', slot=16, level=7) == BASE7
+    # 다른 팔은 4-1을 건드리지 않는다
+    assert plan(BASE41, arm='full', slot=15, level=7) == BASE41
+    assert plan(BASE41, arm='roll', slot=15, level=7) == BASE41
+
+
+def era_arm_keeps_the_full_lesson_from_4_5_test():
+    assert plan(BASE8, arm='era', gold=60, need=50) == (7, None, False)
+    assert plan(BASE8, arm='era', level=8, hp=70) == (8, 30, False)
+    assert plan(BASE8, arm='era', level=8, hp=45) == (8, 20, False)
+
+
+def deep_arm_rolls_further_down_at_level_8_test():
+    assert plan(BASE8, arm='deep', gold=60, need=50) == (7, None, False)
+    assert plan(BASE8, arm='deep', level=8, hp=70) == (8, 20, False)
+    assert plan(BASE8, arm='deep', level=8, hp=45) == (8, 10, False)
+    assert plan(BASE8_XP, arm='deep', slot=22, level=8, steady=True) == BASE8_XP
+
+
+def summary_can_group_by_the_deck_held_at_4_1_test():
+    # 4-1에 든 덱(deck15)으로 묶으면 4-1부터 규칙을 바꾸는 팔도 바꾸기 전 덱으로 나뉜다
+    a = dict(_seat(True, 1, 'Chosen Warlords'), deck15='Chosen Dusks')
+    b = dict(_seat(False, 5), deck15='Chosen Dusks')
+    assert summary([[a, b]])['groups']['late']['lesson']['seats'] == 0
+    assert summary([[a, b]], key='deck15')['groups']['late']['lesson']['seats'] == 1
+
+
 def _seat(lesson_seat, place, deck18='Chosen Dusks', deck=None, carry2=False, four2=0, rolls8=0, curve=()):
     return {'lesson': lesson_seat, 'deck': deck or deck18, 'deck18': deck18, 'place': place, 'carry2': carry2,
             'four2': four2, 'rolls8': rolls8, 'curve': [list(c) for c in curve]}
@@ -105,6 +141,39 @@ def last_line_prints_without_a_standard_error_for_a_single_game_test():
 def arm_none_on_the_command_line_means_textbook_on_both_sides_test():
     assert parse(['--arm', 'none', '--out', 'x.json']).arm is None
     assert parse(['--arm', 'full', '--out', 'x.json']).arm == 'full'
+    assert parse(['--arm', 'deep', '--group', 'deck15', '--out', 'x.json']).group == 'deck15'
+    assert parse(['--arm', 'era', '--out', 'x.json']).group == 'deck18'
+
+
+def gap_stats_compares_value_decks_with_ordinary_decks_over_all_seats_test():
+    # 8자리 모두 교과서인 실행. 수업 자리 표시는 보지 않는다
+    g1 = [_seat(True, 6, carry2=True), _seat(False, 8), _seat(True, 2, 'Chosen Warlords'), _seat(False, 4, 'Chosen Warlords'),
+          _seat(False, 1, 'Ninja Shades')]
+    g2 = [_seat(False, 5), _seat(True, 3, 'Chosen Warlords'), _seat(True, 7, 'Ninja Shades')]
+    s = gap_stats([g1, g2])
+    assert s['late']['seats'] == 3 and s['normal']['seats'] == 3
+    assert abs(s['late']['mean_place'] - 19 / 3) < 1e-9 and s['normal']['mean_place'] == 3.0
+    assert abs(s['gap'] - (19 / 3 - 3.0)) < 1e-9          # 밸류덱 − 보통 덱, 클수록 밸류덱이 밀린다
+    assert abs(s['late']['carry2'] - 1 / 3) < 1e-9
+
+
+def cap_effect_is_the_change_between_two_runs_with_combined_error_test():
+    low = {'gap': 0.8, 'gap_se': 0.03, 'late': {'carry2': 0.20, 'carry2_se': 0.04}}
+    high = {'gap': 0.5, 'gap_se': 0.04, 'late': {'carry2': 0.32, 'carry2_se': 0.03}}
+    e = cap_effect(low, high)
+    assert abs(e['gap_drop'] - 0.3) < 1e-9 and abs(e['gap_drop_se'] - 0.05) < 1e-9   # 양수면 상한을 올렸을 때 밸류덱이 덜 밀린다
+    assert abs(e['carry2_rise'] - 0.12) < 1e-9 and abs(e['carry2_rise_se'] - 0.05) < 1e-9
+
+
+def adjusted_subtracts_the_control_run_game_by_game_on_shared_seeds_test():
+    arm = {'seed0': 100, 'seeds': [100, 101, 102, 103], 'per_game': [1.0, 0.5, -0.5, 2.0]}
+    none = {'seed0': 100, 'seeds': [100, 102, 103], 'per_game': [0.5, -1.0, 1.0]}     # 대조 실행은 101번 판을 버렸다
+    a = adjusted(arm, none)
+    assert a['games'] == 3 and abs(a['diff'] - (0.5 + 0.5 + 1.0) / 3) < 1e-9
+    assert abs(a['se'] - (((0.5 - 2 / 3) ** 2 * 2 + (1.0 - 2 / 3) ** 2) / 2) ** 0.5 / 3 ** 0.5) < 1e-9
+    # 옛 결과 파일에는 seeds가 없다. 버린 판이 없으면 seed0부터 차례다
+    old = {'seed0': 100, 'games_asked': 3, 'per_game': [0.5, 0.0, -1.0]}
+    assert adjusted(old, none)['games'] == 2
 
 
 def tracked_rule_seats_play_the_same_game_as_plain_rule_seats_test():
