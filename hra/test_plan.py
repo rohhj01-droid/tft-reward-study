@@ -848,6 +848,29 @@ def early_probe_takes_rule_level_cell_only_before_4_1_test():
     seat.target = 8
     assert early_macro(seat, p, 15) == '1'  # 4-1부터는 계획기의 목표를 따른다
 
+
+def late_probe_takes_rule_cells_only_from_4_1_test():
+    """기초의 남은 학습 몫 단계 가르기 탐침(meta/inversion/probe_late.py): 4-1(라운드 15) 전에는 본래처럼 계획기의 목표 레벨과 남길
+    골드를 쓰고, 4-1부터는 틀 탐침과 같다(규칙의 목표 레벨·남길 골드를 계획 칸에 넣어 그 라운드 첫 판단을 지킨다)."""
+    from types import SimpleNamespace
+    from hra.plan_bot import PlanPolicy
+    saved = PlanPolicy.macro
+    try:
+        from meta.inversion.probe_late import LATE_ROUND, late_macro
+    finally:
+        PlanPolicy.macro = saved
+    assert LATE_ROUND == 15  # 4-1(2-1이 3, 5-1이 21)
+    plans = iter([(8, 0, False)])
+    seat = SimpleNamespace(target=7, floor=50, macro_plan=lambda player, game_round: next(plans))
+    p = SimpleNamespace(level=7, gold=60)
+    assert late_macro(seat, p, 14) == '2'  # 3-7: 규칙 목표 8이 아니라 계획기의 목표 7이라 경험치를 안 사고, 규칙을 묻지 않는다
+    seat.target = 8
+    assert late_macro(seat, p, 14) == '1'  # 4-1 전에는 계획기의 목표를 따른다
+    seat.target = 7
+    assert late_macro(seat, p, 15) == '1'  # 4-1: 계획기의 목표 7이 아니라 규칙 목표 8까지 경험치
+    p.level, p.gold = 8, 10
+    assert late_macro(seat, p, 15) == '2'  # 계획기의 50이 아니라 규칙의 남길 골드 0을 지키고, 규칙을 다시 묻지 않는다
+
 if __name__ == '__main__':
     import sys
     for name in sys.argv[1:] or [n for n in list(globals()) if n.endswith('_test')]:
