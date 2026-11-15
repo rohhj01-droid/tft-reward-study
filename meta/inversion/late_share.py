@@ -28,7 +28,7 @@ record = {'mode': MODE, 'inputs': {}}
 
 
 def probe(prefix, tag):
-    """-> ({판 시드: 규칙 − AI}, {(판, 자리): (등수, 라운드별 기록)})"""
+    """-> ({판 시드: 규칙 − AI}, {(판, 자리): (자리 종류, 등수, 라운드별 기록)})"""
     path = f'{prefix}{tag}_latest.json'
     raw = open(INV + path, 'rb').read()
     record['inputs'][path] = hashlib.sha256(raw).hexdigest()
@@ -40,12 +40,14 @@ def probe(prefix, tag):
     assert set(by) | {e[0] for e in d['errors']} == set(range(700000, 700400)), f'{path}: 시드가 빠졌다'
     assert all(len(v['ai']) == 4 and len(v['rule']) == 4 for v in by.values()), path
     return ({s: statistics.mean(v['rule']) - statistics.mean(v['ai']) for s, v in by.items()},
-            {(r['seed'], r['seat']): (r['place'], r['curve']) for r in d['rows']})
+            {(r['seed'], r['seat']): (r['kind'], r['place'], r['curve']) for r in d['rows']})
 
 
 def head(rows, g):
-    """판 g의 여덟 자리 기록 가운데 4-1 시작(라운드 15)까지"""
-    return [[c for c in rows[g, i][1] if c[0] <= LATE_ROUND] for i in range(8)]
+    """판 g의 여덟 자리 기록 가운데 4-1 시작(라운드 15)까지. 규칙 자리의 4-1 기록에서는 계획 칸 둘(레벨 단계, 남길 골드 번호)을 뺀다:
+    규칙 기록기는 그 라운드에 한 일을 보고 이 두 칸을 적으므로, 4-1 기록의 이 칸에는 4-1에 한 일이 들어간다(README 「넣는 조건 고침」)."""
+    return [[c[:5] + c[7:] if kind == 'rule' and c[0] == LATE_ROUND else c for c in curve if c[0] <= LATE_ROUND]
+            for kind, _, curve in (rows[g, i] for i in range(8))]
 
 
 def split_round(x, y):
