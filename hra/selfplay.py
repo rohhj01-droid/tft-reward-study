@@ -21,7 +21,7 @@ import torch
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from hra.evaluate import ab
-from hra.plan_bot import pinned_pool, safe_play
+from hra.plan_bot import environment, pinned_pool, safe_play
 from hra.plan_learn import KEYS, Replay, learn_step
 from hra.plan_net import CONFIGS, PlanNet, choose, flip_rate, load, save, weights, widen
 from hra.plan_state import HEADS
@@ -210,7 +210,7 @@ def train(config, aux_w, seed, games, jobs, save_every=500, eval_games=100, warm
             with open(log_path, 'w', encoding='utf-8') as f:
                 json.dump({'config': config, 'aux_w': aux_w, 'seed': seed, 'margin_until': margin_until,
                            'margin_keep_deck': margin_keep_deck, 'econ_w': econ_w, 'margin_keep_before': margin_keep_before,
-                           'curve': curve}, f,
+                           'curve': curve, **environment()}, f,
                           ensure_ascii=False, indent=1)
             print(f'{done}판: 점검 등수 차 {check["diff"]:+.2f}±{check["se"]:.2f}, 뒤집는 비율 {flips:.2f}, '
                   f'갈아타기 {curve[-1]["switches"]}, 멈춘 판 {errors}, 여백 가중치 {curve[-1]["margin"]:.2f}', flush=True)

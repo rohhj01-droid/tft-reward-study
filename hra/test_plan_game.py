@@ -260,6 +260,28 @@ def selfplay_resume_is_exact_test():
     assert [x['resumed'] for x in curve(lost)] == [False, True]
 
 
+
+def collect_records_the_environment_and_refuses_another_test():
+    """따라 하기 자료에 모은 환경(행동 상한, 교과서 손잡이)을 적고, 다른 환경에서 모은 파일에는 이어 붙이지 않는다(교과서가 바뀐 뒤
+    같은 파일로 다시 부르면 두 교과서의 기록이 섞인다)."""
+    import json
+    import os
+    import tempfile
+    from hra.collect import collect
+    from hra.plan_bot import environment
+    out = os.path.join(tempfile.mkdtemp(), 'demos.npz')
+    collect(1, jobs=1, out=out, save_every=1)
+    data = dict(np.load(out))
+    assert json.loads(str(data['environment'])) == environment()
+    data['environment'] = np.array(json.dumps({'actions_per_turn': -1, 'textbook': {}}))
+    np.savez_compressed(out, **data)
+    try:
+        collect(2, jobs=1, out=out, save_every=1)
+    except ValueError as e:
+        assert '환경' in str(e)
+    else:
+        raise AssertionError('다른 환경의 자료에 이어 붙였다')
+
 if __name__ == '__main__':
     import sys
     for name in sys.argv[1:] or [n for n in list(globals()) if n.endswith('_test')]:

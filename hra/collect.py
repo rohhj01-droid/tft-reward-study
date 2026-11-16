@@ -6,13 +6,14 @@
 실행: python -m hra.collect --games 2000 --jobs 7 --out checkpoints/plan_demos.npz
 """
 import argparse
+import json
 import os
 import sys
 
 import numpy as np
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from hra.plan_bot import pinned_pool, safe_play
+from hra.plan_bot import environment, pinned_pool, safe_play
 from hra.plan_learn import KEYS
 from meta.lobby import N_PLAYERS
 
@@ -38,8 +39,11 @@ def stack(transitions, games=None):
 def collect(games, jobs, out, save_every=100):
     """games판까지 모아 out에 쌓는다. save_every판마다 지금까지를 저장하고, out이 이미 있으면 저장된 판 다음부터 이어 간다
     (모으다 꺼져도 같은 명령을 다시 돌리면 된다). 저장 파일에는 KEYS·game 열과 seeds_done(돌린 판), errors(멈춘 판),
-    n_games(경험을 낸 판)가 있다."""
+    n_games(경험을 낸 판), environment(모은 환경: 행동 상한과 교과서 손잡이)가 있다. 다른 환경에서 모은 파일에는 이어 붙이지 않는다."""
     data = dict(np.load(out)) if os.path.exists(out) else {}
+    env = json.dumps(environment())
+    if 'environment' in data and json.loads(str(data['environment'])) != environment():
+        raise ValueError(f'{out}은 다른 환경에서 모은 자료다: {data["environment"]} (지금 환경 {env})')
     done, errors = int(data.get('seeds_done', 0)), int(data.get('errors', 0))
     transitions, owners = [], []
     os.makedirs(os.path.dirname(out) or '.', exist_ok=True)
@@ -55,7 +59,7 @@ def collect(games, jobs, out, save_every=100):
                     new = stack(transitions, owners)
                     data.update({key: np.concatenate([data[key], new[key]]) if key in data else new[key] for key in new})
                     transitions, owners = [], []
-                data.update(seeds_done=np.array(k + 1), errors=np.array(errors), n_games=np.array(k + 1 - errors))
+                data.update(seeds_done=np.array(k + 1), errors=np.array(errors), n_games=np.array(k + 1 - errors), environment=np.array(env))
                 tmp = out + '.tmp.npz'
                 np.savez_compressed(tmp, **data)
                 os.replace(tmp, out)

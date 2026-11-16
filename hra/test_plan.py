@@ -881,6 +881,23 @@ def rule_probe_seats_rule_bots_in_ai_seats_test():
     assert rule_planner('없는 신경망.pt', ()) == 'record'  # 신경망을 읽지 않는다
     assert heads.planner_for is rule_planner  # 판을 돌리는 쪽이 이 계획기를 쓴다(다른 검사는 planner_for를 쓰지 않는다)
 
+
+def environment_names_the_action_cap_and_textbook_test():
+    """기록에 적는 환경(hra/plan_bot.environment): 시뮬레이터의 한 라운드 행동 상한과 교과서 손잡이. 둘 다 환경 변수로 정해져 모듈을
+    읽을 때 굳으므로 새 프로세스에서 본다. 탐침·따라 하기 자료·학습 곡선이 이 값을 적고, 판정 스크립트가 서로 같은지 본다."""
+    import json
+    import os
+    import subprocess
+    import sys
+    code = 'import json; from hra.plan_bot import environment; print(json.dumps(environment()))'
+
+    def run(**extra):
+        env = {k: v for k, v in os.environ.items() if k not in ('TEXTBOOK', 'ACTIONS_PER_TURN')}
+        out = subprocess.run([sys.executable, '-c', code], env={**env, **extra}, capture_output=True, text=True, check=True).stdout
+        return json.loads(out.splitlines()[-1])
+    assert run() == {'actions_per_turn': 15, 'textbook': {'spend': None, 'lose_5': False}}
+    assert run(TEXTBOOK='era', ACTIONS_PER_TURN='30') == {'actions_per_turn': 30, 'textbook': {'spend': 'era', 'lose_5': False}}
+
 if __name__ == '__main__':
     import sys
     for name in sys.argv[1:] or [n for n in list(globals()) if n.endswith('_test')]:

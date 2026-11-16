@@ -23,7 +23,7 @@ from Simulator.tft_simulator import TFTConfig, parallel_env
 from fullgame.board_stars import quiet
 from hra.plan_state import (MASK_SIZE, SLICES, STATE_SIZE, active_tiers, board_units, board_value, decode, masks, rule_label,
                             state)
-from meta.human_bot import HumanPolicy
+from meta.human_bot import KNOBS, HumanPolicy
 from meta.human_macro import action
 from meta.lobby import N_PLAYERS, board_record, finish_order
 
@@ -184,6 +184,12 @@ class RuleRecorder(Recorder, HumanPolicy):
             if floor_ is not None:
                 self.min_floor = floor_ if self.min_floor is None else min(self.min_floor, floor_)
         return action(player.gold, player.level, target, floor_, exp_first)
+
+
+def environment():
+    """기록에 적는 환경: 시뮬레이터의 한 라운드 행동 상한과 교과서 손잡이(hra/spend_lesson.py의 결과 파일과 같은 이름). 둘 다 환경
+    변수(ACTIONS_PER_TURN, TEXTBOOK)로 정해진다. 환경이 다른 기록을 섞어 읽지 않게 탐침·따라 하기 자료·학습 곡선에 적는다."""
+    return {'actions_per_turn': config.ACTIONS_PER_TURN, 'textbook': {k: KNOBS[k] for k in ('spend', 'lose_5')}}
 
 
 def make_policy(seat, player, others, rng):

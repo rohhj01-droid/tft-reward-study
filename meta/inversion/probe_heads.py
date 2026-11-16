@@ -22,7 +22,7 @@ import torch
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from Simulator.stats import COST
-from hra.plan_bot import pinned_pool, safe_play
+from hra.plan_bot import environment, pinned_pool, safe_play
 from hra.plan_net import choose, load
 from hra.plan_state import FLOORS, HEADS
 from meta.lobby import BOARDS, N_PLAYERS
@@ -201,7 +201,7 @@ def main():
                 rows.extend(out)
     label = args.label or (os.path.basename(args.net).replace('.pt', '') + ''.join(f'_{h}{v:g}' for h, v in overrides))
     json.dump({'label': label, 'net': os.path.basename(args.net), 'weights': weights, 'saved_weights': dict(saved), 'games': args.games,
-               'errors': errors, 'rows': rows}, open(args.out, 'w', encoding='utf-8'), ensure_ascii=False)
+               'errors': errors, 'rows': rows, **environment()}, open(args.out, 'w', encoding='utf-8'), ensure_ascii=False)
     print(f'판 {len(rows) // N_PLAYERS}개(버림 {len(errors)}), 저장: {args.out}')
     summary([args.out])
 
