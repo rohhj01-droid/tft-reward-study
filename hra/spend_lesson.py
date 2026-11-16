@@ -13,7 +13,11 @@
 팔 'era' (4-1에는 조금만): 'full'에 더해, 4-1~4-3에 교과서가 20골드까지 리롤하려 할 때 30골드까지만 리롤한다. 행동 상한을
                      올리면 교과서의 4-1 리롤이 실제로 일어나 레벨 8에 빈손으로 가므로, 상한을 올린 조건에서 쓴다.
 팔 'deep' (레벨 8에서 깊게): 'era'와 같되 레벨 8에서 남길 골드가 체력 60 이상이면 20, 40~59면 10이다.
+팔 'lv5' (2-5에 레벨 5): 돈 쓰는 규칙은 그대로 두고, 연패형도 2-5부터 목표 레벨을 5로 한다(교과서는 3-2까지 레벨 4).
 팔 'none' (대조): 양쪽 모두 교과서다. 같은 시드에서 자리 뽑기만으로 생기는 차를 잰다.
+
+규칙은 교과서의 손잡이로 들어 있고(meta/human_macro.spend_plan, meta/human_bot.KNOBS의 spend·lose_5) 수업 자리는 그 손잡이만
+바꾼다. 환경 변수 TEXTBOOK(예: era)을 주면 양쪽 자리의 바탕이 고친 교과서가 되고, 결과 파일의 textbook에 적힌다.
 
 자리 뽑기는 hra.evaluate.ab_game과 같고, 모든 팔이 같은 시드를 쓴다. 덱 묶음은 규칙이 바뀌기 전에 든 덱으로 나눈다
 (두 쪽이 같은 기준이다. 기본은 4-5 시작 때 덱 deck18이고, 4-1부터 바꾸는 팔이 있으면 --group deck15로 4-1 시작 때 덱을 쓴다.
@@ -36,17 +40,11 @@ import config
 from hra.deck_baseline import load_partial
 from hra.plan_bot import pinned_pool, safe_play
 from meta.human_bot import KNOBS, HumanPolicy, late_deck
-from meta.human_macro import stable
+from meta.human_macro import FIRST_41, FIRST_SLOT, KEEP_AFTER, SPEND as ARMS, SPEND_FLOORS as FLOORS, spend_plan, stable
 from meta.lobby import BOARDS, N_PLAYERS
 from Simulator.stats import COST
 
 SEED_SPEND = 740000  # 다른 구간(100000, 700000, 710000, 720000, 730000, 800000, 900000)과 겹치지 않는다
-KEEP_AFTER = 30      # 레벨 8을 올린 뒤 남아야 하는 골드. 'era'·'deep' 팔이 4-1에 남기는 골드이기도 하다
-FLOORS = ((60, 30), (40, 20))  # 레벨 8에서 캐리 2성 전까지 (체력 하한, 남길 골드)
-DEEP_FLOORS = ((60, 20), (40, 10))
-ARMS = {'roll': (False, False, FLOORS), 'full': (True, False, FLOORS),  # 팔 -> (레벨 8을 기다리나, 4-1에 조금만 굴리나, 레벨 8 남길 골드)
-        'era': (True, True, FLOORS), 'deep': (True, True, DEEP_FLOORS)}
-FIRST_41, FIRST_SLOT, LAST_WAIT = 15, 18, 21  # 4-1, 4-5(여기부터 레벨 8 규칙을 바꾼다), 5-1(기다리지 않는다)
 BOOT, BOOT_SEED = 1000, 0
 LATE = {b['name'] for b in BOARDS if late_deck(b, KNOBS)}
 SLOW = {b['name'] for b in BOARDS if b['slow']}
@@ -54,22 +52,8 @@ MADE = []  # 이 판에서 만든 정책(자리 순서). lesson_game이 판마�
 
 
 def lesson_plan(base, arm, slot, level, gold, need, hp, steady, slow, k=KNOBS):
-    """교과서의 (목표 레벨, 남길 골드, 경험치 우선) base를 수업 규칙으로 고친다. need는 다음 레벨까지 모자란 경험치다."""
-    target, floor, exp_first = base
-    wait, small41, floors = ARMS[arm]
-    if slow or hp < k['hp_low'] or level >= 9:
-        return base
-    if slot < FIRST_SLOT:
-        if small41 and slot >= FIRST_41 and floor is not None and floor < KEEP_AFTER:
-            return target, KEEP_AFTER, exp_first
-        return base
-    if level < 8:
-        if wait and level == 7 and slot < LAST_WAIT and gold - 4 * math.ceil(need / 4) < KEEP_AFTER:
-            return level, None, False
-        return base
-    if steady:
-        return base
-    return target, next(f for h, f in floors if hp >= h), False
+    """교과서의 (목표 레벨, 남길 골드, 경험치 우선) base를 수업 규칙으로 고친다(meta/human_macro.spend_plan)."""
+    return spend_plan(base, arm, slot, level, gold, need, hp, steady, slow, k)
 
 
 class Lesson(HumanPolicy):
@@ -78,6 +62,7 @@ class Lesson(HumanPolicy):
 
     def __init__(self, *a, **k):
         super().__init__(*a, **k)
+        self.knobs.update({'lose_5': True} if self.arm == 'lv5' else {'spend': self.arm} if self.arm else {})
         self.curve, self.rolls8, self.deck15, self.deck18, self.carry2, self.four2 = [], 0, None, None, False, 0
         MADE.append(self)
 
@@ -95,14 +80,6 @@ class Lesson(HumanPolicy):
         if act == '2' and player.level >= 8:
             self.rolls8 += 1
         return act
-
-    def macro_plan(self, player, game_round):
-        base = super().macro_plan(player, game_round)
-        if self.arm is None or not self.board:
-            return base
-        need = player.level_costs[player.level] - player.exp if player.level < player.max_level else 0
-        return lesson_plan(base, self.arm, game_round, player.level, player.gold, need, player.health,
-                           stable(player, self.board), bool(self.board['slow']), self.knobs)
 
 
 _classes = {}
@@ -240,7 +217,8 @@ def run(arm, games, jobs=None, seed0=SEED_SPEND, partial=None, key='deck18'):
     rows = [done[seed0 + k] for k in range(games)]
     good = [list(r) for _, r, e in rows if e is None]
     return {'kind': 'spend', 'arm': arm, 'games_asked': games, 'seed0': seed0, 'actions_per_turn': config.ACTIONS_PER_TURN,
-            'keep_after': KEEP_AFTER, 'floors': FLOORS, 'errors': [[s, e] for s, _, e in rows if e is not None],
+            'keep_after': KEEP_AFTER, 'floors': FLOORS, 'textbook': {k: KNOBS[k] for k in ('spend', 'lose_5')},
+            'errors': [[s, e] for s, _, e in rows if e is not None],
             'seeds': [s for s, _, e in rows if e is None],
             'group_key': key, **summary(good, key), 'rows': good}
 
@@ -254,7 +232,7 @@ def line(res):
 def parse(argv=None):
     """명령줄 인자. --arm none은 양쪽 모두 교과서인 대조 실행이다(자리 뽑기 흔들림을 잰다)."""
     ap = argparse.ArgumentParser()
-    ap.add_argument('--arm', choices=(*ARMS, 'none'), required=True)
+    ap.add_argument('--arm', choices=(*ARMS, 'lv5', 'none'), required=True)
     ap.add_argument('--group', choices=('deck15', 'deck18'), default='deck18')
     ap.add_argument('--games', type=int, default=400)
     ap.add_argument('--jobs', type=int, default=2)

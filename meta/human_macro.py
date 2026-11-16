@@ -4,10 +4,19 @@
 plan()이 이번 행동의 (목표 레벨, 남길 골드)를 정하고, action()이 행동 하나("1" 경험치, "2" 리롤, "0" 넘김)로 바꾼다.
 칸 번호(game_round): 2-1 = 3, 2-5 = 6, 3-1 = 9, 3-2 = 10, 4-1 = 15, 4-5 = 18, 5-1 = 21.
 """
+import math
+
 from Simulator.stats import COST, round_stage
 from meta.lobby import carriers
 
 STAY = {1: 5, 2: 6, 3: 7}  # 느린 리롤 캐리 비용 -> 머무는 레벨
+# 「돈 쓰는 때」 수업 규칙(spend_plan, 손잡이 spend로 켠다. 팔의 뜻은 hra/spend_lesson.py 머리말)
+KEEP_AFTER = 30      # 레벨 8을 올린 뒤 남아야 하는 골드. 'era'·'deep'이 4-1에 남기는 골드이기도 하다
+SPEND_FLOORS = ((60, 30), (40, 20))  # 레벨 8에서 캐리 2성 전까지 (체력 하한, 남길 골드)
+DEEP_FLOORS = ((60, 20), (40, 10))
+SPEND = {'roll': (False, False, SPEND_FLOORS), 'full': (True, False, SPEND_FLOORS),  # 이름 -> (레벨 8을 기다리나, 4-1에 조금만 굴리나, 레벨 8 남길 골드)
+         'era': (True, True, SPEND_FLOORS), 'deep': (True, True, DEEP_FLOORS)}
+FIRST_41, FIRST_SLOT, LAST_WAIT = 15, 18, 21  # 4-1, 4-5(여기부터 레벨 8 규칙을 바꾼다), 5-1(기다리지 않는다)
 
 
 def early_mode(player, k):
@@ -46,17 +55,19 @@ def plan(slot, level, hp, mode, rebuilt, stay, done3, steady, k, rebuild_now=Fal
     stay: 느린 리롤 머무는 레벨(보통 덱 None), done3: 느린 리롤 캐리가 3성, steady: 안정,
     rebuild_now: 연패형이 이번 라운드에 보드를 세운다.
     보통 덱은 정해진 라운드에만 리롤한다: 4-1 라운드에 20까지, 4-5 라운드에 10까지(안정이 아닐 때), 연패형이 보드를
-    세우는 라운드에 20까지. 그 밖의 라운드는 안정 여부와 상관없이 50을 지킨다(유저 결정 2026-10-09)."""
+    세우는 라운드에 20까지. 그 밖의 라운드는 안정 여부와 상관없이 50을 지킨다(유저 결정 2026-10-09).
+    손잡이 lose_5를 켜면 연패형도 2-5부터 목표 레벨이 5다(보드를 세우기 전에는 여전히 리롤하지 않는다)."""
     if slot < 3:
         return level, None
     if slot < 15:
-        target = (6 if slot >= 9 else 5 if slot >= 6 else 4) if mode == 'win' else (6 if rebuilt else 4)
+        target = (6 if slot >= 9 else 5 if slot >= 6 else 4) if mode == 'win' else (
+            6 if rebuilt else 5 if k.get('lose_5') and slot >= 6 else 4)
     else:
         target = 8 if slot >= 18 else 7
     banking = mode == 'lose' and not rebuilt and slot < 15
     if stay is not None and not done3:  # 느린 리롤: 머무는 레벨에서 50 넘는 몫으로 리롤
         if banking:
-            return 4, None
+            return target, None
         target = stay if rebuilt or slot >= 15 else min(target, stay)
         floor = k['keep'] if level >= target else None
     else:
@@ -77,6 +88,26 @@ def plan(slot, level, hp, mode, rebuilt, stay, done3, steady, k, rebuild_now=Fal
     elif round_stage(slot) >= 4 and hp < k['hp_low']:
         floor = k['floor_45'] if floor is None else min(floor, k['floor_45'])
     return target, floor
+
+
+def spend_plan(base, arm, slot, level, gold, need, hp, steady, slow, k):
+    """교과서의 (목표 레벨, 남길 골드, 경험치 우선) base를 「돈 쓰는 때」 수업 규칙 arm(SPEND의 이름)으로 고친다.
+    need는 다음 레벨까지 모자란 경험치다."""
+    target, floor, exp_first = base
+    wait, small41, floors = SPEND[arm]
+    if slow or hp < k['hp_low'] or level >= 9:
+        return base
+    if slot < FIRST_SLOT:
+        if small41 and slot >= FIRST_41 and floor is not None and floor < KEEP_AFTER:
+            return target, KEEP_AFTER, exp_first
+        return base
+    if level < 8:
+        if wait and level == 7 and slot < LAST_WAIT and gold - 4 * math.ceil(need / 4) < KEEP_AFTER:
+            return level, None, False
+        return base
+    if steady:
+        return base
+    return target, next(f for h, f in floors if hp >= h), False
 
 
 def action(gold, level, target, floor, exp_first):

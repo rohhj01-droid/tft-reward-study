@@ -344,6 +344,62 @@ def macro_plan_gives_the_numbers_behind_macro_test():
     assert plan == (8, 50, True) and policy.macro(p, 21) == action(60, 8, *plan) == '1'
 
 
+def lose_5_knob_levels_lose_streak_seats_at_2_5_test():
+    """손잡이 lose_5: 연패형도 2-5(칸 6)부터 목표 레벨이 5다(「돈 모으기」 수업 점검에서 그때 글과 어긋난 줄, 2026-11-16).
+    보드를 세우기 전에는 여전히 리롤하지 않고, 보드를 세운 뒤와 연승형은 그대로다. 꺼 두면(기본) 지금 교과서 그대로다."""
+    from meta.human_macro import plan
+    on = dict(K, lose_5=True)
+    assert plan(6, 4, 90, 'lose', False, None, False, False, K) == (4, None)
+    assert plan(6, 4, 90, 'lose', False, None, False, False, on) == (5, None)
+    assert plan(5, 4, 90, 'lose', False, None, False, False, on) == (4, None)   # 2-3에는 아직 4
+    assert plan(9, 5, 90, 'lose', False, None, False, False, on) == (5, None)   # 3-1에도 5에 머문다
+    assert plan(6, 4, 90, 'lose', False, 6, False, False, on) == (5, None)      # 느린 리롤 덱도 같다
+    assert plan(12, 6, 60, 'lose', True, None, False, False, on) == (6, 50)     # 보드를 세운 뒤는 그대로
+    assert plan(6, 4, 90, 'win', False, None, False, False, on) == (5, 50)      # 연승형은 그대로
+
+
+def spend_knob_puts_the_spend_lesson_into_the_textbook_numbers_test():
+    """손잡이 spend: 「돈 쓰는 때」 수업 규칙(meta/human_macro.spend_plan)이 교과서의 숫자가 된다. 계획 AI의 따라 하기 기록도
+    이 숫자를 쓴다. 4-5(칸 18) 레벨 7에서 레벨 8까지 경험치 56이 모자랄 때: 교과서는 돈과 상관없이 올리고, 'era'는 올린
+    뒤에도 30골드가 남을 때만 올린다. 꺼 두면(기본) 지금 교과서 그대로다."""
+    from meta.human_bot import HumanPolicy
+
+    def numbers(slot, level, gold, hp=70, **knobs):
+        p = item_player([Unit(name='garen', stars=2, items=[])], [])
+        p.level, p.gold, p.health, p.exp, p.max_level = level, gold, hp, 0, 9
+        p.level_costs = [0, 2, 2, 6, 10, 20, 36, 56, 80, 100]
+        policy = HumanPolicy(None, SHARPSHOOTERS, [], random.Random(0), knobs)
+        policy.mode = 'win'
+        return policy.macro_plan(p, slot)
+
+    assert numbers(18, 7, 60) == (8, 50, False)
+    assert numbers(18, 7, 60, spend='era') == (7, None, False)   # 60 - 56 = 4골드만 남는다: 기다리고 리롤도 하지 않는다
+    assert numbers(18, 7, 90, spend='era') == (8, 50, False)     # 34골드가 남는다: 올린다
+    assert numbers(15, 7, 60) == (7, 20, False)
+    assert numbers(15, 7, 60, spend='era') == (7, 30, False)     # 4-1에는 30골드까지만 굴린다
+    assert numbers(19, 8, 60) == (8, 50, False)
+    assert numbers(19, 8, 60, spend='era') == (8, 30, False)     # 레벨 8에서는 캐리가 2성이 될 때까지 굴린다
+    assert numbers(19, 8, 60, hp=45, spend='era') == (8, 20, False)
+    assert numbers(19, 8, 60, hp=35, spend='era') == numbers(19, 8, 60, hp=35)   # 체력 40 아래는 교과서 그대로
+
+
+def textbook_names_turn_on_the_matching_knobs_test():
+    """환경 변수 TEXTBOOK에 적은 이름이 고친 교과서의 손잡이가 된다. 안 주면 고치기 전 교과서다. 모르는 이름은 조용히
+    넘기지 않는다(오타가 옛 교과서로 돌아가면 안 된다)."""
+    from meta.human_bot import KNOBS, textbook_knobs
+    assert textbook_knobs('') == {'spend': None, 'lose_5': False}
+    assert textbook_knobs('era') == {'spend': 'era', 'lose_5': False}
+    assert textbook_knobs('era+lv5') == {'spend': 'era', 'lose_5': True}
+    assert textbook_knobs('lv5') == {'spend': None, 'lose_5': True}
+    try:
+        textbook_knobs('ear')
+    except ValueError:
+        pass
+    else:
+        raise AssertionError('모르는 이름을 받았다')
+    assert {'spend', 'lose_5'} <= set(KNOBS)
+
+
 def plain(names):
     """1성, 아이템 없음, 선택받은 자 아닌 유닛 목록."""
     return [Unit(name=n, stars=1, items=[], chosen=False) for n in names]

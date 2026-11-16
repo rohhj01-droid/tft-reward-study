@@ -8,6 +8,7 @@ meta/human_deck.py, 레벨 8부터의 덱 밖 5코스트와 계열 먼저 규칙
 (analysis.battle.corner_positions)다. 후반 덱(4코스트 이상이 절반 넘는 덱)은 4-1 전에 덱 유닛을 고집하지 않고 가진 것 중
 가장 센 보드를 쓴다(flex, 설계 10절). 보드의 세기는 유닛 값의 합에 켜진 특성의 인원을 더한 점수로 잰다.
 """
+import os
 from collections import Counter, defaultdict
 from types import SimpleNamespace
 
@@ -19,8 +20,18 @@ from meta.decks_1024 import CHAMPION_TRAITS
 from meta.human_five import (FIVE_COSTS, active_of, board_units, family_buy, family_in, family_short, pick_five,
                              swap_out, trait_table)
 from meta.human_items import item_action, transfer_action
-from meta.human_macro import action, carry3, early_mode, plan, stable, stay_level
+from meta.human_macro import action, carry3, early_mode, plan, spend_plan, stable, stay_level
 from meta.lobby import BOARDS, DeckPolicy
+
+
+def textbook_knobs(names):
+    """환경 변수 TEXTBOOK의 값 -> 고친 교과서의 손잡이(2026-11-16). '+'로 이은 이름이고, 빈 값은 고치기 전 교과서다.
+    'era': 「돈 쓰는 때」 수업 규칙(meta/human_macro.spend_plan의 'era'), 'lv5': 연패형도 2-5부터 목표 레벨 5."""
+    names = [n for n in names.split('+') if n]
+    if set(names) - {'era', 'lv5'}:
+        raise ValueError(f"TEXTBOOK={'+'.join(names)}")
+    return {'spend': 'era' if 'era' in names else None, 'lose_5': 'lv5' in names}
+
 
 KNOBS = {'win_threshold': 2, 'lose_hp': 50, 'keep': 50, 'floor_41': 20, 'floor_45': 10, 'hp_low': 40, 'hp_all_in': 20,
          'chosen_bonus': 10, 'item_point': 3, 'tier_weight': 3, 'contest': 1, 'temperature': 3,
@@ -32,7 +43,10 @@ KNOBS = {'win_threshold': 2, 'lose_hp': 50, 'keep': 50, 'floor_41': 20, 'floor_4
          # 설계 10절: 후반 덱(4코스트 이상 유닛 몫이 이 값을 넘는 덱)은 이 칸(15 = 4-1) 전에는 가진 것 중 가장 센 보드를 쓴다
          'late_share': 0.5, 'flex_until': 15,
          # 설계 10절 시너지: 보드 점수에서 켜진 특성에 든 인원 하나의 점수, 시너지로 사는 유닛의 비용 상한
-         'syn_point': 2, 'syn_cost': 3}
+         'syn_point': 2, 'syn_cost': 3,
+         # 고친 교과서: spend(「돈 쓰는 때」 수업 규칙의 이름, None이면 끔), lose_5(연패형도 2-5에 레벨 5). 규칙 자리와 따라 하기
+         # 기록이 함께 바뀌도록 환경 변수 TEXTBOOK으로 켠다(일꾼 프로세스가 물려받는다)
+         **textbook_knobs(os.environ.get('TEXTBOOK', ''))}
 
 
 def late_deck(board, k):
@@ -330,6 +344,10 @@ class HumanPolicy(DeckPolicy):
             floor = min(floor, self.knobs['floor_9'])
         # 5단계 레벨 8이면 안정 여부와 상관없이 50 넘는 몫으로 9로 간다(유저 결정 2026-10-09). 9가 되면 넘는 몫은 리롤
         exp_first = bool(self.knobs['xp_to_9']) and round_stage(game_round) >= 5 and player.level == 8
+        if self.knobs['spend'] and board:
+            need = player.level_costs[player.level] - player.exp if player.level < player.max_level else 0
+            return spend_plan((target, floor, exp_first), self.knobs['spend'], game_round, player.level, player.gold, need,
+                              player.health, steady, bool(board['slow']), self.knobs)
         return target, floor, exp_first
 
     def macro(self, player, game_round):

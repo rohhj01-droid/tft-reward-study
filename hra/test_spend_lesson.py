@@ -1,14 +1,16 @@
 """
-「돈 쓰는 때」 수업 규칙 대조 검사(hra/spend_lesson.py). 끝의 세 검사는 판을 실제로 돌려서 느리다(판 하나에 20초쯤).
+「돈 쓰는 때」 수업 규칙 대조 검사(hra/spend_lesson.py). 끝의 네 검사는 판을 실제로 돌려서 느리다(판 하나에 20초쯤).
 
 실행: python -m hra.test_spend_lesson
 """
 import json
 import os
+import random
 import tempfile
 
 from hra.spend_lesson import adjusted, cap_effect, gap_stats, lesson, lesson_game, lesson_plan, line, parse, run, summary
 from hra.plan_bot import safe_play
+from meta.human_bot import KNOBS
 from meta.lobby import N_PLAYERS
 
 BASE7 = (7, 50, False)   # 교과서: 4-2쯤 레벨 7에서 50을 지킨다
@@ -176,11 +178,36 @@ def adjusted_subtracts_the_control_run_game_by_game_on_shared_seeds_test():
     assert adjusted(old, none)['games'] == 2
 
 
+def arms_are_knobs_on_top_of_the_textbook_test():
+    # 수업 자리는 교과서의 손잡이만 바꾼다. 팔 lv5는 「연패형도 2-5에 레벨 5」(lose_5)이고, 나머지 팔은 「돈 쓰는 때」 규칙(spend)이다
+    seat = lambda arm: lesson(arm)(None, None, [], random.Random(0)).knobs
+    assert (seat('lv5')['lose_5'], seat('lv5')['spend']) == (True, KNOBS['spend'])
+    assert (seat('era')['spend'], seat('era')['lose_5']) == ('era', KNOBS['lose_5'])
+    assert (seat(None)['spend'], seat(None)['lose_5']) == (KNOBS['spend'], KNOBS['lose_5'])
+    assert parse(['--arm', 'lv5', '--out', 'x.json']).arm == 'lv5'
+
+
 def tracked_rule_seats_play_the_same_game_as_plain_rule_seats_test():
     plain, _ = safe_play(990001, ['rule'] * N_PLAYERS)
     tracked, _ = safe_play(990001, [lesson(None)] * N_PLAYERS)
     assert [s['place'] for s in plain['seats']] == [s['place'] for s in tracked['seats']]
     assert [s['deck'] for s in plain['seats']] == [s['deck'] for s in tracked['seats']]
+
+
+def rule_seats_under_the_fixed_textbook_play_like_era_lesson_seats_test():
+    # 교과서의 손잡이를 켠 규칙 자리 8명(고친 교과서)과, 옛 교과서 위에 팔 era를 얹은 수업 자리 8명은 같은 판을 둔다
+    lessons, _ = safe_play(990005, [lesson('era')] * N_PLAYERS)
+    old = KNOBS['spend']
+    KNOBS['spend'] = 'era'
+    try:
+        fixed, _ = safe_play(990005, ['rule'] * N_PLAYERS)
+    finally:
+        KNOBS['spend'] = old
+    assert [s['place'] for s in fixed['seats']] == [s['place'] for s in lessons['seats']]
+    assert [s['deck'] for s in fixed['seats']] == [s['deck'] for s in lessons['seats']]
+    assert [s['board'] for s in fixed['seats']] == [s['board'] for s in lessons['seats']]
+    plain, _ = safe_play(990005, ['rule'] * N_PLAYERS)
+    assert [s['board'] for s in plain['seats']] != [s['board'] for s in fixed['seats']]   # 옛 교과서와는 다른 판이다
 
 
 def lesson_game_gives_eight_rows_with_four_lesson_seats_test():
@@ -197,6 +224,7 @@ def run_resumes_from_partial_file_test():
         path = os.path.join(d, 'p.jsonl')
         first = run('roll', 1, jobs=1, seed0=990003, partial=path)
         assert first['games'] == 1 and len(open(path, encoding='utf-8').read().splitlines()) == 1
+        assert first['textbook'] == {'spend': KNOBS['spend'], 'lose_5': KNOBS['lose_5']}   # 양쪽 자리의 바탕 교과서를 적는다
         again = run('roll', 1, jobs=1, seed0=990003, partial=path)   # 다시 부르면 판을 돌리지 않고 기록을 읽는다
         assert again['rows'] == first['rows'] and len(open(path, encoding='utf-8').read().splitlines()) == 1
 
