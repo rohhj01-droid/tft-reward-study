@@ -871,6 +871,16 @@ def late_probe_takes_rule_cells_only_from_4_1_test():
     p.level, p.gold = 8, 10
     assert late_macro(seat, p, 15) == '2'  # 계획기의 50이 아니라 규칙의 남길 골드 0을 지키고, 규칙을 다시 묻지 않는다
 
+
+def rule_probe_seats_rule_bots_in_ai_seats_test():
+    """대조 탐침(meta/inversion/probe_rule.py): probe_heads와 같은 판을 돌리되 AI 자리에도 규칙 기록기('record')를 앉힌다. 자리
+    뽑기만으로 생기는 등수 차를 재는 대조 실행이다."""
+    import sys
+    from meta.inversion.probe_rule import rule_planner
+    heads = sys.modules['probe_heads']  # 탐침 모듈은 같은 폴더의 probe_heads를 이 이름으로 읽는다
+    assert rule_planner('없는 신경망.pt', ()) == 'record'  # 신경망을 읽지 않는다
+    assert heads.planner_for is rule_planner  # 판을 돌리는 쪽이 이 계획기를 쓴다(다른 검사는 planner_for를 쓰지 않는다)
+
 if __name__ == '__main__':
     import sys
     for name in sys.argv[1:] or [n for n in list(globals()) if n.endswith('_test')]:
