@@ -20,7 +20,7 @@ from meta.decks_1024 import CHAMPION_TRAITS
 from meta.human_five import (FIVE_COSTS, active_of, board_units, family_buy, family_in, family_short, pick_five,
                              swap_out, trait_table)
 from meta.human_items import item_action, transfer_action
-from meta.human_macro import action, carry3, early_mode, plan, spend_plan, stable, stay_level
+from meta.human_macro import action, carry3, early_mode, late_hp, late_plan, plan, spend_plan, stable, stay_level, strong
 from meta.lobby import BOARDS, DeckPolicy
 
 
@@ -46,6 +46,8 @@ KNOBS = {'win_threshold': 2, 'lose_hp': 50, 'keep': 50, 'floor_41': 20, 'floor_4
          'syn_point': 2, 'syn_cost': 3,
          # 고친 교과서: spend(「돈 쓰는 때」 수업 규칙의 이름, None이면 끔), lose_5(연패형도 2-5에 레벨 5). 규칙 자리와 따라 하기
          # 기록이 함께 바뀌도록 환경 변수 TEXTBOOK으로 켠다(일꾼 프로세스가 물려받는다)
+         # 5단계 돈과 생존 규칙 후보(meta/human_macro.late_plan의 팔 이름, None이면 끔), 「보드가 세다」의 2성 유닛 수
+         'late': None, 'strong_twos': 6,
          **textbook_knobs(os.environ.get('TEXTBOOK', ''))}
 
 
@@ -338,17 +340,23 @@ class HumanPolicy(DeckPolicy):
         stay = stay_level(board)
         done3 = stay is not None and carry3(player, board)
         steady = bool(board) and stable(player, board)
-        target, floor = plan(game_round, player.level, player.health, self.mode or 'win', self.rebuilt, stay,
+        late = self.knobs['late']
+        slow = bool(board) and bool(board['slow'])
+        hp = player.health if slow else late_hp(late, game_round, player.health)
+        target, floor = plan(game_round, player.level, hp, self.mode or 'win', self.rebuilt, stay,
                              done3, steady, self.knobs, rebuild_now=self.rebuilt_at == game_round)
         if player.level >= 9 and floor is not None and self.knobs['floor_9'] is not None:
             floor = min(floor, self.knobs['floor_9'])
         # 5단계 레벨 8이면 안정 여부와 상관없이 50 넘는 몫으로 9로 간다(유저 결정 2026-10-09). 9가 되면 넘는 몫은 리롤
         exp_first = bool(self.knobs['xp_to_9']) and round_stage(game_round) >= 5 and player.level == 8
+        numbers = target, floor, exp_first
         if self.knobs['spend'] and board:
             need = player.level_costs[player.level] - player.exp if player.level < player.max_level else 0
-            return spend_plan((target, floor, exp_first), self.knobs['spend'], game_round, player.level, player.gold, need,
-                              player.health, steady, bool(board['slow']), self.knobs)
-        return target, floor, exp_first
+            numbers = spend_plan(numbers, self.knobs['spend'], game_round, player.level, player.gold, need,
+                                 hp, steady, slow, self.knobs)
+        if late and board:
+            numbers = late_plan(numbers, late, game_round, hp, strong(player, board, self.knobs), slow, self.knobs)
+        return numbers
 
     def macro(self, player, game_round):
         return action(player.gold, player.level, *self.macro_plan(player, game_round))

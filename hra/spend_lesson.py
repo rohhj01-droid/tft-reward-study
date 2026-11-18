@@ -14,6 +14,10 @@
                      올리면 교과서의 4-1 리롤이 실제로 일어나 레벨 8에 빈손으로 가므로, 상한을 올린 조건에서 쓴다.
 팔 'deep' (레벨 8에서 깊게): 'era'와 같되 레벨 8에서 남길 골드가 체력 60 이상이면 20, 40~59면 10이다.
 팔 'lv5' (2-5에 레벨 5): 돈 쓰는 규칙은 그대로 두고, 연패형도 2-5부터 목표 레벨을 5로 한다(교과서는 3-2까지 레벨 4).
+팔 'stop' (안정되면 멈춤): 5-1부터 체력 20~39인 자리는 보드가 세면(캐리가 모두 2성이거나 2성 이상 유닛이 여섯 이상) 리롤을 멈추고 50을 지킨다.
+팔 'keep30' (더 남기기): 5-1부터 체력 20~39인 자리의 남길 골드가 10이 아니라 30이다.
+팔 'low30' (문턱 낮추기): 5-1부터 체력 30~39를 40으로 친다.
+팔 'combo' (셋을 함께): 5-1부터 체력 30~39를 40으로 치고, 체력 20~29는 보드가 세면 50, 아니면 30을 남긴다.
 팔 'none' (대조): 양쪽 모두 교과서다. 같은 시드에서 자리 뽑기만으로 생기는 차를 잰다.
 
 규칙은 교과서의 손잡이로 들어 있고(meta/human_macro.spend_plan, meta/human_bot.KNOBS의 spend·lose_5) 수업 자리는 그 손잡이만
@@ -40,7 +44,7 @@ import config
 from hra.deck_baseline import load_partial
 from hra.plan_bot import pinned_pool, safe_play
 from meta.human_bot import KNOBS, HumanPolicy, late_deck
-from meta.human_macro import FIRST_41, FIRST_SLOT, KEEP_AFTER, SPEND as ARMS, SPEND_FLOORS as FLOORS, spend_plan, stable
+from meta.human_macro import FIRST_41, FIRST_SLOT, KEEP_AFTER, LATE_ARMS, SPEND as ARMS, SPEND_FLOORS as FLOORS, spend_plan, stable
 from meta.lobby import BOARDS, N_PLAYERS
 from Simulator.stats import COST
 
@@ -62,7 +66,8 @@ class Lesson(HumanPolicy):
 
     def __init__(self, *a, **k):
         super().__init__(*a, **k)
-        self.knobs.update({'lose_5': True} if self.arm == 'lv5' else {'spend': self.arm} if self.arm else {})
+        self.knobs.update({'lose_5': True} if self.arm == 'lv5' else {'late': self.arm} if self.arm in LATE_ARMS
+                          else {'spend': self.arm} if self.arm else {})
         self.curve, self.rolls8, self.deck15, self.deck18, self.carry2, self.four2 = [], 0, None, None, False, 0
         MADE.append(self)
 
@@ -93,9 +98,9 @@ def lesson(arm):
 
 
 def lesson_game(job):
-    """(시드, 팔) -> (시드, 자리마다 기록, 오류). 수업 자리 4개는 hra.evaluate.ab_game처럼 시드로 뽑는다."""
-    seed, arm = job
-    picked = set(random.Random(seed).sample(range(N_PLAYERS), N_PLAYERS // 2))
+    """(시드, 팔[, 여덟 자리 모두]) -> (시드, 자리마다 기록, 오류). 수업 자리 4개는 hra.evaluate.ab_game처럼 시드로 뽑는다."""
+    seed, arm, *everyone = job
+    picked = set(range(N_PLAYERS)) if everyone and everyone[0] else set(random.Random(seed).sample(range(N_PLAYERS), N_PLAYERS // 2))
     MADE.clear()
     out, err = safe_play(seed, [lesson(arm if i in picked else None) for i in range(N_PLAYERS)])
     if out is None:
@@ -204,13 +209,14 @@ def adjusted(arm, none):
     return {'games': len(d), 'diff': statistics.mean(d), 'se': statistics.stdev(d) / len(d) ** 0.5 if len(d) > 1 else None}
 
 
-def run(arm, games, jobs=None, seed0=SEED_SPEND, partial=None, key='deck18'):
-    """팔 arm을 games판. partial을 주면 끝난 판마다 그 파일에 한 줄씩 적고, 다시 부르면 적힌 판은 건너뛴다(노트북이 꺼져도 이어 간다)."""
+def run(arm, games, jobs=None, seed0=SEED_SPEND, partial=None, key='deck18', everyone=False):
+    """팔 arm을 games판. partial을 주면 끝난 판마다 그 파일에 한 줄씩 적고, 다시 부르면 적힌 판은 건너뛴다(노트북이 꺼져도 이어 간다).
+    everyone이면 여덟 자리 모두 그 팔이고(판 전체의 모습을 잰다) 등수 차는 없다."""
     done = load_partial(partial)
     todo = [seed0 + k for k in range(games) if seed0 + k not in done]
     if todo:
         with pinned_pool(jobs) as p, open(partial or os.devnull, 'a', encoding='utf-8') as f:
-            for row in p.imap_unordered(lesson_game, [(s, arm) for s in todo]):
+            for row in p.imap_unordered(lesson_game, [(s, arm, everyone) for s in todo]):
                 done[row[0]] = row
                 f.write(json.dumps(row, ensure_ascii=False) + '\n')
                 f.flush()
@@ -220,11 +226,14 @@ def run(arm, games, jobs=None, seed0=SEED_SPEND, partial=None, key='deck18'):
             'keep_after': KEEP_AFTER, 'floors': FLOORS, 'textbook': {k: KNOBS[k] for k in ('spend', 'lose_5')},
             'errors': [[s, e] for s, _, e in rows if e is not None],
             'seeds': [s for s, _, e in rows if e is None],
-            'group_key': key, **summary(good, key), 'rows': good}
+            'group_key': key, 'everyone': everyone,
+            **({'games': len(good), 'diff': None, 'se': None, 'per_game': [], 'groups': {}} if everyone else summary(good, key)), 'rows': good}
 
 
 def line(res):
     """끝에 찍는 한 줄. 판이 하나면 표준오차가 없다."""
+    if res['diff'] is None:
+        return f"{res['arm']} 여덟 자리 모두 판 {res['games']} 오류 {len(res['errors'])}"
     se = '' if res['se'] is None else f" ± {res['se']:.3f}"
     return f"{res['arm']} 판 {res['games']} 오류 {len(res['errors'])} 차 {res['diff']:+.3f}{se}"
 
@@ -232,7 +241,8 @@ def line(res):
 def parse(argv=None):
     """명령줄 인자. --arm none은 양쪽 모두 교과서인 대조 실행이다(자리 뽑기 흔들림을 잰다)."""
     ap = argparse.ArgumentParser()
-    ap.add_argument('--arm', choices=(*ARMS, 'lv5', 'none'), required=True)
+    ap.add_argument('--arm', choices=(*ARMS, *LATE_ARMS, 'lv5', 'none'), required=True)
+    ap.add_argument('--everyone', action='store_true', help='여덟 자리 모두 이 팔이다')
     ap.add_argument('--group', choices=('deck15', 'deck18'), default='deck18')
     ap.add_argument('--games', type=int, default=400)
     ap.add_argument('--jobs', type=int, default=2)
@@ -246,6 +256,6 @@ def parse(argv=None):
 
 if __name__ == '__main__':
     a = parse()
-    res = run(a.arm, a.games, a.jobs, a.seed0, a.partial, a.group)
+    res = run(a.arm, a.games, a.jobs, a.seed0, a.partial, a.group, a.everyone)
     json.dump(res, open(a.out, 'w', encoding='utf-8'), ensure_ascii=False)  # 자리별 곡선이 들어 있어 줄바꿈 없이 적는다
     print(line(res), {n: (g['place_diff'], g['place_se']) for n, g in res['groups'].items()})

@@ -229,6 +229,61 @@ def run_resumes_from_partial_file_test():
         assert again['rows'] == first['rows'] and len(open(path, encoding='utf-8').read().splitlines()) == 1
 
 
+def late_low30_counts_health_in_the_30s_as_40_from_stage_5_test():
+    """5단계 돈과 생존 규칙 후보 low30·combo: 5-1(칸 21)부터 체력 30~39를 40으로 친다. 다른 때와 다른 팔은 그대로다."""
+    from meta.human_macro import late_hp
+    assert [late_hp('low30', 21, h) for h in (29, 30, 39, 40)] == [29, 40, 40, 40]
+    assert late_hp('combo', 21, 35) == 40 and late_hp('low30', 20, 35) == 35   # 4단계는 그대로
+    assert late_hp('stop', 21, 35) == 35 and late_hp('keep30', 21, 35) == 35 and late_hp(None, 21, 35) == 35
+
+
+def late_plan_changes_only_stage_5_low_health_rounds_test():
+    """체력 20~39, 5단계부터, 느린 리롤 덱이 아닐 때만 남길 골드를 바꾼다. stop: 보드가 세면 50을 지킨다. keep30: 30을 남긴다.
+    combo: 보드가 세면 50, 아니면 30이다. 경험치 우선과 목표 레벨은 건드리지 않는다."""
+    from meta.human_macro import late_plan
+    base = (8, 10, True)
+    call = lambda arm, hp=30, is_strong=False, slot=22, slow=False: late_plan(base, arm, slot, hp, is_strong, slow, KNOBS)
+    assert call(None) == base and call('low30') == base
+    assert call('stop') == base and call('stop', is_strong=True) == (8, 50, True)
+    assert call('keep30') == (8, 30, True) and call('keep30', is_strong=True) == (8, 30, True)
+    assert call('combo') == (8, 30, True) and call('combo', is_strong=True) == (8, 50, True)
+    for arm in ('stop', 'keep30', 'combo'):
+        assert call(arm, hp=19, is_strong=True) == base and call(arm, hp=40, is_strong=True) == base   # 다 쓰는 구간과 체력 40 이상은 그대로
+        assert call(arm, slot=20, is_strong=True) == base and call(arm, slow=True, is_strong=True) == base   # 4단계와 느린 리롤 덱은 그대로
+
+
+def strong_board_has_all_carries_two_star_or_six_two_star_units_test():
+    """보드가 센가: 캐리가 모두 2성이거나, 보드의 2성 이상 유닛이 여섯 이상이다."""
+    from types import SimpleNamespace as Unit
+    from meta.human_macro import strong
+    from meta.lobby import BOARDS, carriers
+    deck = next(b for b in BOARDS if all(c in b['units'] for c in carriers(b)) and len(carriers(b)) >= 1 and not b['slow'])
+    other = next(n for n in ('garen', 'vayne', 'elise') if n not in carriers(deck))
+    field = lambda units: Unit(board=[units + [None] * (7 - len(units))])
+    two = lambda n, name=other: [Unit(name=name, stars=2, items=[]) for _ in range(n)]
+    assert not strong(field(two(5)), deck, KNOBS)
+    assert strong(field(two(6)), deck, KNOBS)
+    assert strong(field([Unit(name=c, stars=2, items=[]) for c in carriers(deck)]), deck, KNOBS)
+
+
+def late_arms_are_a_knob_on_top_of_the_textbook_test():
+    seat = lambda arm: lesson(arm)(None, None, [], random.Random(0)).knobs
+    assert seat('stop')['late'] == 'stop' and seat('stop')['spend'] == KNOBS['spend']
+    assert seat(None)['late'] is None and seat('era')['late'] is None
+    assert parse(['--arm', 'combo', '--out', 'x.json']).arm == 'combo'
+    assert parse(['--arm', 'none', '--everyone', '--out', 'x.json']).everyone
+    assert not parse(['--arm', 'stop', '--out', 'x.json']).everyone
+
+
+def everyone_run_seats_the_arm_in_all_eight_seats_test():
+    """--everyone: 여덟 자리 모두 그 팔이다. 판 전체의 모습(살아 있는 자리, 등수별 레벨)을 재려고 쓴다. 등수 차는 없다."""
+    seed, rows, err = lesson_game((990006, 'stop', True))
+    assert err is None and seed == 990006 and all(r['lesson'] for r in rows) and len(rows) == N_PLAYERS
+    res = run('stop', 1, jobs=1, seed0=990006, everyone=True)
+    assert res['everyone'] and res['games'] == 1 and res['diff'] is None and len(res['rows'][0]) == N_PLAYERS
+    assert 'stop' in line(res)
+
+
 if __name__ == '__main__':
     import sys
     for name in sys.argv[1:] or [n for n in list(globals()) if n.endswith('_test')]:

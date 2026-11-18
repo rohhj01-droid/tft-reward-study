@@ -17,6 +17,9 @@ DEEP_FLOORS = ((60, 20), (40, 10))
 SPEND = {'roll': (False, False, SPEND_FLOORS), 'full': (True, False, SPEND_FLOORS),  # 이름 -> (레벨 8을 기다리나, 4-1에 조금만 굴리나, 레벨 8 남길 골드)
          'era': (True, True, SPEND_FLOORS), 'deep': (True, True, DEEP_FLOORS)}
 FIRST_41, FIRST_SLOT, LAST_WAIT = 15, 18, 21  # 4-1, 4-5(여기부터 레벨 8 규칙을 바꾼다), 5-1(기다리지 않는다)
+# 5단계 돈과 생존 규칙 후보(손잡이 late, 팔의 뜻은 hra/spend_lesson.py 머리말)
+LATE_ARMS = ('stop', 'keep30', 'low30', 'combo')
+LATE_KEEP = 30       # keep30·combo: 체력 20~39에서 남길 골드
 
 
 def early_mode(player, k):
@@ -108,6 +111,30 @@ def spend_plan(base, arm, slot, level, gold, need, hp, steady, slow, k):
     if steady:
         return base
     return target, next(f for h, f in floors if hp >= h), False
+
+
+def strong(player, board, k):
+    """보드가 센가: 4코스트 이하 캐리가 모두 2성이거나(stable), 보드의 2성 이상 유닛이 손잡이 값(6)명 이상이다."""
+    twos = sum(1 for row in player.board for u in row if u and u.stars >= 2)
+    return twos >= k['strong_twos'] or stable(player, board)
+
+
+def late_hp(arm, slot, hp):
+    """low30·combo: 5-1부터 체력 30~39를 40으로 친다(레벨·리롤 숫자를 정할 때만)."""
+    return 40 if arm in ('low30', 'combo') and slot >= LAST_WAIT and 30 <= hp < 40 else hp
+
+
+def late_plan(base, arm, slot, hp, is_strong, slow, k):
+    """교과서의 (목표 레벨, 남길 골드, 경험치 우선) base를 5단계 돈과 생존 규칙 arm으로 고친다. 5-1부터 체력 20~39인 자리만 바꾼다.
+    stop: 보드가 세면 50을 지킨다. keep30: 30을 남긴다. combo: 보드가 세면 50, 아니면 30이다(체력 30~39는 late_hp가 먼저 40으로 친다)."""
+    target, floor, exp_first = base
+    if arm is None or slow or slot < LAST_WAIT or not k['hp_all_in'] <= hp < k['hp_low']:
+        return base
+    if arm in ('stop', 'combo') and is_strong:
+        return target, k['keep'], exp_first
+    if arm in ('keep30', 'combo'):
+        return target, LATE_KEEP, exp_first
+    return base
 
 
 def action(gold, level, target, floor, exp_first):
