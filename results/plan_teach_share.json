@@ -1,0 +1,133 @@
+{
+ "check": false,
+ "inputs": {
+  "probe_rows_rule8_teach.json": "fcc4d610d0b5cb784633edaeb4935d689d4121e8457a65cc63eec68b688915eb",
+  "probe_rows_plan_teach_s2_latest.json": "a532c5b3fdb5e4f1e3bd778d0c24ff5b3ada26d92a0cb0521cd024acbf20b238",
+  "probe_rows_frame_plan_teach_s2_latest.json": "d26451bb2c72c33b304f3fd851982a9833c6dfff103accf8cade44b313579fcf",
+  "probe_rows_plan_teach_s3_latest.json": "ac966607698c648adf5817097eb646c0265609ddd5bb0254b375baf6336f3871",
+  "probe_rows_frame_plan_teach_s3_latest.json": "5ec70cb57b89b5e5d38a8b523bda61435ef7e7efaa726edfa2cec80273c0fe51",
+  "probe_rows_plan_teach_s4_latest.json": "f6ed6759878c8619ffb19032124752bd5774b1089f9d6d87b6dc32555aca4e11",
+  "probe_rows_frame_plan_teach_s4_latest.json": "076d714f7fccf892b1f3ae9dc3f75f5386c20401c27f3b6d042046e9f5609664",
+  "probe_rows_plan_teach_s5_latest.json": "1f9a1d5cdfe587eba6610174da81af8423b039c04a428b226d37b42cfd2693e5",
+  "probe_rows_frame_plan_teach_s5_latest.json": "8bfc80172c1f570b43d72f280ae0fb1f6651b1a295a238725557a7c5a436d06e"
+ },
+ "environment": {
+  "actions_per_turn": 30,
+  "textbook": {
+   "lose_5": false,
+   "spend": "era"
+  }
+ },
+ "runs": {
+  "s2": {
+   "games": 400,
+   "games_frame": 400,
+   "AB": [
+    0.21875,
+    0.08950607206268313
+   ],
+   "fixed": [
+    0.40625,
+    0.11243863196716072
+   ],
+   "L": [
+    0.0025,
+    0.08149594067108289
+   ],
+   "frame_fixed": [
+    0.40375,
+    0.11111601714837196
+   ]
+  },
+  "s3": {
+   "games": 400,
+   "games_frame": 400,
+   "AB": [
+    0.46625,
+    0.0868479779380604
+   ],
+   "fixed": [
+    0.65375,
+    0.11538304885752997
+   ],
+   "L": [
+    -0.09625,
+    0.0849238334477941
+   ],
+   "frame_fixed": [
+    0.75,
+    0.11340315555231724
+   ]
+  },
+  "s4": {
+   "games": 400,
+   "games_frame": 400,
+   "AB": [
+    0.36875,
+    0.0869044132155603
+   ],
+   "fixed": [
+    0.55625,
+    0.11591643063421789
+   ],
+   "L": [
+    0.07875,
+    0.08316157895498205
+   ],
+   "frame_fixed": [
+    0.4775,
+    0.11534239917575431
+   ]
+  },
+  "s5": {
+   "games": 400,
+   "games_frame": 400,
+   "AB": [
+    -0.03625,
+    0.08465336866194124
+   ],
+   "fixed": [
+    0.15125,
+    0.11544561628554317
+   ],
+   "L": [
+    -0.0825,
+    0.0794631698550248
+   ],
+   "frame_fixed": [
+    0.23375,
+    0.11192646549384495
+   ]
+  }
+ },
+ "means": {
+  "AB": [
+   0.254375,
+   0.10943212793782273
+  ],
+  "fixed": [
+   0.441875,
+   0.10943212793782273
+  ],
+  "L": [
+   -0.024375,
+   0.04113056536611048
+  ],
+  "frame_fixed": [
+   0.46625,
+   0.10747213786217648
+  ]
+ },
+ "control": [
+  -0.1875,
+  0.08460573088891862
+ ],
+ "verdict": {
+  "fixed": 0.441875,
+  "se": 0.10943212793782273,
+  "game_se": 0.09231064557597966,
+  "games_common": 400,
+  "ratio": 4.0378909587782585,
+  "cell": "돈 쓰는 때까지 가르친 AI는 고친 교과서 봇을 넘는다"
+ }
+}

@@ -1,0 +1,100 @@
+{
+ "config": "both",
+ "aux_w": 0.3,
+ "seed": 5,
+ "margin_until": null,
+ "margin_keep_deck": false,
+ "econ_w": 0.3,
+ "margin_keep_before": null,
+ "curve": [
+  {
+   "games": 500,
+   "diff": -0.66,
+   "se": 0.11897594875397946,
+   "check_errors": 0,
+   "flip": 0.09950000047683716,
+   "switches": 0.78,
+   "loss": 0.3360880115041453,
+   "errors": 0,
+   "minutes": 76.7351678888003,
+   "resumed": false,
+   "resumed_exact": false,
+   "margin": 1.0
+  },
+  {
+   "games": 1000,
+   "diff": -1.0675,
+   "se": 0.11726990193352037,
+   "check_errors": 0,
+   "flip": 0.2809999883174896,
+   "switches": 0.7635,
+   "loss": 0.34052641231194136,
+   "errors": 0,
+   "minutes": 74.13557227452596,
+   "resumed": false,
+   "resumed_exact": false,
+   "margin": 1.0
+  },
+  {
+   "games": 1500,
+   "diff": 0.7625,
+   "se": 0.12394973348967235,
+   "check_errors": 0,
+   "flip": 0.19550000131130219,
+   "switches": 0.7375,
+   "loss": 0.3510715995281935,
+   "errors": 0,
+   "minutes": 76.3275078455607,
+   "resumed": false,
+   "resumed_exact": false,
+   "margin": 1.0
+  },
+  {
+   "games": 2000,
+   "diff": -0.265,
+   "se": 0.12277722195568598,
+   "check_errors": 0,
+   "flip": 0.18150000274181366,
+   "switches": 0.70575,
+   "loss": 0.35623797099292276,
+   "errors": 0,
+   "minutes": 95.002352698644,
+   "resumed": false,
+   "resumed_exact": false,
+   "margin": 1.0
+  },
+  {
+   "games": 2500,
+   "diff": -1.0275,
+   "se": 0.11873482447333455,
+   "check_errors": 0,
+   "flip": 0.30399999022483826,
+   "switches": 0.549,
+   "loss": 0.33950234941765667,
+   "errors": 0,
+   "minutes": 99.40089384317398,
+   "resumed": false,
+   "resumed_exact": true,
+   "margin": 1.0
+  },
+  {
+   "games": 3000,
+   "diff": 0.1775,
+   "se": 0.11636763243873695,
+   "check_errors": 0,
+   "flip": 0.1274999976158142,
+   "switches": 0.542,
+   "loss": 0.3231570511981845,
+   "errors": 0,
+   "minutes": 113.4430674870809,
+   "resumed": false,
+   "resumed_exact": true,
+   "margin": 1.0
+  }
+ ],
+ "actions_per_turn": 30,
+ "textbook": {
+  "spend": "era",
+  "lose_5": false
+ }
+}
