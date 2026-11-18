@@ -30,7 +30,7 @@ import numpy as np
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from hra.evaluate import ab
-from hra.plan_bot import pinned_pool, safe_play
+from hra.plan_bot import environment, pinned_pool, safe_play
 from meta.human_bot import KNOBS, HumanPolicy, late_deck
 from meta.human_deck import choose, copies, held_items, score, scout, units_of
 from meta.lobby import BOARDS, N_PLAYERS
@@ -187,7 +187,7 @@ def risk(games, jobs=None, seed0=SEED_RISK, partial=None):
     rows = [done[seed0 + k] for k in range(games)]
     ok, errors = [r for _, r, e in rows if not e], [e for _, _, e in rows if e]
     first = deck_table(ok, 'first', boot=True)
-    return {'games': len(ok), 'errors': errors, 'pair': pair_check(ok, *PAIR, 'first'),
+    return {**environment(), 'games': len(ok), 'errors': errors, 'pair': pair_check(ok, *PAIR, 'first'),
             'pair_final': pair_check(ok, *PAIR, 'final'), 'groups': group_table(ok, 'first'),
             'top3': top_decks(first), 'first': first, 'final': deck_table(ok, 'final', boot=True), 'rows': ok}
 

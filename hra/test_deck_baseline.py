@@ -85,6 +85,45 @@ def risk_resumes_from_partial_file_test():
     assert r['games'] == 3 and r['first']['Chosen Warlords']['seats'] == 24
 
 
+def risk_records_the_environment_test():
+    """덱별 위험 결과에 환경(행동 상한, 교과서 손잡이)이 적힌다. 판정 스크립트가 탐침 기록의 환경과 같은지 본다."""
+    import json
+    import os
+    import tempfile
+    from hra.deck_baseline import SEED_RISK, risk
+    from hra.plan_bot import environment
+    rows = [{'first': 'Chosen Warlords', 'final': 'Chosen Warlords', 'place': 1 + i} for i in range(8)]
+    path = os.path.join(tempfile.mkdtemp(), 'risk.jsonl')
+    with open(path, 'w', encoding='utf-8') as f:
+        for k in range(3):
+            f.write(json.dumps([SEED_RISK + k, rows, None]) + '\n')
+    r = risk(3, partial=path)
+    assert {k: r.get(k) for k in environment()} == environment(), r.keys()
+
+
+def top_deck_probe_seats_the_baseline_in_ai_seats_test():
+    """기준선 탐침(meta/inversion/probe_topdecks.py): probe_heads와 같은 판을 돌리되 AI 자리에 위험 표 상위 세 덱만 고르는 규칙 봇을
+    앉힌다. AI 자리는 본래 탐침과 같은 자리 뽑기이고, 그 자리의 끝 덱은 후보 셋 안이며, 규칙 자리는 기록기라 라운드 기록이 있다."""
+    import json
+    import os
+    import random
+    import sys
+    import tempfile
+    from meta.inversion import probe_topdecks as pt
+    heads = sys.modules['probe_heads']  # 탐침 모듈은 같은 폴더의 probe_heads를 이 이름으로 읽는다
+    allowed = ['Chosen Warlords', 'Chosen Divines', 'Chosen Cultists']
+    path = os.path.join(tempfile.mkdtemp(), 'risk.json')
+    with open(path, 'w', encoding='utf-8') as f:
+        json.dump({'top3': allowed}, f)
+    pt.RISK = path
+    assert heads.planner_for is pt.top_planner  # 판을 돌리는 쪽이 이 계획기를 쓴다
+    seed, rows, err = heads.game((13, '없는 신경망.pt', ()))  # 신경망을 읽지 않는다
+    assert err is None and len(rows) == 8, err
+    assert {r['seat'] for r in rows if r['kind'] == 'ai'} == set(random.Random(13).sample(range(8), 4))
+    assert all(r['deck'] in allowed and r['curve'] == [] for r in rows if r['kind'] == 'ai'), rows
+    assert all(r['curve'] for r in rows if r['kind'] == 'rule')
+
+
 if __name__ == '__main__':
     import sys
     for name in sys.argv[1:] or [n for n in list(globals()) if n.endswith('_test')]:
