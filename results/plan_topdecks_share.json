@@ -1,0 +1,109 @@
+{
+ "check": false,
+ "inputs": {
+  "results/deck_risk_rule_teach.json": "f8bbe74d43da5aa81538ecb8c3f1f67762ffa7bfa4dac8771a44da407916a5c1",
+  "probe_rows_topdecks_teach.json": "207d6aa8bf32474cc80f43daba58206cba033456c49447c5680fe394bfdfd1eb",
+  "probe_rows_rule8_teach.json": "fcc4d610d0b5cb784633edaeb4935d689d4121e8457a65cc63eec68b688915eb",
+  "probe_rows_plan_teach_s2_latest.json": "a532c5b3fdb5e4f1e3bd778d0c24ff5b3ada26d92a0cb0521cd024acbf20b238",
+  "probe_rows_plan_teach_s3_latest.json": "ac966607698c648adf5817097eb646c0265609ddd5bb0254b375baf6336f3871",
+  "probe_rows_plan_teach_s4_latest.json": "f6ed6759878c8619ffb19032124752bd5774b1089f9d6d87b6dc32555aca4e11",
+  "probe_rows_plan_teach_s5_latest.json": "1f9a1d5cdfe587eba6610174da81af8423b039c04a428b226d37b42cfd2693e5",
+  "probe_rows_frame_plan_teach_s2_latest.json": "d26451bb2c72c33b304f3fd851982a9833c6dfff103accf8cade44b313579fcf",
+  "probe_rows_frame_plan_teach_s3_latest.json": "5ec70cb57b89b5e5d38a8b523bda61435ef7e7efaa726edfa2cec80273c0fe51",
+  "probe_rows_frame_plan_teach_s4_latest.json": "076d714f7fccf892b1f3ae9dc3f75f5386c20401c27f3b6d042046e9f5609664",
+  "probe_rows_frame_plan_teach_s5_latest.json": "8bfc80172c1f570b43d72f280ae0fb1f6651b1a295a238725557a7c5a436d06e"
+ },
+ "environment": {
+  "actions_per_turn": 30,
+  "textbook": {
+   "lose_5": false,
+   "spend": "era"
+  }
+ },
+ "decks": {
+  "top3": [
+   "Chosen Warlords",
+   "Chosen Divines",
+   "Enlightened Mages"
+  ],
+  "table": {
+   "Chosen Warlords": {
+    "seats": 665,
+    "mean_place": 3.9383458646616543,
+    "first": 0.15338345864661654,
+    "top4": 0.6210526315789474,
+    "mean_place_se": 0.08264270220986247,
+    "first_se": 0.013136453224533079,
+    "top4_se": 0.017705180392999804
+   },
+   "Chosen Divines": {
+    "seats": 581,
+    "mean_place": 3.982788296041308,
+    "first": 0.23752151462994836,
+    "top4": 0.5576592082616179,
+    "mean_place_se": 0.0972616581124308,
+    "first_se": 0.01684880101001954,
+    "top4_se": 0.019465243566683346
+   },
+   "Enlightened Mages": {
+    "seats": 119,
+    "mean_place": 4.084033613445378,
+    "first": 0.15126050420168066,
+    "top4": 0.5630252100840336,
+    "mean_place_se": 0.2117317678597181,
+    "first_se": 0.03345432864086697,
+    "top4_se": 0.04448016118864305
+   }
+  },
+  "end": {
+   "Chosen Divines": 0.55875,
+   "Chosen Warlords": 0.414375,
+   "Enlightened Mages": 0.026875
+  },
+  "switches": 0.18
+ },
+ "values": {
+  "games_common": 400,
+  "ai": [
+   0.254375,
+   0.10943212793782273
+  ],
+  "ai_by_seed": {
+   "2": 0.21875,
+   "3": 0.46625,
+   "4": 0.36875,
+   "5": -0.03625
+  },
+  "ai_frame": [
+   0.27875,
+   0.10747213786217648
+  ],
+  "baseline": [
+   0.4475,
+   0.08840686517190738
+  ],
+  "control_mean": -0.1875,
+  "ai_fixed": 0.441875,
+  "baseline_fixed": [
+   0.635,
+   0.11339514384053906
+  ],
+  "diff_by_seed": {
+   "2": -0.22875,
+   "3": 0.01874999999999999,
+   "4": -0.07874999999999999,
+   "5": -0.48375
+  },
+  "frame_diff": [
+   -0.16875,
+   0.13916189933379924
+  ],
+  "paired_game_se": 0.08769178208389955
+ },
+ "verdict": {
+  "diff": -0.193125,
+  "se": 0.14068107347658323,
+  "ratio": -1.3727859421839441,
+  "cell": "가르친 AI와 좋은 덱만 고르는 규칙 봇은 구별되지 않는다"
+ }
+}
