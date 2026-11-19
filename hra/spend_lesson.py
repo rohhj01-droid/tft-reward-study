@@ -18,6 +18,10 @@
 팔 'keep30' (더 남기기): 5-1부터 체력 20~39인 자리의 남길 골드가 10이 아니라 30이다.
 팔 'low30' (문턱 낮추기): 5-1부터 체력 30~39를 40으로 친다.
 팔 'combo' (셋을 함께): 5-1부터 체력 30~39를 40으로 치고, 체력 20~29는 보드가 세면 50, 아니면 30을 남긴다.
+팔 'carry1' (캐리 하나): 5-1부터 레벨 8, 체력 40 이상인 자리는 가장 비싼 4코스트 이하 캐리 하나만 2성이어도 안정으로 친다(50을 지키고 넘는 몫을 경험치로).
+팔 'stage6' (6단계에 9로): 6-1부터 레벨 8, 체력 40 이상인 자리는 안정과 상관없이 30을 남기고 경험치를 산다(레벨 8에서 리롤하지 않는다).
+팔 'fast' (빠른 9): 5-1~5-3에 레벨 8, 체력 70 이상이고 연승 중(2연승 이상)이면 30을 남기고 경험치를 산다.
+팔 'b_all' (셋을 함께): fast, stage6, carry1을 이 차례로 본다.
 팔 'none' (대조): 양쪽 모두 교과서다. 같은 시드에서 자리 뽑기만으로 생기는 차를 잰다.
 
 규칙은 교과서의 손잡이로 들어 있고(meta/human_macro.spend_plan, meta/human_bot.KNOBS의 spend·lose_5) 수업 자리는 그 손잡이만
@@ -44,7 +48,7 @@ import config
 from hra.deck_baseline import load_partial
 from hra.plan_bot import pinned_pool, safe_play
 from meta.human_bot import KNOBS, HumanPolicy, late_deck
-from meta.human_macro import FIRST_41, FIRST_SLOT, KEEP_AFTER, LATE_ARMS, SPEND as ARMS, SPEND_FLOORS as FLOORS, spend_plan, stable
+from meta.human_macro import FIRST_41, FIRST_SLOT, KEEP_AFTER, LATE_ARMS, NINE_ARMS, SPEND as ARMS, SPEND_FLOORS as FLOORS, spend_plan, stable
 from meta.lobby import BOARDS, N_PLAYERS
 from Simulator.stats import COST
 
@@ -67,7 +71,7 @@ class Lesson(HumanPolicy):
     def __init__(self, *a, **k):
         super().__init__(*a, **k)
         self.knobs.update({'lose_5': True} if self.arm == 'lv5' else {'late': self.arm} if self.arm in LATE_ARMS
-                          else {'spend': self.arm} if self.arm else {})
+                          else {'nine': self.arm} if self.arm in NINE_ARMS else {'spend': self.arm} if self.arm else {})
         self.curve, self.rolls8, self.deck15, self.deck18, self.carry2, self.four2 = [], 0, None, None, False, 0
         MADE.append(self)
 
@@ -241,7 +245,7 @@ def line(res):
 def parse(argv=None):
     """명령줄 인자. --arm none은 양쪽 모두 교과서인 대조 실행이다(자리 뽑기 흔들림을 잰다)."""
     ap = argparse.ArgumentParser()
-    ap.add_argument('--arm', choices=(*ARMS, *LATE_ARMS, 'lv5', 'none'), required=True)
+    ap.add_argument('--arm', choices=(*ARMS, *LATE_ARMS, *NINE_ARMS, 'lv5', 'none'), required=True)
     ap.add_argument('--everyone', action='store_true', help='여덟 자리 모두 이 팔이다')
     ap.add_argument('--group', choices=('deck15', 'deck18'), default='deck18')
     ap.add_argument('--games', type=int, default=400)

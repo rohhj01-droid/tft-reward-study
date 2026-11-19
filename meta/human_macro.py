@@ -20,6 +20,9 @@ FIRST_41, FIRST_SLOT, LAST_WAIT = 15, 18, 21  # 4-1, 4-5(여기부터 레벨 8 �
 # 5단계 돈과 생존 규칙 후보(손잡이 late, 팔의 뜻은 hra/spend_lesson.py 머리말)
 LATE_ARMS = ('stop', 'keep30', 'low30', 'combo')
 LATE_KEEP = 30       # keep30·combo: 체력 20~39에서 남길 골드
+# 레벨 9 관문 규칙 후보(손잡이 nine, 팔의 뜻은 hra/spend_lesson.py 머리말)
+NINE_ARMS = ('carry1', 'stage6', 'fast', 'b_all')
+NINE_KEEP, FAST_HP, FAST_LAST, STAGE_6 = 30, 70, 23, 27  # 레벨 9로 갈 때 남길 골드, fast의 체력 하한·마지막 칸(5-3), 6-1
 
 
 def early_mode(player, k):
@@ -134,6 +137,31 @@ def late_plan(base, arm, slot, hp, is_strong, slow, k):
         return target, k['keep'], exp_first
     if arm in ('keep30', 'combo'):
         return target, LATE_KEEP, exp_first
+    return base
+
+
+def top_carry2(player, board):
+    """가장 비싼 4코스트 이하 캐리가 보드에 2성 이상으로 있는가(값이 같은 캐리가 여럿이면 그중 하나). 그런 캐리가 없으면 stable과 같다."""
+    core = [c for c in carriers(board) if COST[c] <= 4]
+    if not core:
+        return stable(player, board)
+    top = max(COST[c] for c in core)
+    return any(u and u.name in core and COST[u.name] == top and u.stars >= 2 for row in player.board for u in row)
+
+
+def nine_plan(base, arm, slot, level, gold, hp, streak, steady, top2, slow, k):
+    """교과서의 (목표 레벨, 남길 골드, 경험치 우선) base를 레벨 9 관문 규칙 arm으로 고친다. 5-1부터 레벨 8, 체력 40 이상만 바꾼다.
+    fast: 5-1~5-3에 체력 70 이상이고 연승 중이면, stage6: 6-1부터는 안정과 상관없이 30을 남기고 경험치(레벨 8에서 리롤 안 함).
+    carry1: 가장 비싼 캐리가 2성이면(top2) 안정으로 친다. b_all: 셋을 함께."""
+    if arm is None or slow or level != 8 or slot < LAST_WAIT or hp < k['hp_low']:
+        return base
+    go9 = (9 if gold >= NINE_KEEP + 4 else base[0]), k['keep'], False
+    if arm in ('fast', 'b_all') and slot <= FAST_LAST and hp >= FAST_HP and streak >= k['win_threshold']:
+        return go9
+    if arm in ('stage6', 'b_all') and slot >= STAGE_6:
+        return go9
+    if arm in ('carry1', 'b_all') and top2 and not steady:
+        return base[0], k['keep'], True
     return base
 
 

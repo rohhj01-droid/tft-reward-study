@@ -20,7 +20,8 @@ from meta.decks_1024 import CHAMPION_TRAITS
 from meta.human_five import (FIVE_COSTS, active_of, board_units, family_buy, family_in, family_short, pick_five,
                              swap_out, trait_table)
 from meta.human_items import item_action, transfer_action
-from meta.human_macro import action, carry3, early_mode, late_hp, late_plan, plan, spend_plan, stable, stay_level, strong
+from meta.human_macro import (action, carry3, early_mode, late_hp, late_plan, nine_plan, plan, spend_plan, stable, stay_level, strong,
+                              top_carry2)
 from meta.lobby import BOARDS, DeckPolicy
 
 
@@ -48,6 +49,8 @@ KNOBS = {'win_threshold': 2, 'lose_hp': 50, 'keep': 50, 'floor_41': 20, 'floor_4
          # 기록이 함께 바뀌도록 환경 변수 TEXTBOOK으로 켠다(일꾼 프로세스가 물려받는다)
          # 5단계 돈과 생존 규칙 후보(meta/human_macro.late_plan의 팔 이름, None이면 끔), 「보드가 세다」의 2성 유닛 수
          'late': None, 'strong_twos': 6,
+         # 레벨 9 관문 규칙 후보(meta/human_macro.nine_plan의 팔 이름, None이면 끔)
+         'nine': None,
          **textbook_knobs(os.environ.get('TEXTBOOK', ''))}
 
 
@@ -356,6 +359,9 @@ class HumanPolicy(DeckPolicy):
                                  hp, steady, slow, self.knobs)
         if late and board:
             numbers = late_plan(numbers, late, game_round, hp, strong(player, board, self.knobs), slow, self.knobs)
+        if self.knobs['nine'] and board:
+            numbers = nine_plan(numbers, self.knobs['nine'], game_round, player.level, player.gold, hp, player.win_streak, steady,
+                                top_carry2(player, board), slow, self.knobs)
         return numbers
 
     def macro(self, player, game_round):

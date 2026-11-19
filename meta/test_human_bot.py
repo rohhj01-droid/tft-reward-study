@@ -402,6 +402,25 @@ def late_knob_changes_low_health_numbers_from_stage_5_test():
     assert numbers(20, 25, late='keep30') == numbers(20, 25)   # 4단계는 그대로
 
 
+def nine_knob_changes_level_8_numbers_from_stage_5_test():
+    """손잡이 nine: 레벨 9 관문 규칙 후보(meta/human_macro.nine_plan)가 교과서의 숫자가 된다. 꺼 두면(기본) 지금 교과서 그대로다."""
+    from meta.human_bot import HumanPolicy
+
+    def numbers(slot, hp=50, units=('garen',), streak=0, **knobs):
+        p = item_player([Unit(name=n, stars=2, items=[]) for n in units], [])
+        p.level, p.gold, p.health, p.exp, p.max_level, p.win_streak = 8, 60, hp, 0, 9, streak
+        p.level_costs = [0, 2, 2, 6, 10, 20, 36, 56, 80, 100]
+        policy = HumanPolicy(None, SHARPSHOOTERS, [], random.Random(0), dict(spend='era', **knobs))
+        policy.mode = 'win'
+        return policy.macro_plan(p, slot)
+
+    assert numbers(22) == (8, 20, False) and numbers(22, nine='carry1') == (8, 20, False)
+    assert numbers(22, units=('jhin',), nine='carry1') == (8, 50, True)   # 진(캐리 둘 중 하나, 4코스트) 2성이면 안정으로 친다
+    assert numbers(27, nine='stage6') == (9, 50, False) and numbers(26, nine='stage6') == numbers(26)
+    assert numbers(22, hp=70, streak=2, nine='fast') == (9, 50, False) and numbers(22, hp=70, streak=1, nine='fast') == numbers(22, hp=70)
+    assert numbers(27, hp=35, nine='b_all') == numbers(27, hp=35)   # 체력 40 아래는 그대로
+
+
 def textbook_names_turn_on_the_matching_knobs_test():
     """환경 변수 TEXTBOOK에 적은 이름이 고친 교과서의 손잡이가 된다. 안 주면 고치기 전 교과서다. 모르는 이름은 조용히
     넘기지 않는다(오타가 옛 교과서로 돌아가면 안 된다)."""

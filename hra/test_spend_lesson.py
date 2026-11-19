@@ -275,6 +275,53 @@ def late_arms_are_a_knob_on_top_of_the_textbook_test():
     assert not parse(['--arm', 'stop', '--out', 'x.json']).everyone
 
 
+def nine_plan_changes_only_level_8_rounds_from_stage_5_with_health_40_test():
+    """레벨 9 관문 규칙 후보(묶음 B). 5-1(칸 21)부터, 레벨 8, 체력 40 이상, 느린 리롤 덱이 아닐 때만 바꾼다.
+    carry1: 가장 비싼 4코스트 이하 캐리가 2성이면 안정으로 친다(50을 지키고 넘는 몫을 경험치로).
+    stage6: 6-1(칸 27)부터 안정과 상관없이 30을 남기고 경험치를 산다(레벨 8에서 리롤하지 않는다).
+    fast: 5-1~5-3(칸 21~23)에 체력 70 이상이고 연승 중(2연승 이상)이면 30을 남기고 경험치를 산다. b_all: 셋을 함께."""
+    from meta.human_macro import NINE_ARMS, nine_plan
+    base = (8, 20, False)
+
+    def call(arm, slot=22, gold=60, hp=50, streak=0, steady=False, top2=False, level=8, slow=False):
+        return nine_plan(base, arm, slot, level, gold, hp, streak, steady, top2, slow, KNOBS)
+
+    assert call(None) == base
+    assert call('carry1') == base and call('carry1', top2=True) == (8, 50, True)
+    assert call('carry1', top2=True, steady=True) == base   # 이미 안정이면 교과서 그대로
+    assert call('stage6', slot=26) == base and call('stage6', slot=27) == (9, 50, False)
+    assert call('stage6', slot=27, gold=33) == (8, 50, False)   # 30 아래로는 사지 않고, 레벨 8에서 리롤도 하지 않는다
+    assert call('stage6', slot=27, gold=34) == (9, 50, False) and call('stage6', slot=27, steady=True) == (9, 50, False)
+    assert call('fast', hp=70, streak=2) == (9, 50, False) and call('fast', hp=69, streak=2) == base
+    assert call('fast', hp=70, streak=1) == base and call('fast', slot=24, hp=70, streak=2) == base
+    assert call('b_all', hp=70, streak=2) == (9, 50, False) and call('b_all', top2=True) == (8, 50, True)
+    assert call('b_all', slot=27, top2=True) == (9, 50, False) and call('b_all') == base
+    for arm in NINE_ARMS:
+        assert call(arm, slot=27, hp=39, top2=True, streak=3) == base   # 체력 40 아래는 그대로
+        assert call(arm, slot=20, hp=70, top2=True, streak=3) == base   # 4단계는 그대로
+        for kw in ({'level': 7}, {'level': 9}, {'slow': True}):
+            assert call(arm, slot=27, hp=70, top2=True, streak=3, **kw) == base   # 레벨 8이 아니거나 느린 리롤 덱은 그대로
+
+
+def top_carry_two_star_needs_one_of_the_most_expensive_carries_test():
+    """가장 비싼 4코스트 이하 캐리가 보드에 2성 이상이면 참이다(값이 같은 캐리가 여럿이면 그중 하나). 그런 캐리가 없으면 stable과 같다."""
+    from types import SimpleNamespace as Unit
+    from meta.human_macro import top_carry2
+    from meta.lobby import BOARDS
+    by = {b['name']: b for b in BOARDS}
+    field = lambda *units: Unit(board=[[Unit(name=n, stars=s, items=[])] for n, s in units] + [[None]] * (7 - len(units)))
+    hunters, sharp = by['Chosen Hunters'], by['Chosen Sharpshooters']   # 캐리 킨드레드(3)·애쉬(4), 진(4)·리븐(4)
+    assert top_carry2(field(('ashe', 2)), hunters) and not top_carry2(field(('kindred', 2), ('ashe', 1)), hunters)
+    assert top_carry2(field(('riven', 2)), sharp) and top_carry2(field(('jhin', 2)), sharp) and not top_carry2(field(('jhin', 1)), sharp)
+
+
+def nine_arms_are_a_knob_on_top_of_the_textbook_test():
+    seat = lambda arm: lesson(arm)(None, None, [], random.Random(0)).knobs
+    assert seat('stage6')['nine'] == 'stage6' and seat('stage6')['late'] is None and seat('stage6')['spend'] == KNOBS['spend']
+    assert seat('low30')['nine'] is None and seat(None)['nine'] is None
+    assert parse(['--arm', 'b_all', '--everyone', '--out', 'x.json']).arm == 'b_all'
+
+
 def everyone_run_seats_the_arm_in_all_eight_seats_test():
     """--everyone: 여덟 자리 모두 그 팔이다. 판 전체의 모습(살아 있는 자리, 등수별 레벨)을 재려고 쓴다. 등수 차는 없다."""
     seed, rows, err = lesson_game((990006, 'stop', True))
