@@ -20,8 +20,8 @@ from meta.decks_1024 import CHAMPION_TRAITS
 from meta.human_five import (FIVE_COSTS, active_of, board_units, family_buy, family_in, family_short, pick_five,
                              swap_out, trait_table)
 from meta.human_items import item_action, transfer_action
-from meta.human_macro import (action, carry3, early_mode, late_hp, late_plan, nine_plan, plan, spend_plan, stable, stay_level, strong,
-                              top_carry2)
+from meta.human_macro import (action, carry3, early_mode, fast_start, late_hp, late_plan, nine_plan, plan, spend_plan, stable, stay_level,
+                              strong, top_carry2)
 from meta.lobby import BOARDS, DeckPolicy
 
 
@@ -100,6 +100,7 @@ class HumanPolicy(DeckPolicy):
         self.knobs = dict(KNOBS, **(knobs or {}))
         self.moves, self.mode, self.rebuilt, self.switches, self.last_round = {}, None, False, 0, None
         self.rebuilt_at = None  # 연패형이 보드를 세운 라운드(그 라운드에만 리롤한다)
+        self.fast9 = False  # 레벨 9 관문 후보 fast·b_all: 이 자리가 「빠른 9」를 시작했나(meta/human_macro.fast_start)
         self._seen_board = self._seen_shop = None  # 4-1 전 후반 덱 규칙이 이 라운드에 이미 본 (보드·벤치), (상점·골드·보드). 속도
         self.choose_decks = board is None
         self.set_board(board)
@@ -359,8 +360,10 @@ class HumanPolicy(DeckPolicy):
                                  hp, steady, slow, self.knobs)
         if late and board:
             numbers = late_plan(numbers, late, game_round, hp, strong(player, board, self.knobs), slow, self.knobs)
-        if self.knobs['nine'] and board:
-            numbers = nine_plan(numbers, self.knobs['nine'], game_round, player.level, player.gold, hp, player.win_streak, steady,
+        nine = self.knobs['nine']
+        if nine and board:
+            self.fast9 = self.fast9 or fast_start(nine, game_round, player.level, player.gold, hp, player.win_streak, slow, self.knobs)
+            numbers = nine_plan(numbers, nine, game_round, player.level, player.gold, hp, self.fast9, steady,
                                 top_carry2(player, board), slow, self.knobs)
         return numbers
 

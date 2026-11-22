@@ -421,6 +421,34 @@ def nine_knob_changes_level_8_numbers_from_stage_5_test():
     assert numbers(27, hp=35, nine='b_all') == numbers(27, hp=35)   # 체력 40 아래는 그대로
 
 
+def nine_fast_keeps_going_to_level_9_once_started_test():
+    """손잡이 nine='fast': 5-1~5-3에 시작 조건(체력 70 이상, 2연승 이상, 50골드 이상)을 한 번 만족하면, 그 자리는 연승이 끊기거나
+    5-5가 지나도 레벨 9가 될 때까지 30을 남기고 경험치를 산다. 조건을 만족한 적이 없으면 교과서 그대로다."""
+    from meta.human_bot import HumanPolicy
+    p = item_player([Unit(name='garen', stars=2, items=[])], [])
+    p.level, p.exp, p.max_level = 8, 0, 9
+    p.level_costs = [0, 2, 2, 6, 10, 20, 36, 56, 80, 100]
+
+    def policy(**knobs):
+        pol = HumanPolicy(None, SHARPSHOOTERS, [], random.Random(0), dict(spend='era', **knobs))
+        pol.mode = 'win'
+        return pol
+
+    def at(pol, slot, gold, hp, streak):
+        p.gold, p.health, p.win_streak = gold, hp, streak
+        return pol.macro_plan(p, slot)
+
+    textbook = lambda slot, gold, hp, streak=0: at(policy(), slot, gold, hp, streak)
+    started = policy(nine='fast')
+    assert at(started, 22, 49, 80, 3) == textbook(22, 49, 80, 3)     # 49골드면 시작하지 않는다
+    assert at(started, 23, 50, 80, 3) == (9, 50, False)              # 5-3에 50골드로 시작
+    assert at(started, 24, 45, 60, 0) == (9, 50, False)              # 5-5, 연승이 끊겨도 이어 간다
+    assert at(started, 27, 33, 60, 0) == (8, 50, False)              # 30 아래로는 사지 않고 리롤도 안 한다
+    assert at(started, 27, 40, 35, 0) == textbook(27, 40, 35)        # 체력 40 아래면 교과서
+    fresh = policy(nine='fast')
+    assert at(fresh, 24, 60, 80, 3) == textbook(24, 60, 80, 3)       # 5-5부터는 새로 시작하지 않는다
+
+
 def textbook_names_turn_on_the_matching_knobs_test():
     """환경 변수 TEXTBOOK에 적은 이름이 고친 교과서의 손잡이가 된다. 안 주면 고치기 전 교과서다. 모르는 이름은 조용히
     넘기지 않는다(오타가 옛 교과서로 돌아가면 안 된다)."""

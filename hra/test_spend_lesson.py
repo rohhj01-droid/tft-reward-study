@@ -279,40 +279,64 @@ def nine_plan_changes_only_level_8_rounds_from_stage_5_with_health_40_test():
     """레벨 9 관문 규칙 후보(묶음 B). 5-1(칸 21)부터, 레벨 8, 체력 40 이상, 느린 리롤 덱이 아닐 때만 바꾼다.
     carry1: 가장 비싼 4코스트 이하 캐리가 2성이면 안정으로 친다(50을 지키고 넘는 몫을 경험치로).
     stage6: 6-1(칸 27)부터 안정과 상관없이 30을 남기고 경험치를 산다(레벨 8에서 리롤하지 않는다).
-    fast: 5-1~5-3(칸 21~23)에 체력 70 이상이고 연승 중(2연승 이상)이면 30을 남기고 경험치를 산다. b_all: 셋을 함께."""
+    fast: 빠른 9를 시작한 자리(fast_on, fast_start가 정한다)는 라운드와 연승에 상관없이 레벨 9가 될 때까지 30을 남기고 경험치를 산다.
+    b_all: fast, stage6, carry1을 이 차례로 본다."""
     from meta.human_macro import NINE_ARMS, nine_plan
     base = (8, 20, False)
 
-    def call(arm, slot=22, gold=60, hp=50, streak=0, steady=False, top2=False, level=8, slow=False):
-        return nine_plan(base, arm, slot, level, gold, hp, streak, steady, top2, slow, KNOBS)
+    def call(arm, slot=22, gold=60, hp=50, fast_on=False, steady=False, top2=False, level=8, slow=False):
+        return nine_plan(base, arm, slot, level, gold, hp, fast_on, steady, top2, slow, KNOBS)
 
-    assert call(None) == base
+    assert call(None) == base and call(None, fast_on=True, top2=True, slot=27) == base
     assert call('carry1') == base and call('carry1', top2=True) == (8, 50, True)
+    assert call('carry1', slot=21, top2=True) == (8, 50, True) and call('carry1', slot=20, top2=True) == base   # 5-1부터
     assert call('carry1', top2=True, steady=True) == base   # 이미 안정이면 교과서 그대로
     assert call('stage6', slot=26) == base and call('stage6', slot=27) == (9, 50, False)
     assert call('stage6', slot=27, gold=33) == (8, 50, False)   # 30 아래로는 사지 않고, 레벨 8에서 리롤도 하지 않는다
     assert call('stage6', slot=27, gold=34) == (9, 50, False) and call('stage6', slot=27, steady=True) == (9, 50, False)
-    assert call('fast', hp=70, streak=2) == (9, 50, False) and call('fast', hp=69, streak=2) == base
-    assert call('fast', hp=70, streak=1) == base and call('fast', slot=24, hp=70, streak=2) == base
-    assert call('b_all', hp=70, streak=2) == (9, 50, False) and call('b_all', top2=True) == (8, 50, True)
+    assert call('fast') == base and call('fast', fast_on=True) == (9, 50, False)
+    for slot in (21, 24, 27, 30):   # 한 번 시작하면 5-5 뒤에도, 6단계에도 이어 간다
+        assert call('fast', slot=slot, fast_on=True) == (9, 50, False) and call('fast', slot=slot, fast_on=True, gold=33) == (8, 50, False)
+    assert call('fast', fast_on=True, hp=40) == (9, 50, False) and call('fast', fast_on=True, hp=39) == base   # 체력 40 아래로 내려가면 교과서
+    assert call('fast', slot=27, top2=True) == base   # fast는 stage6·carry1을 겸하지 않는다
+    assert call('b_all', fast_on=True) == (9, 50, False) and call('b_all', top2=True) == (8, 50, True)
     assert call('b_all', slot=27, top2=True) == (9, 50, False) and call('b_all') == base
     for arm in NINE_ARMS:
-        assert call(arm, slot=27, hp=39, top2=True, streak=3) == base   # 체력 40 아래는 그대로
-        assert call(arm, slot=20, hp=70, top2=True, streak=3) == base   # 4단계는 그대로
+        assert call(arm, slot=27, hp=39, top2=True, fast_on=True) == base   # 체력 40 아래는 그대로
+        assert call(arm, slot=20, hp=70, top2=True, fast_on=True) == base   # 4단계는 그대로
         for kw in ({'level': 7}, {'level': 9}, {'slow': True}):
-            assert call(arm, slot=27, hp=70, top2=True, streak=3, **kw) == base   # 레벨 8이 아니거나 느린 리롤 덱은 그대로
+            assert call(arm, slot=27, hp=70, top2=True, fast_on=True, **kw) == base   # 레벨 8이 아니거나 느린 리롤 덱은 그대로
+    assert call('carry1', top2=True, hp=40) == (8, 50, True) and call('stage6', slot=27, hp=40) == (9, 50, False)   # 체력 40은 걸린다
+
+
+def fast_start_needs_5_1_to_5_3_level_8_health_70_two_wins_and_50_gold_test():
+    """fast·b_all의 빠른 9 시작: 5-1~5-3(칸 21~23)에 레벨 8, 체력 70 이상, 2연승 이상, 50골드 이상, 느린 리롤 덱이 아닐 때."""
+    from meta.human_macro import fast_start
+
+    def start(arm='fast', slot=22, level=8, gold=50, hp=70, streak=2, slow=False):
+        return fast_start(arm, slot, level, gold, hp, streak, slow, KNOBS)
+
+    assert start() and start('b_all') and start(slot=21) and start(slot=23)
+    assert not start(slot=20) and not start(slot=24)
+    assert not start(hp=69) and not start(streak=1) and not start(gold=49)
+    assert not start(level=7) and not start(level=9) and not start(slow=True)
+    assert not start('carry1') and not start('stage6') and not start(None) and not start('low30')
 
 
 def top_carry_two_star_needs_one_of_the_most_expensive_carries_test():
-    """가장 비싼 4코스트 이하 캐리가 보드에 2성 이상이면 참이다(값이 같은 캐리가 여럿이면 그중 하나). 그런 캐리가 없으면 stable과 같다."""
+    """가장 비싼 4코스트 이하 캐리가 보드에 2성 이상이면 참이다(값이 같은 캐리가 여럿이면 그중 하나). 그런 캐리가 없으면 stable과 같다.
+    캐리 하나가 5코스트인 덱(신성: 워윅 4·요네 5)은 4코스트 캐리 하나만 보므로 stable과 같다(carry1이 바꾸지 않는다)."""
     from types import SimpleNamespace as Unit
-    from meta.human_macro import top_carry2
+    from meta.human_macro import stable, top_carry2
     from meta.lobby import BOARDS
     by = {b['name']: b for b in BOARDS}
     field = lambda *units: Unit(board=[[Unit(name=n, stars=s, items=[])] for n, s in units] + [[None]] * (7 - len(units)))
-    hunters, sharp = by['Chosen Hunters'], by['Chosen Sharpshooters']   # 캐리 킨드레드(3)·애쉬(4), 진(4)·리븐(4)
+    hunters, sharp, divines = by['Chosen Hunters'], by['Chosen Sharpshooters'], by['Chosen Divines']   # 캐리 킨드레드(3)·애쉬(4), 진(4)·리븐(4), 워윅(4)·요네(5)
     assert top_carry2(field(('ashe', 2)), hunters) and not top_carry2(field(('kindred', 2), ('ashe', 1)), hunters)
     assert top_carry2(field(('riven', 2)), sharp) and top_carry2(field(('jhin', 2)), sharp) and not top_carry2(field(('jhin', 1)), sharp)
+    for units in ((('warwick', 2),), (('warwick', 1), ('yone', 2)), (('warwick', 2), ('yone', 1)), ()):
+        assert top_carry2(field(*units), divines) == stable(field(*units), divines)
+    assert top_carry2(field(('warwick', 2)), divines) and not top_carry2(field(('yone', 2)), divines)
 
 
 def nine_arms_are_a_knob_on_top_of_the_textbook_test():

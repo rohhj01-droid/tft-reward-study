@@ -69,8 +69,8 @@ def cell(m, se, up, down):
 def view(s):
     """판 전체 실행의 판정 밖 값."""
     return {'alive': s['alive'], 'level_9': s['level']['9'], 'level_9_per_game': round(8 * s['level']['9'], 3), 'mean_level': s['mean_level'],
-            'ended_stage_4_5': round(sum(v['share'] for k, v in s['ended_in_stage'].items() if int(k) <= 5), 4),
-            'level_9_by_place': {p: s['by_place'][p]['level']['9'] for p in ('1', '2', '3', '4')}}
+            'ended_by_stage_5': round(sum(v['share'] for k, v in s['ended_in_stage'].items() if int(k) <= 5), 4),
+            'level_9_by_place': {str(p): s['by_place'][str(p)]['level']['9'] for p in range(1, 9)}}
 
 
 none = load('nine_none.json', None, False)

@@ -22,7 +22,8 @@ LATE_ARMS = ('stop', 'keep30', 'low30', 'combo')
 LATE_KEEP = 30       # keep30·combo: 체력 20~39에서 남길 골드
 # 레벨 9 관문 규칙 후보(손잡이 nine, 팔의 뜻은 hra/spend_lesson.py 머리말)
 NINE_ARMS = ('carry1', 'stage6', 'fast', 'b_all')
-NINE_KEEP, FAST_HP, FAST_LAST, STAGE_6 = 30, 70, 23, 27  # 레벨 9로 갈 때 남길 골드, fast의 체력 하한·마지막 칸(5-3), 6-1
+NINE_KEEP, FAST_HP, FAST_LAST, STAGE_6 = 30, 70, 23, 27  # 레벨 9로 갈 때 남길 골드, fast를 시작하는 체력 하한·마지막 칸(5-3), 6-1
+FAST_GOLD = 50  # fast를 시작할 때 쥔 골드 하한(보고서 B4 시험값 50·70골드의 낮은 값. 70골드는 대조 기록에서 거의 없다)
 
 
 def early_mode(player, k):
@@ -149,14 +150,21 @@ def top_carry2(player, board):
     return any(u and u.name in core and COST[u.name] == top and u.stars >= 2 for row in player.board for u in row)
 
 
-def nine_plan(base, arm, slot, level, gold, hp, streak, steady, top2, slow, k):
+def fast_start(arm, slot, level, gold, hp, streak, slow, k):
+    """fast·b_all: 5-1~5-3에 레벨 8, 체력 70 이상, 2연승 이상, 50골드 이상이면 이 자리는 「빠른 9」를 시작한다.
+    시작한 자리는 기억해 두고(HumanPolicy.fast9) 레벨 9가 될 때까지 nine_plan의 fast_on으로 넘긴다."""
+    return (arm in ('fast', 'b_all') and not slow and level == 8 and LAST_WAIT <= slot <= FAST_LAST and hp >= FAST_HP
+            and streak >= k['win_threshold'] and gold >= FAST_GOLD)
+
+
+def nine_plan(base, arm, slot, level, gold, hp, fast_on, steady, top2, slow, k):
     """교과서의 (목표 레벨, 남길 골드, 경험치 우선) base를 레벨 9 관문 규칙 arm으로 고친다. 5-1부터 레벨 8, 체력 40 이상만 바꾼다.
-    fast: 5-1~5-3에 체력 70 이상이고 연승 중이면, stage6: 6-1부터는 안정과 상관없이 30을 남기고 경험치(레벨 8에서 리롤 안 함).
+    fast: 빠른 9를 시작한 자리(fast_on)는, stage6: 6-1부터는 안정과 상관없이 30을 남기고 경험치(레벨 8에서 리롤 안 함).
     carry1: 가장 비싼 캐리가 2성이면(top2) 안정으로 친다. b_all: 셋을 함께."""
     if arm is None or slow or level != 8 or slot < LAST_WAIT or hp < k['hp_low']:
         return base
     go9 = (9 if gold >= NINE_KEEP + 4 else base[0]), k['keep'], False
-    if arm in ('fast', 'b_all') and slot <= FAST_LAST and hp >= FAST_HP and streak >= k['win_threshold']:
+    if arm in ('fast', 'b_all') and fast_on:
         return go9
     if arm in ('stage6', 'b_all') and slot >= STAGE_6:
         return go9
