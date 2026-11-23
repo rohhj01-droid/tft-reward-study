@@ -2,6 +2,7 @@
 
 hra.evaluate meta와 같은 판(시드 720000부터)을 같은 셈으로 센다. 다른 점은 자리가 교과서('rule') 대신 hra.spend_lesson의
 팔 자리라는 것뿐이다. 팔 none은 교과서 그대로라 hra.evaluate meta와 같은 값이 나와야 한다(--check가 함께 돌려 견준다).
+13절부터는 등수마다 끝 보드도 센다(by_place, 실제 판 기록의 등수별 셈과 같은 칸).
 
     TEXTBOOK=era ACTIONS_PER_TURN=60 python -m audit.fidelity_nine fast --games 400 --jobs 2 --out <파일>
     TEXTBOOK=era ACTIONS_PER_TURN=60 python -m audit.fidelity_nine none --games 4 --jobs 1 --check
@@ -9,6 +10,7 @@ hra.evaluate meta와 같은 판(시드 720000부터)을 같은 셈으로 센다.
 import argparse
 import json
 import statistics
+from collections import Counter
 
 import Simulator.pool
 from hra.evaluate import SEED_META, SIX, sim_order
@@ -30,6 +32,30 @@ def game(job):
     return [{'place': s['place'], 'board': s['board'], 'deck': s['deck'], 'switches': s['switches']} for s in out['seats']], None
 
 
+def by_place(players):
+    """13절: 등수마다 끝 보드(탈락할 때 보드)를 meta/real_games.py의 실제 쪽 by_place와 같은 칸으로 센다.
+    실제 기록처럼 같은 이름의 유닛은 한 장으로 센다(별은 큰 쪽)."""
+    out = {}
+    for place in range(1, N_PLAYERS + 1):
+        boards = [s['board'] for s in players if s['place'] == place]
+        c = Counter()
+        for b in boards:
+            units = {}
+            for name, cost, stars, _ in b['units']:
+                units[name] = max(units.get(name, (cost, 0)), (cost, stars))
+            c['level_9'] += b['level'] >= 9
+            c['units'] += len(units)
+            c['three'] += sum(s >= 3 for _, s in units.values())
+            for key, k in (('five', 5), ('four', 4)):
+                c[key] += sum(cost == k for cost, _ in units.values())
+                c[key + '_two'] += sum(cost == k and s >= 2 for cost, s in units.values())
+        n = len(boards)
+        out[str(place)] = {'boards': n, 'level_9': c['level_9'] / n, 'units_per_board': c['units'] / n, 'five_per_board': c['five'] / n,
+                           'five_two_star_per_board': c['five_two'] / n, 'five_two_star_share': c['five_two'] / max(1, c['five']),
+                           'four_two_star_share': c['four_two'] / max(1, c['four']), 'three_star_per_board': c['three'] / n}
+    return out
+
+
 def meta_arm(arm, games, jobs):
     """hra.evaluate.meta와 같은 셈(그 함수의 몸통을 옮겼다)."""
     with pinned_pool(jobs) as p:
@@ -49,7 +75,7 @@ def meta_arm(arm, games, jobs):
             'families_compared': common, 'switches': statistics.mean(p['switches'] for p in players),
             'winner_level9': sum(b['level'] >= 9 for b in winners) / len(winners) if winners else None,
             'winner_five_two_star': sum(u[2] >= 2 for u in fives) / len(fives) if fives else None,
-            'errors': [e for _, e in results if e]}
+            'errors': [e for _, e in results if e], 'by_place': by_place(players)}
 
 
 if __name__ == '__main__':
@@ -62,11 +88,12 @@ if __name__ == '__main__':
     a = ap.parse_args()
     arm = None if a.arm == 'none' else a.arm
     res = meta_arm(arm, a.games, a.jobs)
-    print(json.dumps({k: v for k, v in res.items() if k != 'families'}, ensure_ascii=False))
+    print(json.dumps({k: v for k, v in res.items() if k not in ('families', 'by_place')}, ensure_ascii=False))
+    assert res['by_place']['1']['level_9'] == res['winner_level9']  # 등수별 셈의 1등 줄은 1등 셈과 같은 보드를 센다
     if a.check:
         from hra.evaluate import meta
         ref = meta(None, a.games, a.jobs)
-        assert ref == res, {k: (ref[k], res[k]) for k in ref if ref[k] != res[k]}
+        assert all(ref[k] == res[k] for k in ref), {k: (ref[k], res[k]) for k in ref if ref[k] != res[k]}
         print('check: hra.evaluate meta와 같다')
     if a.out:
         with open(a.out, 'w', encoding='utf-8') as f:
