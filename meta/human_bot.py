@@ -51,6 +51,8 @@ KNOBS = {'win_threshold': 2, 'lose_hp': 50, 'keep': 50, 'floor_41': 20, 'floor_4
          'late': None, 'strong_twos': 6,
          # 레벨 9 관문 규칙 후보(meta/human_macro.nine_plan의 팔 이름, None이면 끔)
          'nine': None,
+         # 3단계 체력 규칙 후보(meta/human_macro.plan): 켜면 4단계부터 걸던 체력 규칙(40 아래 10까지, 20 아래 다 씀)을 3단계부터 건다
+         'hp3': False,
          **textbook_knobs(os.environ.get('TEXTBOOK', ''))}
 
 

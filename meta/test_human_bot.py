@@ -220,6 +220,21 @@ def plan_follows_design_curves_test():
     assert plan(10, 4, 60, 'lose', True, None, False, False, K, rebuild_now=True) == (6, 20)
 
 
+def plan_hp3_moves_the_stage_4_health_rule_to_stage_3_test():
+    """손잡이 hp3: 4단계부터 걸던 체력 규칙(40 아래 10까지, 20 아래 다 씀)을 3단계(3-1, 칸 9)부터 건다. 끄면 3단계는 50을 지킨다."""
+    from meta.human_macro import plan
+    on = dict(K, hp3=True)
+    assert plan(11, 6, 35, 'win', False, None, False, False, K) == (6, 50)     # 끄면 3-3에 체력 35여도 50을 지킨다
+    assert plan(11, 6, 35, 'win', False, None, False, False, on) == (6, 10)    # 켜면 10까지
+    assert plan(11, 6, 15, 'win', False, None, False, False, on) == (6, 0)     # 20 아래면 다 쓴다
+    assert plan(11, 6, 40, 'win', False, None, False, False, on) == (6, 50)    # 40은 그대로
+    assert plan(9, 6, 39, 'win', False, None, False, False, on) == (6, 10)     # 3-1부터
+    assert plan(8, 5, 35, 'win', False, None, False, False, on) == (5, 50)     # 2단계는 그대로
+    assert plan(12, 6, 35, 'lose', True, None, False, False, on) == (6, 10)    # 보드를 세운 연패형도
+    assert plan(12, 6, 35, 'win', False, 6, False, False, on) == (6, 10)       # 느린 리롤 덱도(4단계와 같다)
+    assert plan(16, 7, 35, 'win', False, None, False, True, on) == plan(16, 7, 35, 'win', False, None, False, True, K) == (7, 10)  # 4단계는 같다
+
+
 def action_spends_in_order_test():
     """목표 레벨까지 경험치 → 5단계 레벨 8에서 안정이면 50 넘는 몫을 경험치(9로) → 남길 골드까지 리롤."""
     from meta.human_macro import action

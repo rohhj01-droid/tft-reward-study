@@ -90,9 +90,10 @@ def plan(slot, level, hp, mode, rebuilt, stay, done3, steady, k, rebuild_now=Fal
             floor = k['floor_41']
         else:
             floor = k['keep']
-    if round_stage(slot) >= 4 and hp < k['hp_all_in']:
+    hp_from = 3 if k.get('hp3') else 4  # 체력 규칙이 걸리는 첫 단계(손잡이 hp3면 3단계부터)
+    if round_stage(slot) >= hp_from and hp < k['hp_all_in']:
         floor = 0
-    elif round_stage(slot) >= 4 and hp < k['hp_low']:
+    elif round_stage(slot) >= hp_from and hp < k['hp_low']:
         floor = k['floor_45'] if floor is None else min(floor, k['floor_45'])
     return target, floor
 

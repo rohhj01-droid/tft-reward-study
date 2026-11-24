@@ -185,6 +185,10 @@ def arms_are_knobs_on_top_of_the_textbook_test():
     assert (seat('era')['spend'], seat('era')['lose_5']) == ('era', KNOBS['lose_5'])
     assert (seat(None)['spend'], seat(None)['lose_5']) == (KNOBS['spend'], KNOBS['lose_5'])
     assert parse(['--arm', 'lv5', '--out', 'x.json']).arm == 'lv5'
+    # 팔 hp3는 「3단계 체력 규칙」(hp3)이고 다른 손잡이는 그대로다
+    assert (seat('hp3')['hp3'], seat('hp3')['spend'], seat('hp3')['lose_5']) == (True, KNOBS['spend'], KNOBS['lose_5'])
+    assert seat(None)['hp3'] is False and seat('lv5')['hp3'] is False
+    assert parse(['--arm', 'hp3', '--out', 'x.json']).arm == 'hp3'
 
 
 def tracked_rule_seats_play_the_same_game_as_plain_rule_seats_test():
