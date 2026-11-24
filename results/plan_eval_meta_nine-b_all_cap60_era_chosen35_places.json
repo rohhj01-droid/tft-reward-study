@@ -1,0 +1,169 @@
+{
+ "kind": "meta_nine",
+ "arm": "b_all",
+ "games": 400,
+ "actions_per_turn": 60,
+ "textbook": {
+  "spend": "era",
+  "lose_5": false
+ },
+ "chosen_shop_chance": 0.35,
+ "families": [
+  [
+   "other",
+   0.2071875,
+   5.888386123680242
+  ],
+  [
+   "cultist",
+   0.1846875,
+   4.260575296108291
+  ],
+  [
+   "warlord",
+   0.1525,
+   3.401639344262295
+  ],
+  [
+   "divine",
+   0.1503125,
+   3.58004158004158
+  ],
+  [
+   "dusk",
+   0.124375,
+   4.967336683417085
+  ],
+  [
+   "ninja",
+   0.076875,
+   4.865853658536586
+  ],
+  [
+   "elderwood",
+   0.0378125,
+   4.132231404958677
+  ],
+  [
+   "sharpshooter",
+   0.0275,
+   5.284090909090909
+  ],
+  [
+   "mystic",
+   0.019375,
+   3.806451612903226
+  ],
+  [
+   "hunter",
+   0.010625,
+   3.411764705882353
+  ],
+  [
+   "duelist",
+   0.0046875,
+   1.6666666666666667
+  ],
+  [
+   "brawler",
+   0.0040625,
+   6.153846153846154
+  ]
+ ],
+ "rho_real": -0.8857142857142857,
+ "rho_sim": -0.7142857142857143,
+ "families_compared": [
+  "warlord",
+  "cultist",
+  "divine",
+  "ninja",
+  "dusk",
+  "sharpshooter"
+ ],
+ "switches": 0.5634375,
+ "winner_level9": 0.35,
+ "winner_five_two_star": 0.20299625468164795,
+ "errors": [],
+ "by_place": {
+  "1": {
+   "boards": 400,
+   "level_9": 0.35,
+   "units_per_board": 7.79,
+   "five_per_board": 3.3,
+   "five_two_star_per_board": 0.6775,
+   "five_two_star_share": 0.2053030303030303,
+   "four_two_star_share": 0.7889125799573561,
+   "three_star_per_board": 0.5625
+  },
+  "2": {
+   "boards": 400,
+   "level_9": 0.17,
+   "units_per_board": 7.7025,
+   "five_per_board": 3.005,
+   "five_two_star_per_board": 0.5075,
+   "five_two_star_share": 0.16888519134775373,
+   "four_two_star_share": 0.7489361702127659,
+   "three_star_per_board": 0.5125
+  },
+  "3": {
+   "boards": 400,
+   "level_9": 0.06,
+   "units_per_board": 7.535,
+   "five_per_board": 2.49,
+   "five_two_star_per_board": 0.195,
+   "five_two_star_share": 0.0783132530120482,
+   "four_two_star_share": 0.6525911708253359,
+   "three_star_per_board": 0.3625
+  },
+  "4": {
+   "boards": 400,
+   "level_9": 0.005,
+   "units_per_board": 7.3175,
+   "five_per_board": 2.0275,
+   "five_two_star_per_board": 0.09,
+   "five_two_star_share": 0.04438964241676942,
+   "four_two_star_share": 0.5231788079470199,
+   "three_star_per_board": 0.3
+  },
+  "5": {
+   "boards": 400,
+   "level_9": 0.0,
+   "units_per_board": 7.035,
+   "five_per_board": 1.32,
+   "five_two_star_per_board": 0.0375,
+   "five_two_star_share": 0.028409090909090908,
+   "four_two_star_share": 0.37719298245614036,
+   "three_star_per_board": 0.2425
+  },
+  "6": {
+   "boards": 400,
+   "level_9": 0.0,
+   "units_per_board": 6.7925,
+   "five_per_board": 0.84,
+   "five_two_star_per_board": 0.025,
+   "five_two_star_share": 0.02976190476190476,
+   "four_two_star_share": 0.29435483870967744,
+   "three_star_per_board": 0.16
+  },
+  "7": {
+   "boards": 400,
+   "level_9": 0.0,
+   "units_per_board": 6.675,
+   "five_per_board": 0.505,
+   "five_two_star_per_board": 0.005,
+   "five_two_star_share": 0.009900990099009901,
+   "four_two_star_share": 0.21669106881405564,
+   "three_star_per_board": 0.1225
+  },
+  "8": {
+   "boards": 400,
+   "level_9": 0.0,
+   "units_per_board": 6.5375,
+   "five_per_board": 0.25,
+   "five_two_star_per_board": 0.0,
+   "five_two_star_share": 0.0,
+   "four_two_star_share": 0.1312410841654779,
+   "three_star_per_board": 0.11
+  }
+ }
+}
