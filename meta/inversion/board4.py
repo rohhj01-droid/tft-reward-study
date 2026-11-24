@@ -9,6 +9,8 @@
 실행(저장소 맨 위에서, TEXTBOOK=era ACTIONS_PER_TURN=30 PYTHONHASHSEED=0, PYTHONPATH에 june·stubs·.):
     python meta/inversion/board4.py --games 400 --jobs 4 --seed0 790000 --partial logs/board4.jsonl --out meta/inversion/board4_rows.json
 확인: python meta/inversion/board4.py --check 2 meta/inversion/nine_none.json  (그 기록 앞 2판을 다시 돌려 곡선과 대전 기록을 맞춘다)
+판 끝까지 적기(results/README 「대전당 피해를 실제 판과 견주기」): 환경 변수 BOARD4_ROUNDS=0,99를 더한다. 일꾼도 이 값을 물려받는다.
+적은 기록 확인: python meta/inversion/board4.py --verify 기록 대조기록  (자리 기록이 대조와 같은지, 대전 기록이 체력 변화와 맞는지)
 """
 import argparse
 import json
@@ -24,7 +26,7 @@ from meta.inversion.hp_split import pvp
 from Simulator import champion
 from Simulator.game_round import Game_Round
 
-FIRST, LAST = 9, 24  # 3-1 ~ 5-5
+FIRST, LAST = map(int, os.environ.get('BOARD4_ROUNDS', '9,24').split(','))  # 기본은 3-1 ~ 5-5. 판 끝까지는 BOARD4_ROUNDS=0,99
 FIGHTS, POL, NOW = [], {}, {'round': None, 'ghost': [], 'k': 0}
 
 _call = sl.Lesson.__call__
@@ -148,9 +150,21 @@ def check(n, ref):
     print(f'확인 끝: {n}판, 체력까지 맞춘 대전 쪽 {total}개')
 
 
+def verify(rec, ref):
+    """적어 둔 기록을 대조 기록(같은 시드의 hra.spend_lesson 결과)과 맞춰 본다. 기록 칸은 지금 환경의 FIRST·LAST와 같아야 한다."""
+    d, r = (json.load(open(f, encoding='utf-8')) for f in (rec, ref))
+    assert not d['errors'] and d['record'] == [FIRST, LAST] and d['seeds'] == r['seeds'][:len(d['seeds'])], '기록이 대조와 안 맞는다'
+    n = 0
+    for rows, fights, want in zip(d['rows'], d['fights'], r['rows']):
+        assert [{k: v for k, v in x.items() if k != 'pnum'} for x in rows] == want, '자리 기록이 대조와 다르다'
+        n += consistent(rows, fights)
+    print(f"기록 확인 끝: {len(d['rows'])}판 자리 기록 같음, 체력까지 맞춘 대전 {n}개(칸 {FIRST}~{LAST})")
+
+
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
     ap.add_argument('--check', nargs=2, metavar=('N', 'REF'))
+    ap.add_argument('--verify', nargs=2, metavar=('REC', 'REF'))
     ap.add_argument('--games', type=int, default=400)
     ap.add_argument('--jobs', type=int, default=4)
     ap.add_argument('--seed0', type=int, default=790000)
@@ -159,6 +173,9 @@ if __name__ == '__main__':
     a = ap.parse_args()
     if a.check:
         check(int(a.check[0]), a.check[1])
+        sys.exit()
+    if a.verify:
+        verify(*a.verify)
         sys.exit()
     res = run(a.games, a.jobs, a.seed0, a.partial)
     json.dump(res, open(a.out, 'w', encoding='utf-8'), ensure_ascii=False)
