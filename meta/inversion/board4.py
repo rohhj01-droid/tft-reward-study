@@ -128,7 +128,8 @@ def consistent(rows, fights):
                 lost = f['won'] == 0 or f['won'] == 2 - i
                 nxt = hp[p].get(slot + 1)
                 if nxt is not None:
-                    assert nxt == hp[p][slot] - (f['damage'] if lost else 0), (slot, p, f['won'], f['damage'])
+                    took = f['damage'] if f['ghost'] else max(f['damage'], 1)  # 사람끼리 대전은 지거나 비기면 최소 1(10.22부터). 기록은 그 전 값이라 2단계 비김만 다르다
+                    assert nxt == hp[p][slot] - (took if lost else 0), (slot, p, f['won'], f['damage'])
             n += 1
     return n
 

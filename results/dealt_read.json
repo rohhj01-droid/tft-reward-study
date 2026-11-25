@@ -1,0 +1,359 @@
+{
+ "source": {
+  "name": "TEAMFIGHT TACTICS: FATES Challenger EUW Rank Games",
+  "csv_sha256": "df73994ce6172fd810846c92b66c099db488b5af12b27521a6e63fff18882f4e",
+  "patch": "10.24",
+  "dropped": {
+   "rows_repeated": 0
+  }
+ },
+ "sim_record": {
+  "file": "meta/inversion/dealt_rows.json",
+  "sha256": "6d90bd5c5c995510ecbcc1445ab02c58d3a637faf5df711f276db627e6934ab3",
+  "seed0": 790000,
+  "games": 400,
+  "actions_per_turn": 30,
+  "textbook": {
+   "spend": "era",
+   "lose_5": false
+  }
+ },
+ "structure": {
+  "games": 19292,
+  "alive": {
+   "5-1": 7.714,
+   "5-5": 6.486,
+   "6-1": 5.143,
+   "6-5": 2.426,
+   "7-1": 0.886
+  },
+  "top_two_same_round": 1.0,
+  "ended_in": {
+   "pvp": 0.9986,
+   "pve": 0.0006,
+   "carousel": 0.0008
+  }
+ },
+ "top_stage": 7,
+ "sim_fights_stage7_up": 209,
+ "valid": true,
+ "ratio": {
+  "no_ghost": [
+   0.9375,
+   0.9341,
+   0.9407
+  ],
+  "with_ghost": [
+   0.8917,
+   0.8872,
+   0.8958
+  ]
+ },
+ "reading": "유령 대전 셈에 달렸거나 가르지 못한다",
+ "real": {
+  "games": 19292,
+  "fights_per_game": 83.73,
+  "dealt_per_game": 794.3,
+  "fights_by_stage": {
+   "2": 20.0,
+   "3": 19.97,
+   "4": 19.66,
+   "5": 16.22,
+   "6": 7.3,
+   "7": 0.58
+  },
+  "per_fight": {
+   "damage": 9.486,
+   "base": 2.951,
+   "unit": 6.535
+  },
+  "by_place": {
+   "1": {
+    "dealt": 179.26,
+    "rounds": 25.13,
+    "per_round": 7.132,
+    "share": 0.2257
+   },
+   "2": {
+    "dealt": 142.67,
+    "rounds": 25.13,
+    "per_round": 5.676,
+    "share": 0.1796
+   },
+   "3": {
+    "dealt": 118.86,
+    "rounds": 23.56,
+    "per_round": 5.044,
+    "share": 0.1497
+   },
+   "4": {
+    "dealt": 101.4,
+    "rounds": 22.26,
+    "per_round": 4.555,
+    "share": 0.1277
+   },
+   "5": {
+    "dealt": 86.25,
+    "rounds": 21.13,
+    "per_round": 4.082,
+    "share": 0.1086
+   },
+   "6": {
+    "dealt": 71.76,
+    "rounds": 19.92,
+    "per_round": 3.603,
+    "share": 0.0904
+   },
+   "7": {
+    "dealt": 56.6,
+    "rounds": 18.51,
+    "per_round": 3.057,
+    "share": 0.0713
+   },
+   "8": {
+    "dealt": 37.46,
+    "rounds": 16.41,
+    "per_round": 2.282,
+    "share": 0.0472
+   }
+  }
+ },
+ "sim_no_ghost": {
+  "games": 400,
+  "fights_per_game": 78.93,
+  "dealt_per_game": 779.9,
+  "fights_by_stage": {
+   "2": 20.0,
+   "3": 20.0,
+   "4": 19.41,
+   "5": 13.44,
+   "6": 5.56,
+   "7": 0.52
+  },
+  "per_fight": {
+   "damage": 9.881,
+   "base": 2.758,
+   "unit": 7.123
+  },
+  "by_place": {
+   "1": {
+    "dealt": 199.81,
+    "rounds": 24.82,
+    "per_round": 8.051,
+    "share": 0.2562
+   },
+   "2": {
+    "dealt": 153.21,
+    "rounds": 24.82,
+    "per_round": 6.173,
+    "share": 0.1964
+   },
+   "3": {
+    "dealt": 119.96,
+    "rounds": 22.8,
+    "per_round": 5.262,
+    "share": 0.1538
+   },
+   "4": {
+    "dealt": 96.14,
+    "rounds": 21.05,
+    "per_round": 4.567,
+    "share": 0.1233
+   },
+   "5": {
+    "dealt": 76.16,
+    "rounds": 19.39,
+    "per_round": 3.928,
+    "share": 0.0977
+   },
+   "6": {
+    "dealt": 59.46,
+    "rounds": 18.01,
+    "per_round": 3.301,
+    "share": 0.0762
+   },
+   "7": {
+    "dealt": 46.81,
+    "rounds": 16.75,
+    "per_round": 2.794,
+    "share": 0.06
+   },
+   "8": {
+    "dealt": 28.35,
+    "rounds": 15.04,
+    "per_round": 1.884,
+    "share": 0.0363
+   }
+  },
+  "per_fight_by_stage": {
+   "2": 5.683,
+   "3": 9.239,
+   "4": 10.686,
+   "5": 13.008,
+   "6": 15.741,
+   "7": 22.545
+  }
+ },
+ "sim_with_ghost": {
+  "games": 400,
+  "fights_per_game": 78.93,
+  "dealt_per_game": 815.2,
+  "fights_by_stage": {
+   "2": 20.0,
+   "3": 20.0,
+   "4": 19.41,
+   "5": 13.44,
+   "6": 5.56,
+   "7": 0.52
+  },
+  "per_fight": {
+   "damage": 10.329,
+   "base": 2.758,
+   "unit": 7.57
+  },
+  "by_place": {
+   "1": {
+    "dealt": 212.74,
+    "rounds": 24.82,
+    "per_round": 8.571,
+    "share": 0.261
+   },
+   "2": {
+    "dealt": 162.19,
+    "rounds": 24.82,
+    "per_round": 6.535,
+    "share": 0.199
+   },
+   "3": {
+    "dealt": 126.46,
+    "rounds": 22.8,
+    "per_round": 5.546,
+    "share": 0.1551
+   },
+   "4": {
+    "dealt": 99.12,
+    "rounds": 21.05,
+    "per_round": 4.708,
+    "share": 0.1216
+   },
+   "5": {
+    "dealt": 78.25,
+    "rounds": 19.39,
+    "per_round": 4.036,
+    "share": 0.096
+   },
+   "6": {
+    "dealt": 60.48,
+    "rounds": 18.01,
+    "per_round": 3.358,
+    "share": 0.0742
+   },
+   "7": {
+    "dealt": 47.62,
+    "rounds": 16.75,
+    "per_round": 2.843,
+    "share": 0.0584
+   },
+   "8": {
+    "dealt": 28.35,
+    "rounds": 15.04,
+    "per_round": 1.884,
+    "share": 0.0348
+   }
+  },
+  "per_fight_by_stage": {
+   "2": 5.683,
+   "3": 9.239,
+   "4": 10.862,
+   "5": 14.216,
+   "6": 18.484,
+   "7": 23.316
+  }
+ },
+ "sim_survivors_by_stage": {
+  "2": {
+   "fights_per_game": 20.0,
+   "draw": 0.0008,
+   "damage": 5.69,
+   "left": 2.844,
+   "left_share": {
+    "1": 0.136,
+    "2": 0.241,
+    "3": 0.323,
+    "4": 0.244,
+    "5": 0.055,
+    "6": 0.001
+   }
+  },
+  "3": {
+   "fights_per_game": 20.0,
+   "draw": 0.0006,
+   "damage": 9.24,
+   "left": 3.683,
+   "left_share": {
+    "1": 0.084,
+    "2": 0.15,
+    "3": 0.213,
+    "4": 0.228,
+    "5": 0.211,
+    "6": 0.115
+   }
+  },
+  "4": {
+   "fights_per_game": 19.41,
+   "draw": 0.0004,
+   "damage": 10.69,
+   "left": 3.981,
+   "left_share": {
+    "1": 0.087,
+    "2": 0.131,
+    "3": 0.176,
+    "4": 0.198,
+    "5": 0.204,
+    "6": 0.204
+   }
+  },
+  "5": {
+   "fights_per_game": 13.44,
+   "draw": 0.0002,
+   "damage": 13.01,
+   "left": 4.224,
+   "left_share": {
+    "1": 0.089,
+    "2": 0.122,
+    "3": 0.157,
+    "4": 0.176,
+    "5": 0.177,
+    "6": 0.278
+   }
+  },
+  "6": {
+   "fights_per_game": 5.56,
+   "draw": 0.0004,
+   "damage": 15.75,
+   "left": 4.082,
+   "left_share": {
+    "1": 0.101,
+    "2": 0.134,
+    "3": 0.174,
+    "4": 0.181,
+    "5": 0.156,
+    "6": 0.255
+   }
+  },
+  "7": {
+   "fights_per_game": 0.52,
+   "draw": 0.0048,
+   "damage": 22.65,
+   "left": 4.029,
+   "left_share": {
+    "1": 0.091,
+    "2": 0.159,
+    "3": 0.188,
+    "4": 0.159,
+    "5": 0.173,
+    "6": 0.231
+   }
+  }
+ }
+}
