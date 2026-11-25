@@ -97,43 +97,128 @@ def check(pairs):
     print(f'보드 {len(boards)}개 가운데 특성 수가 기록과 같은 보드 {same}개({same / len(boards):.4f}), 두 보드 모두 같은 대전 {len(usable(pairs))}개')
 
 
+def check_stars():
+    """별 처리 셋이 싸우는 유닛을 뜻한 대로 만드는가. 선택받은 자 베인 3성(기본 체력 500, 스킬 값 90·140)과 달빛이 올린 다이애나."""
+    import Simulator.champion as cm
+    from Simulator.pool import pool
+    from Simulator.stats import ACTIVE_DMG
+    from analysis.battle import build_player
+    board = [{'name': 'vayne', 'stars': 3, 'items': [], 'chosen': 'sharpshooter'}]
+    got = {}
+    for variant in VARIANTS:
+        unit = build_player(pool(), 0, make_units(board, variant), 'corner').board[0][0]  # 구석 배치는 원거리 첫 유닛을 (0, 0)에 둔다
+        fighter = (fixed_champion() if variant == 'fixed' else cm.champion)('vayne', 'blue', 0, 0, unit.stars, unit.items, False, None, unit.chosen)
+        got[variant] = (fighter.stars, fighter.max_health, fighter.AD, ACTIVE_DMG['vayne'][fighter.stars])
+    # 체력 = 기본 500 x 1.8^(별 - 1) + 선택받은 자 200, 공격력 = 기본 40 x 1.8^(별 - 1)
+    assert got == {'harness': (2, 1100.0, 72.0, 90), 'june': (2, 1820.0, 129.6, 90), 'fixed': (3, 1820.0, 129.6, 140)}, got
+    for stars, want in ((1, (900.0, 90.0)), (2, (1620.0, 162.0)), (3, (2916.0, 291.6))):  # 다이애나 기본 체력 500, 공격력 50
+        d = fixed_champion()('diana', 'blue', 0, 0, stars, [])
+        d.golden()
+        assert (d.stars, d.max_health, d.health, d.AD) == (stars + 1, *want[:1], want[0], want[1]), (stars, d.max_health, d.AD)
+    d = cm.champion('diana', 'blue', 0, 0, 2, [])
+    d.golden()
+    assert (d.max_health, d.AD) == (2916.0, 291.6)  # 시뮬레이터 그대로: 3성이 4성 값이 된다
+    print('별 처리 확인 통과:', got)
+
+
 ITEMS = None
+FIXED = None
+# 별 처리(2026-11-25에 찾은 결함 둘, results/README 「마지막 대전 붙이기: 별 처리 결함」).
+#   harness: 처음 실행 그대로. 선택받은 자 3성이 2성으로 싸운다(틀의 결함: 유닛을 만들 때 시뮬레이터가 선택받은 자의 별을 2로
+#            되돌리고, 그 별로 보드에 올라가 전투가 2성 체력·공격력으로 다시 만든다). 앞 실행을 다시 만들 때만 쓴다.
+#   june:    시뮬레이터가 봇 판에서 하는 그대로. 선택받은 자 3성은 체력·공격력만 3성이고 별로 찾는 값(스킬 값 등)은 2성이다.
+#            달빛이 별을 올릴 때 (새 별 - 1)제곱을 한 번 더 곱한다(2성을 올리면 1.8배가 아니라 3.24배, 3성이면 5.83배).
+#   fixed:   두 결함을 실제 게임대로 고친다. 선택받은 자 3성은 온전한 3성이고, 달빛은 한 단계만 올린다.
+VARIANTS = ('harness', 'june', 'fixed')
+
+
+def chosen_three(board):
+    return bool(board['chosen']) and any(u[0] == board['chosen'][0] and u[1] == 3 for u in board['units'])
+
+
+def affected(pair, variant):
+    """harness 실행과 결과가 달라질 수 있는 대전인가(아니면 같은 시드라 승수가 같다)."""
+    return variant != 'harness' and any(chosen_three(b) or (variant == 'fixed' and b['traits'].get('Moonlight', 0) >= 3) for b in pair['boards'])
+
+
+def fixed_champion():
+    """시뮬레이터를 건드리지 않고 싸우는 유닛만 고친다(champion.run에 넘기는 유닛 틀)."""
+    import Simulator.active as active
+    import Simulator.champion as cm
+    import Simulator.config as config
+    from Simulator.stats import AD, HEALTH, INITIATIVE_ACTIVE
+
+    class Fixed(cm.champion):
+        def __init__(self, name, team=None, y=-1, x=-1, stars=1, *args, **kwargs):
+            super().__init__(name, team, y, x, stars, *args, **kwargs)
+            if stars == 3 and self.stars == 2:  # 선택받은 자 3성: 시뮬레이터가 별을 2로 되돌린 것을 3으로
+                self.stars = 3
+                if name in INITIATIVE_ACTIVE:  # 별로 정하는 처음 값(진 공속, 탐 켄치 피해 감소)을 3성 값으로 다시
+                    getattr(active, name + '_init')(self)
+
+        def golden(self):  # 달빛: 기본 체력·공격력의 한 단계 몫만 더한다
+            grow = config.STARMULTIPLIER ** self.stars - config.STARMULTIPLIER ** (self.stars - 1)
+            self.stars += 1
+            self.max_health = round(self.max_health + HEALTH[self.name] * grow, 1)
+            self.health = self.max_health
+            self.AD = round(self.AD + AD[self.name] * grow, 1)
+    return Fixed
+
+
+def make_units(board, variant):
+    """analysis/battle 형식의 보드 -> 보드에 올릴 유닛들."""
+    from analysis.battle import to_units
+    made = to_units(board)
+    if variant != 'harness':
+        for u, s in zip(made, board):
+            if s.get('chosen') and s['stars'] == 3:
+                u.stars = 3  # 보드에 3성으로 올라가야 전투가 3성 체력·공격력으로 만든다(봇 판에서 합쳐 만든 유닛처럼)
+    return made
 
 
 def fights(job):
-    """(번호, 대전, n, 배치) -> (번호, [앞 절반에서 1등 보드가 이긴 수, 뒤 절반에서 이긴 수], 오류). 비김은 0.5."""
-    global ITEMS
-    k, pair, n, place = job
+    """(번호, 대전, n, 배치, 별 처리) -> (번호, [앞 절반에서 1등 보드가 이긴 수, 뒤 절반에서 이긴 수], 오류). 비김은 0.5."""
+    global ITEMS, FIXED
+    k, pair, n, place, variant = job
     try:
         import Simulator.champion as cm
         import Simulator.config as config
         from Simulator.pool import pool
-        from analysis.battle import build_player, to_units
+        from analysis.battle import build_player
         ITEMS = ITEMS or item_names()
+        if variant == 'fixed':
+            FIXED = FIXED or fixed_champion()
+        fighter = FIXED if variant == 'fixed' else cm.champion
         first, second = (spec(b, ITEMS) for b in pair['boards'])
         random.seed(k)
         won = [0, 0]
         for i in range(n):
             blue, red = (first, second) if i % 2 == 0 else (second, first)  # 진영 유리를 없애려고 자리를 번갈아 붙인다
             base = pool()
-            pa, pb = build_player(base, 0, to_units(blue), place), build_player(base, 1, to_units(red), place)
+            pa, pb = build_player(base, 0, make_units(blue, variant), place), build_player(base, 1, make_units(red, variant), place)
             pa.opponent, pb.opponent = pb, pa
             config.WARLORD_WINS['blue'] = config.WARLORD_WINS['red'] = WARLORD_WINS
-            result = cm.run(cm.champion, pa, pb, 0)[0]
+            result = cm.run(fighter, pa, pb, 0)[0]
             won[i * 2 // n] += 0.5 if result == 0 else float(result == 1 + i % 2)
         return k, won, None
     except Exception as e:  # 한 대전이 터져도 나머지는 돌린다. 오류는 세어서 적는다
         return k, None, repr(e)
 
 
-def run(pairs, count, n, jobs, partial, place='corner'):
+def run(pairs, count, n, jobs, partial, place='corner', variant='harness', reuse=None):
     from hra.deck_baseline import load_partial
     from hra.plan_bot import pinned_pool
     assert n % 4 == 0, 'n은 4의 배수여야 한다(절반마다 두 자리를 같은 수로)'
     used = usable(pairs)[:count]  # 섞어 둔 순서의 앞에서부터, 만든 보드가 기록과 맞는 대전만
     assert len(used) == count, '쓸 수 있는 대전이 모자란다'
     done = load_partial(partial)
-    todo = [(k, pairs[k], n, place) for k in used if k not in done]
+    kept = {}
+    if reuse:  # harness 실행과 승수가 같을 대전(별 처리가 걸리지 않는 대전)은 다시 붙이지 않고 가져온다
+        assert reuse['used'] == used and reuse['n'] == n and reuse['place'] == place and reuse.get('variant', 'harness') == 'harness'
+        errors = dict(map(tuple, reuse['errors']))
+        kept = {k: [k, w, errors.get(k)] for k, w in zip(used, reuse['won']) if not affected(pairs[k], variant)}
+        done.update(kept)
+    todo = [(k, pairs[k], n, place, variant) for k in used if k not in done]
     if todo:
         with pinned_pool(jobs) as p, open(partial or os.devnull, 'a', encoding='utf-8') as f:
             for row in p.imap_unordered(fights, todo, chunksize=4):
@@ -141,7 +226,8 @@ def run(pairs, count, n, jobs, partial, place='corner'):
                 f.write(json.dumps(row) + '\n')
                 f.flush()
     rows = [done[k] for k in used]
-    return {'kind': 'final_fight', 'pairs': count, 'n': n, 'warlord_wins': WARLORD_WINS, 'place': place, 'used': used,
+    return {'kind': 'final_fight', 'pairs': count, 'n': n, 'warlord_wins': WARLORD_WINS, 'place': place, 'variant': variant, 'reused': len(kept),
+            'used': used,
             'errors': [[k, e] for k, _, e in rows if e is not None], 'won': [w for _, w, _ in rows]}
 
 
@@ -247,7 +333,7 @@ def read(pairs, rec, src=None):
     clean = [r for r in rows if r['clean']]
     out = {'source': {'name': pairs['source']['name'], 'csv_sha256': pairs['source']['csv_sha256'], 'patch': pairs['patch'],
                       'games': pairs['games'], 'dropped': pairs['dropped'], 'pairs_available': len(pairs['pairs'])},
-           'sim_record': dict(src or {}, pairs=rec['pairs'], n=rec['n'], warlord_wins=rec['warlord_wins'], place=rec['place'],
+           'sim_record': dict(src or {}, pairs=rec['pairs'], n=rec['n'], warlord_wins=rec['warlord_wins'], place=rec['place'], variant=rec.get('variant', 'harness'),
                               errors=len(rec['errors'])),
            'fights_read': len(rows), 'hit': {k: round(v, 4) for k, v in s['acc'].items()}, 'best_baseline': best,
            'sim_minus_best': round(s['sim_minus_' + best], 4), 'reading': reading(*b['sim_minus_' + best]),
@@ -292,6 +378,11 @@ def selfcheck():
     t = tables(rows)
     assert t['by_family']['dusk'] == {'fights': 2, 'real': 0.5, 'sim': 0.8} and t['higher_level']['9 vs 8'] == {'fights': 2, 'real': 0.5, 'sim': 0.8}
     assert t['same_level_fights'] == 1
+    vayne3 = dict(b(8, [['Vayne', 3, []], ['Diana', 2, []]], {'Sharpshooter': 2}), chosen=['Vayne', 'Sharpshooter'])
+    moon = b(8, [['Diana', 3, []]], {'Moonlight': 3})
+    assert chosen_three(vayne3) and not chosen_three(dict(vayne3, chosen=['Diana', 'Moonlight'])) and not chosen_three(moon)
+    assert [affected({'boards': [big, vayne3]}, v) for v in VARIANTS] == [False, True, True]
+    assert [affected({'boards': [moon, big]}, v) for v in VARIANTS] == [False, False, True] and not affected({'boards': [big, small]}, 'fixed')
     assert reading(0.01, 0.05).endswith('더 잘 맞힌다') and reading(-0.05, -0.01).endswith('못 맞힌다') and reading(-0.01, 0.01).endswith('구별되지 않는다')
     big, small = dict(big, level=2), dict(small, level=1)  # 유닛 수 = 레벨인 보드(빠진 유닛이 안 보이는 대전)
     out = read({'source': {'name': 'x', 'csv_sha256': 'y'}, 'patch': '10.24', 'games': 3, 'dropped': {},
@@ -316,6 +407,8 @@ if __name__ == '__main__':
     ap.add_argument('--jobs', type=int, default=4)
     ap.add_argument('--partial')
     ap.add_argument('--place', choices=('corner', 'range'), default='corner')  # range = 원거리도 뒷줄 가운데부터
+    ap.add_argument('--variant', choices=VARIANTS, default='harness')  # 별 처리
+    ap.add_argument('--reuse')  # harness 실행 기록. 별 처리가 걸리지 않는 대전의 승수를 가져온다
     ap.add_argument('--out')
     a = ap.parse_args()
     if a.mode == 'selfcheck':
@@ -323,11 +416,12 @@ if __name__ == '__main__':
         sys.exit()
     pairs = json.load(open(a.files[0], encoding='utf-8'))
     if a.mode == 'check':
+        check_stars()
         check(pairs['pairs'])
     elif a.mode == 'run':
-        res = run(pairs['pairs'], a.pairs, a.n, a.jobs, a.partial, a.place)
+        res = run(pairs['pairs'], a.pairs, a.n, a.jobs, a.partial, a.place, a.variant, a.reuse and json.load(open(a.reuse, encoding='utf-8')))
         json.dump(res, open(a.out, 'w', encoding='utf-8'))
-        print(f"final_fight 대전 {res['pairs']} 오류 {len(res['errors'])} 대전당 {res['n']}번")
+        print(f"final_fight 대전 {res['pairs']} 오류 {len(res['errors'])} 대전당 {res['n']}번 배치 {res['place']} 별 처리 {res['variant']} 가져온 대전 {res['reused']}")
     else:
         rec = json.load(open(a.files[1], encoding='utf-8'))
         out = read(pairs, rec, {'file': os.path.basename(a.files[1]), 'sha256': sha(a.files[1])})
