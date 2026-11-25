@@ -101,9 +101,9 @@ ITEMS = None
 
 
 def fights(job):
-    """(번호, 대전, n) -> (번호, [앞 절반에서 1등 보드가 이긴 수, 뒤 절반에서 이긴 수], 오류). 비김은 0.5."""
+    """(번호, 대전, n, 배치) -> (번호, [앞 절반에서 1등 보드가 이긴 수, 뒤 절반에서 이긴 수], 오류). 비김은 0.5."""
     global ITEMS
-    k, pair, n = job
+    k, pair, n, place = job
     try:
         import Simulator.champion as cm
         import Simulator.config as config
@@ -116,7 +116,7 @@ def fights(job):
         for i in range(n):
             blue, red = (first, second) if i % 2 == 0 else (second, first)  # 진영 유리를 없애려고 자리를 번갈아 붙인다
             base = pool()
-            pa, pb = build_player(base, 0, to_units(blue), 'corner'), build_player(base, 1, to_units(red), 'corner')
+            pa, pb = build_player(base, 0, to_units(blue), place), build_player(base, 1, to_units(red), place)
             pa.opponent, pb.opponent = pb, pa
             config.WARLORD_WINS['blue'] = config.WARLORD_WINS['red'] = WARLORD_WINS
             result = cm.run(cm.champion, pa, pb, 0)[0]
@@ -126,14 +126,14 @@ def fights(job):
         return k, None, repr(e)
 
 
-def run(pairs, count, n, jobs, partial):
+def run(pairs, count, n, jobs, partial, place='corner'):
     from hra.deck_baseline import load_partial
     from hra.plan_bot import pinned_pool
     assert n % 4 == 0, 'n은 4의 배수여야 한다(절반마다 두 자리를 같은 수로)'
     used = usable(pairs)[:count]  # 섞어 둔 순서의 앞에서부터, 만든 보드가 기록과 맞는 대전만
     assert len(used) == count, '쓸 수 있는 대전이 모자란다'
     done = load_partial(partial)
-    todo = [(k, pairs[k], n) for k in used if k not in done]
+    todo = [(k, pairs[k], n, place) for k in used if k not in done]
     if todo:
         with pinned_pool(jobs) as p, open(partial or os.devnull, 'a', encoding='utf-8') as f:
             for row in p.imap_unordered(fights, todo, chunksize=4):
@@ -141,7 +141,7 @@ def run(pairs, count, n, jobs, partial):
                 f.write(json.dumps(row) + '\n')
                 f.flush()
     rows = [done[k] for k in used]
-    return {'kind': 'final_fight', 'pairs': count, 'n': n, 'warlord_wins': WARLORD_WINS, 'place': 'corner', 'used': used,
+    return {'kind': 'final_fight', 'pairs': count, 'n': n, 'warlord_wins': WARLORD_WINS, 'place': place, 'used': used,
             'errors': [[k, e] for k, _, e in rows if e is not None], 'won': [w for _, w, _ in rows]}
 
 
@@ -315,6 +315,7 @@ if __name__ == '__main__':
     ap.add_argument('--n', type=int, default=20)
     ap.add_argument('--jobs', type=int, default=4)
     ap.add_argument('--partial')
+    ap.add_argument('--place', choices=('corner', 'range'), default='corner')  # range = 원거리도 뒷줄 가운데부터
     ap.add_argument('--out')
     a = ap.parse_args()
     if a.mode == 'selfcheck':
@@ -324,7 +325,7 @@ if __name__ == '__main__':
     if a.mode == 'check':
         check(pairs['pairs'])
     elif a.mode == 'run':
-        res = run(pairs['pairs'], a.pairs, a.n, a.jobs, a.partial)
+        res = run(pairs['pairs'], a.pairs, a.n, a.jobs, a.partial, a.place)
         json.dump(res, open(a.out, 'w', encoding='utf-8'))
         print(f"final_fight 대전 {res['pairs']} 오류 {len(res['errors'])} 대전당 {res['n']}번")
     else:
