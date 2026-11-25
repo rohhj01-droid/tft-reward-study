@@ -18,9 +18,27 @@ import sys
 import numpy as np
 
 from meta.inversion import final_fight as ff
+from set4 import FIVE_COST_UNITS, FOUR_COST_UNITS
 
 SIX = ('divine', 'duelist', 'elderwood', 'ninja', 'sharpshooter', 'warlord')  # 구석 배치에서 차의 구간이 0을 벗어난 계열
 BOOT, SEED = 1000, 0
+BIG = set(FOUR_COST_UNITS) | set(FIVE_COST_UNITS)
+
+
+def count(trait, lo, hi=99):
+    return lambda b: lo <= b['traits'].get(trait, 0) <= hi
+
+
+# 덧붙임(결과 전): 구석 배치 결과를 유닛·특성·아이템별로 쪼개 보고 고른 보드 특징. 한쪽만 가진 대전에서 읽는다.
+# 아이템 번호는 재료 번호 둘을 이은 것이다(17 = 대검 + 벨트 = 지크의 전령, 46 = 눈물 + 망토 = 힘의 성배).
+FEATURES = {
+    'keeper 2~3': count('Keeper', 2, 3), 'keeper 4+': count('Keeper', 4), 'adept 2': count('Adept', 2, 2), 'adept 3+': count('Adept', 3),
+    'dazzler 2+': count('Dazzler', 2), 'divine 4~5': count('Divine', 4, 5), 'divine 6+': count('Divine', 6), 'assassin 2+': count('Assassin', 2),
+    'azir': lambda b: any(u[0] == 'Azir' for u in b['units']),
+    'zekes_herald': lambda b: any(17 in u[2] for u in b['units']), 'chalice_of_power': lambda b: any(46 in u[2] for u in b['units']),
+    '3-star any': lambda b: any(u[1] == 3 for u in b['units']),
+    '3-star 4-5 cost': lambda b: any(u[1] == 3 and u[0].lower() in BIG for u in b['units']),
+}
 
 
 def mean_ci(x):
@@ -54,9 +72,11 @@ def family_reading(gap_corner, gap_range, change):
     return '배치를 바꾸면 뒤집힌다' if hi < 0 else '배치를 바꾸면 보이지 않는다'
 
 
-def one_sided(ra, rb, side):
-    """side(대전) -> 0(1등 쪽)·1(2등 쪽)·None. 그 쪽이 실제 1등인 몫, 두 배치의 시뮬레이터 승률, 차와 구간."""
-    got = [(s, a['p'], b['p']) for a, b in zip(ra, rb) for s in [side(a)] if s is not None]
+def one_sided(ra, rb, sides):
+    """sides = 대전마다 0(1등 쪽)·1(2등 쪽)·None. 그 쪽이 실제 1등인 몫, 두 배치의 시뮬레이터 승률, 차와 구간."""
+    got = [(s, a['p'], b['p']) for a, b, s in zip(ra, rb, sides) if s is not None]
+    if not got:
+        return {'fights': 0}
     real = np.array([float(s == 0) for s, _, _ in got])
     sa = np.array([p if s == 0 else 1 - p for s, p, _ in got])
     sb = np.array([p if s == 0 else 1 - p for s, _, p in got])
@@ -75,11 +95,16 @@ def compare(pairs, corner, rng_rec, src=None):
     both = (pa != 0.5) & (pb != 0.5)
     by_family = {}
     for f in sorted({f for r in ra for f in r['fam']}):
-        n = sum((r['fam'][0] == f) != (r['fam'][1] == f) for r in ra)
-        if f in SIX or n >= 100:  # 대전이 100개 안 되는 계열은 표에서 뺀다
-            by_family[f] = v = one_sided(ra, rb, lambda r: None if (r['fam'][0] == f) == (r['fam'][1] == f) else int(r['fam'][1] == f))
+        sides = [None if (r['fam'][0] == f) == (r['fam'][1] == f) else int(r['fam'][1] == f) for r in ra]
+        if f in SIX or sum(s is not None for s in sides) >= 100:  # 대전이 100개 안 되는 계열은 표에서 뺀다
+            by_family[f] = v = one_sided(ra, rb, sides)
             if f in SIX:
                 v['reading'] = family_reading(v['gap_corner'], v['gap_range'], v['change'])
+    by_feature = {}
+    for name, has in FEATURES.items():  # 덧붙임: 구석 배치 결과를 쪼개 보고 고른 보드 특징
+        by_feature[name] = v = one_sided(ra, rb, [None if has(one) == has(two) else int(has(two)) for one, two in (p['boards'] for p in boards)])
+        if v['fights']:
+            v['reading'] = family_reading(v['gap_corner'], v['gap_range'], v['change'])
     return {'records': dict(src or {}), 'n': corner['n'], 'fights_read': len(keep), 'dropped_errors': len(corner['used']) - len(keep),
             'hit': {'corner': round(float(hit(pa).mean()), 4), 'range': round(float(hit(pb).mean()), 4),
                     'mean_of_two': round(float(hit((pa + pb) / 2).mean()), 4)},
@@ -87,7 +112,8 @@ def compare(pairs, corner, rng_rec, src=None):
             'flip_share': round(float(((pa > 0.5) != (pb > 0.5))[both].mean()), 4), 'both_decided': int(both.sum()),
             'mean_abs_change': round(float(np.abs(pb - pa).mean()), 4),
             'S': {'corner': round(ff.stats(ra)['S'], 4), 'range': round(ff.stats(rb)['S'], 4)},
-            'by_family': by_family, 'higher_level': one_sided(ra, rb, lambda r: None if r['level'] == 0 else int(r['level'] < 0))}
+            'by_family': by_family, 'by_feature': by_feature,
+            'higher_level': one_sided(ra, rb, [None if r['level'] == 0 else int(r['level'] < 0) for r in ra])}
 
 
 def selfcheck():
@@ -95,18 +121,22 @@ def selfcheck():
         return {'level': level, 'units': units, 'traits': traits, 'chosen': None}
     big = b(9, [['Yone', 2, [15, 19]], ['Riven', 2, []]], {'Dusk': 4})
     small = b(8, [['Vayne', 1, [2]]], {'Sharpshooter': 4})
-    pairs = {'pairs': [{'boards': [big, small]}, {'boards': [small, big]}, {'boards': [big, small]}, {'boards': [big, big]}]}
+    big3 = dict(big, units=[['Yone', 2, [15, 19]], ['Riven', 3, []]])  # 4코스트 3성이 있는 보드
+    pairs = {'pairs': [{'boards': [big, small]}, {'boards': [small, big3]}, {'boards': [big, small]}, {'boards': [big, big]}]}
     rec = {'n': 12, 'used': [0, 1, 2, 3]}
     out = compare(pairs, dict(rec, place='corner', won=[[6, 6], [0, 0], [3, 3], [3, 3]]),
                   dict(rec, place='range', won=[[3, 3], [6, 6], [6, 6], None]))
     # 손으로 센 값: 구석 배치의 1등 보드 승률 1·0·0.5, 가운데 배치 0.5·1·1. 넷째 대전은 가운데 배치에서 터져서 뺀다
     assert out['fights_read'] == 3 and out['dropped_errors'] == 1
     assert set(out['by_family']) == {'sharpshooter'} and out['by_family']['sharpshooter']['reading']  # 황혼은 여섯 계열이 아니고 100개가 안 된다
+    star = out['by_feature']['3-star any']  # 3성이 있는 보드 = 둘째 대전의 2등(big3). 그 쪽 승률은 구석 1 - 0 = 1, 가운데 1 - 1 = 0
+    assert (star['fights'], star['real'], star['corner'], star['range'], star['change'][0]) == (1, 0.0, 1.0, 0.0, -1.0)
+    assert out['by_feature']['3-star 4-5 cost']['fights'] == 1 and out['by_feature']['keeper 4+']['fights'] == 0 == out['by_feature']['zekes_herald']['fights']
+    assert FEATURES['zekes_herald'](b(8, [['Shen', 2, [17]]], {})) and FEATURES['keeper 2~3'](b(8, [], {'Keeper': 3})) and not FEATURES['keeper 2~3'](b(8, [], {'Keeper': 4}))
     # 두 배치 승률의 평균은 0.75·0.5·0.75라서 맞힌 몫 (1 + 0.5 + 1)/3
     assert out['hit'] == {'corner': 0.5, 'range': 0.8333, 'mean_of_two': 0.8333} and out['hit_change'][0] == 0.3333
     assert out['both_decided'] == 1 and out['flip_share'] == 1.0 and out['mean_abs_change'] == 0.6667
-    sharp = one_sided(*[ff.rows_of(pairs['pairs'][:3], w, 12) for w in ([[6, 6], [0, 0], [3, 3]], [[3, 3], [6, 6], [6, 6]])],
-                      lambda r: None if (r['fam'][0] == 'sharpshooter') == (r['fam'][1] == 'sharpshooter') else int(r['fam'][1] == 'sharpshooter'))
+    sharp = out['by_family']['sharpshooter']  # 명사수 쪽: 2등·1등·2등
     assert (sharp['fights'], sharp['real'], sharp['corner'], sharp['range']) == (3, 0.3333, 0.1667, 0.5)
     assert sharp['gap_corner'][0] == -0.1667 and sharp['gap_range'][0] == 0.1667 and sharp['change'][0] == 0.3333
     level = out['higher_level']  # 레벨이 높은 쪽 = 황혼 보드: 실제 1등 2/3, 구석 배치 승률 (1 + 1 + 0.5)/3, 가운데 배치 (0.5 + 0 + 1)/3
@@ -131,6 +161,5 @@ if __name__ == '__main__':
     out = compare(pairs, corner, rng_rec, {name: {'file': os.path.basename(f), 'sha256': ff.sha(f)} for name, f in zip(('corner', 'range'), sys.argv[2:4])})
     json.dump(out, open(sys.argv[4], 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
     print(json.dumps({k: out[k] for k in ('fights_read', 'hit', 'hit_change', 'reading', 'flip_share', 'mean_abs_change', 'S')}, ensure_ascii=False))
-    for f in SIX:
-        v = out['by_family'][f]
+    for f, v in [(f, out['by_family'][f]) for f in SIX] + list(out['by_feature'].items()):
         print(f, v['fights'], 'gap', v['gap_corner'], '->', v['gap_range'], 'change', v['change'], v['reading'])
