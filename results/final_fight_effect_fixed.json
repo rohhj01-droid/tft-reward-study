@@ -1,0 +1,190 @@
+{
+ "source": {
+  "name": "TEAMFIGHT TACTICS: FATES Challenger EUW Rank Games",
+  "csv_sha256": "df73994ce6172fd810846c92b66c099db488b5af12b27521a6e63fff18882f4e",
+  "patch": "10.24",
+  "games": 19292,
+  "dropped": {
+   "third_same_round": 2744,
+   "chosen_unclear": 332,
+   "sold_board": 429
+  },
+  "pairs_available": 15787
+ },
+ "sim_record": {
+  "file": "final_fight_effect_fixed_rows.json",
+  "sha256": "ec1e04587c6eb51eb7c7ec92a2e7479d84d177b73b52c3e0c5a04941ebac82e7",
+  "pairs": 15205,
+  "n": 12,
+  "warlord_wins": 5,
+  "place": "effect",
+  "variant": "fixed",
+  "errors": 140
+ },
+ "fights_read": 15065,
+ "hit": {
+  "sim": 0.6823,
+  "value": 0.6717,
+  "items": 0.5297,
+  "level": 0.601
+ },
+ "best_baseline": "value",
+ "sim_minus_best": 0.0107,
+ "reading": "시뮬레이터 전투가 세기만 한 어림보다 실제 승자를 더 잘 맞힌다",
+ "W": 0.6534,
+ "N": 0.7385,
+ "S": 0.6434,
+ "interval": {
+  "W": [
+   0.6483,
+   0.6588
+  ],
+  "N": [
+   0.7352,
+   0.7417
+  ],
+  "S": [
+   0.6228,
+   0.6631
+  ],
+  "sim_minus_value": [
+   0.0022,
+   0.0199
+  ],
+  "sim_minus_items": [
+   0.1433,
+   0.1614
+  ],
+  "sim_minus_level": [
+   0.0733,
+   0.0899
+  ]
+ },
+ "calibration": {
+  "0.5": {
+   "fights": 1639,
+   "sim": 0.5,
+   "real": 0.5
+  },
+  "0.6": {
+   "fights": 11,
+   "sim": 0.6364,
+   "real": 0.7273
+  },
+  "0.7": {
+   "fights": 3274,
+   "sim": 0.6384,
+   "real": 0.573
+  },
+  "0.8": {
+   "fights": 8,
+   "sim": 0.7917,
+   "real": 0.75
+  },
+  "0.9": {
+   "fights": 3689,
+   "sim": 0.7768,
+   "real": 0.6498
+  },
+  "1.0": {
+   "fights": 6444,
+   "sim": 0.9283,
+   "real": 0.793
+  }
+ },
+ "by_family": {
+  "brawler": {
+   "fights": 19,
+   "real": 0.2105,
+   "sim": 0.2982
+  },
+  "cultist": {
+   "fights": 896,
+   "real": 0.4118,
+   "sim": 0.3693
+  },
+  "divine": {
+   "fights": 4985,
+   "real": 0.4993,
+   "sim": 0.5761
+  },
+  "duelist": {
+   "fights": 1057,
+   "real": 0.4428,
+   "sim": 0.6745
+  },
+  "dusk": {
+   "fights": 5063,
+   "real": 0.527,
+   "sim": 0.496
+  },
+  "elderwood": {
+   "fights": 1715,
+   "real": 0.5003,
+   "sim": 0.5576
+  },
+  "fortune": {
+   "fights": 149,
+   "real": 0.6376,
+   "sim": 0.6205
+  },
+  "hunter": {
+   "fights": 1526,
+   "real": 0.4921,
+   "sim": 0.4542
+  },
+  "mystic": {
+   "fights": 796,
+   "real": 0.5302,
+   "sim": 0.5418
+  },
+  "ninja": {
+   "fights": 2370,
+   "real": 0.4688,
+   "sim": 0.4076
+  },
+  "other": {
+   "fights": 5100,
+   "real": 0.5167,
+   "sim": 0.4889
+  },
+  "sharpshooter": {
+   "fights": 630,
+   "real": 0.4556,
+   "sim": 0.3886
+  },
+  "warlord": {
+   "fights": 2312,
+   "real": 0.4983,
+   "sim": 0.4319
+  }
+ },
+ "higher_level": {
+  "all": {
+   "fights": 7400,
+   "real": 0.7055,
+   "sim": 0.6411
+  },
+  "9 vs 8": {
+   "fights": 7239,
+   "real": 0.7038,
+   "sim": 0.6388
+  },
+  "8 vs 7": {
+   "fights": 71,
+   "real": 0.7042,
+   "sim": 0.6631
+  }
+ },
+ "same_level_fights": 7665,
+ "clean": {
+  "fights": 12595,
+  "W": 0.6565,
+  "N": 0.7346,
+  "S": 0.6673,
+  "interval_S": [
+   0.6457,
+   0.69
+  ]
+ }
+}
