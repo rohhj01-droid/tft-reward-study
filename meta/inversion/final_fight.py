@@ -5,6 +5,7 @@ results/README 「실제 판의 마지막 대전을 시뮬레이터에서 붙이
 
 보드 만들기: 유닛·별·아이템·선택받은 자는 기록 그대로다. 기록에 없어서 정해 넣는 것은 다음과 같다.
   배치: 근접은 앞줄 가운데부터, 원거리는 뒷줄 구석부터 아이템이 많은 순(analysis/battle.corner_positions).
+        --place effect는 여기에 추방자·수호자·같은 줄 아이템을 살리는 규칙을 더한 배치다(analysis/battle.effect_positions).
   총사령관 승리 수: 상한 5(끝까지 간 보드라서). 케인 형태: 없음(meta/real_boards.py와 같다).
   도적의 장갑(99): 기록에 그 대전에서 나온 두 아이템이 같이 적혀 있다. 장갑은 빼고 그 두 아이템을 그대로 든다.
   값: 시뮬레이터의 지금 값(10.24 중간 패치 뒤). 기록은 10.24 전체다.
@@ -406,7 +407,7 @@ if __name__ == '__main__':
     ap.add_argument('--n', type=int, default=20)
     ap.add_argument('--jobs', type=int, default=4)
     ap.add_argument('--partial')
-    ap.add_argument('--place', choices=('corner', 'range'), default='corner')  # range = 원거리도 뒷줄 가운데부터
+    ap.add_argument('--place', choices=('corner', 'range', 'effect'), default='corner')  # range = 원거리도 뒷줄 가운데부터, effect = 효과를 살리는 배치
     ap.add_argument('--variant', choices=VARIANTS, default='harness')  # 별 처리
     ap.add_argument('--reuse')  # harness 실행 기록. 별 처리가 걸리지 않는 대전의 승수를 가져온다
     ap.add_argument('--out')

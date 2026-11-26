@@ -1,0 +1,191 @@
+{
+ "boards": 30410,
+ "places": {
+  "corner": {
+   "chalice_of_power allies covered": {
+    "n": 9467,
+    "mean": 1.1742
+   },
+   "chalice_of_power reaches top unit": {
+    "n": 9467,
+    "mean": 0.4065
+   },
+   "exile alone": {
+    "n": 18908,
+    "mean": 0.0015
+   },
+   "keeper 2~3 keeper units": {
+    "n": 10565,
+    "mean": 2.0193
+   },
+   "keeper 2~3 shields on top unit": {
+    "n": 10565,
+    "mean": 0.3478
+   },
+   "keeper 2~3 shields per unit": {
+    "n": 90981,
+    "mean": 0.5092
+   },
+   "keeper 2~3 units with none": {
+    "n": 90981,
+    "mean": 0.5127
+   },
+   "keeper 4+ keeper units": {
+    "n": 2295,
+    "mean": 3.8453
+   },
+   "keeper 4+ shields on top unit": {
+    "n": 2295,
+    "mean": 0.8148
+   },
+   "keeper 4+ shields per unit": {
+    "n": 19752,
+    "mean": 1.0282
+   },
+   "keeper 4+ units with none": {
+    "n": 19752,
+    "mean": 0.2297
+   },
+   "locket_of_the_iron_solari allies covered": {
+    "n": 8830,
+    "mean": 2.4434
+   },
+   "locket_of_the_iron_solari reaches top unit": {
+    "n": 8830,
+    "mean": 0.4867
+   },
+   "zekes_herald allies covered": {
+    "n": 11440,
+    "mean": 1.3247
+   },
+   "zekes_herald reaches top unit": {
+    "n": 11440,
+    "mean": 0.4383
+   }
+  },
+  "range": {
+   "chalice_of_power allies covered": {
+    "n": 9467,
+    "mean": 1.4829
+   },
+   "chalice_of_power reaches top unit": {
+    "n": 9467,
+    "mean": 0.401
+   },
+   "exile alone": {
+    "n": 18908,
+    "mean": 0.0012
+   },
+   "keeper 2~3 keeper units": {
+    "n": 10565,
+    "mean": 2.0193
+   },
+   "keeper 2~3 shields on top unit": {
+    "n": 10565,
+    "mean": 0.4549
+   },
+   "keeper 2~3 shields per unit": {
+    "n": 90981,
+    "mean": 0.5473
+   },
+   "keeper 2~3 units with none": {
+    "n": 90981,
+    "mean": 0.4981
+   },
+   "keeper 4+ keeper units": {
+    "n": 2295,
+    "mean": 3.8453
+   },
+   "keeper 4+ shields on top unit": {
+    "n": 2295,
+    "mean": 0.9333
+   },
+   "keeper 4+ shields per unit": {
+    "n": 19752,
+    "mean": 1.1183
+   },
+   "keeper 4+ units with none": {
+    "n": 19752,
+    "mean": 0.2147
+   },
+   "locket_of_the_iron_solari allies covered": {
+    "n": 8830,
+    "mean": 2.8762
+   },
+   "locket_of_the_iron_solari reaches top unit": {
+    "n": 8830,
+    "mean": 0.5482
+   },
+   "zekes_herald allies covered": {
+    "n": 11440,
+    "mean": 1.5794
+   },
+   "zekes_herald reaches top unit": {
+    "n": 11440,
+    "mean": 0.4524
+   }
+  },
+  "effect": {
+   "chalice_of_power allies covered": {
+    "n": 9467,
+    "mean": 1.5259
+   },
+   "chalice_of_power reaches top unit": {
+    "n": 9467,
+    "mean": 0.6635
+   },
+   "exile alone": {
+    "n": 18908,
+    "mean": 1.0
+   },
+   "keeper 2~3 keeper units": {
+    "n": 10565,
+    "mean": 2.0193
+   },
+   "keeper 2~3 shields on top unit": {
+    "n": 10565,
+    "mean": 1.7173
+   },
+   "keeper 2~3 shields per unit": {
+    "n": 90981,
+    "mean": 0.7544
+   },
+   "keeper 2~3 units with none": {
+    "n": 90981,
+    "mean": 0.5327
+   },
+   "keeper 4+ keeper units": {
+    "n": 2295,
+    "mean": 3.8453
+   },
+   "keeper 4+ shields on top unit": {
+    "n": 2295,
+    "mean": 2.7246
+   },
+   "keeper 4+ shields per unit": {
+    "n": 19752,
+    "mean": 1.6678
+   },
+   "keeper 4+ units with none": {
+    "n": 19752,
+    "mean": 0.3571
+   },
+   "locket_of_the_iron_solari allies covered": {
+    "n": 8830,
+    "mean": 2.7587
+   },
+   "locket_of_the_iron_solari reaches top unit": {
+    "n": 8830,
+    "mean": 0.6673
+   },
+   "zekes_herald allies covered": {
+    "n": 11440,
+    "mean": 1.6443
+   },
+   "zekes_herald reaches top unit": {
+    "n": 11440,
+    "mean": 0.7316
+   }
+  }
+ }
+}

@@ -4,10 +4,12 @@ results/README 「마지막 대전 붙이기: 별 처리 결함을 고치고 다
 두 실행은 같은 대전을 같은 시드로 붙인 것이고 한 가지만 다르다(meta/inversion/final_fight.py run).
   place: 배치. 앞(base) = 구석 배치(원거리는 뒷줄 구석부터 아이템이 많은 순), 뒤(new) = 가운데 배치(원거리도 뒷줄 가운데부터).
   fix:   별 처리. 앞 = 시뮬레이터 그대로(june), 뒤 = 결함 둘을 고친 것(fixed).
+  effect: 배치. 앞 = 구석 배치, 뒤 = 배치에 따라 달라지는 효과를 살리는 배치(analysis/battle.effect_positions, 2026-11-26,
+          results/README 「마지막 대전 붙이기: 효과를 살리는 배치 — 미리 정한 읽기」). 보드 특징은 배치에 걸리는 것 일곱을 더 읽는다.
 읽기 1: 실제 1등을 맞힌 몫의 차(뒤 - 앞). 읽기 2: 한쪽만 그 계열(또는 보드 특징)인 대전에서 「시뮬레이터 승률 - 그 쪽이 실제 1등인 몫」이
 앞 실행에서 0을 벗어났으면, 뒤 실행에서도 남는가. 구간은 대전을 다시 뽑는 부트스트랩 1,000번(시드 0)이다.
 
-    python meta/inversion/final_place.py place|fix <뽑아 둔 대전 파일> <앞 실행 기록> <뒤 실행 기록> <결과 json>
+    python meta/inversion/final_place.py place|fix|effect <뽑아 둔 대전 파일> <앞 실행 기록> <뒤 실행 기록> <결과 json>
     python meta/inversion/final_place.py selfcheck
 (저장소 맨 위에서, PYTHONPATH에 저장소 맨 위)
 """
@@ -23,7 +25,8 @@ from set4 import FIVE_COST_UNITS, FOUR_COST_UNITS
 BOOT, SEED = 1000, 0
 BIG = set(FOUR_COST_UNITS) | set(FIVE_COST_UNITS)
 OVERALL = {'place': ('가운데 배치가 실제 승자를 더 잘 맞힌다', '구석 배치가 실제 승자를 더 잘 맞힌다', '두 배치가 구별되지 않는다'),
-           'fix': ('별 처리를 고치면 실제 승자를 더 잘 맞힌다', '별 처리를 고치면 실제 승자를 못 맞힌다', '고치기 전과 구별되지 않는다')}
+           'fix': ('별 처리를 고치면 실제 승자를 더 잘 맞힌다', '별 처리를 고치면 실제 승자를 못 맞힌다', '고치기 전과 구별되지 않는다'),
+           'effect': ('효과를 살린 배치가 실제 승자를 더 잘 맞힌다', '구석 배치가 실제 승자를 더 잘 맞힌다', '두 배치가 구별되지 않는다')}
 
 
 def count(trait, lo, hi=99):
@@ -51,6 +54,13 @@ def mean_ci(x):
     rng = np.random.RandomState(SEED)
     m = [x[rng.randint(0, len(x), len(x))].mean() for _ in range(BOOT)]
     return [round(float(x.mean()), 4), [round(float(np.percentile(m, 2.5)), 4), round(float(np.percentile(m, 97.5)), 4)]]
+
+# 효과 배치(effect)를 읽을 때 더 보는 특징 일곱. 모두 배치에 따라 달라지는 효과다(35 = 지팡이 + 조끼 = 솔라리의 펜던트,
+# 67 = 망토 + 벨트 = 서풍, 59 = 조끼 + 장갑 = 침묵의 장막, 45 = 눈물 + 조끼 = 얼어붙은 심장, 36 = 지팡이 + 망토 = 이온 충격기).
+FEATURES_EFFECT = dict(FEATURES, **{
+    'exile': count('Exile', 1), 'exile 2': count('Exile', 2),
+    **{name: (lambda i: lambda b: any(i in u[2] for u in b['units']))(i) for name, i in (
+        ('locket_of_the_iron_solari', 35), ('zephyr', 67), ('shroud_of_stillness', 59), ('frozen_heart', 45), ('ionic_spark', 36))}})
 
 
 def hit(p):
@@ -91,8 +101,8 @@ def one_sided(ra, rb, sides):
 def compare(kind, pairs, base, new, src=None):
     tag = lambda r: (r['place'], r.get('variant', 'harness'))
     assert base['used'] == new['used'] and base['n'] == new['n']
-    if kind == 'place':
-        assert (base['place'], new['place']) == ('corner', 'range') and tag(base)[1] == tag(new)[1], (tag(base), tag(new))
+    if kind in ('place', 'effect'):
+        assert (base['place'], new['place']) == ('corner', {'place': 'range', 'effect': 'effect'}[kind]) and tag(base)[1] == tag(new)[1], (tag(base), tag(new))
     else:
         assert base['place'] == new['place'] and (tag(base)[1], tag(new)[1]) == ('june', 'fixed'), (tag(base), tag(new))
     keep = [i for i in range(len(base['used'])) if base['won'][i] is not None and new['won'][i] is not None]  # 두 실행 모두 붙은 대전
@@ -107,7 +117,8 @@ def compare(kind, pairs, base, new, src=None):
         sides = [None if (r['fam'][0] == f) == (r['fam'][1] == f) else int(r['fam'][1] == f) for r in ra]
         if sum(s is not None for s in sides) >= 100:  # 대전이 100개 안 되는 계열은 표에서 뺀다
             by_family[f] = one_sided(ra, rb, sides)
-    by_feature = {name: one_sided(ra, rb, [None if has(one) == has(two) else int(has(two)) for one, two in boards]) for name, has in FEATURES.items()}
+    by_feature = {name: one_sided(ra, rb, [None if has(one) == has(two) else int(has(two)) for one, two in boards])
+                  for name, has in (FEATURES_EFFECT if kind == 'effect' else FEATURES).items()}
     return {'kind': kind, 'records': dict(src or {}), 'base': list(tag(base)), 'new': list(tag(new)), 'n': base['n'],
             'fights_read': len(keep), 'dropped_errors': len(base['used']) - len(keep),
             'hit': {'base': round(float(hit(pa).mean()), 4), 'new': round(float(hit(pb).mean()), 4),
@@ -148,7 +159,15 @@ def selfcheck():
     # 별 처리 견주기는 배치가 같고 앞이 june, 뒤가 fixed여야 한다
     fix = compare('fix', pairs, dict(corner, variant='june'), dict(corner, variant='fixed', won=rng_rec['won']))
     assert fix['hit_change'][0] == 0.3333 and fix['base'] == ['corner', 'june'] and fix['new'] == ['corner', 'fixed']
-    for wrong in (lambda: compare('fix', pairs, corner, rng_rec), lambda: compare('place', pairs, corner, dict(rng_rec, variant='fixed'))):
+    # 효과 배치 견주기는 별 처리가 같고 앞이 구석(corner), 뒤가 효과(effect)여야 한다. 배치에 걸리는 특징 일곱을 더 읽는다
+    eff = compare('effect', pairs, dict(corner, variant='fixed'), dict(rng_rec, place='effect', variant='fixed'))
+    assert eff['hit_change'][0] == 0.3333 and eff['base'] == ['corner', 'fixed'] and eff['new'] == ['effect', 'fixed']
+    assert len(eff['by_feature']) == len(FEATURES) + 7 and eff['by_feature']['exile'] == {'fights': 0} and len(out['by_feature']) == len(FEATURES)
+    assert FEATURES_EFFECT['exile'](b(8, [], {'Exile': 1})) and not FEATURES_EFFECT['exile 2'](b(8, [], {'Exile': 1}))
+    assert FEATURES_EFFECT['locket_of_the_iron_solari'](b(8, [['Shen', 2, [35]]], {})) and not FEATURES_EFFECT['zephyr'](b(8, [['Shen', 2, [35]]], {}))
+    assert [overall_reading('effect', *v)[:2] for v in ((0.01, 0.03), (-0.03, -0.01), (-0.01, 0.01))] == ['효과', '구석', '두 ']
+    for wrong in (lambda: compare('fix', pairs, corner, rng_rec), lambda: compare('place', pairs, corner, dict(rng_rec, variant='fixed')),
+                  lambda: compare('effect', pairs, corner, rng_rec), lambda: compare('effect', pairs, corner, dict(rng_rec, place='effect', variant='fixed'))):
         try:
             wrong()
             raise SystemExit('잘못 짝지은 두 실행을 받아들였다')
