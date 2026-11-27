@@ -138,7 +138,14 @@ FIXED = None
 #   stacks: 결투가 중첩은 결투가 본인의 기본 공격으로만 쌓인다(스킬로 하는 공격, 아이템 공격, 특성 공격은 안 쌓는다)
 #   move:   결투가의 이동 속도 증가를 뺀다
 #   blind:  실명인 야스오의 스킬 공격은 빗나간다
-BEHAVIORS = ('jax', 'stacks', 'move', 'blind')
+# 야스오 3성 장점 끄기(2026-11-28, results/README 「마지막 대전 붙이기: 야스오 3성 장점 하나씩 끄기 — 미리 정한 읽기」).
+# 실제 규칙을 고치는 것이 아니라, 시뮬레이터의 야스오 3성이 무엇으로 이기는지 보려고 야스오 3성에게서만 하나씩 뺀다.
+#   no_shield:  추방자 보호막을 받지 않는다(흡혈은 그대로)
+#   no_steal:   추방자 흡혈을 받지 않는다(보호막은 그대로)
+#   no_duelist: 결투가 공격 속도 중첩을 쌓지 않는다
+#   no_dash:    스킬을 쓸 때 돌진하지 않는다. 지금 자리에서 두 명을 칠 수 있으면 그대로 치고, 못 치면 시뮬레이터대로 앞 두 칸을 친다
+YASUO_OFF = ('no_shield', 'no_steal', 'no_duelist', 'no_dash')
+BEHAVIORS = ('jax', 'stacks', 'move', 'blind') + YASUO_OFF
 VARIANTS = ('harness', 'june', 'fixed') + BEHAVIORS
 DUELISTS = {'fiora', 'jax', 'kalista', 'leesin', 'xinzhao', 'yasuo'}  # 결투가 유닛(check가 시뮬레이터와 같은지 본다). 결투가의 열정은 28
 BASIC = []  # 지금 처리 중인 공격들이 기본 공격인가(안쪽 공격이 끝에)
@@ -157,6 +164,8 @@ def affected(pair, variant):
         return any(s & DUELISTS or any(28 in u[2] for u in b['units']) for s, b in zip(names, pair['boards']))
     if variant == 'blind':
         return any('yasuo' in names[i] and 'teemo' in names[1 - i] for i in (0, 1))
+    if variant in YASUO_OFF:
+        return any(u[0] == 'Yasuo' and u[1] == 3 for b in pair['boards'] for u in b['units'])
     return variant != 'harness' and any(chosen_three(b) or (variant == 'fixed' and b['traits'].get('Moonlight', 0) >= 3) for b in pair['boards'])
 
 
@@ -188,8 +197,50 @@ def behavior_helper(orig):
     return helper
 
 
+def yasuo3(c):
+    return c.name == 'yasuo' and c.stars == 3
+
+
+def yasuo_exile(orig, change, lifesteal):
+    """추방자 특성(origin_class.exile)을 둘로 나눠 건다. 야스오 3성이 아닌 유닛은 그대로, 야스오 3성은 보호막(no_shield)이나
+    흡혈(no_steal)을 뺀다. 단계는 팀 수로 정하고 옆 칸은 보드에서 보므로 나눠 걸어도 같다. lifesteal = origin_class_stats.lifesteal."""
+    def exile(blue_team, red_team):
+        orig([c for c in blue_team if not yasuo3(c)], [c for c in red_team if not yasuo3(c)])
+        ys = [c for c in blue_team + red_team if yasuo3(c)]
+        saved = lifesteal['exile']
+        for c in ys:
+            if change == 'no_shield':  # 이 호출 동안만 보호막 예약을 버린다(0짜리 보호막도 남기지 않는다)
+                c.add_que = (lambda q: lambda action, *a, **kw: None if action == 'shield' else q(action, *a, **kw))(c.add_que)
+        if change == 'no_steal':
+            lifesteal['exile'] = [0] * len(saved)
+        try:
+            orig([c for c in blue_team if yasuo3(c)], [c for c in red_team if yasuo3(c)])
+        finally:
+            lifesteal['exile'] = saved
+            for c in ys:
+                vars(c).pop('add_que', None)
+    return exile
+
+
+def skip_yasuo3(orig):
+    """결투가 중첩(origin_class.duelist_helper)을 야스오 3성만 쌓지 않는다."""
+    def helper(champion):
+        if not yasuo3(champion):
+            orig(champion)
+    return helper
+
+
+def no_dash(orig):
+    """야스오 스킬이 칠 자리를 찾는 함수(ability.yasuo_ability)에서 야스오 3성은 지금 자리만 남긴다."""
+    def find(champion, data):
+        got = orig(champion, data)
+        return [p for p in got if list(p[0][0]) == [champion.y, champion.x]] if yasuo3(champion) else got
+    return find
+
+
 def behavior_champion(change):
     """fixed 위에 동작 하나를 바꾼 유닛 틀. 시전 중인지를 유닛에 적어 둔다(스킬로 하는 공격을 가리려고)."""
+    import Simulator.ability as ab
     import Simulator.champion as cm
     import Simulator.origin_class as oc
     import Simulator.origin_class_stats as ocs
@@ -200,6 +251,12 @@ def behavior_champion(change):
         cm.attack = behavior_attack(cm.attack, change)
     if change == 'stacks':
         oc.duelist_helper = behavior_helper(oc.duelist_helper)
+    if change in ('no_shield', 'no_steal'):
+        oc.exile = yasuo_exile(oc.exile, change, ocs.lifesteal)  # origin_class가 특성 이름으로 찾아 부른다
+    if change == 'no_duelist':
+        oc.duelist_helper = skip_yasuo3(oc.duelist_helper)
+    if change == 'no_dash':
+        ab.yasuo_ability = no_dash(ab.yasuo_ability)
 
     class Behavior(Fixed):
         def cast(self):
@@ -458,10 +515,12 @@ def selfcheck():
     # 동작 바꾸기: 잭스가 있는 대전, 결투가(유닛이나 결투가의 열정 28)가 있는 대전, 야스오와 티모가 맞붙는 대전만 다시 붙인다
     jax, zeal = b(8, [['Jax', 2, []]], {}), b(8, [['Ahri', 2, [28]]], {})
     yasuo, teemo = b(8, [['Yasuo', 3, []]], {}), b(8, [['Teemo', 2, []]], {})
-    assert [affected({'boards': [jax, big]}, v) for v in BEHAVIORS] == [True, True, True, False]
-    assert [affected({'boards': [big, zeal]}, v) for v in BEHAVIORS] == [False, True, True, False]
-    assert [affected({'boards': [yasuo, teemo]}, v) for v in BEHAVIORS] == [False, True, True, True]
+    assert [affected({'boards': [jax, big]}, v) for v in BEHAVIORS] == [True, True, True, False] + [False] * 4
+    assert [affected({'boards': [big, zeal]}, v) for v in BEHAVIORS] == [False, True, True, False] + [False] * 4
+    assert [affected({'boards': [yasuo, teemo]}, v) for v in BEHAVIORS] == [False, True, True, True] + [True] * 4
     assert not any(affected({'boards': [big, teemo]}, v) for v in BEHAVIORS) and not affected({'boards': [yasuo, big]}, 'blind')
+    # 야스오 3성 장점 끄기: 야스오 3성이 있는 대전만 다시 붙인다(2성 야스오는 그대로)
+    assert all(affected({'boards': [big, yasuo]}, v) for v in YASUO_OFF) and not any(affected({'boards': [b(8, [['Yasuo', 2, []]], {}), big]}, v) for v in YASUO_OFF)
     check_behavior_wrappers()
     assert reading(0.01, 0.05).endswith('더 잘 맞힌다') and reading(-0.05, -0.01).endswith('못 맞힌다') and reading(-0.01, 0.01).endswith('구별되지 않는다')
     big, small = dict(big, level=2), dict(small, level=1)  # 유닛 수 = 레벨인 보드(빠진 유닛이 안 보이는 대전)
@@ -503,6 +562,36 @@ def check_behavior_wrappers():
     h('ability')
     BASIC.pop()
     assert stacked == ['basic'] and BASIC == [], stacked
+
+    # 야스오 3성 장점 끄기. 가짜 추방자 특성: 유닛마다 보호막을 예약하고, 흡혈 값이 있으면 흡혈을 준다(시뮬레이터 exile과 같은 꼴)
+    class Fake:
+        def __init__(self, name, stars):
+            self.name, self.stars, self.got = name, stars, []
+
+        def add_que(self, action, *a, **kw):
+            self.got.append(action)
+
+    table = {'exile': [0, 0, 0.8]}
+
+    def exile(blue, red):
+        for c in blue + red:
+            c.add_que('shield', -1)
+            if table['exile'][2]:
+                c.got.append('lifesteal')
+    for change, want in (('no_shield', ['lifesteal']), ('no_steal', ['shield'])):
+        y3, y2, yone = Fake('yasuo', 3), Fake('yasuo', 2), Fake('yone', 2)
+        yasuo_exile(exile, change, table)([y3, yone], [y2])
+        assert y3.got == want and y2.got == yone.got == ['shield', 'lifesteal'] and table['exile'] == [0, 0, 0.8], (change, y3.got, y2.got)
+        assert 'add_que' not in vars(y3)  # 끝나면 유닛의 보호막 예약은 원래대로
+    stacked.clear()
+    skip_yasuo3(stacked.append)(Fake('yasuo', 3))
+    skip_yasuo3(stacked.append)(Fake('yasuo', 2))
+    assert [c.stars for c in stacked] == [2]  # 야스오 3성만 결투가 중첩을 안 쌓는다
+    y3, y2 = Fake('yasuo', 3), Fake('yasuo', 2)
+    y3.y = y3.x = y2.y = y2.x = 1
+    spots = lambda champion, data: [[[[1, 2], 'a', 'b'], 1], [[[1, 1], 'c', 'd'], 0]]  # 시뮬레이터 yasuo_ability 꼴: [[자리, 대상1, 대상2], 거리]
+    assert no_dash(spots)(y3, {}) == [[[[1, 1], 'c', 'd'], 0]] and no_dash(spots)(y2, {}) == spots(y2, {})  # 3성은 지금 자리에서만
+    assert no_dash(lambda c, d: [[[[1, 2], 'a', 'b'], 1]])(y3, {}) == []  # 지금 자리에서 못 치면 돌진하지 않는다
 
 
 def sha(path):
