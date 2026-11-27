@@ -6,10 +6,12 @@ results/README 「마지막 대전 붙이기: 별 처리 결함을 고치고 다
   fix:   별 처리. 앞 = 시뮬레이터 그대로(june), 뒤 = 결함 둘을 고친 것(fixed).
   effect: 배치. 앞 = 구석 배치, 뒤 = 배치에 따라 달라지는 효과를 살리는 배치(analysis/battle.effect_positions, 2026-11-26,
           results/README 「마지막 대전 붙이기: 효과를 살리는 배치 — 미리 정한 읽기」). 보드 특징은 배치에 걸리는 것 일곱을 더 읽는다.
+  behavior: 동작 하나. 앞 = 고침(fixed), 뒤 = 결투가·추방자 동작 하나를 바꾼 것(jax, stacks, move, blind), 배치는 같다(2026-11-27,
+          results/README 「마지막 대전 붙이기: 결투가·추방자 동작 하나씩 바꾸기 — 미리 정한 읽기」). 결투가·추방자 유닛 특징 열을 더 읽는다.
 읽기 1: 실제 1등을 맞힌 몫의 차(뒤 - 앞). 읽기 2: 한쪽만 그 계열(또는 보드 특징)인 대전에서 「시뮬레이터 승률 - 그 쪽이 실제 1등인 몫」이
 앞 실행에서 0을 벗어났으면, 뒤 실행에서도 남는가. 구간은 대전을 다시 뽑는 부트스트랩 1,000번(시드 0)이다.
 
-    python meta/inversion/final_place.py place|fix|effect <뽑아 둔 대전 파일> <앞 실행 기록> <뒤 실행 기록> <결과 json>
+    python meta/inversion/final_place.py place|fix|effect|behavior <뽑아 둔 대전 파일> <앞 실행 기록> <뒤 실행 기록> <결과 json>
     python meta/inversion/final_place.py selfcheck
 (저장소 맨 위에서, PYTHONPATH에 저장소 맨 위)
 """
@@ -26,7 +28,8 @@ BOOT, SEED = 1000, 0
 BIG = set(FOUR_COST_UNITS) | set(FIVE_COST_UNITS)
 OVERALL = {'place': ('가운데 배치가 실제 승자를 더 잘 맞힌다', '구석 배치가 실제 승자를 더 잘 맞힌다', '두 배치가 구별되지 않는다'),
            'fix': ('별 처리를 고치면 실제 승자를 더 잘 맞힌다', '별 처리를 고치면 실제 승자를 못 맞힌다', '고치기 전과 구별되지 않는다'),
-           'effect': ('효과를 살린 배치가 실제 승자를 더 잘 맞힌다', '구석 배치가 실제 승자를 더 잘 맞힌다', '두 배치가 구별되지 않는다')}
+           'effect': ('효과를 살린 배치가 실제 승자를 더 잘 맞힌다', '구석 배치가 실제 승자를 더 잘 맞힌다', '두 배치가 구별되지 않는다'),
+           'behavior': ('동작을 바꾸면 실제 승자를 더 잘 맞힌다', '동작을 바꾸면 실제 승자를 못 맞힌다', '바꾸기 전과 구별되지 않는다')}
 
 
 def count(trait, lo, hi=99):
@@ -61,6 +64,13 @@ FEATURES_EFFECT = dict(FEATURES, **{
     'exile': count('Exile', 1), 'exile 2': count('Exile', 2),
     **{name: (lambda i: lambda b: any(i in u[2] for u in b['units']))(i) for name, i in (
         ('locket_of_the_iron_solari', 35), ('zephyr', 67), ('shroud_of_stillness', 59), ('frozen_heart', 45), ('ionic_spark', 36))}})
+
+# 동작 바꾸기(behavior)를 읽을 때 더 보는 특징 열(결투가·추방자 유닛과 결투가 단계).
+unit = lambda name, star=None: (lambda b: any(u[0] == name and (star is None or u[1] == star) for u in b['units']))
+FEATURES_BEHAVIOR = dict(FEATURES_EFFECT, **{
+    'yasuo 3-star': unit('Yasuo', 3), 'yone 2-star': unit('Yone', 2), 'jax': unit('Jax'), 'fiora': unit('Fiora'), 'kalista': unit('Kalista'),
+    'leesin': unit('LeeSin'), 'xinzhao': unit('XinZhao'),
+    'duelist 2~3': count('Duelist', 2, 3), 'duelist 4~5': count('Duelist', 4, 5), 'duelist 6+': count('Duelist', 6)})
 
 
 def hit(p):
@@ -103,6 +113,8 @@ def compare(kind, pairs, base, new, src=None):
     assert base['used'] == new['used'] and base['n'] == new['n']
     if kind in ('place', 'effect'):
         assert (base['place'], new['place']) == ('corner', {'place': 'range', 'effect': 'effect'}[kind]) and tag(base)[1] == tag(new)[1], (tag(base), tag(new))
+    elif kind == 'behavior':
+        assert base['place'] == new['place'] and tag(base)[1] == 'fixed' and tag(new)[1] in ff.BEHAVIORS, (tag(base), tag(new))
     else:
         assert base['place'] == new['place'] and (tag(base)[1], tag(new)[1]) == ('june', 'fixed'), (tag(base), tag(new))
     keep = [i for i in range(len(base['used'])) if base['won'][i] is not None and new['won'][i] is not None]  # 두 실행 모두 붙은 대전
@@ -118,7 +130,7 @@ def compare(kind, pairs, base, new, src=None):
         if sum(s is not None for s in sides) >= 100:  # 대전이 100개 안 되는 계열은 표에서 뺀다
             by_family[f] = one_sided(ra, rb, sides)
     by_feature = {name: one_sided(ra, rb, [None if has(one) == has(two) else int(has(two)) for one, two in boards])
-                  for name, has in (FEATURES_EFFECT if kind == 'effect' else FEATURES).items()}
+                  for name, has in {'effect': FEATURES_EFFECT, 'behavior': FEATURES_BEHAVIOR}.get(kind, FEATURES).items()}
     return {'kind': kind, 'records': dict(src or {}), 'base': list(tag(base)), 'new': list(tag(new)), 'n': base['n'],
             'fights_read': len(keep), 'dropped_errors': len(base['used']) - len(keep),
             'hit': {'base': round(float(hit(pa).mean()), 4), 'new': round(float(hit(pb).mean()), 4),
@@ -166,6 +178,20 @@ def selfcheck():
     assert FEATURES_EFFECT['exile'](b(8, [], {'Exile': 1})) and not FEATURES_EFFECT['exile 2'](b(8, [], {'Exile': 1}))
     assert FEATURES_EFFECT['locket_of_the_iron_solari'](b(8, [['Shen', 2, [35]]], {})) and not FEATURES_EFFECT['zephyr'](b(8, [['Shen', 2, [35]]], {}))
     assert [overall_reading('effect', *v)[:2] for v in ((0.01, 0.03), (-0.03, -0.01), (-0.01, 0.01))] == ['효과', '구석', '두 ']
+    # 동작 바꾸기 견주기는 배치가 같고 앞이 fixed, 뒤가 바꾼 동작 하나여야 한다. 결투가·추방자 유닛 특징 열을 더 읽는다
+    beh = compare('behavior', pairs, dict(corner, place='effect', variant='fixed'), dict(rng_rec, place='effect', variant='jax'))
+    assert beh['hit_change'][0] == 0.3333 and beh['new'] == ['effect', 'jax'] and len(beh['by_feature']) == len(FEATURES_EFFECT) + 10
+    assert FEATURES_BEHAVIOR['yasuo 3-star'](b(8, [['Yasuo', 3, []]], {})) and not FEATURES_BEHAVIOR['yasuo 3-star'](b(8, [['Yasuo', 2, []]], {}))
+    assert FEATURES_BEHAVIOR['duelist 4~5'](b(8, [], {'Duelist': 4})) and not FEATURES_BEHAVIOR['duelist 6+'](b(8, [], {'Duelist': 5}))
+    assert [overall_reading('behavior', *v).split()[-2] for v in ((0.01, 0.03), (-0.03, -0.01), (-0.01, 0.01))] == ['잘', '못', '구별되지']
+    for wrong in (lambda: compare('behavior', pairs, dict(corner, variant='fixed'), dict(rng_rec, variant='jax')),
+                  lambda: compare('behavior', pairs, dict(corner, variant='june'), dict(corner, variant='jax')),
+                  lambda: compare('behavior', pairs, dict(corner, variant='fixed'), dict(corner, variant='fixed'))):
+        try:
+            wrong()
+            raise SystemExit('잘못 짝지은 두 실행을 받아들였다')
+        except AssertionError:
+            pass
     for wrong in (lambda: compare('fix', pairs, corner, rng_rec), lambda: compare('place', pairs, corner, dict(rng_rec, variant='fixed')),
                   lambda: compare('effect', pairs, corner, rng_rec), lambda: compare('effect', pairs, corner, dict(rng_rec, place='effect', variant='fixed'))):
         try:

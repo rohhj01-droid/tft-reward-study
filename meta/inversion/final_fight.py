@@ -105,8 +105,10 @@ def check_stars():
     from Simulator.stats import ACTIVE_DMG
     from analysis.battle import build_player
     board = [{'name': 'vayne', 'stars': 3, 'items': [], 'chosen': 'sharpshooter'}]
+    import Simulator.origin_class_stats as ocs
+    assert DUELISTS == {k for k, v in ocs.origin_class.items() if 'duelist' in v}, '결투가 유닛 목록이 시뮬레이터와 다르다'
     got = {}
-    for variant in VARIANTS:
+    for variant in ('harness', 'june', 'fixed'):
         unit = build_player(pool(), 0, make_units(board, variant), 'corner').board[0][0]  # 구석 배치는 원거리 첫 유닛을 (0, 0)에 둔다
         fighter = (fixed_champion() if variant == 'fixed' else cm.champion)('vayne', 'blue', 0, 0, unit.stars, unit.items, False, None, unit.chosen)
         got[variant] = (fighter.stars, fighter.max_health, fighter.AD, ACTIVE_DMG['vayne'][fighter.stars])
@@ -130,7 +132,16 @@ FIXED = None
 #   june:    시뮬레이터가 봇 판에서 하는 그대로. 선택받은 자 3성은 체력·공격력만 3성이고 별로 찾는 값(스킬 값 등)은 2성이다.
 #            달빛이 별을 올릴 때 (새 별 - 1)제곱을 한 번 더 곱한다(2성을 올리면 1.8배가 아니라 3.24배, 3성이면 5.83배).
 #   fixed:   두 결함을 실제 게임대로 고친다. 선택받은 자 3성은 온전한 3성이고, 달빛은 한 단계만 올린다.
-VARIANTS = ('harness', 'june', 'fixed')
+# 동작 바꾸기(2026-11-27, results/README 「마지막 대전 붙이기: 결투가·추방자 동작 하나씩 바꾸기 — 미리 정한 읽기」).
+# 모두 fixed 위에 하나씩 바꾼다. 시뮬레이터 파일은 그대로 두고, 이 프로세스 안에서만 함수를 감싼다.
+#   jax:    잭스 회피(그동안 공격 피해 0)가 고속 연사포를 든 유닛의 공격과 사냥꾼 공격은 막지 않는다
+#   stacks: 결투가 중첩은 결투가 본인의 기본 공격으로만 쌓인다(스킬로 하는 공격, 아이템 공격, 특성 공격은 안 쌓는다)
+#   move:   결투가의 이동 속도 증가를 뺀다
+#   blind:  실명인 야스오의 스킬 공격은 빗나간다
+BEHAVIORS = ('jax', 'stacks', 'move', 'blind')
+VARIANTS = ('harness', 'june', 'fixed') + BEHAVIORS
+DUELISTS = {'fiora', 'jax', 'kalista', 'leesin', 'xinzhao', 'yasuo'}  # 결투가 유닛(check가 시뮬레이터와 같은지 본다). 결투가의 열정은 28
+BASIC = []  # 지금 처리 중인 공격들이 기본 공격인가(안쪽 공격이 끝에)
 
 
 def chosen_three(board):
@@ -138,8 +149,66 @@ def chosen_three(board):
 
 
 def affected(pair, variant):
-    """harness 실행과 결과가 달라질 수 있는 대전인가(아니면 같은 시드라 승수가 같다)."""
+    """앞 실행(별 처리 셋은 harness, 동작 바꾸기는 fixed)과 결과가 달라질 수 있는 대전인가(아니면 같은 시드라 승수가 같다)."""
+    names = [{u[0].lower() for u in b['units']} for b in pair['boards']]
+    if variant == 'jax':
+        return any('jax' in s for s in names)
+    if variant in ('stacks', 'move'):
+        return any(s & DUELISTS or any(28 in u[2] for u in b['units']) for s, b in zip(names, pair['boards']))
+    if variant == 'blind':
+        return any('yasuo' in names[i] and 'teemo' in names[1 - i] for i in (0, 1))
     return variant != 'harness' and any(chosen_three(b) or (variant == 'fixed' and b['traits'].get('Moonlight', 0) >= 3) for b in pair['boards'])
+
+
+def behavior_attack(orig, change):
+    """시뮬레이터 champion 모듈의 attack(기본 공격과 스킬·아이템·특성 공격이 모두 지나는 곳)을 감싼다."""
+    def attack(champion, target, bonus_dmg=0, item_attack=False, trait_attack='', set_ad=None, on_attack=True, set_true=0):
+        casting = getattr(champion, 'harness_casting', False)
+        if change == 'blind' and casting and champion.name == 'yasuo' and champion.blinded:
+            return  # 10.24부터 야스오 스킬 공격은 실명이면 빗나간다(공식 10.24 노트)
+        lift = change == 'jax' and target is not None and target.autoimmune and \
+            (trait_attack == 'hunter' or 'rapid_firecannon' in champion.items)
+        if lift:
+            target.autoimmune = False
+        BASIC.append(not (item_attack or trait_attack or casting))
+        try:
+            return orig(champion, target, bonus_dmg, item_attack, trait_attack, set_ad, on_attack=on_attack, set_true=set_true)
+        finally:
+            BASIC.pop()
+            if lift:
+                target.autoimmune = True
+    return attack
+
+
+def behavior_helper(orig):
+    """결투가 중첩(origin_class.duelist_helper)을 기본 공격일 때만 쌓는다."""
+    def helper(champion):
+        if not BASIC or BASIC[-1]:
+            orig(champion)
+    return helper
+
+
+def behavior_champion(change):
+    """fixed 위에 동작 하나를 바꾼 유닛 틀. 시전 중인지를 유닛에 적어 둔다(스킬로 하는 공격을 가리려고)."""
+    import Simulator.champion as cm
+    import Simulator.origin_class as oc
+    import Simulator.origin_class_stats as ocs
+    Fixed = fixed_champion()
+    if change == 'move':
+        ocs.movement_delay['duelist'] = 1.0
+    if change in ('jax', 'stacks', 'blind'):
+        cm.attack = behavior_attack(cm.attack, change)
+    if change == 'stacks':
+        oc.duelist_helper = behavior_helper(oc.duelist_helper)
+
+    class Behavior(Fixed):
+        def cast(self):
+            self.harness_casting = True
+            try:
+                super().cast()
+            finally:
+                self.harness_casting = False
+    return Behavior
 
 
 def fixed_champion():
@@ -187,9 +256,9 @@ def fights(job):
         from Simulator.pool import pool
         from analysis.battle import build_player
         ITEMS = ITEMS or item_names()
-        if variant == 'fixed':
-            FIXED = FIXED or fixed_champion()
-        fighter = FIXED if variant == 'fixed' else cm.champion
+        if variant not in ('harness', 'june'):
+            FIXED = FIXED or (behavior_champion(variant) if variant in BEHAVIORS else fixed_champion())  # 한 프로세스는 한 실행만 돈다
+        fighter = cm.champion if variant in ('harness', 'june') else FIXED
         first, second = (spec(b, ITEMS) for b in pair['boards'])
         random.seed(k)
         won = [0, 0]
@@ -214,8 +283,9 @@ def run(pairs, count, n, jobs, partial, place='corner', variant='harness', reuse
     assert len(used) == count, '쓸 수 있는 대전이 모자란다'
     done = load_partial(partial)
     kept = {}
-    if reuse:  # harness 실행과 승수가 같을 대전(별 처리가 걸리지 않는 대전)은 다시 붙이지 않고 가져온다
-        assert reuse['used'] == used and reuse['n'] == n and reuse['place'] == place and reuse.get('variant', 'harness') == 'harness'
+    if reuse:  # 앞 실행과 승수가 같을 대전(바꾼 것이 걸리지 않는 대전)은 다시 붙이지 않고 가져온다
+        before = 'fixed' if variant in BEHAVIORS else 'harness'
+        assert reuse['used'] == used and reuse['n'] == n and reuse['place'] == place and reuse.get('variant', 'harness') == before
         errors = dict(map(tuple, reuse['errors']))
         kept = {k: [k, w, errors.get(k)] for k, w in zip(used, reuse['won']) if not affected(pairs[k], variant)}
         done.update(kept)
@@ -382,8 +452,17 @@ def selfcheck():
     vayne3 = dict(b(8, [['Vayne', 3, []], ['Diana', 2, []]], {'Sharpshooter': 2}), chosen=['Vayne', 'Sharpshooter'])
     moon = b(8, [['Diana', 3, []]], {'Moonlight': 3})
     assert chosen_three(vayne3) and not chosen_three(dict(vayne3, chosen=['Diana', 'Moonlight'])) and not chosen_three(moon)
-    assert [affected({'boards': [big, vayne3]}, v) for v in VARIANTS] == [False, True, True]
-    assert [affected({'boards': [moon, big]}, v) for v in VARIANTS] == [False, False, True] and not affected({'boards': [big, small]}, 'fixed')
+    stars = ('harness', 'june', 'fixed')
+    assert [affected({'boards': [big, vayne3]}, v) for v in stars] == [False, True, True]
+    assert [affected({'boards': [moon, big]}, v) for v in stars] == [False, False, True] and not affected({'boards': [big, small]}, 'fixed')
+    # 동작 바꾸기: 잭스가 있는 대전, 결투가(유닛이나 결투가의 열정 28)가 있는 대전, 야스오와 티모가 맞붙는 대전만 다시 붙인다
+    jax, zeal = b(8, [['Jax', 2, []]], {}), b(8, [['Ahri', 2, [28]]], {})
+    yasuo, teemo = b(8, [['Yasuo', 3, []]], {}), b(8, [['Teemo', 2, []]], {})
+    assert [affected({'boards': [jax, big]}, v) for v in BEHAVIORS] == [True, True, True, False]
+    assert [affected({'boards': [big, zeal]}, v) for v in BEHAVIORS] == [False, True, True, False]
+    assert [affected({'boards': [yasuo, teemo]}, v) for v in BEHAVIORS] == [False, True, True, True]
+    assert not any(affected({'boards': [big, teemo]}, v) for v in BEHAVIORS) and not affected({'boards': [yasuo, big]}, 'blind')
+    check_behavior_wrappers()
     assert reading(0.01, 0.05).endswith('더 잘 맞힌다') and reading(-0.05, -0.01).endswith('못 맞힌다') and reading(-0.01, 0.01).endswith('구별되지 않는다')
     big, small = dict(big, level=2), dict(small, level=1)  # 유닛 수 = 레벨인 보드(빠진 유닛이 안 보이는 대전)
     out = read({'source': {'name': 'x', 'csv_sha256': 'y'}, 'patch': '10.24', 'games': 3, 'dropped': {},
@@ -392,6 +471,38 @@ def selfcheck():
     assert out['fights_read'] == 2 and out['hit'] == {'sim': 0.75, 'value': 0.75, 'items': 0.75, 'level': 0.75} and out['sim_minus_best'] == 0
     assert out['clean']['fights'] == 2 and out['reading'] == '세기만 한 어림과 구별되지 않는다'
     print('selfcheck 통과')
+
+
+def check_behavior_wrappers():
+    """동작 바꾸기의 감싸는 함수가 뜻한 대로인가(시뮬레이터 없이 가짜 유닛으로)."""
+    from types import SimpleNamespace as U
+    seen = []
+
+    def orig(champion, target, bonus_dmg=0, item_attack=False, trait_attack='', set_ad=None, on_attack=True, set_true=0):
+        seen.append((champion.name, target.autoimmune, BASIC[-1]))
+    unit = lambda name, items=(), **kw: U(name=name, items=list(items), blinded=kw.get('blinded', False), autoimmune=kw.get('autoimmune', False),
+                                         **({'harness_casting': True} if kw.get('casting') else {}))
+    jax = unit('jax', autoimmune=True)
+    a = behavior_attack(orig, 'jax')
+    a(unit('ashe'), jax, 10, False, 'hunter')  # 사냥꾼 공격은 잭스 회피를 지난다
+    a(unit('vayne', ['rapid_firecannon']), jax)  # 고속 연사포를 든 유닛의 공격도
+    a(unit('vayne'), jax)  # 그 밖의 공격은 막힌다
+    assert seen == [('ashe', False, False), ('vayne', False, True), ('vayne', True, True)] and jax.autoimmune and BASIC == [], seen
+    seen.clear()
+    a = behavior_attack(orig, 'blind')
+    a(unit('yasuo', casting=True, blinded=True), jax, 50)  # 실명인 야스오의 스킬 공격은 빗나간다
+    a(unit('yasuo', casting=True), jax, 50)
+    a(unit('yasuo', blinded=True), jax)
+    a(unit('ashe'), jax, 30, True)  # 아이템 공격
+    assert seen == [('yasuo', True, False), ('yasuo', True, True), ('ashe', True, False)], seen
+    stacked = []
+    h = behavior_helper(lambda c: stacked.append(c))
+    BASIC.append(True)
+    h('basic')
+    BASIC[-1] = False
+    h('ability')
+    BASIC.pop()
+    assert stacked == ['basic'] and BASIC == [], stacked
 
 
 def sha(path):
