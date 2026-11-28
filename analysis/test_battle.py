@@ -94,6 +94,22 @@ def sand_guards_do_not_break_exile_test():
     assert not any(near((6, 3), c) for c in on if c != (6, 3)), on
 
 
+def zephyr_holder_stands_on_the_cell_of_the_enemy_carry_test():
+    """서풍 든 유닛은 상대 보드에서 아이템이 가장 많은 유닛(수은 든 유닛은 빼고)이 자기 보드에서 선 칸과 같은 내 칸에 선다.
+    그 칸에 내 유닛이 있으면 자리를 맞바꾸고, 나머지는 효과 배치 그대로다. 서풍이 없으면 효과 배치 그대로다."""
+    from analysis.battle import aim_positions
+    own = [unit('garen'), unit('vayne', 'a', 'b', 'c'), unit('shen', 'zephyr'), unit('jhin', 'a')]
+    enemy = [unit('riven'), unit('jinx', 'a', 'b', 'c'), unit('kennen', 'a')]
+    base, where = effect_positions(own), effect_positions(enemy)
+    spots = aim_positions(own, enemy)
+    assert spots[2] == where[1] != base[2]
+    swapped = [i for i in range(4) if i != 2 and spots[i] != base[i]]
+    assert swapped == [] or (len(swapped) == 1 and base[swapped[0]] == where[1] and spots[swapped[0]] == base[2])
+    assert aim_positions(own, [unit('riven'), unit('jinx', 'quicksilver', 'b', 'c'), unit('kennen', 'a')])[2] == where[2]
+    no_zephyr = [unit('garen'), unit('vayne', 'a', 'b', 'c')]
+    assert aim_positions(no_zephyr, enemy) == effect_positions(no_zephyr)
+
+
 if __name__ == '__main__':
     for name, test in list(globals().items()):
         if name.endswith('_test'):

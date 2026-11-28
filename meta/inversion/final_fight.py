@@ -6,6 +6,7 @@ results/README 「실제 판의 마지막 대전을 시뮬레이터에서 붙이
 보드 만들기: 유닛·별·아이템·선택받은 자는 기록 그대로다. 기록에 없어서 정해 넣는 것은 다음과 같다.
   배치: 근접은 앞줄 가운데부터, 원거리는 뒷줄 구석부터 아이템이 많은 순(analysis/battle.corner_positions).
         --place effect는 여기에 추방자·수호자·같은 줄 아이템을 살리는 규칙을 더한 배치다(analysis/battle.effect_positions).
+        --place aim은 효과 배치에서 서풍 든 유닛만 상대 보드의 아이템이 가장 많은 유닛을 겨누는 칸으로 옮긴다(analysis/battle.aim_positions).
   총사령관 승리 수: 상한 5(끝까지 간 보드라서). 케인 형태: 없음(meta/real_boards.py와 같다).
   도적의 장갑(99): 기록에 그 대전에서 나온 두 아이템이 같이 적혀 있다. 장갑은 빼고 그 두 아이템을 그대로 든다.
   값: 시뮬레이터의 지금 값(10.24 중간 패치 뒤). 기록은 10.24 전체다.
@@ -155,8 +156,10 @@ def chosen_three(board):
     return bool(board['chosen']) and any(u[0] == board['chosen'][0] and u[1] == 3 for u in board['units'])
 
 
-def affected(pair, variant):
-    """앞 실행(별 처리 셋은 harness, 동작 바꾸기는 fixed)과 결과가 달라질 수 있는 대전인가(아니면 같은 시드라 승수가 같다)."""
+def affected(pair, variant, place='corner'):
+    """앞 실행(별 처리 셋은 harness, 동작 바꾸기와 서풍 겨누기는 fixed)과 결과가 달라질 수 있는 대전인가(아니면 같은 시드라 승수가 같다)."""
+    if place == 'aim':  # 서풍 겨누기는 효과 배치에서 서풍(67) 든 유닛만 옮긴다
+        return any(67 in u[2] for b in pair['boards'] for u in b['units'])
     names = [{u[0].lower() for u in b['units']} for b in pair['boards']]
     if variant == 'jax':
         return any('jax' in s for s in names)
@@ -322,7 +325,8 @@ def fights(job):
         for i in range(n):
             blue, red = (first, second) if i % 2 == 0 else (second, first)  # 진영 유리를 없애려고 자리를 번갈아 붙인다
             base = pool()
-            pa, pb = build_player(base, 0, make_units(blue, variant), place), build_player(base, 1, make_units(red, variant), place)
+            ua, ub = make_units(blue, variant), make_units(red, variant)
+            pa, pb = build_player(base, 0, ua, place, ub), build_player(base, 1, ub, place, ua)  # 상대 유닛은 서풍 겨누기(aim)만 본다
             pa.opponent, pb.opponent = pb, pa
             config.WARLORD_WINS['blue'] = config.WARLORD_WINS['red'] = WARLORD_WINS
             result = cm.run(fighter, pa, pb, 0)[0]
@@ -340,11 +344,12 @@ def run(pairs, count, n, jobs, partial, place='corner', variant='harness', reuse
     assert len(used) == count, '쓸 수 있는 대전이 모자란다'
     done = load_partial(partial)
     kept = {}
+    assert place != 'aim' or variant == 'fixed', '서풍 겨누기는 고침 위에서만 붙인다'
     if reuse:  # 앞 실행과 승수가 같을 대전(바꾼 것이 걸리지 않는 대전)은 다시 붙이지 않고 가져온다
-        before = 'fixed' if variant in BEHAVIORS else 'harness'
-        assert reuse['used'] == used and reuse['n'] == n and reuse['place'] == place and reuse.get('variant', 'harness') == before
+        before = 'fixed' if variant in BEHAVIORS or place == 'aim' else 'harness'
+        assert reuse['used'] == used and reuse['n'] == n and reuse['place'] == {'aim': 'effect'}.get(place, place) and reuse.get('variant', 'harness') == before
         errors = dict(map(tuple, reuse['errors']))
-        kept = {k: [k, w, errors.get(k)] for k, w in zip(used, reuse['won']) if not affected(pairs[k], variant)}
+        kept = {k: [k, w, errors.get(k)] for k, w in zip(used, reuse['won']) if not affected(pairs[k], variant, place)}
         done.update(kept)
     todo = [(k, pairs[k], n, place, variant) for k in used if k not in done]
     if todo:
@@ -521,6 +526,9 @@ def selfcheck():
     assert not any(affected({'boards': [big, teemo]}, v) for v in BEHAVIORS) and not affected({'boards': [yasuo, big]}, 'blind')
     # 야스오 3성 장점 끄기: 야스오 3성이 있는 대전만 다시 붙인다(2성 야스오는 그대로)
     assert all(affected({'boards': [big, yasuo]}, v) for v in YASUO_OFF) and not any(affected({'boards': [b(8, [['Yasuo', 2, []]], {}), big]}, v) for v in YASUO_OFF)
+    # 서풍 겨누기(배치 aim, 별 처리는 고침): 서풍(67)이 어느 쪽에든 있는 대전만 다시 붙인다
+    zephyr = b(8, [['Shen', 2, [67]]], {})
+    assert affected({'boards': [big, zephyr]}, 'fixed', 'aim') and not affected({'boards': [vayne3, yasuo]}, 'fixed', 'aim')
     check_behavior_wrappers()
     assert reading(0.01, 0.05).endswith('더 잘 맞힌다') and reading(-0.05, -0.01).endswith('못 맞힌다') and reading(-0.01, 0.01).endswith('구별되지 않는다')
     big, small = dict(big, level=2), dict(small, level=1)  # 유닛 수 = 레벨인 보드(빠진 유닛이 안 보이는 대전)
@@ -607,7 +615,7 @@ if __name__ == '__main__':
     ap.add_argument('--n', type=int, default=20)
     ap.add_argument('--jobs', type=int, default=4)
     ap.add_argument('--partial')
-    ap.add_argument('--place', choices=('corner', 'range', 'effect'), default='corner')  # range = 원거리도 뒷줄 가운데부터, effect = 효과를 살리는 배치
+    ap.add_argument('--place', choices=('corner', 'range', 'effect', 'aim'), default='corner')  # range = 원거리도 뒷줄 가운데부터, effect = 효과를 살리는 배치, aim = 효과 배치 + 서풍 겨누기
     ap.add_argument('--variant', choices=VARIANTS, default='harness')  # 별 처리
     ap.add_argument('--reuse')  # harness 실행 기록. 별 처리가 걸리지 않는 대전의 승수를 가져온다
     ap.add_argument('--out')

@@ -128,10 +128,32 @@ def effect_positions(units):
     return [spots[i] for i in n]
 
 
+def aim_positions(units, enemy):
+    """효과 배치(effect_positions)에서 서풍을 든 유닛만 옮긴다(2026-11-28, results/README 「마지막 대전 붙이기: 서풍 겨누기 —
+    미리 정한 읽기」). 서풍은 든 유닛 칸을 판 한가운데 기준으로 돌린 상대 칸에서 가장 가까운 적을 5초 동안 뺀다. 그래서 겨눌 적이
+    자기 보드에서 선 칸과 같은 내 칸에 든 유닛을 놓는다(그때 배치 조사). 겨눌 적은 상대 보드에서 아이템이 가장 많은 유닛이다
+    (같으면 원거리, 그다음은 앞 순서). 10.24에서 수은을 든 유닛은 서풍에 뜨지 않았으니 수은 든 유닛은 겨누지 않는다. 든 유닛이
+    둘이면 둘째는 다음 유닛을 겨눈다. 그 칸에 내 유닛이 있으면 자리를 맞바꾼다. 상대 자리는 상대의 효과 배치다."""
+    # ponytail: 상대도 서풍으로 옮긴 뒤의 자리와, 서풍을 맞은 상대가 캐리를 옮기는 것은 보지 않는다(늘 맞히는 쪽의 위쪽 끝)
+    spots = effect_positions(units)
+    holders = [i for i, u in enumerate(units) if 'zephyr' in u.items]
+    if not holders:
+        return spots
+    enemy = sorted(enemy, key=lambda u: u.name == 'azir')  # build_player와 같은 순서라야 상대 자리가 보드와 같다
+    where = effect_positions(enemy)
+    targets = sorted((j for j, u in enumerate(enemy) if 'quicksilver' not in u.items),
+                     key=lambda j: (-len(enemy[j].items), RANGE[enemy[j].name] <= 1, j))
+    for i, j in zip(holders, targets):
+        if where[j] in spots:
+            spots[spots.index(where[j])] = spots[i]
+        spots[i] = where[j]
+    return spots
+
+
 POSITIONS = {'range': range_positions, 'corner': corner_positions, 'effect': effect_positions}
 
 
-def build_player(base_pool, index, units, place='random'):
+def build_player(base_pool, index, units, place='random', enemy=None):
     p = Player(base_pool, index)
     n = len(units)
     # 레벨은 유닛 수를 담을 만큼만 올린다. 여기서는 경제를 재지 않으니 레벨 비용은 무시한다.
@@ -139,7 +161,7 @@ def build_player(base_pool, index, units, place='random'):
     p.max_units = n
     # 아지르는 보드에 놓일 때 옆 빈칸에 모래 병사 둘을 만든다. 마지막에 놓아야 정해 둔 칸을 병사가 먼저 차지하지 않는다.
     units = sorted(units, key=lambda u: u.name == 'azir')
-    spots = POSITIONS[place](units) if place in POSITIONS else None
+    spots = aim_positions(units, enemy) if place == 'aim' else POSITIONS[place](units) if place in POSITIONS else None
     for i, unit in enumerate(units):
         p.add_to_bench(unit)
         if spots:
@@ -156,7 +178,7 @@ def build_player(base_pool, index, units, place='random'):
             # 좌표는 무작위다. 전열/후열 배치까지 맞추면 그건 다른 실험이 된다.
             x, y = coord_to_x_y(random.choice(valid))
         p.move_bench_to_board(0, x, y)
-    if place == 'effect':
+    if place in ('effect', 'aim'):
         # 시뮬레이터가 아지르 옆(자리가 없으면 앞줄 오른쪽 끝 둘레)에 놓는 모래 병사가 추방자 옆에 서면 추방자 보호막이 꺼진다.
         # 그런 병사는 추방자 옆이 아닌 가장 가까운 빈칸으로 옮긴다.
         cells = [(cx, cy) for cx in range(7) for cy in range(4)]

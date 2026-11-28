@@ -9,10 +9,13 @@ results/README 「마지막 대전 붙이기: 별 처리 결함을 고치고 다
   behavior: 동작 하나. 앞 = 고침(fixed), 뒤 = 결투가·추방자 동작 하나를 바꾼 것(jax, stacks, move, blind), 배치는 같다(2026-11-27,
           results/README 「마지막 대전 붙이기: 결투가·추방자 동작 하나씩 바꾸기 — 미리 정한 읽기」). 결투가·추방자 유닛 특징 열을 더 읽는다.
           야스오 3성 장점 하나를 끈 것(no_shield, no_steal, no_duelist, no_dash, 2026-11-28)도 같은 견주기로 읽는다.
+  aim: 배치. 앞 = 효과 배치, 뒤 = 효과 배치에서 서풍 든 유닛만 상대 캐리를 겨누는 칸으로 옮긴 것(analysis/battle.aim_positions),
+       둘 다 고침(2026-11-28, results/README 「마지막 대전 붙이기: 서풍 겨누기 — 미리 정한 읽기」). 특징은 behavior와 같고
+       「야스오 3성 대 서풍」 줄을 더 읽는다.
 읽기 1: 실제 1등을 맞힌 몫의 차(뒤 - 앞). 읽기 2: 한쪽만 그 계열(또는 보드 특징)인 대전에서 「시뮬레이터 승률 - 그 쪽이 실제 1등인 몫」이
 앞 실행에서 0을 벗어났으면, 뒤 실행에서도 남는가. 구간은 대전을 다시 뽑는 부트스트랩 1,000번(시드 0)이다.
 
-    python meta/inversion/final_place.py place|fix|effect|behavior <뽑아 둔 대전 파일> <앞 실행 기록> <뒤 실행 기록> <결과 json>
+    python meta/inversion/final_place.py place|fix|effect|behavior|aim <뽑아 둔 대전 파일> <앞 실행 기록> <뒤 실행 기록> <결과 json>
     python meta/inversion/final_place.py selfcheck
 (저장소 맨 위에서, PYTHONPATH에 저장소 맨 위)
 """
@@ -30,7 +33,8 @@ BIG = set(FOUR_COST_UNITS) | set(FIVE_COST_UNITS)
 OVERALL = {'place': ('가운데 배치가 실제 승자를 더 잘 맞힌다', '구석 배치가 실제 승자를 더 잘 맞힌다', '두 배치가 구별되지 않는다'),
            'fix': ('별 처리를 고치면 실제 승자를 더 잘 맞힌다', '별 처리를 고치면 실제 승자를 못 맞힌다', '고치기 전과 구별되지 않는다'),
            'effect': ('효과를 살린 배치가 실제 승자를 더 잘 맞힌다', '구석 배치가 실제 승자를 더 잘 맞힌다', '두 배치가 구별되지 않는다'),
-           'behavior': ('동작을 바꾸면 실제 승자를 더 잘 맞힌다', '동작을 바꾸면 실제 승자를 못 맞힌다', '바꾸기 전과 구별되지 않는다')}
+           'behavior': ('동작을 바꾸면 실제 승자를 더 잘 맞힌다', '동작을 바꾸면 실제 승자를 못 맞힌다', '바꾸기 전과 구별되지 않는다'),
+           'aim': ('서풍을 겨누면 실제 승자를 더 잘 맞힌다', '서풍을 겨누면 실제 승자를 못 맞힌다', '겨누기 전과 구별되지 않는다')}
 
 
 def count(trait, lo, hi=99):
@@ -114,6 +118,8 @@ def compare(kind, pairs, base, new, src=None):
     assert base['used'] == new['used'] and base['n'] == new['n']
     if kind in ('place', 'effect'):
         assert (base['place'], new['place']) == ('corner', {'place': 'range', 'effect': 'effect'}[kind]) and tag(base)[1] == tag(new)[1], (tag(base), tag(new))
+    elif kind == 'aim':
+        assert (base['place'], new['place']) == ('effect', 'aim') and tag(base)[1] == tag(new)[1] == 'fixed', (tag(base), tag(new))
     elif kind == 'behavior':
         assert base['place'] == new['place'] and tag(base)[1] == 'fixed' and tag(new)[1] in ff.BEHAVIORS, (tag(base), tag(new))
     else:
@@ -131,7 +137,10 @@ def compare(kind, pairs, base, new, src=None):
         if sum(s is not None for s in sides) >= 100:  # 대전이 100개 안 되는 계열은 표에서 뺀다
             by_family[f] = one_sided(ra, rb, sides)
     by_feature = {name: one_sided(ra, rb, [None if has(one) == has(two) else int(has(two)) for one, two in boards])
-                  for name, has in {'effect': FEATURES_EFFECT, 'behavior': FEATURES_BEHAVIOR}.get(kind, FEATURES).items()}
+                  for name, has in {'effect': FEATURES_EFFECT, 'behavior': FEATURES_BEHAVIOR, 'aim': FEATURES_BEHAVIOR}.get(kind, FEATURES).items()}
+    y3, zephyr = FEATURES_BEHAVIOR['yasuo 3-star'], FEATURES_EFFECT['zephyr']
+    extra = {'yasuo 3-star vs zephyr': one_sided(ra, rb, [None if y3(one) == y3(two) or not zephyr((one, two)[y3(one)]) else int(y3(two))
+                                                          for one, two in boards])} if kind == 'aim' else {}
     return {'kind': kind, 'records': dict(src or {}), 'base': list(tag(base)), 'new': list(tag(new)), 'n': base['n'],
             'fights_read': len(keep), 'dropped_errors': len(base['used']) - len(keep),
             'hit': {'base': round(float(hit(pa).mean()), 4), 'new': round(float(hit(pb).mean()), 4),
@@ -141,7 +150,7 @@ def compare(kind, pairs, base, new, src=None):
             'mean_abs_change': round(float(np.abs(pb - pa).mean()), 4),
             'S': {'base': round(ff.stats(ra)['S'], 4), 'new': round(ff.stats(rb)['S'], 4)},
             'by_family': by_family, 'by_feature': by_feature,
-            'higher_level': one_sided(ra, rb, [None if r['level'] == 0 else int(r['level'] < 0) for r in ra])}
+            'higher_level': one_sided(ra, rb, [None if r['level'] == 0 else int(r['level'] < 0) for r in ra]), **extra}
 
 
 def selfcheck():
@@ -185,7 +194,19 @@ def selfcheck():
     assert FEATURES_BEHAVIOR['yasuo 3-star'](b(8, [['Yasuo', 3, []]], {})) and not FEATURES_BEHAVIOR['yasuo 3-star'](b(8, [['Yasuo', 2, []]], {}))
     assert FEATURES_BEHAVIOR['duelist 4~5'](b(8, [], {'Duelist': 4})) and not FEATURES_BEHAVIOR['duelist 6+'](b(8, [], {'Duelist': 5}))
     assert [overall_reading('behavior', *v).split()[-2] for v in ((0.01, 0.03), (-0.03, -0.01), (-0.01, 0.01))] == ['잘', '못', '구별되지']
-    for wrong in (lambda: compare('behavior', pairs, dict(corner, variant='fixed'), dict(rng_rec, variant='jax')),
+    # 서풍 겨누기 견주기는 별 처리가 고침으로 같고 앞이 효과 배치(effect), 뒤가 겨누기(aim)여야 한다. 특징은 동작 바꾸기와 같고,
+    # 「야스오 3성 대 서풍」 줄(야스오 3성이 한쪽에만 있고 다른 쪽이 서풍을 든 대전)을 더 읽는다
+    aim = compare('aim', pairs, dict(corner, place='effect', variant='fixed'), dict(rng_rec, place='aim', variant='fixed'))
+    assert aim['hit_change'][0] == 0.3333 and aim['new'] == ['aim', 'fixed'] and len(aim['by_feature']) == len(FEATURES_BEHAVIOR)
+    assert [overall_reading('aim', *v).split()[-2] for v in ((0.01, 0.03), (-0.03, -0.01), (-0.01, 0.01))] == ['잘', '못', '구별되지']
+    y3, zb = b(8, [['Yasuo', 3, []]], {}), b(8, [['Shen', 2, [67]]], {})
+    yr = {'n': 12, 'used': [0, 1]}
+    yz = compare('aim', {'pairs': [{'boards': [zb, y3]}, {'boards': [y3, small]}]}, dict(yr, place='effect', variant='fixed', won=[[0, 0], [6, 6]]),
+                 dict(yr, place='aim', variant='fixed', won=[[6, 6], [6, 6]]))['yasuo 3-star vs zephyr']
+    assert (yz['fights'], yz['real'], yz['base'], yz['new']) == (1, 0.0, 1.0, 0.0)  # 첫 대전만. 야스오 쪽은 2등, 승률 앞 1 - 0, 뒤 1 - 1
+    for wrong in (lambda: compare('aim', pairs, dict(corner, variant='fixed'), dict(rng_rec, place='aim', variant='fixed')),
+                  lambda: compare('aim', pairs, dict(corner, place='effect', variant='fixed'), dict(rng_rec, place='aim', variant='jax')),
+                  lambda: compare('behavior', pairs, dict(corner, variant='fixed'), dict(rng_rec, variant='jax')),
                   lambda: compare('behavior', pairs, dict(corner, variant='june'), dict(corner, variant='jax')),
                   lambda: compare('behavior', pairs, dict(corner, variant='fixed'), dict(corner, variant='fixed'))):
         try:
